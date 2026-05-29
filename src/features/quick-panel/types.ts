@@ -45,6 +45,7 @@ export interface GeneratedExport {
   id: PanelId;
   label: string;
   fileName: string;
+  previewUri: string;
   uri: string;
 }
 

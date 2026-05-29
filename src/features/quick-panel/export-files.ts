@@ -35,12 +35,14 @@ export async function captureAndSaveExports(
     fileName: file.fileName,
     id: file.id,
     label: file.label,
+    previewUri: file.previewUri,
     uri: file.uri,
   }));
 }
 
 async function captureNamedFiles(refs: ExportRefs) {
   const files: GeneratedExport[] = [];
+  const batchId = Date.now().toString();
 
   for (const id of s25PlusOneUi85Preset.goodLockOrder) {
     const panel = s25PlusOneUi85Preset.panels[id];
@@ -59,9 +61,17 @@ async function captureNamedFiles(refs: ExportRefs) {
       width: exportSidePixels,
     });
     const source = new File(uri);
+    const preview = new File(Paths.cache, `${batchId}-${panel.fileName}`);
     const target = new File(Paths.cache, panel.fileName);
+    await source.copy(preview, { overwrite: true });
     await source.copy(target, { overwrite: true });
-    files.push({ fileName: panel.fileName, id, label: panel.label, uri: target.uri });
+    files.push({
+      fileName: panel.fileName,
+      id,
+      label: panel.label,
+      previewUri: preview.uri,
+      uri: target.uri,
+    });
   }
 
   return files;

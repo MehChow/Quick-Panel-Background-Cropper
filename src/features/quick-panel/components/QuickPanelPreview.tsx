@@ -4,6 +4,7 @@ import { LayoutChangeEvent } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, { useSharedValue } from "react-native-reanimated";
 import { scheduleOnRN } from "react-native-worklets";
+import { clampTransformWorklet } from "../gesture-worklets";
 import { s25PlusOneUi85Preset } from "../preset";
 import { getCoverScale, getImageBounds, getPanelUnion } from "../transform";
 import type { ImageTransform, PickedImage } from "../types";
@@ -12,16 +13,19 @@ import { PanelSlice } from "./PanelSlice";
 interface QuickPanelPreviewProps {
   image: PickedImage;
   transform: ImageTransform;
+  onAdjustingChange: (isAdjusting: boolean) => void;
   onTransformChange: (transform: ImageTransform) => void;
 }
 
 export function QuickPanelPreview({
   image,
+  onAdjustingChange,
   transform,
   onTransformChange,
 }: QuickPanelPreviewProps) {
-  const [layoutScale, setLayoutScale] = useState(1);
-  const sharedScale = useSharedValue(layoutScale);
+  const [layoutScale, setLayoutScale] = useState<number | null>(null);
+  const activeGestureCount = useSharedValue(0);
+  const sharedScale = useSharedValue(1);
   const sharedTransform = useSharedValue(transform);
   const startTransform = useSharedValue(transform);
   const panelUnion = getPanelUnion();
@@ -33,19 +37,28 @@ export function QuickPanelPreview({
   }, [sharedTransform, transform]);
 
   useEffect(() => {
-    sharedScale.value = layoutScale;
+    if (layoutScale) {
+      sharedScale.value = layoutScale;
+    }
   }, [layoutScale, sharedScale]);
 
   const handleLayout = (event: LayoutChangeEvent) => {
-    setLayoutScale(event.nativeEvent.layout.width / panelUnion.width);
+    const nextScale = event.nativeEvent.layout.width / panelUnion.width;
+    if (nextScale > 0) {
+      setLayoutScale(nextScale);
+    }
   };
 
   const pan = Gesture.Pan()
     .onBegin(() => {
+      activeGestureCount.value += 1;
+      if (activeGestureCount.value === 1) {
+        scheduleOnRN(onAdjustingChange, true);
+      }
       startTransform.value = sharedTransform.value;
     })
     .onUpdate((event) => {
-      const next = clampWorklet(
+      const next = clampTransformWorklet(
         startTransform.value.x + event.translationX / sharedScale.value,
         startTransform.value.y + event.translationY / sharedScale.value,
         sharedTransform.value.scale,
@@ -59,12 +72,20 @@ export function QuickPanelPreview({
       );
       sharedTransform.value = next;
     })
-    .onEnd(() => {
-      scheduleOnRN(onTransformChange, sharedTransform.value);
+    .onEnd(() => scheduleOnRN(onTransformChange, sharedTransform.value))
+    .onFinalize(() => {
+      activeGestureCount.value = Math.max(0, activeGestureCount.value - 1);
+      if (activeGestureCount.value === 0) {
+        scheduleOnRN(onAdjustingChange, false);
+      }
     });
 
   const pinch = Gesture.Pinch()
     .onBegin(() => {
+      activeGestureCount.value += 1;
+      if (activeGestureCount.value === 1) {
+        scheduleOnRN(onAdjustingChange, true);
+      }
       startTransform.value = sharedTransform.value;
     })
     .onUpdate((event) => {
@@ -75,7 +96,7 @@ export function QuickPanelPreview({
         Math.min(minScale * 8, startTransform.value.scale * event.scale),
       );
       const ratio = scale / startTransform.value.scale;
-      const next = clampWorklet(
+      const next = clampTransformWorklet(
         focalX - (focalX - startTransform.value.x) * ratio,
         focalY - (focalY - startTransform.value.y) * ratio,
         scale,
@@ -89,8 +110,12 @@ export function QuickPanelPreview({
       );
       sharedTransform.value = next;
     })
-    .onEnd(() => {
-      scheduleOnRN(onTransformChange, sharedTransform.value);
+    .onEnd(() => scheduleOnRN(onTransformChange, sharedTransform.value))
+    .onFinalize(() => {
+      activeGestureCount.value = Math.max(0, activeGestureCount.value - 1);
+      if (activeGestureCount.value === 0) {
+        scheduleOnRN(onAdjustingChange, false);
+      }
     });
 
   return (
@@ -98,47 +123,23 @@ export function QuickPanelPreview({
       <Animated.View
         className="w-full overflow-hidden bg-zinc-950"
         onLayout={handleLayout}
-        style={{
-          aspectRatio: panelUnion.width / panelUnion.height,
-          opacity: 0.9,
-        }}
+        style={{ aspectRatio: panelUnion.width / panelUnion.height, opacity: 0.9 }}
       >
-        {s25PlusOneUi85Preset.visualOrder.map((id) => (
-          <PanelSlice
-            key={id}
-            panel={s25PlusOneUi85Preset.panels[id]}
-            image={image}
-            layoutScale={layoutScale}
-            originX={panelUnion.x}
-            originY={panelUnion.y}
-            previewScale={sharedScale}
-            transform={sharedTransform}
-          />
-        ))}
+        {layoutScale
+          ? s25PlusOneUi85Preset.visualOrder.map((id) => (
+              <PanelSlice
+                key={id}
+                panel={s25PlusOneUi85Preset.panels[id]}
+                image={image}
+                layoutScale={layoutScale}
+                originX={panelUnion.x}
+                originY={panelUnion.y}
+                previewScale={sharedScale}
+                transform={sharedTransform}
+              />
+            ))
+          : null}
       </Animated.View>
     </GestureDetector>
   );
-}
-
-function clampWorklet(
-  x: number,
-  y: number,
-  scale: number,
-  imageWidth: number,
-  imageHeight: number,
-  minScale: number,
-  unionX: number,
-  unionY: number,
-  unionWidth: number,
-  unionHeight: number,
-) {
-  "worklet";
-  const safeScale = Math.max(minScale, scale);
-  const width = imageWidth * safeScale;
-  const height = imageHeight * safeScale;
-  return {
-    scale: safeScale,
-    x: Math.max(unionX + unionWidth - width, Math.min(unionX, x)),
-    y: Math.max(unionY + unionHeight - height, Math.min(unionY, y)),
-  };
 }
