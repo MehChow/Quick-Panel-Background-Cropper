@@ -1,0 +1,30 @@
+{
+  "componentsDir": "src/components/ani-ui",
+  "utilPath": "src/lib/utils.ts",
+  "theme": "default",
+  "style": "uniwind",
+  "tsx": true,
+  "sdkGeneration": "v5",
+  "installed": {
+    "card": {
+      "version": "0.3.0",
+      "hash": "9c588269",
+      "addedAt": "2026-05-29T03:43:00.229Z"
+    },
+    "text": {
+      "version": "0.3.0",
+      "hash": "9a3434aa",
+      "addedAt": "2026-05-29T03:43:00.231Z"
+    },
+    "input": {
+      "version": "0.3.0",
+      "hash": "7a4fd2c2",
+      "addedAt": "2026-05-29T03:43:00.232Z"
+    },
+    "button": {
+      "version": "0.3.0",
+      "hash": "a3a06625",
+      "addedAt": "2026-05-29T03:43:00.232Z"
+    }
+  }
+}
