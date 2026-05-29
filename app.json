@@ -26,6 +26,26 @@
     "plugins": [
       "expo-router",
       [
+        "expo-image-picker",
+        {
+          "photosPermission": "Choose an image to preview and export quick panel crops.",
+          "cameraPermission": false,
+          "microphonePermission": false
+        }
+      ],
+      [
+        "expo-media-library",
+        {
+          "photosPermission": "Allow access to save quick panel export images.",
+          "savePhotosPermission": "Save quick panel export images to your photo library.",
+          "granularPermissions": [
+            "photo"
+          ],
+          "isAccessMediaLocationEnabled": false
+        }
+      ],
+      "@react-native-vector-icons/lucide",
+      [
         "expo-splash-screen",
         {
           "backgroundColor": "#208AEF",
