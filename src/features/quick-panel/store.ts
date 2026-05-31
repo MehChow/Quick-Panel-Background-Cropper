@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { getCalibratedPreset } from "./calibration";
 import { s25PlusOneUi85Preset } from "./preset";
+import { loadCalibration, saveCalibration } from "./storage";
 import { clampTransform, getFitTransform } from "./transform";
 import type {
   GeneratedExport,
@@ -13,6 +14,7 @@ import type {
 
 interface QuickPanelState {
   step: QuickPanelStep;
+  isCalibrated: boolean;
   presetId: string;
   activePreset: QuickPanelPreset;
   screenshot: PickedImage | null;
@@ -22,9 +24,12 @@ interface QuickPanelState {
   exports: GeneratedExport[];
   isExporting: boolean;
   error: string | null;
+  goToLanding: () => void;
+  goToCalibration: () => void;
+  startCustomizing: () => boolean;
   setScreenshot: (screenshot: PickedImage, rect: PanelRect) => void;
   setCalibrationRect: (rect: PanelRect) => void;
-  acceptCalibration: () => void;
+  acceptCalibration: () => boolean;
   setImage: (image: PickedImage) => void;
   setTransform: (transform: ImageTransform) => void;
   resetFit: () => void;
@@ -34,18 +39,59 @@ interface QuickPanelState {
 }
 
 const emptyTransform: ImageTransform = { x: 0, y: 0, scale: 1 };
+const savedCalibration = loadCalibration();
+const savedPreset = savedCalibration.rect
+  ? getCalibratedPreset(savedCalibration.rect)
+  : s25PlusOneUi85Preset;
+const resetWork = {
+  image: null,
+  transform: emptyTransform,
+  exports: [],
+};
 
 export const useQuickPanelStore = create<QuickPanelState>((set, get) => ({
-  step: "calibration",
-  presetId: s25PlusOneUi85Preset.id,
-  activePreset: s25PlusOneUi85Preset,
+  step: "landing",
+  isCalibrated: savedCalibration.isCalibrated,
+  presetId: savedPreset.id,
+  activePreset: savedPreset,
   screenshot: null,
-  calibrationRect: null,
+  calibrationRect: savedCalibration.rect,
   image: null,
   transform: emptyTransform,
   exports: [],
   isExporting: false,
   error: null,
+  goToLanding: () =>
+    set({
+      step: "landing",
+      screenshot: null,
+      ...resetWork,
+      error: null,
+    }),
+  goToCalibration: () =>
+    set({
+      step: "calibration",
+      screenshot: null,
+      calibrationRect: get().isCalibrated ? get().calibrationRect : null,
+      ...resetWork,
+      error: null,
+    }),
+  startCustomizing: () => {
+    if (!get().isCalibrated) {
+      set({
+        step: "calibration",
+        error: "Calibrate your Quick Panel area before customizing.",
+      });
+      return false;
+    }
+
+    set({
+      step: "imageSelection",
+      ...resetWork,
+      error: null,
+    });
+    return true;
+  },
   setScreenshot: (screenshot, rect) =>
     set({
       screenshot,
@@ -57,19 +103,22 @@ export const useQuickPanelStore = create<QuickPanelState>((set, get) => ({
     const rect = get().calibrationRect;
     if (!rect) {
       set({ error: "Import a Quick Panel screenshot first." });
-      return;
+      return false;
     }
 
     const activePreset = getCalibratedPreset(rect);
+    saveCalibration(rect);
     set({
       activePreset,
       presetId: activePreset.id,
-      step: "imageSelection",
-      image: null,
-      transform: emptyTransform,
-      exports: [],
+      step: "landing",
+      isCalibrated: true,
+      screenshot: null,
+      calibrationRect: rect,
+      ...resetWork,
       error: null,
     });
+    return true;
   },
   setImage: (image) =>
     set({
@@ -97,6 +146,7 @@ export const useQuickPanelStore = create<QuickPanelState>((set, get) => ({
     }
   },
   startExport: () => set({ isExporting: true, error: null, exports: [] }),
-  finishExport: (exports) => set({ isExporting: false, exports, step: "exported" }),
+  finishExport: (exports) =>
+    set({ isExporting: false, exports, step: "exported" }),
   failExport: (message) => set({ isExporting: false, error: message }),
 }));
