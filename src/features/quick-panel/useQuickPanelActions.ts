@@ -1,11 +1,14 @@
 import * as ImagePicker from "expo-image-picker";
 import { Image as ExpoImage } from "expo-image";
+import { getSuggestedCalibrationRect } from "./calibration";
 import { captureAndSaveExports } from "./export-files";
 import { useQuickPanelStore } from "./store";
 import type { ExportRefs } from "./types";
 
 export function useQuickPanelActions(refs: ExportRefs) {
   const image = useQuickPanelStore((state) => state.image);
+  const activePreset = useQuickPanelStore((state) => state.activePreset);
+  const setScreenshot = useQuickPanelStore((state) => state.setScreenshot);
   const setImage = useQuickPanelStore((state) => state.setImage);
   const resetFit = useQuickPanelStore((state) => state.resetFit);
   const startExport = useQuickPanelStore((state) => state.startExport);
@@ -30,6 +33,25 @@ export function useQuickPanelActions(refs: ExportRefs) {
     }
   };
 
+  const pickScreenshot = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: false,
+      mediaTypes: ["images"],
+      quality: 1,
+    });
+
+    if (!result.canceled && result.assets[0]) {
+      const asset = result.assets[0];
+      const screenshot = {
+        fileName: asset.fileName,
+        height: asset.height,
+        uri: asset.uri,
+        width: asset.width,
+      };
+      setScreenshot(screenshot, getSuggestedCalibrationRect(screenshot));
+    }
+  };
+
   const exportImages = async () => {
     startExport();
 
@@ -37,7 +59,7 @@ export function useQuickPanelActions(refs: ExportRefs) {
       if (image) {
         await ExpoImage.prefetch(image.uri);
       }
-      const exports = await captureAndSaveExports(refs);
+      const exports = await captureAndSaveExports(refs, activePreset);
       finishExport(exports);
     } catch (error) {
       failExport(
@@ -46,5 +68,5 @@ export function useQuickPanelActions(refs: ExportRefs) {
     }
   };
 
-  return { exportImages, pickImage, resetFit };
+  return { exportImages, pickImage, pickScreenshot, resetFit };
 }

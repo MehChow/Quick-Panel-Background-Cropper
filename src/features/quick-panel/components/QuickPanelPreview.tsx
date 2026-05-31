@@ -5,13 +5,13 @@ import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, { useSharedValue } from "react-native-reanimated";
 import { scheduleOnRN } from "react-native-worklets";
 import { clampTransformWorklet } from "../gesture-worklets";
-import { s25PlusOneUi85Preset } from "../preset";
 import { getCoverScale, getImageBounds, getPanelUnion } from "../transform";
-import type { ImageTransform, PickedImage } from "../types";
+import type { ImageTransform, PickedImage, QuickPanelPreset } from "../types";
 import { PanelSlice } from "./PanelSlice";
 
 interface QuickPanelPreviewProps {
   image: PickedImage;
+  preset: QuickPanelPreset;
   transform: ImageTransform;
   onAdjustingChange: (isAdjusting: boolean) => void;
   onTransformChange: (transform: ImageTransform) => void;
@@ -22,15 +22,16 @@ export function QuickPanelPreview({
   onAdjustingChange,
   transform,
   onTransformChange,
+  preset,
 }: QuickPanelPreviewProps) {
   const [layoutScale, setLayoutScale] = useState<number | null>(null);
   const activeGestureCount = useSharedValue(0);
   const sharedScale = useSharedValue(1);
   const sharedTransform = useSharedValue(transform);
   const startTransform = useSharedValue(transform);
-  const panelUnion = getPanelUnion();
-  const imageBounds = getImageBounds();
-  const minScale = getCoverScale(image);
+  const panelUnion = getPanelUnion(preset);
+  const imageBounds = getImageBounds(preset);
+  const minScale = getCoverScale(image, preset);
 
   useEffect(() => {
     sharedTransform.value = transform;
@@ -126,10 +127,10 @@ export function QuickPanelPreview({
         style={{ aspectRatio: panelUnion.width / panelUnion.height, opacity: 0.9 }}
       >
         {layoutScale
-          ? s25PlusOneUi85Preset.visualOrder.map((id) => (
+          ? preset.visualOrder.map((id) => (
               <PanelSlice
                 key={id}
-                panel={s25PlusOneUi85Preset.panels[id]}
+                panel={preset.panels[id]}
                 image={image}
                 layoutScale={layoutScale}
                 originX={panelUnion.x}

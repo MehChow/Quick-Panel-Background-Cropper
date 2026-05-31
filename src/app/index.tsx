@@ -1,11 +1,12 @@
 import { Button } from "@/components/ani-ui/button";
 import { Text } from "@/components/ani-ui/text";
+import { CalibrationScreen } from "@/features/quick-panel/components/CalibrationScreen";
 import { ExportSurfaces } from "@/features/quick-panel/components/ExportSurfaces";
+import { ExportSuccessPanel } from "@/features/quick-panel/components/ExportSuccessPanel";
 import { QuickPanelPreview } from "@/features/quick-panel/components/QuickPanelPreview";
 import { useQuickPanelStore } from "@/features/quick-panel/store";
 import type { ExportRefs } from "@/features/quick-panel/types";
 import { useQuickPanelActions } from "@/features/quick-panel/useQuickPanelActions";
-import { Image } from "expo-image";
 import { useRef, useState } from "react";
 import { Pressable, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -21,13 +22,24 @@ export default function Index() {
     mediaPlayer: mediaPlayerRef,
     volume: volumeRef,
   };
+  const step = useQuickPanelStore((state) => state.step);
+  const activePreset = useQuickPanelStore((state) => state.activePreset);
+  const screenshot = useQuickPanelStore((state) => state.screenshot);
+  const calibrationRect = useQuickPanelStore((state) => state.calibrationRect);
+  const setCalibrationRect = useQuickPanelStore(
+    (state) => state.setCalibrationRect
+  );
+  const acceptCalibration = useQuickPanelStore(
+    (state) => state.acceptCalibration
+  );
   const image = useQuickPanelStore((state) => state.image);
   const transform = useQuickPanelStore((state) => state.transform);
   const setTransform = useQuickPanelStore((state) => state.setTransform);
   const exports = useQuickPanelStore((state) => state.exports);
   const isExporting = useQuickPanelStore((state) => state.isExporting);
   const error = useQuickPanelStore((state) => state.error);
-  const { exportImages, pickImage, resetFit } = useQuickPanelActions(refs);
+  const { exportImages, pickImage, pickScreenshot, resetFit } =
+    useQuickPanelActions(refs);
   const [isPreviewAdjusting, setIsPreviewAdjusting] = useState(false);
   const hasExported = exports.length > 0;
 
@@ -48,41 +60,20 @@ export default function Index() {
           </Text>
         </View>
 
-        {hasExported ? (
-          <View className="mb-4 items-center rounded-[30px] border border-emerald-400/30 bg-emerald-400/10 px-5 py-8">
-            <Text className="text-center text-2xl font-bold text-white">
-              Exported successfully
-            </Text>
-            <Text className="mt-2 text-center text-sm leading-5 text-emerald-100">
-              Apply them in Good Lock with order
-            </Text>
-
-            <View className="mt-7 w-full flex-row flex-wrap justify-between gap-y-5">
-              {exports.map((item) => (
-                <View key={item.id} className="w-[47%] items-center">
-                  <View className="aspect-square w-full overflow-hidden rounded-2xl border border-emerald-300/40 bg-sky-200">
-                    <Image
-                      key={`${item.id}-${item.previewUri}`}
-                      cachePolicy="none"
-                      source={{ uri: item.previewUri }}
-                      contentFit="cover"
-                      style={{ height: "100%", width: "100%" }}
-                    />
-                  </View>
-                  <Text className="mt-2 text-center text-sm font-medium text-emerald-100">
-                    {item.label}
-                  </Text>
-                </View>
-              ))}
-            </View>
-
-            <Button className="mt-8 w-full" onPress={pickImage}>
-              Convert another
-            </Button>
-          </View>
+        {step === "calibration" ? (
+          <CalibrationScreen
+            screenshot={screenshot}
+            rect={calibrationRect}
+            onImport={pickScreenshot}
+            onRectChange={setCalibrationRect}
+            onContinue={acceptCalibration}
+          />
+        ) : hasExported ? (
+          <ExportSuccessPanel exports={exports} onConvertAnother={pickImage} />
         ) : image ? (
           <QuickPanelPreview
             image={image}
+            preset={activePreset}
             onAdjustingChange={setIsPreviewAdjusting}
             transform={transform}
             onTransformChange={setTransform}
@@ -102,7 +93,7 @@ export default function Index() {
           </Pressable>
         )}
 
-        {!hasExported ? (
+        {step !== "calibration" && !hasExported ? (
           <View className="mt-5 gap-3">
             {image ? (
               <Button onPress={pickImage}>Choose another image</Button>
@@ -141,7 +132,12 @@ export default function Index() {
         ) : null}
       </ScrollView>
       {image && !hasExported ? (
-        <ExportSurfaces image={image} transform={transform} refs={refs} />
+        <ExportSurfaces
+          image={image}
+          transform={transform}
+          preset={activePreset}
+          refs={refs}
+        />
       ) : null}
     </SafeAreaView>
   );

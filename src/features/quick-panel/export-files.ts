@@ -1,16 +1,16 @@
 import { Asset, Album, requestPermissionsAsync } from "expo-media-library";
 import { File, Paths } from "expo-file-system";
 import { captureRef } from "react-native-view-shot";
-import { s25PlusOneUi85Preset } from "./preset";
 import { exportSidePixels } from "./transform";
-import type { ExportRefs, GeneratedExport } from "./types";
+import type { ExportRefs, GeneratedExport, QuickPanelPreset } from "./types";
 
 const albumName = "Quick Panel Exports";
 
 export async function captureAndSaveExports(
-  refs: ExportRefs
+  refs: ExportRefs,
+  preset: QuickPanelPreset
 ): Promise<GeneratedExport[]> {
-  const capturedFiles = await captureNamedFiles(refs);
+  const capturedFiles = await captureNamedFiles(refs, preset);
   const permission = await requestPermissionsAsync(true);
 
   if (!permission.granted) {
@@ -40,12 +40,12 @@ export async function captureAndSaveExports(
   }));
 }
 
-async function captureNamedFiles(refs: ExportRefs) {
+async function captureNamedFiles(refs: ExportRefs, preset: QuickPanelPreset) {
   const files: GeneratedExport[] = [];
   const batchId = Date.now().toString();
 
-  for (const id of s25PlusOneUi85Preset.goodLockOrder) {
-    const panel = s25PlusOneUi85Preset.panels[id];
+  for (const id of preset.goodLockOrder) {
+    const panel = preset.panels[id];
     const ref = refs[id].current;
 
     if (!ref) {

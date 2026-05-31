@@ -50,3 +50,9 @@ export interface GeneratedExport {
 }
 
 export type ExportRefs = Record<PanelId, RefObject<View | null>>;
+
+export type QuickPanelStep =
+  | "calibration"
+  | "imageSelection"
+  | "adjustBackground"
+  | "exported";
