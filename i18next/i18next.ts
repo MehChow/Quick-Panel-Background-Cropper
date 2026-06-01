@@ -1,18 +1,26 @@
 import { getLocales } from "expo-localization";
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
+import {
+  isSupportedLanguage,
+  loadLanguageOverride,
+  type SupportedLanguage,
+} from "../src/features/quick-panel/storage";
 import en from "./locales/en";
 import zh from "./locales/zh";
 
-const supportedLanguages = ["en", "zh"] as const;
-type SupportedLanguage = (typeof supportedLanguages)[number];
-
 function getLanguage(): SupportedLanguage {
+  const savedLanguage = loadLanguageOverride();
+
+  if (savedLanguage) {
+    return savedLanguage;
+  }
+
   const locale = getLocales()[0];
   const languageCode = locale?.languageCode?.toLowerCase();
 
-  if (languageCode && supportedLanguages.includes(languageCode as SupportedLanguage)) {
-    return languageCode as SupportedLanguage;
+  if (isSupportedLanguage(languageCode)) {
+    return languageCode;
   }
 
   return "en";

@@ -3,6 +3,10 @@ import type { PanelRect } from "./types";
 
 const calibrationFlagKey = "quick-panel.is-calibrated";
 const calibrationRectKey = "quick-panel.calibration-rect";
+const languageOverrideKey = "quick-panel.language";
+
+export const supportedLanguages = ["en", "zh"] as const;
+export type SupportedLanguage = (typeof supportedLanguages)[number];
 
 const storage = createMMKV({ id: "quick-panel" });
 
@@ -26,6 +30,26 @@ export function loadCalibration(): SavedCalibration {
 export function saveCalibration(rect: PanelRect) {
   storage.set(calibrationFlagKey, true);
   storage.set(calibrationRectKey, JSON.stringify(rect));
+}
+
+export function loadLanguageOverride(): SupportedLanguage | null {
+  const language = storage.getString(languageOverrideKey);
+
+  if (isSupportedLanguage(language)) {
+    return language;
+  }
+
+  return null;
+}
+
+export function saveLanguageOverride(language: SupportedLanguage) {
+  storage.set(languageOverrideKey, language);
+}
+
+export function isSupportedLanguage(
+  language: string | undefined,
+): language is SupportedLanguage {
+  return supportedLanguages.includes(language as SupportedLanguage);
 }
 
 function parseRect(value: string): PanelRect | null {

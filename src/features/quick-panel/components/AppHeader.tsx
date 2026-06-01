@@ -7,15 +7,12 @@ interface AppHeaderProps {
   subtitle?: string;
 }
 
-export function AppHeader({
-  title,
-  subtitle,
-}: AppHeaderProps) {
+export function AppHeader({ title, subtitle }: AppHeaderProps) {
   const { t } = useTranslation();
 
   return (
     <View className="mb-5">
-      <Text variant="h2" className="text-white">
+      <Text variant="h3" className="text-white">
         {title ?? t("home.title")}
       </Text>
       <Text className="mt-2 text-sm leading-5 text-zinc-400">

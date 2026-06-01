@@ -5,7 +5,7 @@ const zh = {
     },
     home: {
       title: "Quick Panel 背景裁切",
-      subtitle: "把你想要的圖片設成 Quick Panel 背景！",
+      subtitle: "把你想要的圖片設成 Quick Panel 背景",
     },
     landing: {
       startCustomizing: "開始自訂",

@@ -17,7 +17,7 @@ export function ExportSuccessPanel({
   const { t } = useTranslation();
 
   return (
-    <View className="mb-4 items-center rounded-[30px] border border-emerald-400/30 bg-emerald-400/10 px-5 py-8">
+    <View className="mb-4 items-center rounded-2xl border border-emerald-400/30 bg-emerald-400/10 p-6">
       <Text className="text-center text-2xl font-bold text-white">
         {t("export.successTitle")}
       </Text>
@@ -38,7 +38,7 @@ export function ExportSuccessPanel({
               />
             </View>
             <Text className="mt-2 text-center text-sm font-medium text-emerald-100">
-              {item.label}
+              {t(`panels.${item.id}`)}
             </Text>
           </View>
         ))}

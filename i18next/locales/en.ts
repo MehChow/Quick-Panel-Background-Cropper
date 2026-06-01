@@ -5,7 +5,7 @@ const en = {
     },
     home: {
       title: "Quick Panel Background Cropper",
-      subtitle: "Put your desired image as the background in the Quick Panel!",
+      subtitle: "Customize your background in the Quick Panel",
     },
     landing: {
       startCustomizing: "Start customizing",
@@ -18,7 +18,7 @@ const en = {
     },
     calibration: {
       title: "Calibration",
-      subtitle: "Match your device's Quick Panel layout",
+      subtitle: "Match your device's layout",
       instruction:
         "Drag any edge or corner to resize the green box around the whole customizable control panel.",
       helpButton: "Open calibration help",
