@@ -1,3 +1,4 @@
+import { CalibrationHelpSheet } from "@/features/quick-panel/components/CalibrationHelpSheet";
 import { Text } from "@/components/ani-ui/text";
 import { CalibrationScreen } from "@/features/quick-panel/components/CalibrationScreen";
 import { SubPageHeader } from "@/features/quick-panel/components/SubPageHeader";
@@ -5,13 +6,16 @@ import { useQuickPanelStore } from "@/features/quick-panel/store";
 import type { ExportRefs } from "@/features/quick-panel/types";
 import { useQuickPanelActions } from "@/features/quick-panel/useQuickPanelActions";
 import { useRouter } from "expo-router";
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function CalibrationPage() {
   const refs = useEmptyExportRefs();
   const router = useRouter();
+  const { t } = useTranslation();
+  const [isHelpOpen, setIsHelpOpen] = useState(false);
   const screenshot = useQuickPanelStore((state) => state.screenshot);
   const calibrationRect = useQuickPanelStore((state) => state.calibrationRect);
   const error = useQuickPanelStore((state) => state.error);
@@ -33,8 +37,9 @@ export default function CalibrationPage() {
     <SafeAreaView style={{ flex: 1, backgroundColor: "#09090b" }}>
       <View className="px-5 pt-8">
         <SubPageHeader
-          title="Calibration"
-          subtitle="To match your device's Quick Panel layout"
+          onHelpPress={() => setIsHelpOpen(true)}
+          title={t("calibration.title")}
+          subtitle={t("calibration.subtitle")}
         />
       </View>
       <ScrollView
@@ -56,6 +61,10 @@ export default function CalibrationPage() {
           </Text>
         ) : null}
       </ScrollView>
+      <CalibrationHelpSheet
+        visible={isHelpOpen}
+        onClose={() => setIsHelpOpen(false)}
+      />
     </SafeAreaView>
   );
 }

@@ -3,6 +3,7 @@ import { Text } from "@/components/ani-ui/text";
 import { Lucide } from "@react-native-vector-icons/lucide";
 import { Image } from "expo-image";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import type { PanelRect, PickedImage } from "../types";
 import { CalibrationControls } from "./CalibrationControls";
@@ -44,13 +45,6 @@ export function CalibrationScreen({
 
   return (
     <View className="gap-4">
-      <View className="rounded-2xl border border-emerald-400/30 bg-emerald-400/10 p-4">
-        <Text className="text-sm text-zinc-300 font-medium text-center">
-          Drag any edge or corner to resize the green box around the whole
-          customizable control panel.
-        </Text>
-      </View>
-
       <View
         className="overflow-hidden rounded-[28px] border border-zinc-800 bg-black"
         onLayout={(event) => setViewWidth(event.nativeEvent.layout.width)}
@@ -75,19 +69,23 @@ export function CalibrationScreen({
 }
 
 function ImportScreenshotCard({ onImport }: ImportScreenshotCardProps) {
+  const { t } = useTranslation();
+
   return (
     <View className="w-full gap-4 rounded-2xl border border-zinc-800 bg-zinc-900 p-6">
       <View>
         <Text className="text-center text-lg font-semibold text-white">
-          Import Quick Panel screenshot
+          {t("calibration.importTitle")}
         </Text>
         <Text className="text-center text-sm leading-5 text-zinc-400">
-          Use a fully expanded Quick Panel
+          {t("calibration.importSubtitle")}
         </Text>
       </View>
 
       <View className="w-full">
-        <Text className="text-center font-bold text-orange-400">Example</Text>
+        <Text className="text-center font-bold text-orange-400">
+          {t("landing.example")}
+        </Text>
 
         <View className="flex-row gap-4">
           <ExamplePanelImage
@@ -104,7 +102,7 @@ function ImportScreenshotCard({ onImport }: ImportScreenshotCardProps) {
       </View>
 
       <Button className="w-full" onPress={onImport}>
-        Choose from album
+        {t("calibration.chooseFromAlbum")}
       </Button>
     </View>
   );

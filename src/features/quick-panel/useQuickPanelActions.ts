@@ -2,6 +2,7 @@ import * as ImagePicker from "expo-image-picker";
 import { Image as ExpoImage } from "expo-image";
 import { getSuggestedCalibrationRect } from "./calibration";
 import { captureAndSaveExports } from "./export-files";
+import { translate } from "./i18n";
 import { useQuickPanelStore } from "./store";
 import type { ExportRefs } from "./types";
 
@@ -63,7 +64,7 @@ export function useQuickPanelActions(refs: ExportRefs) {
       finishExport(exports);
     } catch (error) {
       failExport(
-        error instanceof Error ? error.message : "Unable to export images."
+        error instanceof Error ? error.message : translate("errors.unableToExport")
       );
     }
   };

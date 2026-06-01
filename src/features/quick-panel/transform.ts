@@ -5,6 +5,7 @@ import type {
   PickedImage,
   QuickPanelPreset,
 } from "./types";
+import { translate } from "./i18n";
 
 export const exportSidePixels = 2048;
 
@@ -131,7 +132,7 @@ export function scalePresetToUnion(
   return {
     ...basePreset,
     id: `${basePreset.id}-calibrated`,
-    label: `${basePreset.label} calibrated`,
+    label: translate("preset.calibratedLabel", { label: basePreset.label }),
     width: targetUnion.x * 2 + targetUnion.width,
     height: targetUnion.y + targetUnion.height,
     panels,

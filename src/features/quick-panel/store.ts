@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { translate } from "./i18n";
 import { getCalibratedPreset } from "./calibration";
 import { s25PlusOneUi85Preset } from "./preset";
 import { loadCalibration, saveCalibration } from "./storage";
@@ -80,7 +81,7 @@ export const useQuickPanelStore = create<QuickPanelState>((set, get) => ({
     if (!get().isCalibrated) {
       set({
         step: "calibration",
-        error: "Calibrate your Quick Panel area before customizing.",
+        error: translate("errors.mustCalibrate"),
       });
       return false;
     }
@@ -102,7 +103,7 @@ export const useQuickPanelStore = create<QuickPanelState>((set, get) => ({
   acceptCalibration: () => {
     const rect = get().calibrationRect;
     if (!rect) {
-      set({ error: "Import a Quick Panel screenshot first." });
+      set({ error: translate("errors.importScreenshotFirst") });
       return false;
     }
 

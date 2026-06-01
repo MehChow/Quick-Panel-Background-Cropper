@@ -1,13 +1,22 @@
 import { Text } from "@/components/ani-ui/text";
-import { View } from "react-native";
+import { Lucide } from "@react-native-vector-icons/lucide";
+import { Pressable, View } from "react-native";
+import { useTranslation } from "react-i18next";
 import { BackButton } from "./BackButton";
 
 interface SubPageHeaderProps {
+  onHelpPress?: () => void;
   title: string;
   subtitle: string;
 }
 
-export function SubPageHeader({ title, subtitle }: SubPageHeaderProps) {
+export function SubPageHeader({
+  onHelpPress,
+  title,
+  subtitle,
+}: SubPageHeaderProps) {
+  const { t } = useTranslation();
+
   return (
     <View className="mb-5 flex-row items-center gap-3">
       <BackButton className="" />
@@ -19,6 +28,16 @@ export function SubPageHeader({ title, subtitle }: SubPageHeaderProps) {
           {subtitle}
         </Text>
       </View>
+      {onHelpPress ? (
+        <Pressable
+          accessibilityLabel={t("calibration.helpButton")}
+          accessibilityRole="button"
+          className="h-11 w-11 items-center justify-center rounded-full bg-zinc-900 active:opacity-80"
+          onPress={onHelpPress}
+        >
+          <Lucide color="#fafafa" name="circle-help" size={22} />
+        </Pressable>
+      ) : null}
     </View>
   );
 }

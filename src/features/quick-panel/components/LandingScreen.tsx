@@ -1,6 +1,7 @@
 import { Button } from "@/components/ani-ui/button";
 import { Text } from "@/components/ani-ui/text";
 import { Image } from "expo-image";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 
 const exampleImageAspectRatio = 1080 / 2340;
@@ -16,23 +17,25 @@ export function LandingScreen({
   onCalibrate,
   onStart,
 }: LandingScreenProps) {
+  const { t } = useTranslation();
+
   return (
     <View className="gap-8">
       <ExampleCard />
 
       <View className="gap-4">
         <Button className="w-full" onPress={onStart} disabled={!isCalibrated}>
-          Start customizing
+          {t("landing.startCustomizing")}
         </Button>
         {isCalibrated ? (
           <Text className="text-center text-sm leading-5 text-zinc-400">
-            Calibrated.{" "}
+            {t("landing.calibrated")}{" "}
             <Text
               accessibilityRole="link"
               className="text-sm leading-5 text-emerald-300 underline"
               onPress={onCalibrate}
             >
-              Wanna recalibrate?
+              {t("landing.recalibrate")}
             </Text>
           </Text>
         ) : (
@@ -41,13 +44,12 @@ export function LandingScreen({
             onPress={onCalibrate}
             textClassName="font-semibold text-orange-800"
           >
-            Calibration
+            {t("landing.calibration")}
           </Button>
         )}
         {!isCalibrated ? (
           <Text className="text-center text-sm leading-5 text-zinc-400">
-            Calibration is required once so exports match your Quick Panel
-            layout.
+            {t("landing.calibrationRequired")}
           </Text>
         ) : null}
       </View>
@@ -56,6 +58,8 @@ export function LandingScreen({
 }
 
 function ExampleCard() {
+  const { t } = useTranslation();
+
   return (
     <View className="w-full flex-row items-center gap-5 rounded-2xl border border-zinc-800 bg-zinc-900 p-6">
       <View className="items-center justify-center" style={{ width: 96 }}>
@@ -70,7 +74,7 @@ function ExampleCard() {
 
       <View className="flex-1 gap-1">
         <Text className="text-center font-semibold text-orange-400">
-          Example
+          {t("landing.example")}
         </Text>
         <View
           className="w-full overflow-hidden rounded-2xl border border-white"

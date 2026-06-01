@@ -9,11 +9,13 @@ import { useQuickPanelStore } from "@/features/quick-panel/store";
 import type { ExportRefs } from "@/features/quick-panel/types";
 import { useQuickPanelActions } from "@/features/quick-panel/useQuickPanelActions";
 import { useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Pressable, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function CustomizePage() {
   const refs = useExportRefs();
+  const { t } = useTranslation();
   const activePreset = useQuickPanelStore((state) => state.activePreset);
   const image = useQuickPanelStore((state) => state.image);
   const transform = useQuickPanelStore((state) => state.transform);
@@ -29,8 +31,8 @@ export default function CustomizePage() {
     <SafeAreaView style={{ flex: 1, backgroundColor: "#09090b" }}>
       <View className="px-5 pt-8">
         <SubPageHeader
-          title="Customize"
-          subtitle="Choose an image, then adjust the position"
+          title={t("customize.title")}
+          subtitle={t("customize.subtitle")}
         />
       </View>
       <ScrollView
@@ -97,17 +99,19 @@ interface ImagePickerCardProps {
 }
 
 function ImagePickerCard({ onPick }: ImagePickerCardProps) {
+  const { t } = useTranslation();
+
   return (
     <Pressable
       accessibilityRole="button"
-      className="h-120 items-center justify-center rounded-[30px] border border-zinc-800 bg-zinc-900 px-6 active:opacity-80"
+      className="h-120 items-center justify-center rounded-2xl border border-zinc-800 bg-zinc-900 px-6 active:opacity-80"
       onPress={onPick}
     >
       <Text className="text-center text-lg font-semibold text-white">
-        Choose an image from album
+        {t("customize.pickerTitle")}
       </Text>
       <Text className="mt-2 text-center text-sm leading-5 text-zinc-400">
-        PNG, JPG, WEBP are supported.
+        {t("customize.pickerSubtitle")}
       </Text>
     </Pressable>
   );
@@ -126,12 +130,14 @@ function CustomizeActions({
   onPick,
   onReset,
 }: CustomizeActionsProps) {
+  const { t } = useTranslation();
+
   return (
     <View className="mt-5 gap-3">
-      <Button onPress={onPick}>Choose another image</Button>
+      <Button onPress={onPick}>{t("customize.chooseAnotherImage")}</Button>
       <View className="flex-row gap-3 pb-4">
         <Button className="flex-1" variant="secondary" onPress={onReset}>
-          Reset fit
+          {t("customize.resetPosition")}
         </Button>
         <View className="flex-1 overflow-hidden rounded-md">
           <Button
@@ -140,7 +146,7 @@ function CustomizeActions({
             onPress={onExport}
             textClassName="font-semibold text-green-900"
           >
-            {isExporting ? "" : "Export PNGs"}
+            {isExporting ? "" : t("customize.exportPngs")}
           </Button>
           {isExporting ? (
             <Skeleton

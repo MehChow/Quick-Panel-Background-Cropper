@@ -1,6 +1,7 @@
 import { Button } from "@/components/ani-ui/button";
 import { Text } from "@/components/ani-ui/text";
 import { Image } from "expo-image";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import type { GeneratedExport } from "../types";
 
@@ -13,13 +14,15 @@ export function ExportSuccessPanel({
   exports,
   onConvertAnother,
 }: ExportSuccessPanelProps) {
+  const { t } = useTranslation();
+
   return (
     <View className="mb-4 items-center rounded-[30px] border border-emerald-400/30 bg-emerald-400/10 px-5 py-8">
       <Text className="text-center text-2xl font-bold text-white">
-        Exported successfully
+        {t("export.successTitle")}
       </Text>
       <Text className="mt-2 text-center text-sm leading-5 text-emerald-100">
-        Apply them in Good Lock with order
+        {t("export.successSubtitle")}
       </Text>
 
       <View className="mt-7 w-full flex-row flex-wrap justify-between gap-y-5">
@@ -42,7 +45,7 @@ export function ExportSuccessPanel({
       </View>
 
       <Button className="mt-8 w-full" onPress={onConvertAnother}>
-        Convert another
+        {t("export.convertAnother")}
       </Button>
     </View>
   );

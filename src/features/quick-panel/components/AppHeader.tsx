@@ -1,4 +1,5 @@
 import { Text } from "@/components/ani-ui/text";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 
 interface AppHeaderProps {
@@ -7,16 +8,18 @@ interface AppHeaderProps {
 }
 
 export function AppHeader({
-  title = "Quick Panel Exporter",
-  subtitle = "Put your Waifu as the background in the Quick Panel!",
+  title,
+  subtitle,
 }: AppHeaderProps) {
+  const { t } = useTranslation();
+
   return (
     <View className="mb-5">
       <Text variant="h2" className="text-white">
-        {title}
+        {title ?? t("home.title")}
       </Text>
       <Text className="mt-2 text-sm leading-5 text-zinc-400">
-        {subtitle}
+        {subtitle ?? t("home.subtitle")}
       </Text>
     </View>
   );

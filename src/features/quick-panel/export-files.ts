@@ -1,20 +1,20 @@
 import { Asset, Album, requestPermissionsAsync } from "expo-media-library";
 import { File, Paths } from "expo-file-system";
 import { captureRef } from "react-native-view-shot";
+import { getPanelLabel, translate } from "./i18n";
 import { exportSidePixels } from "./transform";
 import type { ExportRefs, GeneratedExport, QuickPanelPreset } from "./types";
-
-const albumName = "Quick Panel Exports";
 
 export async function captureAndSaveExports(
   refs: ExportRefs,
   preset: QuickPanelPreset
 ): Promise<GeneratedExport[]> {
+  const albumName = translate("export.albumName");
   const capturedFiles = await captureNamedFiles(refs, preset);
   const permission = await requestPermissionsAsync(true);
 
   if (!permission.granted) {
-    throw new Error("Media library permission is required to save exports.");
+    throw new Error(translate("errors.mediaLibraryPermission"));
   }
 
   let album = await Album.get(albumName);
@@ -49,7 +49,11 @@ async function captureNamedFiles(refs: ExportRefs, preset: QuickPanelPreset) {
     const ref = refs[id].current;
 
     if (!ref) {
-      throw new Error(`Export surface is missing for ${panel.label}.`);
+      throw new Error(
+        translate("errors.exportSurfaceMissing", {
+          panel: getPanelLabel(panel.id),
+        })
+      );
     }
 
     const uri = await captureRef(ref, {
@@ -68,7 +72,7 @@ async function captureNamedFiles(refs: ExportRefs, preset: QuickPanelPreset) {
     files.push({
       fileName: panel.fileName,
       id,
-      label: panel.label,
+      label: getPanelLabel(panel.id),
       previewUri: preview.uri,
       uri: target.uri,
     });
