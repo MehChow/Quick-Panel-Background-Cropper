@@ -34,7 +34,7 @@ export default function CalibrationPage() {
       <View className="px-5 pt-8">
         <SubPageHeader
           title="Calibration"
-          subtitle="To match your device's Quick Panel layout."
+          subtitle="To match your device's Quick Panel layout"
         />
       </View>
       <ScrollView

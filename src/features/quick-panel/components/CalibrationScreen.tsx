@@ -44,6 +44,13 @@ export function CalibrationScreen({
 
   return (
     <View className="gap-4">
+      <View className="rounded-2xl border border-emerald-400/30 bg-emerald-400/10 p-4">
+        <Text className="text-sm text-zinc-300 font-medium text-center">
+          Drag any edge or corner to resize the green box around the whole
+          customizable control panel.
+        </Text>
+      </View>
+
       <View
         className="overflow-hidden rounded-[28px] border border-zinc-800 bg-black"
         onLayout={(event) => setViewWidth(event.nativeEvent.layout.width)}
@@ -69,7 +76,7 @@ export function CalibrationScreen({
 
 function ImportScreenshotCard({ onImport }: ImportScreenshotCardProps) {
   return (
-    <View className="w-full gap-4 rounded-[30px] border border-zinc-800 bg-zinc-900 p-6">
+    <View className="w-full gap-4 rounded-2xl border border-zinc-800 bg-zinc-900 p-6">
       <View>
         <Text className="text-center text-lg font-semibold text-white">
           Import Quick Panel screenshot
