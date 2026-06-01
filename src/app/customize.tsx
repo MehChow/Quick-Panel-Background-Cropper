@@ -1,11 +1,10 @@
 import { Button } from "@/components/ani-ui/button";
+import { Skeleton } from "@/components/ani-ui/skeleton";
 import { Text } from "@/components/ani-ui/text";
-import { AppHeader } from "@/features/quick-panel/components/AppHeader";
-import { BackButton } from "@/features/quick-panel/components/BackButton";
-import { CompatibilityNotice } from "@/features/quick-panel/components/CompatibilityNotice";
-import { ExportSurfaces } from "@/features/quick-panel/components/ExportSurfaces";
 import { ExportSuccessPanel } from "@/features/quick-panel/components/ExportSuccessPanel";
+import { ExportSurfaces } from "@/features/quick-panel/components/ExportSurfaces";
 import { QuickPanelPreview } from "@/features/quick-panel/components/QuickPanelPreview";
+import { SubPageHeader } from "@/features/quick-panel/components/SubPageHeader";
 import { useQuickPanelStore } from "@/features/quick-panel/store";
 import type { ExportRefs } from "@/features/quick-panel/types";
 import { useQuickPanelActions } from "@/features/quick-panel/useQuickPanelActions";
@@ -28,14 +27,19 @@ export default function CustomizePage() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#09090b" }}>
+      <View className="px-5 pt-8">
+        <SubPageHeader
+          title="Customize"
+          subtitle="Choose an image, then adjust the position"
+        />
+      </View>
       <ScrollView
         className="flex-1"
-        contentContainerClassName="px-5 py-8"
+        contentContainerClassName="px-5 pb-8"
+        contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
         scrollEnabled={!isPreviewAdjusting}
         overScrollMode="never"
       >
-        <BackButton />
-        <AppHeader />
         {hasExported ? (
           <ExportSuccessPanel exports={exports} onConvertAnother={pickImage} />
         ) : image ? (
@@ -57,7 +61,6 @@ export default function CustomizePage() {
             onReset={resetFit}
           />
         ) : null}
-        <CompatibilityNotice />
         {error ? (
           <Text className="mt-4 rounded-md bg-red-500/15 p-3 text-sm text-red-100">
             {error}
@@ -81,7 +84,6 @@ function useExportRefs(): ExportRefs {
   const mediaPlayerRef = useRef<View>(null);
   const brightnessRef = useRef<View>(null);
   const volumeRef = useRef<View>(null);
-
   return {
     brightness: brightnessRef,
     buttonBox: buttonBoxRef,
@@ -131,9 +133,22 @@ function CustomizeActions({
         <Button className="flex-1" variant="secondary" onPress={onReset}>
           Reset fit
         </Button>
-        <Button className="flex-1" loading={isExporting} onPress={onExport}>
-          Export PNGs
-        </Button>
+        <View className="flex-1 overflow-hidden rounded-md">
+          <Button
+            className="w-full bg-green-200/90"
+            loading={isExporting}
+            onPress={onExport}
+            textClassName="font-semibold text-green-900"
+          >
+            {isExporting ? "" : "Export PNGs"}
+          </Button>
+          {isExporting ? (
+            <Skeleton
+              className="absolute inset-0 bg-white/30"
+              pointerEvents="none"
+            />
+          ) : null}
+        </View>
       </View>
     </View>
   );

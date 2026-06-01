@@ -4,8 +4,8 @@ import Animated, {
   type SharedValue,
   useAnimatedStyle,
 } from "react-native-reanimated";
-import { PanelOverlay } from "./PanelOverlay";
 import type { ImageTransform, PanelDefinition, PickedImage } from "../types";
+import { PanelOverlay } from "./PanelOverlay";
 
 const AnimatedImage = Animated.createAnimatedComponent(Image);
 
@@ -39,6 +39,8 @@ export function PanelSlice({
     <View
       className="absolute overflow-hidden bg-white/10"
       style={{
+        borderColor: "rgba(255,255,255,0.9)",
+        borderWidth: 1,
         borderRadius: panel.rect.radius * layoutScale,
         height: panel.rect.height * layoutScale,
         left: (panel.rect.x - originX) * layoutScale,

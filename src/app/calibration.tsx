@@ -1,8 +1,6 @@
 import { Text } from "@/components/ani-ui/text";
-import { AppHeader } from "@/features/quick-panel/components/AppHeader";
-import { BackButton } from "@/features/quick-panel/components/BackButton";
 import { CalibrationScreen } from "@/features/quick-panel/components/CalibrationScreen";
-import { CompatibilityNotice } from "@/features/quick-panel/components/CompatibilityNotice";
+import { SubPageHeader } from "@/features/quick-panel/components/SubPageHeader";
 import { useQuickPanelStore } from "@/features/quick-panel/store";
 import type { ExportRefs } from "@/features/quick-panel/types";
 import { useQuickPanelActions } from "@/features/quick-panel/useQuickPanelActions";
@@ -18,10 +16,10 @@ export default function CalibrationPage() {
   const calibrationRect = useQuickPanelStore((state) => state.calibrationRect);
   const error = useQuickPanelStore((state) => state.error);
   const setCalibrationRect = useQuickPanelStore(
-    (state) => state.setCalibrationRect
+    (state) => state.setCalibrationRect,
   );
   const acceptCalibration = useQuickPanelStore(
-    (state) => state.acceptCalibration
+    (state) => state.acceptCalibration,
   );
   const { pickScreenshot } = useQuickPanelActions(refs);
 
@@ -33,13 +31,18 @@ export default function CalibrationPage() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#09090b" }}>
+      <View className="px-5 pt-8">
+        <SubPageHeader
+          title="Calibration"
+          subtitle="To match your device's Quick Panel layout."
+        />
+      </View>
       <ScrollView
         className="flex-1"
-        contentContainerClassName="px-5 py-8"
+        contentContainerClassName="px-5 pb-8"
+        contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
         overScrollMode="never"
       >
-        <BackButton />
-        <AppHeader />
         <CalibrationScreen
           screenshot={screenshot}
           rect={calibrationRect}
@@ -47,7 +50,6 @@ export default function CalibrationPage() {
           onRectChange={setCalibrationRect}
           onContinue={saveCalibration}
         />
-        <CompatibilityNotice />
         {error ? (
           <Text className="mt-4 rounded-md bg-red-500/15 p-3 text-sm text-red-100">
             {error}
