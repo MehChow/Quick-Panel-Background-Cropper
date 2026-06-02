@@ -8,7 +8,7 @@ import "../../global.css";
 import "../../i18next/i18next";
 
 SplashScreen.setOptions({
-  duration: 1000,
+  duration: 500,
   fade: true,
 });
 

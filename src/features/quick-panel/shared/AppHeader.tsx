@@ -11,7 +11,7 @@ export function AppHeader({ title, subtitle }: AppHeaderProps) {
   const { t } = useTranslation();
 
   return (
-    <View className="mb-5">
+    <View>
       <Text variant="h3" className="text-white">
         {title ?? t("home.title")}
       </Text>

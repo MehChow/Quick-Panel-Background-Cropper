@@ -2,7 +2,7 @@ import { LandingScreen } from "@/features/quick-panel/home/LandingScreen";
 import { AppHeader } from "@/features/quick-panel/shared/AppHeader";
 import { useQuickPanelStore } from "@/features/quick-panel/store/store";
 import { useRouter } from "expo-router";
-import { ScrollView, View } from "react-native";
+import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Index() {
@@ -28,21 +28,17 @@ export default function Index() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#09090b" }}>
-      <View className="px-5 pt-8">
+      <View className="px-5 pt-6">
         <AppHeader />
       </View>
-      <ScrollView
-        className="flex-1"
-        contentContainerClassName="px-5 pb-8"
-        contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
-        overScrollMode="never"
-      >
+
+      <View className="flex-1 px-5 pb-8">
         <LandingScreen
           isCalibrated={isCalibrated}
           onCalibrate={openCalibration}
           onStart={openCustomize}
         />
-      </ScrollView>
+      </View>
     </SafeAreaView>
   );
 }

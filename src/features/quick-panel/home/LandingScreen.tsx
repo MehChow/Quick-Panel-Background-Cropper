@@ -1,15 +1,30 @@
 import { Button } from "@/components/ani-ui/button";
+import { Card } from "@/components/ani-ui/card";
 import { Text } from "@/components/ani-ui/text";
 import { Image } from "expo-image";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
+import type { LayoutChangeEvent } from "react-native";
 
 const exampleImageAspectRatio = 1080 / 2340;
+const landingTopPadding = 16;
+const landingGap = 16;
+const cardPadding = 48;
+const cardContentGap = 20;
+const exampleLabelHeight = 24;
+const exampleLabelGap = 4;
+const doroColumnWidth = 96;
+const doroImageSize = 88;
 
 interface LandingScreenProps {
   isCalibrated: boolean;
   onCalibrate: () => void;
   onStart: () => void;
+}
+
+interface ExampleCardProps {
+  maxHeight: number;
 }
 
 export function LandingScreen({
@@ -18,13 +33,32 @@ export function LandingScreen({
   onStart,
 }: LandingScreenProps) {
   const { t } = useTranslation();
+  const [containerHeight, setContainerHeight] = useState(0);
+  const [actionsHeight, setActionsHeight] = useState(0);
+  const cardHeight = Math.max(
+    0,
+    containerHeight - actionsHeight - landingTopPadding - landingGap,
+  );
+
+  const handleContainerLayout = (event: LayoutChangeEvent) => {
+    setContainerHeight(event.nativeEvent.layout.height);
+  };
+
+  const handleActionsLayout = (event: LayoutChangeEvent) => {
+    setActionsHeight(event.nativeEvent.layout.height);
+  };
 
   return (
-    <View className="gap-8">
-      <ExampleCard />
+    <View className="flex-1 pt-4" onLayout={handleContainerLayout}>
+      <ExampleCard maxHeight={cardHeight} />
 
-      <View className="gap-4">
-        <Button className="w-full" onPress={onStart} disabled={!isCalibrated}>
+      <View className="mt-4 gap-2" onLayout={handleActionsLayout}>
+        <Button
+          className="w-full"
+          onPress={onStart}
+          disabled={!isCalibrated}
+          textClassName="font-semibold"
+        >
           {t("landing.startCustomizing")}
         </Button>
         {isCalibrated ? (
@@ -48,7 +82,7 @@ export function LandingScreen({
           </Button>
         )}
         {!isCalibrated ? (
-          <Text className="text-center text-sm leading-5 text-zinc-400">
+          <Text className="text-center text-xs text-zinc-400">
             {t("landing.calibrationRequired")}
           </Text>
         ) : null}
@@ -57,13 +91,36 @@ export function LandingScreen({
   );
 }
 
-function ExampleCard() {
+function ExampleCard({ maxHeight }: ExampleCardProps) {
   const { t } = useTranslation();
+  const [cardWidth, setCardWidth] = useState(0);
+  const rightColumnWidth = Math.max(
+    0,
+    cardWidth - cardPadding - doroColumnWidth - cardContentGap,
+  );
+  const imageHeightLimit = Math.max(
+    0,
+    maxHeight - cardPadding - exampleLabelHeight - exampleLabelGap,
+  );
+  const imageHeightFromWidth = rightColumnWidth
+    ? rightColumnWidth / exampleImageAspectRatio
+    : imageHeightLimit;
+  const imageHeight = Math.min(imageHeightLimit, imageHeightFromWidth);
+  const imageWidth = imageHeight * exampleImageAspectRatio;
+  const doroSize = Math.min(doroImageSize, Math.max(0, maxHeight - cardPadding));
+
+  const handleCardLayout = (event: LayoutChangeEvent) => {
+    setCardWidth(event.nativeEvent.layout.width);
+  };
 
   return (
-    <View className="w-full flex-row items-center gap-5 rounded-2xl border border-zinc-800 bg-zinc-900 p-6">
-      <View className="items-center justify-center" style={{ width: 96 }}>
-        <View style={{ height: 88, width: 88 }}>
+    <Card
+      className="w-full flex-row items-center gap-5 rounded-2xl border-zinc-800 bg-zinc-900"
+      onLayout={handleCardLayout}
+      style={maxHeight ? { height: maxHeight } : undefined}
+    >
+      <View className="items-center justify-center" style={{ width: doroColumnWidth }}>
+        <View style={{ height: doroSize, width: doroSize }}>
           <Image
             source={require("@/assets/doro_like.gif")}
             style={{ height: "100%", width: "100%" }}
@@ -77,8 +134,8 @@ function ExampleCard() {
           {t("landing.example")}
         </Text>
         <View
-          className="w-full overflow-hidden rounded-2xl border border-white"
-          style={{ aspectRatio: exampleImageAspectRatio }}
+          className="self-center overflow-hidden rounded-2xl border border-white"
+          style={{ height: imageHeight, width: imageWidth }}
         >
           <Image
             source={require("@/assets/example.jpeg")}
@@ -87,6 +144,6 @@ function ExampleCard() {
           />
         </View>
       </View>
-    </View>
+    </Card>
   );
 }

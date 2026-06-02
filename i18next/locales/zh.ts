@@ -12,8 +12,7 @@ const zh = {
       calibrated: "已完成校準。",
       recalibrate: "想重新校準？",
       calibration: "校準",
-      calibrationRequired:
-        "只需要校準一次，之後匯出的圖片就能對齊你的 Quick Panel 版面。",
+      calibrationRequired: "使用前需先校準一次，日後可再次調整",
       example: "範例",
     },
     calibration: {

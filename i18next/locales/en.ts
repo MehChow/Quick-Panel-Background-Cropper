@@ -13,7 +13,7 @@ const en = {
       recalibrate: "Want to recalibrate?",
       calibration: "Calibration",
       calibrationRequired:
-        "Calibration is only needed once so exports match your Quick Panel layout.",
+        "Calibrate once before using, you can adjust it again later",
       example: "Example",
     },
     calibration: {
