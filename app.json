@@ -1,44 +1,64 @@
 {
   "expo": {
-    "name": "quick-panel-crop-exporter",
+    "name": "Quick Panel Background Cropper",
     "slug": "quick-panel-crop-exporter",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/appicon.png",
     "scheme": "quickpanelcropexporter",
     "userInterfaceStyle": "automatic",
-    "ios": {
-      "icon": "./assets/expo.icon"
-    },
     "android": {
-      "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/images/android-icon-foreground.png",
-        "backgroundImage": "./assets/images/android-icon-background.png",
-        "monochromeImage": "./assets/images/android-icon-monochrome.png"
-      },
-      "predictiveBackGestureEnabled": false
-    },
-    "web": {
-      "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "predictiveBackGestureEnabled": false,
+      "permissions": [
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.READ_MEDIA_VISUAL_USER_SELECTED",
+        "android.permission.READ_MEDIA_IMAGES"
+      ],
+      "package": "com.meh_chow.quickpanelcropexporter"
     },
     "plugins": [
       "expo-router",
       [
+        "expo-image-picker",
+        {
+          "photosPermission": "Choose an image to preview and export quick panel crops.",
+          "cameraPermission": false,
+          "microphonePermission": false
+        }
+      ],
+      [
+        "expo-media-library",
+        {
+          "photosPermission": "Allow access to save quick panel export images.",
+          "savePhotosPermission": "Save quick panel export images to your photo library.",
+          "granularPermissions": ["photo"],
+          "isAccessMediaLocationEnabled": false
+        }
+      ],
+      "@react-native-vector-icons/lucide",
+      [
         "expo-splash-screen",
         {
-          "backgroundColor": "#208AEF",
+          "backgroundColor": "#09090b",
           "android": {
-            "image": "./assets/images/splash-icon.png",
+            "image": "./assets/images/appicon.png",
             "imageWidth": 76
           }
         }
-      ]
+      ],
+      "expo-localization"
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "f8089b12-e85d-4096-bf3d-6d6398213426"
+      }
+    },
+    "owner": "meh_chow"
   }
 }

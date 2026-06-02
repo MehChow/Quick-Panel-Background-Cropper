@@ -1,17 +1,48 @@
-import { Card } from "@/components/ani-ui/card";
-import { Text, View } from "react-native";
+import { LandingScreen } from "@/features/quick-panel/home/LandingScreen";
+import { AppHeader } from "@/features/quick-panel/shared/AppHeader";
+import { useQuickPanelStore } from "@/features/quick-panel/store/store";
+import { useRouter } from "expo-router";
+import { ScrollView, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Index() {
+  const router = useRouter();
+  const isCalibrated = useQuickPanelStore((state) => state.isCalibrated);
+  const goToCalibration = useQuickPanelStore((state) => state.goToCalibration);
+  const startCustomizing = useQuickPanelStore(
+    (state) => state.startCustomizing,
+  );
+
+  const openCalibration = () => {
+    goToCalibration();
+    router.push("/calibration");
+  };
+
+  const openCustomize = () => {
+    if (startCustomizing()) {
+      router.push("/customize");
+      return;
+    }
+    router.push("/calibration");
+  };
+
   return (
-    <View className="flex-1 items-center justify-center bg-red-100">
-      <Text>Edit src/app/index.tsx to edit this screen.</Text>
-      <Card className="mt-4">
-        <Text className="text-lg font-bold">Welcome to Expo Router!</Text>
-        <Text className="mt-2 text-gray-600">
-          This is the home screen of your app. You can edit this screen by
-          modifying the code in src/app/index.tsx.
-        </Text>
-      </Card>
-    </View>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#09090b" }}>
+      <View className="px-5 pt-8">
+        <AppHeader />
+      </View>
+      <ScrollView
+        className="flex-1"
+        contentContainerClassName="px-5 pb-8"
+        contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
+        overScrollMode="never"
+      >
+        <LandingScreen
+          isCalibrated={isCalibrated}
+          onCalibrate={openCalibration}
+          onStart={openCustomize}
+        />
+      </ScrollView>
+    </SafeAreaView>
   );
 }
