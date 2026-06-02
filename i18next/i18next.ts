@@ -3,19 +3,12 @@ import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import {
   isSupportedLanguage,
-  loadLanguageOverride,
   type SupportedLanguage,
-} from "../src/features/quick-panel/storage";
+} from "../src/features/quick-panel/store/storage";
 import en from "./locales/en";
 import zh from "./locales/zh";
 
 function getLanguage(): SupportedLanguage {
-  const savedLanguage = loadLanguageOverride();
-
-  if (savedLanguage) {
-    return savedLanguage;
-  }
-
   const locale = getLocales()[0];
   const languageCode = locale?.languageCode?.toLowerCase();
 

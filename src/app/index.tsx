@@ -1,6 +1,6 @@
-import { AppHeader } from "@/features/quick-panel/components/AppHeader";
-import { LandingScreen } from "@/features/quick-panel/components/LandingScreen";
-import { useQuickPanelStore } from "@/features/quick-panel/store";
+import { LandingScreen } from "@/features/quick-panel/home/LandingScreen";
+import { AppHeader } from "@/features/quick-panel/shared/AppHeader";
+import { useQuickPanelStore } from "@/features/quick-panel/store/store";
 import { useRouter } from "expo-router";
 import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";

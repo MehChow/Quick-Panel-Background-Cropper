@@ -1,10 +1,10 @@
-import { CalibrationHelpSheet } from "@/features/quick-panel/components/CalibrationHelpSheet";
 import { Text } from "@/components/ani-ui/text";
-import { CalibrationScreen } from "@/features/quick-panel/components/CalibrationScreen";
-import { SubPageHeader } from "@/features/quick-panel/components/SubPageHeader";
-import { useQuickPanelStore } from "@/features/quick-panel/store";
-import type { ExportRefs } from "@/features/quick-panel/types";
-import { useQuickPanelActions } from "@/features/quick-panel/useQuickPanelActions";
+import { CalibrationHelpSheet } from "@/features/quick-panel/calibration/CalibrationHelpSheet";
+import { CalibrationScreen } from "@/features/quick-panel/calibration/CalibrationScreen";
+import { useQuickPanelActions } from "@/features/quick-panel/hooks/useQuickPanelActions";
+import type { ExportRefs } from "@/features/quick-panel/model/types";
+import { SubPageHeader } from "@/features/quick-panel/shared/SubPageHeader";
+import { useQuickPanelStore } from "@/features/quick-panel/store/store";
 import { useRouter } from "expo-router";
 import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
