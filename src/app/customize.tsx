@@ -134,9 +134,16 @@ function CustomizeActions({
 
   return (
     <View className="mt-5 gap-3">
-      <Button onPress={onPick}>{t("customize.chooseAnotherImage")}</Button>
+      <Button onPress={onPick} textClassName="font-semibold">
+        {t("customize.chooseAnotherImage")}
+      </Button>
       <View className="flex-row gap-3 pb-4">
-        <Button className="flex-1" variant="secondary" onPress={onReset}>
+        <Button
+          className="flex-1"
+          variant="secondary"
+          onPress={onReset}
+          textClassName="font-semibold"
+        >
           {t("customize.resetPosition")}
         </Button>
         <View className="flex-1 overflow-hidden rounded-md">

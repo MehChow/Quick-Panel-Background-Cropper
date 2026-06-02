@@ -42,6 +42,8 @@ const en = {
     export: {
       successTitle: "Exported successfully",
       successSubtitle: "Apply them in Good Lock using this order",
+      openGoodLock: "Open Good Lock",
+      openingGoodLock: "Opening Good Lock",
       convertAnother: "Convert another",
       albumName: "Quick Panel Exports",
     },
@@ -62,6 +64,8 @@ const en = {
         "Media library permission is required to save exports.",
       exportSurfaceMissing: "Export surface is missing for {{panel}}.",
       unableToExport: "Unable to export images.",
+      unableToOpenGoodLock:
+        "Unable to open Good Lock. Please open it manually and apply the exported images.",
     },
   },
 };

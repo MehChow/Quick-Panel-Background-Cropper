@@ -1,9 +1,11 @@
 import { Button } from "@/components/ani-ui/button";
+import { Card } from "@/components/ani-ui/card";
 import { Text } from "@/components/ani-ui/text";
 import { Image } from "expo-image";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import type { GeneratedExport } from "../model/types";
+import { useGoodLockLink } from "./useGoodLockLink";
 
 interface ExportSuccessPanelProps {
   exports: GeneratedExport[];
@@ -15,9 +17,11 @@ export function ExportSuccessPanel({
   onConvertAnother,
 }: ExportSuccessPanelProps) {
   const { t } = useTranslation();
+  const { hasGoodLockLinkError, isOpeningGoodLock, openGoodLockApp } =
+    useGoodLockLink();
 
   return (
-    <View className="mb-4 items-center rounded-2xl border border-emerald-400/30 bg-emerald-400/10 p-6">
+    <Card className="mb-4 items-center rounded-2xl border-emerald-400/30 bg-emerald-400/10">
       <Text className="text-center text-2xl font-bold text-white">
         {t("export.successTitle")}
       </Text>
@@ -44,9 +48,32 @@ export function ExportSuccessPanel({
         ))}
       </View>
 
-      <Button className="mt-8 w-full" onPress={onConvertAnother}>
-        {t("export.convertAnother")}
-      </Button>
-    </View>
+      <View className="mt-6 w-full gap-1">
+        <Button
+          className="w-full"
+          loading={isOpeningGoodLock}
+          onPress={openGoodLockApp}
+          textClassName="font-semibold"
+        >
+          {isOpeningGoodLock
+            ? t("export.openingGoodLock")
+            : t("export.openGoodLock")}
+        </Button>
+        {hasGoodLockLinkError ? (
+          <Text className="text-center text-sm leading-5 text-emerald-100">
+            {t("errors.unableToOpenGoodLock")}
+          </Text>
+        ) : null}
+
+        <Button
+          className="w-full"
+          variant="ghost"
+          onPress={onConvertAnother}
+          textClassName="font-semibold"
+        >
+          {t("export.convertAnother")}
+        </Button>
+      </View>
+    </Card>
   );
 }

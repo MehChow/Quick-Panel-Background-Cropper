@@ -41,6 +41,8 @@ const zh = {
     export: {
       successTitle: "匯出成功",
       successSubtitle: "請依照這個順序在 Good Lock 中套用",
+      openGoodLock: "開啟 Good Lock",
+      openingGoodLock: "正在開啟 Good Lock",
       convertAnother: "再轉換一張",
       albumName: "快速面板匯出",
     },
@@ -60,6 +62,7 @@ const zh = {
       mediaLibraryPermission: "必須授權媒體資料庫權限，才能儲存匯出圖片。",
       exportSurfaceMissing: "找不到 {{panel}} 的匯出畫面。",
       unableToExport: "無法匯出圖片。",
+      unableToOpenGoodLock: "無法開啟 Good Lock。請手動開啟並套用匯出的圖片。",
     },
   },
 };
