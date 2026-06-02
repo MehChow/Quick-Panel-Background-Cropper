@@ -1,5 +1,6 @@
 import { Text } from "@/components/ani-ui/text";
 import { CalibrationHelpSheet } from "@/features/quick-panel/calibration/CalibrationHelpSheet";
+import { CalibrationControls } from "@/features/quick-panel/calibration/CalibrationControls";
 import { CalibrationScreen } from "@/features/quick-panel/calibration/CalibrationScreen";
 import { useQuickPanelActions } from "@/features/quick-panel/hooks/useQuickPanelActions";
 import type { ExportRefs } from "@/features/quick-panel/model/types";
@@ -26,6 +27,7 @@ export default function CalibrationPage() {
     (state) => state.acceptCalibration,
   );
   const { pickScreenshot } = useQuickPanelActions(refs);
+  const isCalibrating = Boolean(screenshot && calibrationRect);
 
   const saveCalibration = () => {
     if (acceptCalibration()) {
@@ -54,6 +56,7 @@ export default function CalibrationPage() {
           onImport={pickScreenshot}
           onRectChange={setCalibrationRect}
           onContinue={saveCalibration}
+          showControls={!isCalibrating}
         />
         {error ? (
           <Text className="mt-4 rounded-md bg-red-500/15 p-3 text-sm text-red-100">
@@ -61,6 +64,14 @@ export default function CalibrationPage() {
           </Text>
         ) : null}
       </ScrollView>
+      {isCalibrating ? (
+        <View className="border-t border-zinc-800 bg-zinc-950 px-5 pt-3">
+          <CalibrationControls
+            onContinue={saveCalibration}
+            onImport={pickScreenshot}
+          />
+        </View>
+      ) : null}
       <CalibrationHelpSheet
         visible={isHelpOpen}
         onClose={() => setIsHelpOpen(false)}

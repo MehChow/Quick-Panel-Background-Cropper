@@ -18,6 +18,7 @@ interface CalibrationScreenProps {
   onImport: () => void;
   onRectChange: (rect: PanelRect) => void;
   onContinue: () => void;
+  showControls?: boolean;
 }
 
 interface ImportScreenshotCardProps {
@@ -36,6 +37,7 @@ export function CalibrationScreen({
   onImport,
   onRectChange,
   onContinue,
+  showControls = true,
 }: CalibrationScreenProps) {
   const [viewWidth, setViewWidth] = useState(0);
   const scale = screenshot && viewWidth ? viewWidth / screenshot.width : 1;
@@ -64,7 +66,9 @@ export function CalibrationScreen({
         />
       </View>
 
-      <CalibrationControls onContinue={onContinue} onImport={onImport} />
+      {showControls ? (
+        <CalibrationControls onContinue={onContinue} onImport={onImport} />
+      ) : null}
     </View>
   );
 }
