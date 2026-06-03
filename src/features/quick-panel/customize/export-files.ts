@@ -1,6 +1,6 @@
 import { File, Paths } from "expo-file-system";
 import { Album, Asset, requestPermissionsAsync } from "expo-media-library";
-import { captureRef } from "react-native-view-shot";
+import { captureRef, releaseCapture } from "react-native-view-shot";
 import { getPanelLabel, translate } from "../model/i18n";
 import { exportSidePixels } from "../model/transform";
 import type {
@@ -46,7 +46,6 @@ export async function captureAndSaveExports(
 
 async function captureNamedFiles(refs: ExportRefs, preset: QuickPanelPreset) {
   const files: GeneratedExport[] = [];
-  const batchId = Date.now().toString();
 
   for (const id of preset.goodLockOrder) {
     const panel = preset.panels[id];
@@ -60,7 +59,7 @@ async function captureNamedFiles(refs: ExportRefs, preset: QuickPanelPreset) {
       );
     }
 
-    const uri = await captureRef(ref, {
+    const tmpUri = await captureRef(ref, {
       fileName: panel.fileName.replace(".png", ""),
       format: "png",
       height: exportSidePixels,
@@ -68,18 +67,21 @@ async function captureNamedFiles(refs: ExportRefs, preset: QuickPanelPreset) {
       result: "tmpfile",
       width: exportSidePixels,
     });
-    const source = new File(uri);
-    const preview = new File(Paths.cache, `${batchId}-${panel.fileName}`);
-    const target = new File(Paths.cache, panel.fileName);
-    await source.copy(preview, { overwrite: true });
-    await source.copy(target, { overwrite: true });
-    files.push({
-      fileName: panel.fileName,
-      id,
-      label: getPanelLabel(panel.id),
-      previewUri: preview.uri,
-      uri: target.uri,
-    });
+
+    try {
+      const source = new File(tmpUri);
+      const target = new File(Paths.cache, panel.fileName);
+      await source.copy(target, { overwrite: true });
+      files.push({
+        fileName: panel.fileName,
+        id,
+        label: getPanelLabel(panel.id),
+        previewUri: target.uri,
+        uri: target.uri,
+      });
+    } finally {
+      releaseCapture(tmpUri);
+    }
   }
 
   return files;
