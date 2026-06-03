@@ -48,10 +48,12 @@ This works best because the supported phones are expected to have a very similar
 
 ## Screenshots
 
-<img src="./assets/screenshots/landing.jpeg" alt="Landing" width="200">
-<img src="./assets/screenshots/calibrate.jpeg" alt="Landing" width="200">
-<img src="./assets/screenshots/customize.jpeg" alt="Landing" width="200">
-<img src="./assets/screenshots/exported.jpeg" alt="Landing" width="200">
+<div style="display: flex; gap: 10px; flex-wrap: nowrap;">
+  <img src="./assets/screenshots/landing.jpeg" alt="Landing" width="200">
+  <img src="./assets/screenshots/calibrate.jpeg" alt="Calibrate" width="200">
+  <img src="./assets/screenshots/customize.jpeg" alt="Customize" width="200">
+  <img src="./assets/screenshots/exported.jpeg" alt="Exported" width="200">
+</div>
 
 ## Notes
 
