@@ -33,7 +33,7 @@ export function CalibrationOverlay({
 
   return (
     <View
-      className="absolute border-2 border-emerald-300 bg-emerald-300/10"
+      className="absolute border-2 border-orange-200 bg-orange-200/20"
       style={{
         height: union.height * scale,
         left: union.x * scale,

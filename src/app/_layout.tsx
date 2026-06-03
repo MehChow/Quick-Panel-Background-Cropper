@@ -1,7 +1,9 @@
+import { AppGradientBackground } from "@/features/quick-panel/shared/AppGradientBackground";
 import { FloatingLanguageSwitchButton } from "@/features/quick-panel/shared/LanguageSwitchButton";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
+import { View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import "../../global.css";
@@ -17,7 +19,16 @@ export default function RootLayout() {
     <GestureHandlerRootView className="flex-1">
       <SafeAreaProvider>
         <BottomSheetModalProvider>
-          <Stack screenOptions={{ headerShown: false }} />
+          <View style={{ flex: 1 }}>
+            <AppGradientBackground />
+            <Stack
+              screenOptions={{
+                animation: "slide_from_right",
+                contentStyle: { backgroundColor: "transparent" },
+                headerShown: false,
+              }}
+            />
+          </View>
           {__DEV__ ? <FloatingLanguageSwitchButton /> : null}
         </BottomSheetModalProvider>
       </SafeAreaProvider>

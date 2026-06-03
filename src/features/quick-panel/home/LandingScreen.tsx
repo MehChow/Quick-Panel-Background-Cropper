@@ -4,8 +4,8 @@ import { Text } from "@/components/ani-ui/text";
 import { Image } from "expo-image";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { View } from "react-native";
 import type { LayoutChangeEvent } from "react-native";
+import { View } from "react-native";
 
 const exampleImageAspectRatio = 1080 / 2340;
 const landingTopPadding = 16;
@@ -66,7 +66,7 @@ export function LandingScreen({
             {t("landing.calibrated")}{" "}
             <Text
               accessibilityRole="link"
-              className="text-sm leading-5 text-emerald-300 underline"
+              className="text-sm leading-5 text-orange-200 underline"
               onPress={onCalibrate}
             >
               {t("landing.recalibrate")}
@@ -74,7 +74,7 @@ export function LandingScreen({
           </Text>
         ) : (
           <Button
-            className="w-full bg-orange-200"
+            className="w-full bg-orange-100"
             onPress={onCalibrate}
             textClassName="font-semibold text-orange-800"
           >
@@ -107,7 +107,10 @@ function ExampleCard({ maxHeight }: ExampleCardProps) {
     : imageHeightLimit;
   const imageHeight = Math.min(imageHeightLimit, imageHeightFromWidth);
   const imageWidth = imageHeight * exampleImageAspectRatio;
-  const doroSize = Math.min(doroImageSize, Math.max(0, maxHeight - cardPadding));
+  const doroSize = Math.min(
+    doroImageSize,
+    Math.max(0, maxHeight - cardPadding),
+  );
 
   const handleCardLayout = (event: LayoutChangeEvent) => {
     setCardWidth(event.nativeEvent.layout.width);
@@ -119,7 +122,10 @@ function ExampleCard({ maxHeight }: ExampleCardProps) {
       onLayout={handleCardLayout}
       style={maxHeight ? { height: maxHeight } : undefined}
     >
-      <View className="items-center justify-center" style={{ width: doroColumnWidth }}>
+      <View
+        className="items-center justify-center"
+        style={{ width: doroColumnWidth }}
+      >
         <View style={{ height: doroSize, width: doroSize }}>
           <Image
             source={require("@/assets/doro_like.gif")}

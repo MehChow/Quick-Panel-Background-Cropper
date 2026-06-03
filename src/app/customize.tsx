@@ -6,6 +6,7 @@ import { ExportSurfaces } from "@/features/quick-panel/customize/ExportSurfaces"
 import { QuickPanelPreview } from "@/features/quick-panel/customize/QuickPanelPreview";
 import { useQuickPanelActions } from "@/features/quick-panel/hooks/useQuickPanelActions";
 import type { ExportRefs } from "@/features/quick-panel/model/types";
+import { AppGradientBackground } from "@/features/quick-panel/shared/AppGradientBackground";
 import { SubPageHeader } from "@/features/quick-panel/shared/SubPageHeader";
 import { useQuickPanelStore } from "@/features/quick-panel/store/store";
 import { useRef, useState } from "react";
@@ -28,7 +29,8 @@ export default function CustomizePage() {
   const hasExported = exports.length > 0;
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#09090b" }}>
+    <SafeAreaView style={{ flex: 1 }}>
+      <AppGradientBackground />
       <View className="px-5 pt-8">
         <SubPageHeader
           title={t("customize.title")}
@@ -138,15 +140,16 @@ function CustomizeActions({
         {t("customize.chooseAnotherImage")}
       </Button>
       <View className="flex-row gap-3 pb-4">
-        <Button
-          className="flex-1"
-          variant="secondary"
-          onPress={onReset}
-          textClassName="font-semibold"
-        >
-          {t("customize.resetPosition")}
-        </Button>
-        <View className="flex-1 overflow-hidden rounded-md">
+        <View className="basis-0 flex-1">
+          <Button
+            className="w-full bg-black"
+            onPress={onReset}
+            textClassName="font-semibold text-white"
+          >
+            {t("customize.resetPosition")}
+          </Button>
+        </View>
+        <View className="basis-0 flex-1 overflow-hidden rounded-md">
           <Button
             className="w-full bg-green-200/90"
             loading={isExporting}

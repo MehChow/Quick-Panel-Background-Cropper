@@ -32,7 +32,7 @@ export function CalibrationResizeHandle(props: CalibrationResizeHandleProps) {
       }}
     >
       {isCorner(props.position) ? (
-        <View className="h-6 w-6 rounded-full border-2 border-white bg-emerald-400" />
+        <View className="h-6 w-6 rounded-full border-2 border-white bg-orange-200" />
       ) : null}
     </View>
   );

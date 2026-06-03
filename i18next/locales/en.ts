@@ -1,6 +1,7 @@
 const en = {
   translation: {
     common: {
+      cancel: "Cancel",
       close: "Close",
     },
     home: {
@@ -44,6 +45,11 @@ const en = {
       successSubtitle: "Apply them in Good Lock using this order",
       openGoodLock: "Open Good Lock",
       openingGoodLock: "Opening Good Lock",
+      goodLockUnavailableTitle: "Good Lock can't be opened",
+      goodLockUnavailableDescription:
+        "Good Lock may not be installed or cannot be opened here. Open Samsung Store to install it?",
+      openSamsungStore: "Open Samsung Store",
+      openingSamsungStore: "Opening Samsung Store",
       convertAnother: "Convert another",
       albumName: "Quick Panel Exports",
     },
@@ -64,8 +70,6 @@ const en = {
         "Media library permission is required to save exports.",
       exportSurfaceMissing: "Export surface is missing for {{panel}}.",
       unableToExport: "Unable to export images.",
-      unableToOpenGoodLock:
-        "Unable to open Good Lock. Please open it manually and apply the exported images.",
     },
   },
 };

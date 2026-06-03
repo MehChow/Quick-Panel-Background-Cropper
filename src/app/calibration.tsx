@@ -3,7 +3,12 @@ import { CalibrationHelpSheet } from "@/features/quick-panel/calibration/Calibra
 import { CalibrationControls } from "@/features/quick-panel/calibration/CalibrationControls";
 import { CalibrationScreen } from "@/features/quick-panel/calibration/CalibrationScreen";
 import { useQuickPanelActions } from "@/features/quick-panel/hooks/useQuickPanelActions";
-import type { ExportRefs } from "@/features/quick-panel/model/types";
+import type {
+  ExportRefs,
+  PanelRect,
+  PickedImage,
+} from "@/features/quick-panel/model/types";
+import { AppGradientBackground } from "@/features/quick-panel/shared/AppGradientBackground";
 import { SubPageHeader } from "@/features/quick-panel/shared/SubPageHeader";
 import { useQuickPanelStore } from "@/features/quick-panel/store/store";
 import { useRouter } from "expo-router";
@@ -17,6 +22,8 @@ export default function CalibrationPage() {
   const router = useRouter();
   const { t } = useTranslation();
   const [isHelpOpen, setIsHelpOpen] = useState(false);
+  const [leavingCalibration, setLeavingCalibration] =
+    useState<CalibrationPresentation | null>(null);
   const screenshot = useQuickPanelStore((state) => state.screenshot);
   const calibrationRect = useQuickPanelStore((state) => state.calibrationRect);
   const error = useQuickPanelStore((state) => state.error);
@@ -27,16 +34,22 @@ export default function CalibrationPage() {
     (state) => state.acceptCalibration,
   );
   const { pickScreenshot } = useQuickPanelActions(refs);
-  const isCalibrating = Boolean(screenshot && calibrationRect);
+  const displayedScreenshot = screenshot ?? leavingCalibration?.screenshot ?? null;
+  const displayedRect = calibrationRect ?? leavingCalibration?.rect ?? null;
+  const isCalibrating = Boolean(displayedScreenshot && displayedRect);
 
   const saveCalibration = () => {
+    if (screenshot && calibrationRect) {
+      setLeavingCalibration({ screenshot, rect: calibrationRect });
+    }
     if (acceptCalibration()) {
       router.replace("/");
     }
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#09090b" }}>
+    <SafeAreaView style={{ flex: 1 }}>
+      <AppGradientBackground />
       <View className="px-5 pt-8">
         <SubPageHeader
           onHelpPress={() => setIsHelpOpen(true)}
@@ -51,8 +64,8 @@ export default function CalibrationPage() {
         overScrollMode="never"
       >
         <CalibrationScreen
-          screenshot={screenshot}
-          rect={calibrationRect}
+          screenshot={displayedScreenshot}
+          rect={displayedRect}
           onImport={pickScreenshot}
           onRectChange={setCalibrationRect}
           onContinue={saveCalibration}
@@ -65,7 +78,7 @@ export default function CalibrationPage() {
         ) : null}
       </ScrollView>
       {isCalibrating ? (
-        <View className="border-t border-zinc-800 bg-zinc-950 px-5 pt-3">
+        <View className="border-t border-white/10 px-5">
           <CalibrationControls
             onContinue={saveCalibration}
             onImport={pickScreenshot}
@@ -78,6 +91,11 @@ export default function CalibrationPage() {
       />
     </SafeAreaView>
   );
+}
+
+interface CalibrationPresentation {
+  screenshot: PickedImage;
+  rect: PanelRect;
 }
 
 function useEmptyExportRefs(): ExportRefs {

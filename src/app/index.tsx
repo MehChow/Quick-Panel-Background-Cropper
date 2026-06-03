@@ -1,4 +1,5 @@
 import { LandingScreen } from "@/features/quick-panel/home/LandingScreen";
+import { AppGradientBackground } from "@/features/quick-panel/shared/AppGradientBackground";
 import { AppHeader } from "@/features/quick-panel/shared/AppHeader";
 import { useQuickPanelStore } from "@/features/quick-panel/store/store";
 import { useRouter } from "expo-router";
@@ -27,7 +28,8 @@ export default function Index() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#09090b" }}>
+    <SafeAreaView style={{ flex: 1 }}>
+      <AppGradientBackground />
       <View className="px-5 pt-6">
         <AppHeader />
       </View>

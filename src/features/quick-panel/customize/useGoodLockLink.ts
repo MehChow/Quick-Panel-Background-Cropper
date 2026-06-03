@@ -1,29 +1,47 @@
 import { useState } from "react";
-import { openGoodLock } from "./good-lock-link";
+import { openGoodLock, openGoodLockInSamsungStore } from "./good-lock-link";
 
 interface GoodLockLinkState {
-  hasGoodLockLinkError: boolean;
+  isGoodLockDialogOpen: boolean;
   isOpeningGoodLock: boolean;
+  isOpeningSamsungStore: boolean;
+  closeGoodLockDialog: () => void;
   openGoodLockApp: () => Promise<void>;
+  openSamsungStore: () => Promise<void>;
 }
 
 export function useGoodLockLink(): GoodLockLinkState {
-  const [hasGoodLockLinkError, setHasGoodLockLinkError] = useState(false);
+  const [isGoodLockDialogOpen, setIsGoodLockDialogOpen] = useState(false);
   const [isOpeningGoodLock, setIsOpeningGoodLock] = useState(false);
+  const [isOpeningSamsungStore, setIsOpeningSamsungStore] = useState(false);
+
+  const closeGoodLockDialog = () => {
+    setIsGoodLockDialogOpen(false);
+  };
 
   const openGoodLockApp = async () => {
-    setHasGoodLockLinkError(false);
+    setIsGoodLockDialogOpen(false);
     setIsOpeningGoodLock(true);
 
     const didOpenGoodLock = await openGoodLock();
 
     setIsOpeningGoodLock(false);
-    setHasGoodLockLinkError(!didOpenGoodLock);
+    setIsGoodLockDialogOpen(!didOpenGoodLock);
+  };
+
+  const openSamsungStore = async () => {
+    setIsOpeningSamsungStore(true);
+    await openGoodLockInSamsungStore();
+    setIsOpeningSamsungStore(false);
+    setIsGoodLockDialogOpen(false);
   };
 
   return {
-    hasGoodLockLinkError,
+    closeGoodLockDialog,
+    isGoodLockDialogOpen,
     isOpeningGoodLock,
+    isOpeningSamsungStore,
     openGoodLockApp,
+    openSamsungStore,
   };
 }

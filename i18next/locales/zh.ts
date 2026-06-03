@@ -1,6 +1,7 @@
 const zh = {
   translation: {
     common: {
+      cancel: "取消",
       close: "關閉",
     },
     home: {
@@ -43,6 +44,11 @@ const zh = {
       successSubtitle: "請依照這個順序在 Good Lock 中套用",
       openGoodLock: "開啟 Good Lock",
       openingGoodLock: "正在開啟 Good Lock",
+      goodLockUnavailableTitle: "無法開啟 Good Lock",
+      goodLockUnavailableDescription:
+        "Good Lock 可能尚未安裝，或目前無法在這裡開啟。要改去 Samsung Store 安裝嗎？",
+      openSamsungStore: "開啟 Samsung Store",
+      openingSamsungStore: "正在開啟 Samsung Store",
       convertAnother: "再轉換一張",
       albumName: "快速面板匯出",
     },
@@ -62,7 +68,6 @@ const zh = {
       mediaLibraryPermission: "必須授權媒體資料庫權限，才能儲存匯出圖片。",
       exportSurfaceMissing: "找不到 {{panel}} 的匯出畫面。",
       unableToExport: "無法匯出圖片。",
-      unableToOpenGoodLock: "無法開啟 Good Lock。請手動開啟並套用匯出的圖片。",
     },
   },
 };
