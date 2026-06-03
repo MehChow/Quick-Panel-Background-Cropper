@@ -25,6 +25,16 @@
       "version": "0.3.0",
       "hash": "a3a06625",
       "addedAt": "2026-05-29T03:43:00.232Z"
+    },
+    "alert-dialog": {
+      "version": "0.3.0",
+      "hash": "750db3aa",
+      "addedAt": "2026-06-02T10:10:37.962Z"
+    },
+    "animate": {
+      "version": "0.3.0",
+      "hash": "ddacc252",
+      "addedAt": "2026-06-02T10:10:37.964Z"
     }
   }
 }

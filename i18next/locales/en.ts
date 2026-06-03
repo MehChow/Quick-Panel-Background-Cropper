@@ -1,6 +1,7 @@
 const en = {
   translation: {
     common: {
+      cancel: "Cancel",
       close: "Close",
     },
     home: {
@@ -13,7 +14,7 @@ const en = {
       recalibrate: "Want to recalibrate?",
       calibration: "Calibration",
       calibrationRequired:
-        "Calibration is only needed once so exports match your Quick Panel layout.",
+        "Calibrate once before using, you can adjust it again later",
       example: "Example",
     },
     calibration: {
@@ -42,6 +43,13 @@ const en = {
     export: {
       successTitle: "Exported successfully",
       successSubtitle: "Apply them in Good Lock using this order",
+      openGoodLock: "Open Good Lock",
+      openingGoodLock: "Opening Good Lock",
+      goodLockUnavailableTitle: "Good Lock can't be opened",
+      goodLockUnavailableDescription:
+        "Good Lock may not be installed or cannot be opened here. Open Samsung Store to install it?",
+      openSamsungStore: "Open Samsung Store",
+      openingSamsungStore: "Opening Samsung Store",
       convertAnother: "Convert another",
       albumName: "Quick Panel Exports",
     },

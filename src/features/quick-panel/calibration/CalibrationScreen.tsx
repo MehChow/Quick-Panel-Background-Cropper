@@ -1,4 +1,5 @@
 import { Button } from "@/components/ani-ui/button";
+import { Card } from "@/components/ani-ui/card";
 import { Text } from "@/components/ani-ui/text";
 import { Lucide } from "@react-native-vector-icons/lucide";
 import { Image } from "expo-image";
@@ -17,6 +18,7 @@ interface CalibrationScreenProps {
   onImport: () => void;
   onRectChange: (rect: PanelRect) => void;
   onContinue: () => void;
+  showControls?: boolean;
 }
 
 interface ImportScreenshotCardProps {
@@ -35,6 +37,7 @@ export function CalibrationScreen({
   onImport,
   onRectChange,
   onContinue,
+  showControls = true,
 }: CalibrationScreenProps) {
   const [viewWidth, setViewWidth] = useState(0);
   const scale = screenshot && viewWidth ? viewWidth / screenshot.width : 1;
@@ -63,7 +66,9 @@ export function CalibrationScreen({
         />
       </View>
 
-      <CalibrationControls onContinue={onContinue} onImport={onImport} />
+      {showControls ? (
+        <CalibrationControls onContinue={onContinue} onImport={onImport} />
+      ) : null}
     </View>
   );
 }
@@ -72,7 +77,7 @@ function ImportScreenshotCard({ onImport }: ImportScreenshotCardProps) {
   const { t } = useTranslation();
 
   return (
-    <View className="w-full gap-4 rounded-2xl border border-zinc-800 bg-zinc-900 p-6">
+    <Card className="w-full gap-4 rounded-2xl border-zinc-800 bg-zinc-900">
       <View>
         <Text className="text-center text-lg font-semibold text-white">
           {t("calibration.importTitle")}
@@ -101,10 +106,14 @@ function ImportScreenshotCard({ onImport }: ImportScreenshotCardProps) {
         </View>
       </View>
 
-      <Button className="w-full" onPress={onImport}>
+      <Button
+        className="w-full"
+        onPress={onImport}
+        textClassName="font-semibold"
+      >
         {t("calibration.chooseFromAlbum")}
       </Button>
-    </View>
+    </Card>
   );
 }
 

@@ -1,6 +1,7 @@
 const zh = {
   translation: {
     common: {
+      cancel: "取消",
       close: "關閉",
     },
     home: {
@@ -12,8 +13,7 @@ const zh = {
       calibrated: "已完成校準。",
       recalibrate: "想重新校準？",
       calibration: "校準",
-      calibrationRequired:
-        "只需要校準一次，之後匯出的圖片就能對齊你的 Quick Panel 版面。",
+      calibrationRequired: "使用前需先校準一次，日後可再次調整",
       example: "範例",
     },
     calibration: {
@@ -42,6 +42,13 @@ const zh = {
     export: {
       successTitle: "匯出成功",
       successSubtitle: "請依照這個順序在 Good Lock 中套用",
+      openGoodLock: "開啟 Good Lock",
+      openingGoodLock: "正在開啟 Good Lock",
+      goodLockUnavailableTitle: "無法開啟 Good Lock",
+      goodLockUnavailableDescription:
+        "Good Lock 可能尚未安裝，或目前無法在這裡開啟。要改去 Samsung Store 安裝嗎？",
+      openSamsungStore: "開啟 Samsung Store",
+      openingSamsungStore: "正在開啟 Samsung Store",
       convertAnother: "再轉換一張",
       albumName: "快速面板匯出",
     },

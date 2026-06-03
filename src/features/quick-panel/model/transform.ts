@@ -1,3 +1,4 @@
+import { translate } from "./i18n";
 import type {
   ImageTransform,
   PanelDefinition,
@@ -5,9 +6,8 @@ import type {
   PickedImage,
   QuickPanelPreset,
 } from "./types";
-import { translate } from "./i18n";
 
-export const exportSidePixels = 2048;
+export const exportSidePixels = 1024;
 
 export function getPanelUnion(preset: QuickPanelPreset): PanelRect {
   const rects = preset.visualOrder.map((id) => preset.panels[id].rect);
@@ -29,13 +29,13 @@ export function getCoverScale(image: PickedImage, preset: QuickPanelPreset) {
   const panelUnion = getImageBounds(preset);
   return Math.max(
     panelUnion.width / image.width,
-    panelUnion.height / image.height
+    panelUnion.height / image.height,
   );
 }
 
 export function getFitTransform(
   image: PickedImage,
-  preset: QuickPanelPreset
+  preset: QuickPanelPreset,
 ): ImageTransform {
   const panelUnion = getPanelUnion(preset);
   const scale = getCoverScale(image, preset);
@@ -49,7 +49,7 @@ export function getFitTransform(
 export function clampTransform(
   transform: ImageTransform,
   image: PickedImage,
-  preset: QuickPanelPreset
+  preset: QuickPanelPreset,
 ): ImageTransform {
   const panelUnion = getImageBounds(preset);
   const minScale = getCoverScale(image, preset);
@@ -75,7 +75,9 @@ export function getExportSquareRect(panel: PanelDefinition): PanelRect {
 }
 
 export function getImageBounds(preset: QuickPanelPreset): PanelRect {
-  const rects = preset.visualOrder.map((id) => getExportSquareRect(preset.panels[id]));
+  const rects = preset.visualOrder.map((id) =>
+    getExportSquareRect(preset.panels[id]),
+  );
   const left = Math.min(...rects.map((rect) => rect.x));
   const top = Math.min(...rects.map((rect) => rect.y));
   const right = Math.max(...rects.map((rect) => rect.x + rect.width));
@@ -94,7 +96,7 @@ function clampAxis(
   value: number,
   contentSize: number,
   frameStart: number,
-  frameSize: number
+  frameSize: number,
 ) {
   const min = frameStart + frameSize - contentSize;
   const max = frameStart;
@@ -108,7 +110,7 @@ function clampAxis(
 
 export function scalePresetToUnion(
   basePreset: QuickPanelPreset,
-  targetUnion: PanelRect
+  targetUnion: PanelRect,
 ): QuickPanelPreset {
   const baseUnion = getPanelUnion(basePreset);
   const scaleX = targetUnion.width / baseUnion.width;

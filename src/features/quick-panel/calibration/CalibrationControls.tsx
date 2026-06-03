@@ -14,14 +14,18 @@ export function CalibrationControls({
   const { t } = useTranslation();
 
   return (
-    <View className="flex-row gap-2">
-      <Button className="flex-1" variant="secondary" onPress={onImport}>
+    <View className="flex-row gap-3 py-4">
+      <Button
+        className="flex-1"
+        onPress={onImport}
+        textClassName="font-semibold"
+      >
         {t("calibration.reImport")}
       </Button>
       <Button
-        className="flex-1 bg-orange-200"
+        className="flex-1 bg-green-200/90"
         onPress={onContinue}
-        textClassName="text-orange-800 font-semibold"
+        textClassName="font-semibold text-green-900"
       >
         {t("calibration.looksGood")}
       </Button>
