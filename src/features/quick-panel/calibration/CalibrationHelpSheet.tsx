@@ -45,6 +45,11 @@ export function CalibrationHelpSheet({
       }}
       index={visible ? 0 : -1}
       maxDynamicContentSize={height * 0.85}
+      onAnimate={(_, toIndex) => {
+        if (toIndex === -1) {
+          onClose();
+        }
+      }}
       onClose={onClose}
     >
       <BottomSheetScrollView
