@@ -38,6 +38,11 @@ export default function CalibrationPage() {
   const displayedRect = calibrationRect ?? leavingCalibration?.rect ?? null;
   const isCalibrating = Boolean(displayedScreenshot && displayedRect);
 
+  const importScreenshot = async () => {
+    setIsHelpOpen(false);
+    await pickScreenshot();
+  };
+
   const saveCalibration = () => {
     if (screenshot && calibrationRect) {
       setLeavingCalibration({ screenshot, rect: calibrationRect });
@@ -66,7 +71,7 @@ export default function CalibrationPage() {
         <CalibrationScreen
           screenshot={displayedScreenshot}
           rect={displayedRect}
-          onImport={pickScreenshot}
+          onImport={importScreenshot}
           onRectChange={setCalibrationRect}
           onContinue={saveCalibration}
           showControls={!isCalibrating}
@@ -81,14 +86,13 @@ export default function CalibrationPage() {
         <View className="border-t border-white/10 px-5">
           <CalibrationControls
             onContinue={saveCalibration}
-            onImport={pickScreenshot}
+            onImport={importScreenshot}
           />
         </View>
       ) : null}
-      <CalibrationHelpSheet
-        visible={isHelpOpen}
-        onClose={() => setIsHelpOpen(false)}
-      />
+      {isHelpOpen ? (
+        <CalibrationHelpSheet onClose={() => setIsHelpOpen(false)} />
+      ) : null}
     </SafeAreaView>
   );
 }
