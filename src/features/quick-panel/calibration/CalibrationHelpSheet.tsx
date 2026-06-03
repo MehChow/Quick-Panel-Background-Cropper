@@ -9,13 +9,9 @@ import { CalibrationInstructionCard } from "./CalibrationInstructionCard";
 
 interface CalibrationHelpSheetProps {
   onClose: () => void;
-  visible: boolean;
 }
 
-export function CalibrationHelpSheet({
-  onClose,
-  visible,
-}: CalibrationHelpSheetProps) {
+export function CalibrationHelpSheet({ onClose }: CalibrationHelpSheetProps) {
   const { t } = useTranslation();
   const { height } = useWindowDimensions();
 
@@ -43,13 +39,8 @@ export function CalibrationHelpSheet({
         height: 6,
         width: 48,
       }}
-      index={visible ? 0 : -1}
+      index={0}
       maxDynamicContentSize={height * 0.85}
-      onAnimate={(_, toIndex) => {
-        if (toIndex === -1) {
-          onClose();
-        }
-      }}
       onClose={onClose}
     >
       <BottomSheetScrollView

@@ -90,10 +90,9 @@ export default function CalibrationPage() {
           />
         </View>
       ) : null}
-      <CalibrationHelpSheet
-        visible={isHelpOpen}
-        onClose={() => setIsHelpOpen(false)}
-      />
+      {isHelpOpen ? (
+        <CalibrationHelpSheet onClose={() => setIsHelpOpen(false)} />
+      ) : null}
     </SafeAreaView>
   );
 }
