@@ -1,47 +1,28 @@
-# Screenshot Calibration Plan
+# Quick Panel Calibration Plan
 
 ## Product scope
 
-This calibration flow is only intended for Samsung phones running Android 16 with One UI 8.5, using the default Quick Panel layout.
+Quick Panel Background Cropper targets Samsung phones running Android 16 with
+One UI 8.5. It exports backgrounds for the same four Good Lock targets:
+Button box, Media player, Brightness, and Volume.
 
-The primary target devices are standard slab phones in Samsung's S series and A series. Fold, Flip, tablets, DeX, external displays, and heavily customized Quick Panel layouts are out of scope for this version.
+The app provides two modes:
 
-This is not a generic "support every Samsung layout" calibration system. It is a narrow adaptation layer for phones that are expected to look very similar to the base reference device.
+- Default customization for phones using the standard Quick Panel layout.
+- Advanced customization for users who have rearranged or resized those four
+  panels.
 
-## Calibration source
+Fold, Flip, tablets, DeX, external displays, other One UI versions, additional
+panel types, and multiple saved layout profiles remain out of scope.
 
-The app uses a Galaxy S25+ on One UI 8.5 with the default Quick Panel layout as the base template. That template stores panel rectangles for Button box, Brightness, Volume, and Media player.
+## Default customization
 
-Calibration uses one user-selected rectangle from a fully expanded Quick Panel screenshot. The rectangle should cover the customizable panel stack only: from the top of Button box to the bottom of Media player, and from the left edge to the right edge of those panels.
+Default mode uses a Galaxy S25+ on One UI 8.5 as the base preset. The user
+imports a fully expanded Quick Panel screenshot and adjusts one rectangle around
+the customizable panel stack.
 
-The user only adjusts this one rectangle. They do not manually crop four separate panels.
-
-## Why this scope makes sense
-
-Within the target scope, Samsung phones are expected to keep the same overall Quick Panel structure:
-
-- the same four customizable panel types
-- the same visual order
-- very similar internal spacing
-- very similar relative widths and heights
-
-Because of that, the app does not need to discover an entirely new layout for every phone. It only needs to adapt one known-good layout to a slightly different size and position on another similar Samsung phone.
-
-## Suggested rectangle
-
-The initial suggestion is based on the screenshot size and the base preset's panel-union aspect ratio. It is horizontally inset by a small margin, vertically placed near the expected Quick Panel stack area, and clamped inside the screenshot.
-
-This suggested rectangle is only a starting point. The user can move or resize it to match their own screenshot before confirming.
-
-## How the geometry is derived
-
-The existing S25+ preset remains the base template.
-
-First, calculate the union rectangle that contains the four visible panel rectangles in the S25+ preset. This "base union" is the full customizable panel stack on the reference device.
-
-Then, when the user confirms a rectangle on their own Quick Panel screenshot, treat that rectangle as the "calibrated union" for their phone.
-
-The app scales every base panel from the base union into the calibrated union:
+The app scales every base panel from the base preset union into that calibrated
+rectangle:
 
 ```ts
 scaleX = calibratedUnion.width / baseUnion.width
@@ -51,37 +32,48 @@ panel.x = calibratedUnion.x + (basePanel.x - baseUnion.x) * scaleX
 panel.y = calibratedUnion.y + (basePanel.y - baseUnion.y) * scaleY
 panel.width = basePanel.width * scaleX
 panel.height = basePanel.height * scaleY
-panel.radius = basePanel.radius * Math.min(scaleX, scaleY)
 ```
 
-This means:
+This remains the fastest path when the panel structure is unchanged.
 
-- if another phone's panel stack is lower, every panel moves lower
-- if another phone's panel stack is narrower, every panel becomes narrower
-- if another phone's panel stack is taller, every panel becomes taller
+## Advanced customization
 
-The app never needs to know the device's exact Quick Panel size from an API. The screenshot already contains the real layout as rendered on that phone, and the user-provided rectangle gives the app the key measurements it needs.
+Advanced mode also starts from a fully expanded Quick Panel screenshot, but it
+does not infer the internal layout from the S25+ preset.
 
-## Why one rectangle is enough in this version
+The user first confirms a required outer rectangle around the full area
+containing the four customizable panels. The app then initializes four labeled
+boxes from the default preset and lets the user move and resize each box to
+match the screenshot.
 
-The app assumes that, inside the target scope, differences between phones are mostly:
+The outer rectangle:
 
-- overall position
-- overall width
-- overall height
+- defines the background customization area
+- constrains all four panel boxes
+- provides alignment edges and a stable preview coordinate space
 
-It does not assume the internal layout is completely different.
-
-So instead of asking the user to mark Button box, Brightness, Volume, and Media player one by one, the app asks for a single outer rectangle covering the whole stack. That one rectangle gives enough information to infer the inner panel rectangles when the phone's layout is still structurally similar to the S25+ reference.
+Panel boxes may be horizontal, vertical, square, reordered, or separated. They
+must remain inside the outer rectangle and may not overlap.
 
 ## Export behavior
 
-The export square logic stays the same. Each visible panel rectangle derives a square crop rectangle centered vertically around the panel. That preserves the current workaround for Samsung's square crop behavior in Good Lock.
+Good Lock accepts one square image for each panel and displays the centered area
+that matches the panel's aspect ratio. The export square therefore uses the
+panel's longest side:
 
-## Notes and limitations
+```ts
+side = Math.max(panel.width, panel.height)
+x = panel.x + (panel.width - side) / 2
+y = panel.y + (panel.height - side) / 2
+```
 
-- This approach is designed for Samsung phones on Android 16 and One UI 8.5 with the default Quick Panel layout.
-- It should work best when Samsung keeps the same panel order and nearly the same relative proportions across supported S series and A series phones.
-- If Samsung changes panel order, spacing, or individual panel proportions on a device, the one-rectangle calibration may be imperfect.
-- If a user has significantly customized the Quick Panel layout, the inferred panel rectangles may no longer match.
-- Advanced per-panel calibration can be added later if broader device coverage is needed.
+The same background transform is rendered into all four centered export
+squares, preserving continuity across arbitrary panel layouts. PNGs are always
+exported in Good Lock application order: Button box, Media player, Brightness,
+then Volume.
+
+## Persistence
+
+Default and Advanced calibrations are stored independently. Existing v1
+single-rectangle calibrations migrate into the Default calibration slot.
+Imported screenshots and selected background images are not persisted.

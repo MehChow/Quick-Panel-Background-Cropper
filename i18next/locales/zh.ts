@@ -16,6 +16,14 @@ const zh = {
       calibrationRequired: "使用前需先校準一次，日後可再次調整",
       example: "範例",
     },
+    mode: {
+      title: "選擇模式",
+      subtitle: "選擇符合你快速面板配置的模式",
+      default: "預設",
+      defaultDescription: "適用於標準按鈕框、亮度、音量及媒體播放器配置。",
+      advanced: "進階",
+      advancedDescription: "適用於已重新排列、調整大小、垂直或其他自訂面板配置。",
+    },
     calibration: {
       title: "校準",
       subtitle: "對齊你裝置上的快速面板版面",
@@ -31,6 +39,9 @@ const zh = {
       looksGood: "這樣可以",
     },
     customize: {
+      defaultCalibrated: "已校準預設配置。",
+      advancedCalibrated: "已校準進階配置。",
+      recalibrate: "想重新校準嗎？",
       title: "自訂",
       subtitle: "選擇一張圖片，再調整位置",
       pickerTitle: "從相簿選擇圖片",
@@ -38,6 +49,14 @@ const zh = {
       chooseAnotherImage: "重新選擇圖片",
       resetPosition: "重設位置",
       exportPngs: "匯出 PNG",
+    },
+    advancedCalibration: {
+      title: "進階自訂",
+      outerSubtitle: "框選包含四個可自訂面板的完整區域",
+      panelsSubtitle: "移動及調整每個方框以符合對應面板",
+      adjustPanels: "調整面板",
+      adjustOuter: "調整外框",
+      save: "儲存配置",
     },
     export: {
       successTitle: "匯出成功",
@@ -53,6 +72,7 @@ const zh = {
       albumName: "快速面板匯出",
     },
     preset: {
+      advancedLabel: "One UI 8.5 進階配置",
       defaultLabel: "Galaxy S25+ / One UI 8.5 預設版型",
       calibratedLabel: "{{label}} 已校準",
     },
@@ -63,6 +83,8 @@ const zh = {
       mediaPlayer: "媒體播放器",
     },
     errors: {
+      confirmOuterFirst: "請先確認外框自訂區域。",
+      invalidAdvancedPanels: "請保持四個面板方框位於外框內，並避免互相重疊。",
       mustCalibrate: "請先校準快速面板區域，才能開始自訂。",
       importScreenshotFirst: "請先匯入快速面板截圖。",
       mediaLibraryPermission: "必須授權媒體資料庫權限，才能儲存匯出圖片。",

@@ -23,11 +23,23 @@ function useExportRefs(): ExportRefs {
 export function useCustomizeScreen() {
   const refs = useExportRefs();
   const [isPreviewAdjusting, setIsPreviewAdjusting] = useState(false);
-  const { activePreset, image, transform, setTransform, exports, isExporting, error } =
+  const {
+    selectedMode,
+    activePreset,
+    image,
+    transform,
+    setTransform,
+    exports,
+    isExporting,
+    error,
+    goToCalibration,
+    goToAdvancedCalibration,
+  } =
     useQuickPanelStore(useShallow(quickPanelSelectors.customizeScreen));
   const { exportImages, pickImage, resetFit } = useCustomizeActions(refs);
 
   return {
+    selectedMode,
     activePreset,
     image,
     transform,
@@ -42,5 +54,7 @@ export function useCustomizeScreen() {
     exportImages,
     pickImage,
     resetFit,
+    goToCalibration,
+    goToAdvancedCalibration,
   };
 }

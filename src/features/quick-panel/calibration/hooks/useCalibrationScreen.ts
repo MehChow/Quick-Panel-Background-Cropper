@@ -55,7 +55,7 @@ export function useCalibrationScreen() {
       setLeavingCalibration({ screenshot, rect: calibrationRect });
     }
     if (acceptCalibration()) {
-      router.replace("/");
+      router.dismissTo("/customize");
     }
   };
 

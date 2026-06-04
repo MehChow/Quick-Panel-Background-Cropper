@@ -20,11 +20,13 @@ export function getPanelUnion(preset: QuickPanelPreset): PanelRect {
 }
 
 export function getExportSquareRect(panel: PanelDefinition): PanelRect {
+  const side = Math.max(panel.rect.width, panel.rect.height);
+
   return {
-    x: panel.rect.x,
-    y: panel.rect.y + (panel.rect.height - panel.rect.width) / 2,
-    width: panel.rect.width,
-    height: panel.rect.width,
+    x: panel.rect.x + (panel.rect.width - side) / 2,
+    y: panel.rect.y + (panel.rect.height - side) / 2,
+    width: side,
+    height: side,
     radius: 0,
   };
 }
@@ -74,6 +76,7 @@ export function scalePresetToUnion(
     ...basePreset,
     id: `${basePreset.id}-calibrated`,
     label: translate("preset.calibratedLabel", { label: basePreset.label }),
+    customizationArea: targetUnion,
     width: targetUnion.x * 2 + targetUnion.width,
     height: targetUnion.y + targetUnion.height,
     panels,

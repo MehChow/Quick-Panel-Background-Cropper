@@ -17,6 +17,16 @@ const en = {
         "Calibrate once before using, you can adjust it again later",
       example: "Example",
     },
+    mode: {
+      title: "Select mode",
+      subtitle: "Choose the layout that matches your Quick Panel",
+      default: "Default",
+      defaultDescription:
+        "For the standard Button box, Brightness, Volume, and Media player layout.",
+      advanced: "Advanced",
+      advancedDescription:
+        "For rearranged, resized, vertical, or otherwise customized panel layouts.",
+    },
     calibration: {
       title: "Calibration",
       subtitle: "Match your device's layout",
@@ -39,6 +49,17 @@ const en = {
       chooseAnotherImage: "Choose another image",
       resetPosition: "Reset position",
       exportPngs: "Export PNGs",
+      defaultCalibrated: "Default layout calibrated.",
+      advancedCalibrated: "Advanced layout calibrated.",
+      recalibrate: "Want to recalibrate?",
+    },
+    advancedCalibration: {
+      title: "Advanced customization",
+      outerSubtitle: "Wrap the full area containing your four customizable panels",
+      panelsSubtitle: "Move and resize each box to match its panel",
+      adjustPanels: "Adjust panels",
+      adjustOuter: "Adjust outer area",
+      save: "Save layout",
     },
     export: {
       successTitle: "Exported successfully",
@@ -56,6 +77,7 @@ const en = {
     preset: {
       defaultLabel: "Galaxy S25+ / One UI 8.5 default",
       calibratedLabel: "{{label}} calibrated",
+      advancedLabel: "One UI 8.5 advanced layout",
     },
     panels: {
       buttonBox: "Button box",
@@ -70,6 +92,9 @@ const en = {
         "Media library permission is required to save exports.",
       exportSurfaceMissing: "Export surface is missing for {{panel}}.",
       unableToExport: "Unable to export images.",
+      confirmOuterFirst: "Confirm the outer customization area first.",
+      invalidAdvancedPanels:
+        "Keep all four panel boxes inside the outer area without overlapping.",
     },
   },
 };

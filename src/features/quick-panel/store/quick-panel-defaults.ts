@@ -1,6 +1,11 @@
+import { createAdvancedPreset } from "../advanced-calibration/advanced-geometry";
 import { getCalibratedPreset } from "../calibration/calibration";
 import { s25PlusOneUi85Preset } from "../model/preset";
 import type {
+  AdvancedCalibration,
+  AdvancedCalibrationDraft,
+  CustomizationMode,
+  DefaultCalibration,
   GeneratedExport,
   ImageTransform,
   PanelRect,
@@ -8,15 +13,17 @@ import type {
   QuickPanelPreset,
   QuickPanelStep,
 } from "../model/types";
-import { loadCalibration } from "./storage";
+import { loadCalibrations } from "./storage";
 
 export interface QuickPanelStateData {
   step: QuickPanelStep;
-  isCalibrated: boolean;
-  presetId: string;
+  selectedMode: CustomizationMode | null;
+  defaultCalibration: DefaultCalibration | null;
+  advancedCalibration: AdvancedCalibration | null;
   activePreset: QuickPanelPreset;
   screenshot: PickedImage | null;
   calibrationRect: PanelRect | null;
+  advancedDraft: AdvancedCalibrationDraft | null;
   image: PickedImage | null;
   transform: ImageTransform;
   exports: GeneratedExport[];
@@ -36,19 +43,31 @@ export function createResetWorkState() {
   };
 }
 
-export function createInitialQuickPanelStateData(): QuickPanelStateData {
-  const savedCalibration = loadCalibration();
-  const activePreset = savedCalibration.rect
-    ? getCalibratedPreset(savedCalibration.rect)
-    : s25PlusOneUi85Preset;
+export function getPresetForMode(
+  mode: CustomizationMode,
+  defaultCalibration: DefaultCalibration | null,
+  advancedCalibration: AdvancedCalibration | null,
+) {
+  if (mode === "advanced" && advancedCalibration) {
+    return createAdvancedPreset(advancedCalibration);
+  }
+  if (mode === "default" && defaultCalibration) {
+    return getCalibratedPreset(defaultCalibration.rect);
+  }
+  return s25PlusOneUi85Preset;
+}
 
+export function createInitialQuickPanelStateData(): QuickPanelStateData {
+  const saved = loadCalibrations();
   return {
     step: "landing",
-    isCalibrated: savedCalibration.isCalibrated,
-    presetId: activePreset.id,
-    activePreset,
+    selectedMode: null,
+    defaultCalibration: saved.default,
+    advancedCalibration: saved.advanced,
+    activePreset: s25PlusOneUi85Preset,
     screenshot: null,
-    calibrationRect: savedCalibration.rect,
+    calibrationRect: null,
+    advancedDraft: null,
     image: null,
     transform: createEmptyTransform(),
     exports: [],
