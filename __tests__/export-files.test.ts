@@ -1,6 +1,7 @@
 import { s25PlusOneUi85Preset } from "@/features/quick-panel/model/preset";
-import type { ExportRefs } from "@/features/quick-panel/model/types";
+import type { ExportRefs, QuickPanelPreset } from "@/features/quick-panel/model/types";
 import { captureAndSaveExports } from "@/features/quick-panel/customize/services/export-files";
+import type { View } from "react-native";
 
 const mockRequestPermissionsAsync = jest.fn();
 const mockAlbumGet = jest.fn();
@@ -44,10 +45,10 @@ jest.mock("expo-file-system", () => ({
 
 function createRefs(): ExportRefs {
   return {
-    brightness: { current: {} },
-    buttonBox: { current: {} },
-    mediaPlayer: { current: {} },
-    volume: { current: {} },
+    brightness: { current: {} as View },
+    buttonBox: { current: {} as View },
+    mediaPlayer: { current: {} as View },
+    volume: { current: {} as View },
   };
 }
 
@@ -84,5 +85,19 @@ describe("captureAndSaveExports", () => {
     await expect(
       captureAndSaveExports(refs, s25PlusOneUi85Preset),
     ).rejects.toThrow("Export surface is missing for Media player.");
+  });
+
+  it("exports only present panels in Good Lock order", async () => {
+    mockRequestPermissionsAsync.mockResolvedValue({ granted: true });
+    const preset = {
+      ...s25PlusOneUi85Preset,
+      goodLockOrder: ["buttonBox", "brightness"],
+      visualOrder: ["buttonBox", "brightness"],
+    } satisfies QuickPanelPreset;
+
+    const exports = await captureAndSaveExports(createRefs(), preset);
+
+    expect(exports.map((file) => file.id)).toEqual(["buttonBox", "brightness"]);
+    expect(mockCaptureRef).toHaveBeenCalledTimes(2);
   });
 });

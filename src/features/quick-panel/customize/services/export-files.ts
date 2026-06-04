@@ -15,6 +15,11 @@ export async function captureAndSaveExports(
 ): Promise<GeneratedExport[]> {
   const albumName = translate("export.albumName");
   const capturedFiles = await captureNamedFiles(refs, preset);
+
+  if (capturedFiles.length === 0) {
+    throw new Error(translate("errors.noPanelsToExport"));
+  }
+
   const permission = await requestPermissionsAsync(true);
 
   if (!permission.granted) {

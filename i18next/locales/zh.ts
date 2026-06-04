@@ -1,8 +1,10 @@
 const zh = {
   translation: {
     common: {
+      back: "返回",
       cancel: "取消",
       close: "關閉",
+      next: "下一步",
     },
     home: {
       title: "Quick Panel 背景裁切",
@@ -33,6 +35,16 @@ const zh = {
       chooseFromAlbum: "從相簿選擇",
       reImport: "重新匯入",
       looksGood: "這樣可以",
+      useBox: "使用方框",
+      markHidden: "標記為隱藏",
+      panelStepCounter: "{{current}} / {{total}}",
+      panelStepSubtitle: "框選 {{panel}} 的範圍，或將它標記為隱藏。",
+      reviewCustomLayout: "檢查自訂版面",
+      reviewTitle: "檢查自訂版面",
+      reviewSubtitle: "匯出時會自動略過已隱藏的區塊。",
+      saveCustomLayout: "儲存自訂版面",
+      hiddenStatus: "已隱藏",
+      visibleStatus: "顯示中",
     },
     customize: {
       title: "自訂",
@@ -70,7 +82,10 @@ const zh = {
     errors: {
       mustCalibrate: "請先校準快速面板區域，才能開始自訂。",
       importScreenshotFirst: "請先匯入快速面板截圖。",
+      customCalibrationIncomplete:
+        "儲存前請先設定每個區塊，並至少保留一個可見區塊。",
       mediaLibraryPermission: "必須授權媒體資料庫權限，才能儲存匯出圖片。",
+      noPanelsToExport: "匯出前至少要保留一個可見區塊。",
       exportSurfaceMissing: "找不到 {{panel}} 的匯出畫面。",
       unableToExport: "無法匯出圖片。",
     },

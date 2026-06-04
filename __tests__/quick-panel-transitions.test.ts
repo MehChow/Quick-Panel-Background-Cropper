@@ -6,6 +6,7 @@ import {
   getStartCustomizingResult,
   getStartExportState,
 } from "@/features/quick-panel/store/quick-panel-transitions";
+import { canSaveCustomCalibration } from "@/features/quick-panel/calibration/hooks/useCustomCalibrationFlow";
 import { getPresetFromCalibrationProfile } from "@/features/quick-panel/model/custom-preset";
 
 describe("quick-panel transitions", () => {
@@ -110,5 +111,20 @@ describe("quick-panel transitions", () => {
     expect(preset.visualOrder).toEqual(["buttonBox", "brightness"]);
     expect(preset.goodLockOrder).toEqual(["buttonBox", "brightness"]);
     expect(preset.label).toBe("Custom Quick Panel layout");
+  });
+
+  it("rejects custom calibration when every panel is hidden", () => {
+    expect(
+      canSaveCustomCalibration({
+        mode: "custom-panels",
+        panels: {
+          brightness: { id: "brightness", rect: null, status: "hidden" },
+          buttonBox: { id: "buttonBox", rect: null, status: "hidden" },
+          mediaPlayer: { id: "mediaPlayer", rect: null, status: "hidden" },
+          volume: { id: "volume", rect: null, status: "hidden" },
+        },
+        version: 1,
+      }),
+    ).toBe(false);
   });
 });

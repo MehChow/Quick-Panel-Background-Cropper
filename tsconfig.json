@@ -13,6 +13,7 @@
     }
   },
   "include": [
+    "**/*.d.ts",
     "**/*.ts",
     "**/*.tsx",
     ".expo/types/**/*.ts",
