@@ -42,3 +42,10 @@ The app then lets users choose a background image, pan/zoom it against a preview
 - DRY principle
 - Extract business logic into custom hook
 - Keep files small, each file under 150 lines of code
+
+## Testing Notes
+
+- Keep tests secondary and lightweight; prioritize high-value coverage over broad test volume
+- Only write tests when the user explicitly asks for them
+- Prefer tests for store/state transitions, persistence restore/save behavior, native failure branches, and critical error/fallback UI states
+- Keep gesture feel, visual polish, and real Samsung/Good Lock integration as manual testing concerns
