@@ -56,3 +56,37 @@ export function createEmptyPanelCalibration(id: PanelId): PanelCalibration {
   };
 }
 
+export function createEmptyCustomPanelsCalibrationProfile(): CustomPanelsCalibrationProfile {
+  return {
+    mode: "custom-panels",
+    panels: Object.fromEntries(
+      panelIds.map((id) => [id, createEmptyPanelCalibration(id)]),
+    ) as Record<PanelId, PanelCalibration>,
+    version: 1,
+  };
+}
+
+export function cloneCustomPanelsCalibrationProfile(
+  profile: CustomPanelsCalibrationProfile,
+): CustomPanelsCalibrationProfile {
+  return {
+    mode: "custom-panels",
+    panels: Object.fromEntries(
+      panelIds.map((id) => [
+        id,
+        {
+          ...profile.panels[id],
+          rect: profile.panels[id].rect ? { ...profile.panels[id].rect } : null,
+        },
+      ]),
+    ) as Record<PanelId, PanelCalibration>,
+    version: profile.version,
+  };
+}
+
+export function hasCalibrationForMode(
+  mode: CalibrationMode,
+  profile: CalibrationProfile | null,
+) {
+  return profile?.mode === mode;
+}

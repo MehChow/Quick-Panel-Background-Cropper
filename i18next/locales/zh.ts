@@ -14,6 +14,10 @@ const zh = {
       recalibrate: "想重新校準？",
       calibration: "校準",
       calibrationRequired: "使用前需先校準一次，日後可再次調整",
+      defaultLayoutTitle: "預設版面",
+      defaultLayoutDescription: "使用單一方框快速校準預設 One UI 版面。",
+      customLayoutTitle: "自訂版面",
+      customLayoutDescription: "分別校準每個 Quick Panel 區塊。",
       example: "範例",
     },
     calibration: {

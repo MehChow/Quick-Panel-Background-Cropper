@@ -15,6 +15,12 @@ const en = {
       calibration: "Calibration",
       calibrationRequired:
         "Calibrate once before using, you can adjust it again later",
+      defaultLayoutTitle: "Default layout",
+      defaultLayoutDescription:
+        "Use the fast one-box calibration for the default One UI layout.",
+      customLayoutTitle: "Custom layout",
+      customLayoutDescription:
+        "Calibrate each Quick Panel surface individually.",
       example: "Example",
     },
     calibration: {

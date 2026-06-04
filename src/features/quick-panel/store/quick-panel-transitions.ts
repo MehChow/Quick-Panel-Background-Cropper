@@ -1,5 +1,13 @@
 import { clampTransform, getFitTransform } from "../model/image-placement";
-import { createDefaultUnionCalibrationProfile } from "../model/calibration-profile";
+import {
+  cloneCustomPanelsCalibrationProfile,
+  createDefaultUnionCalibrationProfile,
+  createEmptyCustomPanelsCalibrationProfile,
+  hasCalibrationForMode,
+  panelIds,
+  type CalibrationMode,
+  type CalibrationProfile,
+} from "../model/calibration-profile";
 import { translate } from "../model/i18n";
 import { getPresetFromCalibrationProfile } from "../model/custom-preset";
 import type {
@@ -26,14 +34,43 @@ export function getLandingState(): QuickPanelStatePatch {
 }
 
 export function getCalibrationState(
-  isCalibrated: boolean,
-  calibrationRect: PanelRect | null,
+  mode: CalibrationMode,
+  profile: CalibrationProfile | null,
 ): QuickPanelStatePatch {
+  const isCalibrated = hasCalibrationForMode(mode, profile);
+  const customCalibrationDraft =
+    mode === "custom-panels" && profile?.mode === "custom-panels"
+      ? cloneCustomPanelsCalibrationProfile(profile)
+      : createEmptyCustomPanelsCalibrationProfile();
+
   return {
     step: "calibration",
+    isCalibrated,
+    calibrationMode: mode,
     screenshot: null,
-    calibrationRect: isCalibrated ? calibrationRect : null,
+    calibrationRect:
+      mode === "default-union" && profile?.mode === "default-union"
+        ? profile.rect
+        : null,
+    customCalibrationDraft,
+    customCalibrationStep: panelIds[0],
+    isCustomCalibrationReview: false,
     ...createResetWorkState(),
+    error: null,
+  };
+}
+
+export function getCalibrationModeState(
+  mode: CalibrationMode,
+  profile: CalibrationProfile | null,
+): QuickPanelStatePatch {
+  return {
+    calibrationMode: mode,
+    isCalibrated: hasCalibrationForMode(mode, profile),
+    calibrationRect:
+      mode === "default-union" && profile?.mode === "default-union"
+        ? profile.rect
+        : null,
     error: null,
   };
 }
@@ -70,21 +107,9 @@ export function getAcceptCalibrationResult(rect: PanelRect | null) {
   }
 
   const calibrationProfile = createDefaultUnionCalibrationProfile(rect);
-  const activePreset = getPresetFromCalibrationProfile(calibrationProfile);
   return {
     didAccept: true,
-    state: {
-      calibrationMode: calibrationProfile.mode,
-      calibrationProfile,
-      activePreset,
-      presetId: activePreset.id,
-      step: "landing",
-      isCalibrated: true,
-      screenshot: null,
-      calibrationRect: rect,
-      ...createResetWorkState(),
-      error: null,
-    } satisfies QuickPanelStatePatch,
+    state: getAcceptedCalibrationState(calibrationProfile),
   };
 }
 
@@ -139,4 +164,30 @@ export function getFinishExportState(
 
 export function getFailExportState(message: string): QuickPanelStatePatch {
   return { isExporting: false, error: message };
+}
+
+export function getAcceptedCalibrationState(
+  calibrationProfile: CalibrationProfile,
+): QuickPanelStatePatch {
+  const activePreset = getPresetFromCalibrationProfile(calibrationProfile);
+
+  return {
+    calibrationMode: calibrationProfile.mode,
+    calibrationProfile,
+    customCalibrationDraft:
+      calibrationProfile.mode === "custom-panels"
+        ? cloneCustomPanelsCalibrationProfile(calibrationProfile)
+        : createEmptyCustomPanelsCalibrationProfile(),
+    customCalibrationStep: panelIds[0],
+    isCustomCalibrationReview: false,
+    activePreset,
+    presetId: activePreset.id,
+    step: "landing",
+    isCalibrated: true,
+    screenshot: null,
+    calibrationRect:
+      calibrationProfile.mode === "default-union" ? calibrationProfile.rect : null,
+    ...createResetWorkState(),
+    error: null,
+  };
 }

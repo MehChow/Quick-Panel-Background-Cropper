@@ -2,17 +2,27 @@ import type { QuickPanelState } from "./quick-panel-store";
 
 export const quickPanelSelectors = {
   landingScreen: (state: QuickPanelState) => ({
+    calibrationMode: state.calibrationMode,
     isCalibrated: state.isCalibrated,
+    setCalibrationMode: state.setCalibrationMode,
     goToCalibration: state.goToCalibration,
     startCustomizing: state.startCustomizing,
   }),
   calibrationScreen: (state: QuickPanelState) => ({
+    calibrationMode: state.calibrationMode,
     screenshot: state.screenshot,
     calibrationRect: state.calibrationRect,
+    customCalibrationDraft: state.customCalibrationDraft,
+    customCalibrationStep: state.customCalibrationStep,
+    isCustomCalibrationReview: state.isCustomCalibrationReview,
     error: state.error,
     setScreenshot: state.setScreenshot,
     setCalibrationRect: state.setCalibrationRect,
     acceptCalibration: state.acceptCalibration,
+    acceptCalibrationProfile: state.acceptCalibrationProfile,
+    setCustomCalibrationDraft: state.setCustomCalibrationDraft,
+    setCustomCalibrationStep: state.setCustomCalibrationStep,
+    setCustomCalibrationReview: state.setCustomCalibrationReview,
   }),
   customizeScreen: (state: QuickPanelState) => ({
     activePreset: state.activePreset,

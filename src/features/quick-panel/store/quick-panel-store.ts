@@ -1,7 +1,13 @@
 import { create } from "zustand";
 import type {
+  CalibrationMode,
+  CalibrationProfile,
+  CustomPanelsCalibrationProfile,
+} from "../model/calibration-profile";
+import type {
   GeneratedExport,
   ImageTransform,
+  PanelId,
   PanelRect,
   PickedImage,
 } from "../model/types";
@@ -11,6 +17,8 @@ import {
 } from "./quick-panel-defaults";
 import {
   getAcceptCalibrationResult,
+  getAcceptedCalibrationState,
+  getCalibrationModeState,
   getCalibrationState,
   getFailExportState,
   getFinishExportState,
@@ -21,15 +29,20 @@ import {
   getStartExportState,
   getTransformState,
 } from "./quick-panel-transitions";
-import { saveCalibration } from "./storage";
+import { saveCalibrationProfile } from "./storage";
 
 export interface QuickPanelState extends QuickPanelStateData {
   goToLanding: () => void;
   goToCalibration: () => void;
+  setCalibrationMode: (mode: CalibrationMode) => void;
   startCustomizing: () => boolean;
   setScreenshot: (screenshot: PickedImage, rect: PanelRect) => void;
   setCalibrationRect: (rect: PanelRect) => void;
   acceptCalibration: () => boolean;
+  acceptCalibrationProfile: (profile: CalibrationProfile) => void;
+  setCustomCalibrationDraft: (draft: CustomPanelsCalibrationProfile) => void;
+  setCustomCalibrationStep: (step: PanelId) => void;
+  setCustomCalibrationReview: (isReview: boolean) => void;
   setImage: (image: PickedImage) => void;
   setTransform: (transform: ImageTransform) => void;
   resetFit: () => void;
@@ -44,7 +57,9 @@ export const useQuickPanelStore = create<QuickPanelState>((set, get) => ({
   ...initialState,
   goToLanding: () => set(getLandingState()),
   goToCalibration: () =>
-    set(getCalibrationState(get().isCalibrated, get().calibrationRect)),
+    set(getCalibrationState(get().calibrationMode, get().calibrationProfile)),
+  setCalibrationMode: (mode) =>
+    set(getCalibrationModeState(mode, get().calibrationProfile)),
   startCustomizing: () => {
     const result = getStartCustomizingResult(get().isCalibrated);
     set(result.state);
@@ -64,10 +79,29 @@ export const useQuickPanelStore = create<QuickPanelState>((set, get) => ({
       return false;
     }
 
-    saveCalibration(get().calibrationRect as PanelRect);
+    saveCalibrationProfile(result.state.calibrationProfile as CalibrationProfile);
     set(result.state);
     return true;
   },
+  acceptCalibrationProfile: (profile) => {
+    saveCalibrationProfile(profile);
+    set(getAcceptedCalibrationState(profile));
+  },
+  setCustomCalibrationDraft: (draft) =>
+    set({
+      customCalibrationDraft: draft,
+      error: null,
+    }),
+  setCustomCalibrationStep: (step) =>
+    set({
+      customCalibrationStep: step,
+      error: null,
+    }),
+  setCustomCalibrationReview: (isReview) =>
+    set({
+      isCustomCalibrationReview: isReview,
+      error: null,
+    }),
   setImage: (image) => set(getImageState(image, get().activePreset)),
   setTransform: (transform) =>
     set(getTransformState(transform, get().image, get().activePreset)),

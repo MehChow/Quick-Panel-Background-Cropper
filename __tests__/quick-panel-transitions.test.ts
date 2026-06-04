@@ -1,5 +1,6 @@
 import {
   getAcceptCalibrationResult,
+  getCalibrationModeState,
   getFailExportState,
   getFinishExportState,
   getStartCustomizingResult,
@@ -24,6 +25,20 @@ describe("quick-panel transitions", () => {
     expect(result.didAccept).toBe(false);
     expect(result.state).toMatchObject({
       error: "Import a Quick Panel screenshot first.",
+    });
+  });
+
+  it("requires recalibration when the selected mode differs from the saved profile", () => {
+    expect(
+      getCalibrationModeState("custom-panels", {
+        mode: "default-union",
+        rect: { x: 12, y: 24, width: 200, height: 300, radius: 0 },
+        version: 1,
+      }),
+    ).toMatchObject({
+      calibrationMode: "custom-panels",
+      calibrationRect: null,
+      isCalibrated: false,
     });
   });
 
