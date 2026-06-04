@@ -1,6 +1,7 @@
-import { getCalibratedPreset } from "../calibration/calibration";
 import { clampTransform, getFitTransform } from "../model/image-placement";
+import { createDefaultUnionCalibrationProfile } from "../model/calibration-profile";
 import { translate } from "../model/i18n";
+import { getPresetFromCalibrationProfile } from "../model/custom-preset";
 import type {
   GeneratedExport,
   ImageTransform,
@@ -68,10 +69,13 @@ export function getAcceptCalibrationResult(rect: PanelRect | null) {
     };
   }
 
-  const activePreset = getCalibratedPreset(rect);
+  const calibrationProfile = createDefaultUnionCalibrationProfile(rect);
+  const activePreset = getPresetFromCalibrationProfile(calibrationProfile);
   return {
     didAccept: true,
     state: {
+      calibrationMode: calibrationProfile.mode,
+      calibrationProfile,
       activePreset,
       presetId: activePreset.id,
       step: "landing",

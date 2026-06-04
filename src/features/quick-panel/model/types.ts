@@ -1,5 +1,9 @@
 import type { RefObject } from "react";
 import type { View } from "react-native";
+import type {
+  CalibrationMode,
+  CalibrationProfile,
+} from "./calibration-profile";
 
 export type PanelId = "buttonBox" | "brightness" | "volume" | "mediaPlayer";
 
@@ -57,3 +61,10 @@ export type QuickPanelStep =
   | "imageSelection"
   | "adjustBackground"
   | "exported";
+
+export interface CalibrationStateSnapshot {
+  isCalibrated: boolean;
+  mode: CalibrationMode;
+  profile: CalibrationProfile | null;
+  rect: PanelRect | null;
+}

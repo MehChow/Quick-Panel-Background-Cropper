@@ -1,4 +1,8 @@
-import { getCalibratedPreset } from "../calibration/calibration";
+import type {
+  CalibrationMode,
+  CalibrationProfile,
+} from "../model/calibration-profile";
+import { getPresetFromCalibrationProfile } from "../model/custom-preset";
 import { s25PlusOneUi85Preset } from "../model/preset";
 import type {
   GeneratedExport,
@@ -8,11 +12,13 @@ import type {
   QuickPanelPreset,
   QuickPanelStep,
 } from "../model/types";
-import { loadCalibration } from "./storage";
+import { loadCalibrationSnapshot } from "./storage";
 
 export interface QuickPanelStateData {
   step: QuickPanelStep;
   isCalibrated: boolean;
+  calibrationMode: CalibrationMode;
+  calibrationProfile: CalibrationProfile | null;
   presetId: string;
   activePreset: QuickPanelPreset;
   screenshot: PickedImage | null;
@@ -37,18 +43,20 @@ export function createResetWorkState() {
 }
 
 export function createInitialQuickPanelStateData(): QuickPanelStateData {
-  const savedCalibration = loadCalibration();
-  const activePreset = savedCalibration.rect
-    ? getCalibratedPreset(savedCalibration.rect)
+  const calibration = loadCalibrationSnapshot();
+  const activePreset = calibration.profile
+    ? getPresetFromCalibrationProfile(calibration.profile)
     : s25PlusOneUi85Preset;
 
   return {
     step: "landing",
-    isCalibrated: savedCalibration.isCalibrated,
+    isCalibrated: calibration.isCalibrated,
+    calibrationMode: calibration.mode,
+    calibrationProfile: calibration.profile,
     presetId: activePreset.id,
     activePreset,
     screenshot: null,
-    calibrationRect: savedCalibration.rect,
+    calibrationRect: calibration.rect,
     image: null,
     transform: createEmptyTransform(),
     exports: [],

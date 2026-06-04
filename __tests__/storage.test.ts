@@ -48,6 +48,37 @@ describe("storage", () => {
     });
   });
 
+  it("migrates a legacy saved rect into a default-union calibration profile", () => {
+    const mmkvStore = globalThis as typeof globalThis & {
+      __mmkvStore?: Map<string, boolean | string>;
+    };
+    mmkvStore.__mmkvStore?.set("quick-panel.is-calibrated", true);
+    mmkvStore.__mmkvStore?.set(
+      "quick-panel.calibration-rect",
+      JSON.stringify({
+        height: 300,
+        radius: 0,
+        width: 200,
+        x: 12,
+        y: 34,
+      }),
+    );
+
+    const { loadCalibrationProfile } = require("@/features/quick-panel/store/storage");
+
+    expect(loadCalibrationProfile()).toEqual({
+      mode: "default-union",
+      rect: {
+        height: 300,
+        radius: 0,
+        width: 200,
+        x: 12,
+        y: 34,
+      },
+      version: 1,
+    });
+  });
+
   it("persists calibration geometry", () => {
     const mmkvStore = globalThis as typeof globalThis & {
       __mmkvStore?: Map<string, boolean | string>;
@@ -70,6 +101,19 @@ describe("storage", () => {
         width: 123,
         x: 10,
         y: 20,
+      }),
+    );
+    expect(mmkvStore.__mmkvStore?.get("quick-panel.calibration-profile")).toBe(
+      JSON.stringify({
+        mode: "default-union",
+        rect: {
+          height: 456,
+          radius: 12,
+          width: 123,
+          x: 10,
+          y: 20,
+        },
+        version: 1,
       }),
     );
   });

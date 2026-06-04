@@ -56,6 +56,7 @@ const en = {
     preset: {
       defaultLabel: "Galaxy S25+ / One UI 8.5 default",
       calibratedLabel: "{{label}} calibrated",
+      customLabel: "Custom Quick Panel layout",
     },
     panels: {
       buttonBox: "Button box",

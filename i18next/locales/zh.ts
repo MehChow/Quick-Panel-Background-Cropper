@@ -55,6 +55,7 @@ const zh = {
     preset: {
       defaultLabel: "Galaxy S25+ / One UI 8.5 預設版型",
       calibratedLabel: "{{label}} 已校準",
+      customLabel: "自訂 Quick Panel 版型",
     },
     panels: {
       buttonBox: "按鈕區塊",

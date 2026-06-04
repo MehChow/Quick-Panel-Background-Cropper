@@ -5,6 +5,7 @@ import {
   getStartCustomizingResult,
   getStartExportState,
 } from "@/features/quick-panel/store/quick-panel-transitions";
+import { getPresetFromCalibrationProfile } from "@/features/quick-panel/model/custom-preset";
 
 describe("quick-panel transitions", () => {
   it("requires calibration before customizing", () => {
@@ -61,5 +62,38 @@ describe("quick-panel transitions", () => {
       error: "Unable to export images.",
       isExporting: false,
     });
+  });
+
+  it("builds a filtered preset from present custom panels only", () => {
+    const preset = getPresetFromCalibrationProfile({
+      mode: "custom-panels",
+      panels: {
+        brightness: {
+          id: "brightness",
+          rect: { x: 10, y: 80, width: 200, height: 50, radius: 20 },
+          status: "present",
+        },
+        buttonBox: {
+          id: "buttonBox",
+          rect: { x: 10, y: 10, width: 200, height: 60, radius: 20 },
+          status: "present",
+        },
+        mediaPlayer: {
+          id: "mediaPlayer",
+          rect: null,
+          status: "hidden",
+        },
+        volume: {
+          id: "volume",
+          rect: null,
+          status: "hidden",
+        },
+      },
+      version: 1,
+    });
+
+    expect(preset.visualOrder).toEqual(["buttonBox", "brightness"]);
+    expect(preset.goodLockOrder).toEqual(["buttonBox", "brightness"]);
+    expect(preset.label).toBe("Custom Quick Panel layout");
   });
 });
