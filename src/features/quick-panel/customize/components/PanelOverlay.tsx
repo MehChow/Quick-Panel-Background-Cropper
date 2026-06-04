@@ -1,6 +1,6 @@
 import { Lucide } from "@react-native-vector-icons/lucide";
 import { View } from "react-native";
-import type { PanelId } from "../model/types";
+import type { PanelId } from "../../model/types";
 
 interface PanelOverlayProps {
   panelId: PanelId;

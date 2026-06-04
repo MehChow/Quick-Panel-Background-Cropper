@@ -14,8 +14,8 @@ import { Text } from "@/components/ani-ui/text";
 import { Image } from "expo-image";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
-import type { GeneratedExport } from "../model/types";
-import { useGoodLockLink } from "./useGoodLockLink";
+import type { GeneratedExport } from "../../model/types";
+import { useGoodLockLink } from "../useGoodLockLink";
 
 interface ExportSuccessPanelProps {
   exports: GeneratedExport[];

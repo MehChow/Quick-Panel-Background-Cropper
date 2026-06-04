@@ -1,13 +1,8 @@
-import {
-  PanResponder,
-  View,
-  type GestureResponderEvent,
-  type PanResponderGestureState,
-} from "react-native";
-import { getPanelUnion } from "../model/transform";
-import type { PanelRect, PickedImage } from "../model/types";
-import { getCalibratedPreset } from "./calibration";
-import { clampRect } from "./calibration-rect";
+import { View } from "react-native";
+import { getPanelUnion } from "../../model/panel-geometry";
+import type { PanelRect, PickedImage } from "../../model/types";
+import { getCalibratedPreset } from "../calibration";
+import { useCalibrationMoveResponder } from "../hooks/useCalibrationMoveResponder";
 import { CalibrationResizeHandle } from "./CalibrationResizeHandle";
 
 interface CalibrationOverlayProps {
@@ -25,10 +20,11 @@ export function CalibrationOverlay({
 }: CalibrationOverlayProps) {
   const previewPreset = getCalibratedPreset(rect);
   const union = getPanelUnion(previewPreset);
-  const moveResponder = PanResponder.create({
-    onStartShouldSetPanResponder: () => true,
-    onMoveShouldSetPanResponder: () => true,
-    onPanResponderMove: handleMove(rect, scale, screenshot, onRectChange),
+  const moveResponder = useCalibrationMoveResponder({
+    rect,
+    scale,
+    screenshot,
+    onRectChange,
   });
 
   return (
@@ -104,24 +100,4 @@ export function CalibrationOverlay({
       />
     </View>
   );
-}
-
-function handleMove(
-  rect: PanelRect,
-  scale: number,
-  screenshot: PickedImage,
-  onRectChange: (rect: PanelRect) => void,
-) {
-  return (_event: GestureResponderEvent, gesture: PanResponderGestureState) => {
-    onRectChange(
-      clampRect(
-        {
-          ...rect,
-          x: rect.x + gesture.dx / scale,
-          y: rect.y + gesture.dy / scale,
-        },
-        screenshot,
-      ),
-    );
-  };
 }

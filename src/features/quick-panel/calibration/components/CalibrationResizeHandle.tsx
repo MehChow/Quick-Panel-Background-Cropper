@@ -1,11 +1,7 @@
-import {
-  PanResponder,
-  View,
-  type GestureResponderEvent,
-  type PanResponderGestureState,
-} from "react-native";
-import type { PanelRect, PickedImage } from "../model/types";
-import { clampRect, resizeRect, type HandlePosition } from "./calibration-rect";
+import { View } from "react-native";
+import type { PanelRect, PickedImage } from "../../model/types";
+import type { HandlePosition } from "../calibration-rect";
+import { useCalibrationResizeResponder } from "../hooks/useCalibrationResizeResponder";
 
 interface CalibrationResizeHandleProps {
   position: HandlePosition;
@@ -16,11 +12,7 @@ interface CalibrationResizeHandleProps {
 }
 
 export function CalibrationResizeHandle(props: CalibrationResizeHandleProps) {
-  const responder = PanResponder.create({
-    onStartShouldSetPanResponder: () => true,
-    onMoveShouldSetPanResponder: () => true,
-    onPanResponderMove: handleResize(props),
-  });
+  const responder = useCalibrationResizeResponder(props);
 
   return (
     <View
@@ -36,20 +28,6 @@ export function CalibrationResizeHandle(props: CalibrationResizeHandleProps) {
       ) : null}
     </View>
   );
-}
-
-function handleResize({
-  rect,
-  scale,
-  screenshot,
-  onRectChange,
-  position,
-}: CalibrationResizeHandleProps) {
-  return (_event: GestureResponderEvent, gesture: PanResponderGestureState) => {
-    const dx = gesture.dx / scale;
-    const dy = gesture.dy / scale;
-    onRectChange(clampRect(resizeRect(rect, position, dx, dy), screenshot));
-  };
 }
 
 function getHandleStyle(position: HandlePosition) {

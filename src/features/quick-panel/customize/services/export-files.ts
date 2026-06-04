@@ -1,13 +1,13 @@
 import { File, Paths } from "expo-file-system";
 import { Album, Asset, requestPermissionsAsync } from "expo-media-library";
 import { captureRef, releaseCapture } from "react-native-view-shot";
-import { getPanelLabel, translate } from "../model/i18n";
-import { exportSidePixels } from "../model/transform";
+import { getPanelLabel, translate } from "../../model/i18n";
+import { exportSidePixels } from "../../model/panel-geometry";
 import type {
   ExportRefs,
   GeneratedExport,
   QuickPanelPreset,
-} from "../model/types";
+} from "../../model/types";
 
 export async function captureAndSaveExports(
   refs: ExportRefs,

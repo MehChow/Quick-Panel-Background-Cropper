@@ -1,155 +1,83 @@
 import { Button } from "@/components/ani-ui/button";
-import { Card } from "@/components/ani-ui/card";
 import { Text } from "@/components/ani-ui/text";
-import { Image } from "expo-image";
-import { useState } from "react";
+import { AppHeader } from "@/features/quick-panel/shared/AppHeader";
+import { useQuickPanelStore } from "@/features/quick-panel/store/quick-panel-store";
+import { quickPanelSelectors } from "@/features/quick-panel/store/selectors";
+import { useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
-import type { LayoutChangeEvent } from "react-native";
 import { View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useShallow } from "zustand/react/shallow";
+import { LandingExampleCard } from "./components/LandingExampleCard";
+import { useLandingLayout } from "./hooks/useLandingLayout";
 
-const exampleImageAspectRatio = 1080 / 2340;
-const landingTopPadding = 16;
-const landingGap = 16;
-const cardPadding = 48;
-const cardContentGap = 20;
-const exampleLabelHeight = 24;
-const exampleLabelGap = 4;
-const doroColumnWidth = 96;
-const doroImageSize = 88;
-
-interface LandingScreenProps {
-  isCalibrated: boolean;
-  onCalibrate: () => void;
-  onStart: () => void;
-}
-
-interface ExampleCardProps {
-  maxHeight: number;
-}
-
-export function LandingScreen({
-  isCalibrated,
-  onCalibrate,
-  onStart,
-}: LandingScreenProps) {
+export function LandingScreen() {
   const { t } = useTranslation();
-  const [containerHeight, setContainerHeight] = useState(0);
-  const [actionsHeight, setActionsHeight] = useState(0);
-  const cardHeight = Math.max(
-    0,
-    containerHeight - actionsHeight - landingTopPadding - landingGap,
-  );
+  const router = useRouter();
+  const { isCalibrated, goToCalibration, startCustomizing } =
+    useQuickPanelStore(useShallow(quickPanelSelectors.landingScreen));
+  const { cardHeight, handleContainerLayout, handleActionsLayout } =
+    useLandingLayout();
 
-  const handleContainerLayout = (event: LayoutChangeEvent) => {
-    setContainerHeight(event.nativeEvent.layout.height);
+  const openCalibration = () => {
+    goToCalibration();
+    router.push("/calibration");
   };
 
-  const handleActionsLayout = (event: LayoutChangeEvent) => {
-    setActionsHeight(event.nativeEvent.layout.height);
+  const openCustomize = () => {
+    if (startCustomizing()) {
+      router.push("/customize");
+      return;
+    }
+    router.push("/calibration");
   };
 
   return (
-    <View className="flex-1 pt-4" onLayout={handleContainerLayout}>
-      <ExampleCard maxHeight={cardHeight} />
+    <SafeAreaView style={{ flex: 1 }}>
+      <View className="px-5 pt-6">
+        <AppHeader />
+      </View>
+      <View className="flex-1 px-5 pb-8">
+        <View className="flex-1 pt-4" onLayout={handleContainerLayout}>
+          <LandingExampleCard maxHeight={cardHeight} />
 
-      <View className="mt-4 gap-2" onLayout={handleActionsLayout}>
-        <Button
-          className="w-full"
-          onPress={onStart}
-          disabled={!isCalibrated}
-          textClassName="font-semibold"
-        >
-          {t("landing.startCustomizing")}
-        </Button>
-        {isCalibrated ? (
-          <Text className="text-center text-sm leading-5 text-zinc-400">
-            {t("landing.calibrated")}{" "}
-            <Text
-              accessibilityRole="link"
-              className="text-sm leading-5 text-orange-200 underline"
-              onPress={onCalibrate}
+          <View className="mt-4 gap-2" onLayout={handleActionsLayout}>
+            <Button
+              className="w-full"
+              onPress={openCustomize}
+              disabled={!isCalibrated}
+              textClassName="font-semibold"
             >
-              {t("landing.recalibrate")}
-            </Text>
-          </Text>
-        ) : (
-          <Button
-            className="w-full bg-orange-100"
-            onPress={onCalibrate}
-            textClassName="font-semibold text-orange-800"
-          >
-            {t("landing.calibration")}
-          </Button>
-        )}
-        {!isCalibrated ? (
-          <Text className="text-center text-xs text-zinc-400">
-            {t("landing.calibrationRequired")}
-          </Text>
-        ) : null}
-      </View>
-    </View>
-  );
-}
-
-function ExampleCard({ maxHeight }: ExampleCardProps) {
-  const { t } = useTranslation();
-  const [cardWidth, setCardWidth] = useState(0);
-  const rightColumnWidth = Math.max(
-    0,
-    cardWidth - cardPadding - doroColumnWidth - cardContentGap,
-  );
-  const imageHeightLimit = Math.max(
-    0,
-    maxHeight - cardPadding - exampleLabelHeight - exampleLabelGap,
-  );
-  const imageHeightFromWidth = rightColumnWidth
-    ? rightColumnWidth / exampleImageAspectRatio
-    : imageHeightLimit;
-  const imageHeight = Math.min(imageHeightLimit, imageHeightFromWidth);
-  const imageWidth = imageHeight * exampleImageAspectRatio;
-  const doroSize = Math.min(
-    doroImageSize,
-    Math.max(0, maxHeight - cardPadding),
-  );
-
-  const handleCardLayout = (event: LayoutChangeEvent) => {
-    setCardWidth(event.nativeEvent.layout.width);
-  };
-
-  return (
-    <Card
-      className="w-full flex-row items-center gap-5 rounded-2xl border-zinc-800 bg-zinc-900"
-      onLayout={handleCardLayout}
-      style={maxHeight ? { height: maxHeight } : undefined}
-    >
-      <View
-        className="items-center justify-center"
-        style={{ width: doroColumnWidth }}
-      >
-        <View style={{ height: doroSize, width: doroSize }}>
-          <Image
-            source={require("@/assets/doro_like.gif")}
-            style={{ height: "100%", width: "100%" }}
-            contentFit="contain"
-          />
+              {t("landing.startCustomizing")}
+            </Button>
+            {isCalibrated ? (
+              <Text className="text-center text-sm leading-5 text-zinc-400">
+                {t("landing.calibrated")}{" "}
+                <Text
+                  accessibilityRole="link"
+                  className="text-sm leading-5 text-orange-200 underline"
+                  onPress={openCalibration}
+                >
+                  {t("landing.recalibrate")}
+                </Text>
+              </Text>
+            ) : (
+              <Button
+                className="w-full bg-orange-100"
+                onPress={openCalibration}
+                textClassName="font-semibold text-orange-800"
+              >
+                {t("landing.calibration")}
+              </Button>
+            )}
+            {!isCalibrated ? (
+              <Text className="text-center text-xs text-zinc-400">
+                {t("landing.calibrationRequired")}
+              </Text>
+            ) : null}
+          </View>
         </View>
       </View>
-
-      <View className="flex-1 gap-1">
-        <Text className="text-center font-semibold text-orange-400">
-          {t("landing.example")}
-        </Text>
-        <View
-          className="self-center overflow-hidden rounded-2xl border border-white"
-          style={{ height: imageHeight, width: imageWidth }}
-        >
-          <Image
-            source={require("@/assets/example.jpeg")}
-            style={{ height: "100%", width: "100%" }}
-            contentFit="contain"
-          />
-        </View>
-      </View>
-    </Card>
+    </SafeAreaView>
   );
 }

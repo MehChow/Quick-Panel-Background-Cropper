@@ -1,4 +1,4 @@
-import type { ImageTransform } from "../model/types";
+import type { ImageTransform } from "../../model/types";
 
 export function clampTransformWorklet(
   x: number,

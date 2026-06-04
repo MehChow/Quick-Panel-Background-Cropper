@@ -1,12 +1,12 @@
 import { Image } from "expo-image";
 import { forwardRef } from "react";
 import { View } from "react-native";
-import { getExportSquareRect } from "../model/transform";
+import { getExportSquareRect } from "../../model/panel-geometry";
 import type {
   ImageTransform,
   PanelDefinition,
   PickedImage,
-} from "../model/types";
+} from "../../model/types";
 
 interface ExportSurfaceProps {
   panel: PanelDefinition;

@@ -1,11 +1,11 @@
 import { PixelRatio, View } from "react-native";
-import { exportSidePixels } from "../model/transform";
+import { exportSidePixels } from "../../model/panel-geometry";
 import type {
   ExportRefs,
   ImageTransform,
   PickedImage,
   QuickPanelPreset,
-} from "../model/types";
+} from "../../model/types";
 import { ExportSurface } from "./ExportSurface";
 
 interface ExportSurfacesProps {
