@@ -8,7 +8,7 @@ import type {
   ImageTransform,
   PanelDefinition,
   PickedImage,
-} from "../model/types";
+} from "../../model/types";
 import { PanelOverlay } from "./PanelOverlay";
 
 const AnimatedImage = Animated.createAnimatedComponent(Image);

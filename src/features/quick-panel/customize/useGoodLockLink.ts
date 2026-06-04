@@ -1,5 +1,8 @@
 import { useState } from "react";
-import { openGoodLock, openGoodLockInSamsungStore } from "./good-lock-link";
+import {
+  openGoodLock,
+  openGoodLockInSamsungStore,
+} from "./services/good-lock-link";
 
 interface GoodLockLinkState {
   isGoodLockDialogOpen: boolean;

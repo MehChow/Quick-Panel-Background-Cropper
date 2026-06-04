@@ -1,5 +1,8 @@
 import { s25PlusOneUi85Preset } from "../model/preset";
-import { getPanelUnion, scalePresetToUnion } from "../model/transform";
+import {
+  getPanelUnion,
+  scalePresetToUnion,
+} from "../model/panel-geometry";
 import type { PanelRect, PickedImage, QuickPanelPreset } from "../model/types";
 
 const defaultHorizontalMarginRatio = 0.045;
