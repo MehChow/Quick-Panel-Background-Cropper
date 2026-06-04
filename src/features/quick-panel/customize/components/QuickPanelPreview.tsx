@@ -5,8 +5,8 @@ import type {
   PickedImage,
   QuickPanelPreset,
 } from "../../model/types";
-import { PanelSlice } from "./PanelSlice";
 import { useQuickPanelPreviewGestures } from "../hooks/useQuickPanelPreviewGestures";
+import { PanelSlice } from "./PanelSlice";
 
 interface QuickPanelPreviewProps {
   image: PickedImage;
@@ -41,7 +41,7 @@ export function QuickPanelPreview({
   return (
     <GestureDetector gesture={gesture}>
       <Animated.View
-        className="w-full overflow-hidden bg-zinc-950"
+        className="w-full overflow-hidden"
         onLayout={handleLayout}
         style={{
           aspectRatio: panelUnion.width / panelUnion.height,
