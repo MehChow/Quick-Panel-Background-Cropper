@@ -121,7 +121,12 @@ export function CalibrationScreen() {
           />
         </View>
       ) : null}
-      {isHelpOpen ? <CalibrationHelpSheet onClose={closeHelp} /> : null}
+      {isHelpOpen ? (
+        <CalibrationHelpSheet
+          calibrationMode={calibrationMode}
+          onClose={closeHelp}
+        />
+      ) : null}
     </SafeAreaView>
   );
 }

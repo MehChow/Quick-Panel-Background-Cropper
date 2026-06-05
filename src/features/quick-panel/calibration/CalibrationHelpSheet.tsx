@@ -6,14 +6,21 @@ import BottomSheet, {
 import { useTranslation } from "react-i18next";
 import { useWindowDimensions, View } from "react-native";
 import { CalibrationInstructionCard } from "./CalibrationInstructionCard";
+import { calibrationHelpContentByMode } from "./calibration-help-content";
+import type { CalibrationMode } from "../model/calibration-profile";
 
 interface CalibrationHelpSheetProps {
+  calibrationMode: CalibrationMode;
   onClose: () => void;
 }
 
-export function CalibrationHelpSheet({ onClose }: CalibrationHelpSheetProps) {
+export function CalibrationHelpSheet({
+  calibrationMode,
+  onClose,
+}: CalibrationHelpSheetProps) {
   const { t } = useTranslation();
   const { height } = useWindowDimensions();
+  const content = calibrationHelpContentByMode[calibrationMode];
 
   return (
     <BottomSheet
@@ -56,9 +63,9 @@ export function CalibrationHelpSheet({ onClose }: CalibrationHelpSheetProps) {
           </Text>
         </View>
         <Text className="mb-4 text-sm font-medium leading-6 text-zinc-300">
-          {t("calibration.instruction")}
+          {t(content.instructionKey)}
         </Text>
-        <CalibrationInstructionCard />
+        <CalibrationInstructionCard imageSource={content.imageSource} />
       </BottomSheetScrollView>
     </BottomSheet>
   );

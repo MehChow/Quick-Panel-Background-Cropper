@@ -1,11 +1,17 @@
 import { Text } from "@/components/ani-ui/text";
-import { Image } from "expo-image";
+import { Image, type ImageSource } from "expo-image";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 
 const calibrationExampleAspectRatio = 1080 / 2340;
 
-export function CalibrationInstructionCard() {
+interface CalibrationInstructionCardProps {
+  imageSource: ImageSource | number;
+}
+
+export function CalibrationInstructionCard({
+  imageSource,
+}: CalibrationInstructionCardProps) {
   const { t } = useTranslation();
 
   return (
@@ -19,7 +25,7 @@ export function CalibrationInstructionCard() {
           style={{ aspectRatio: calibrationExampleAspectRatio }}
         >
           <Image
-            source={require("@/assets/calibrate.jpeg")}
+            source={imageSource}
             style={{ height: "100%", width: "100%" }}
             contentFit="contain"
           />
