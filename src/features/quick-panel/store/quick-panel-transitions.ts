@@ -1,4 +1,5 @@
 import { clampTransform, getFitTransform } from "../model/image-placement";
+import { createEmptyCustomCalibrationSession } from "../calibration/custom-calibration-session";
 import {
   cloneCustomPanelsCalibrationProfile,
   createDefaultUnionCalibrationProfile,
@@ -31,6 +32,7 @@ export function getLandingState(): QuickPanelStatePatch {
   return {
     step: "landing",
     screenshot: null,
+    customCalibrationSession: createEmptyCustomCalibrationSession(),
     ...createResetWorkState(),
     error: null,
   };
@@ -49,6 +51,7 @@ export function getCalibrationState(
     screenshot: null,
     customCalibrationStep: panelIds[0],
     isCustomCalibrationReview: false,
+    customCalibrationSession: createEmptyCustomCalibrationSession(),
     ...createResetWorkState(),
     error: null,
   };
@@ -63,6 +66,7 @@ export function getCalibrationModeState(
   return {
     ...modeState,
     calibrationMode: mode,
+    customCalibrationSession: createEmptyCustomCalibrationSession(),
     error: null,
   };
 }
@@ -177,6 +181,7 @@ export function getAcceptedCalibrationState(
     savedCalibrationProfiles: nextSavedProfiles,
     customCalibrationStep: panelIds[0],
     isCustomCalibrationReview: false,
+    customCalibrationSession: createEmptyCustomCalibrationSession(),
     step: "landing",
     screenshot: null,
     ...createResetWorkState(),

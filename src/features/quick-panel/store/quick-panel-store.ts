@@ -1,10 +1,12 @@
 import { create } from "zustand";
+import { createEmptyCustomCalibrationSession } from "../calibration/custom-calibration-session";
 import type {
   CalibrationMode,
   CalibrationProfile,
   CustomPanelsCalibrationProfile,
 } from "../model/calibration-profile";
 import type {
+  CustomCalibrationSession,
   GeneratedExport,
   ImageTransform,
   PanelId,
@@ -41,8 +43,12 @@ export interface QuickPanelState extends QuickPanelStateData {
   acceptCalibration: () => boolean;
   acceptCalibrationProfile: (profile: CalibrationProfile) => void;
   setCustomCalibrationDraft: (draft: CustomPanelsCalibrationProfile) => void;
+  setCustomCalibrationSession: (
+    session: Partial<CustomCalibrationSession>,
+  ) => void;
   setCustomCalibrationStep: (step: PanelId) => void;
   setCustomCalibrationReview: (isReview: boolean) => void;
+  resetCustomCalibrationSession: () => void;
   setImage: (image: PickedImage) => void;
   setTransform: (transform: ImageTransform) => void;
   resetFit: () => void;
@@ -97,6 +103,14 @@ export const useQuickPanelStore = create<QuickPanelState>((set, get) => ({
       customCalibrationDraft: draft,
       error: null,
     }),
+  setCustomCalibrationSession: (session) =>
+    set({
+      customCalibrationSession: {
+        ...get().customCalibrationSession,
+        ...session,
+      },
+      error: null,
+    }),
   setCustomCalibrationStep: (step) =>
     set({
       customCalibrationStep: step,
@@ -105,6 +119,11 @@ export const useQuickPanelStore = create<QuickPanelState>((set, get) => ({
   setCustomCalibrationReview: (isReview) =>
     set({
       isCustomCalibrationReview: isReview,
+      error: null,
+    }),
+  resetCustomCalibrationSession: () =>
+    set({
+      customCalibrationSession: createEmptyCustomCalibrationSession(),
       error: null,
     }),
   setImage: (image) => set(getImageState(image, get().activePreset)),

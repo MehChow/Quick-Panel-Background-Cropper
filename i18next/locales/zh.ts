@@ -41,6 +41,9 @@ const zh = {
       chooseFromAlbum: "從相簿選取",
       reImport: "重新匯入",
       looksGood: "看起來不錯",
+      continueWithOneScreenshot: "只用一張截圖繼續",
+      addSecondScreenshot: "加入第二張截圖",
+      alignOverlap: "對齊重疊區域",
       useBox: "使用方框",
       markHidden: "標記為隱藏",
       panelStepCounter: "{{current}} / {{total}}",
@@ -90,6 +93,8 @@ const zh = {
       importScreenshotFirst: "請先匯入 Quick Panel 截圖。",
       customCalibrationIncomplete:
         "儲存前請先設定每個區塊，並至少保留一個可見區塊。",
+      customCalibrationSecondScreenshotSizeMismatch:
+        "第二張截圖必須和第一張截圖同寬，且兩張都要是直向截圖。",
       mediaLibraryPermission: "儲存匯出結果需要媒體庫權限。",
       noPanelsToExport: "匯出前至少要保留一個可見區塊。",
       exportSurfaceMissing: "{{panel}} 缺少匯出畫面。",

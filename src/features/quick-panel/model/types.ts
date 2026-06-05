@@ -40,6 +40,16 @@ export interface PickedImage {
   fileName?: string | null;
 }
 
+export type CustomCalibrationSourceMode = "single" | "double";
+
+export interface CustomCalibrationSession {
+  bottomOffsetY: number | null;
+  bottomScreenshot: PickedImage | null;
+  mergedHeight: number | null;
+  sourceMode: CustomCalibrationSourceMode;
+  topScreenshot: PickedImage | null;
+}
+
 export interface ImageTransform {
   x: number;
   y: number;

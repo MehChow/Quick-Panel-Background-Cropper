@@ -17,6 +17,7 @@ export const quickPanelSelectors = {
     screenshot: state.screenshot,
     calibrationRect: state.calibrationRect,
     customCalibrationDraft: state.customCalibrationDraft,
+    customCalibrationSession: state.customCalibrationSession,
     customCalibrationStep: state.customCalibrationStep,
     isCustomCalibrationReview: state.isCustomCalibrationReview,
     error: state.error,
@@ -25,8 +26,10 @@ export const quickPanelSelectors = {
     acceptCalibration: state.acceptCalibration,
     acceptCalibrationProfile: state.acceptCalibrationProfile,
     setCustomCalibrationDraft: state.setCustomCalibrationDraft,
+    setCustomCalibrationSession: state.setCustomCalibrationSession,
     setCustomCalibrationStep: state.setCustomCalibrationStep,
     setCustomCalibrationReview: state.setCustomCalibrationReview,
+    resetCustomCalibrationSession: state.resetCustomCalibrationSession,
   }),
   customizeScreen: (state: QuickPanelState) => ({
     activePreset: state.activePreset,

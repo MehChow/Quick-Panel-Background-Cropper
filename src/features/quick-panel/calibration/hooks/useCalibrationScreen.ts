@@ -2,10 +2,18 @@ import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { useShallow } from "zustand/react/shallow";
+import {
+  canUseAsSecondCustomScreenshot,
+  getMergedCustomScreenshotMetrics,
+} from "../custom-calibration-session";
 import { panelIds } from "../../model/calibration-profile";
 import { translate } from "../../model/i18n";
 import { getSuggestedCalibrationRect } from "../calibration";
-import type { PanelRect, PickedImage } from "../../model/types";
+import type {
+  CustomCalibrationSourceMode,
+  PanelRect,
+  PickedImage,
+} from "../../model/types";
 import { useQuickPanelStore } from "../../store/quick-panel-store";
 import { quickPanelSelectors } from "../../store/selectors";
 import {
@@ -30,6 +38,7 @@ export function useCalibrationScreen() {
     screenshot,
     calibrationRect,
     customCalibrationDraft,
+    customCalibrationSession,
     customCalibrationStep,
     isCustomCalibrationReview,
     error,
@@ -38,8 +47,10 @@ export function useCalibrationScreen() {
     acceptCalibration,
     acceptCalibrationProfile,
     setCustomCalibrationDraft,
+    setCustomCalibrationSession,
     setCustomCalibrationStep,
     setCustomCalibrationReview,
+    resetCustomCalibrationSession,
   } = useQuickPanelStore(useShallow(quickPanelSelectors.calibrationScreen));
   const {
     currentPanel,
@@ -55,33 +66,93 @@ export function useCalibrationScreen() {
   } = useCustomCalibrationFlow();
   const isCustomMode = calibrationMode === "custom-panels";
 
-  const importScreenshot = async () => {
-    setIsHelpOpen(false);
-    setLocalError(null);
-
+  const pickScreenshot = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: false,
       mediaTypes: ["images"],
       quality: 1,
     });
 
-    if (!result.canceled && result.assets[0]) {
-      const asset = result.assets[0];
-      const nextScreenshot = {
-        fileName: asset.fileName,
-        height: asset.height,
-        uri: asset.uri,
-        width: asset.width,
-      };
-      setScreenshot(nextScreenshot, getSuggestedCalibrationRect(nextScreenshot));
-      if (isCustomMode) {
-        setCustomCalibrationDraft(
-          createSuggestedCustomCalibrationProfile(nextScreenshot),
-        );
-        setCustomCalibrationStep(panelIds[0]);
-        setCustomCalibrationReview(false);
-      }
+    if (result.canceled || !result.assets[0]) {
+      return null;
     }
+
+    const asset = result.assets[0];
+    return {
+      fileName: asset.fileName,
+      height: asset.height,
+      uri: asset.uri,
+      width: asset.width,
+    } satisfies PickedImage;
+  };
+
+  const startCustomCalibrationSession = (
+    nextScreenshot: PickedImage,
+    sourceMode: CustomCalibrationSourceMode,
+  ) => {
+    setCustomCalibrationDraft(
+      createSuggestedCustomCalibrationProfile(nextScreenshot),
+    );
+    setCustomCalibrationStep(panelIds[0]);
+    setCustomCalibrationReview(false);
+    setCustomCalibrationSession({
+      bottomOffsetY: null,
+      bottomScreenshot: null,
+      mergedHeight: sourceMode === "single" ? nextScreenshot.height : null,
+      sourceMode,
+      topScreenshot: nextScreenshot,
+    });
+  };
+
+  const importScreenshot = async () => {
+    setIsHelpOpen(false);
+    setLocalError(null);
+
+    const nextScreenshot = await pickScreenshot();
+    if (!nextScreenshot) {
+      return;
+    }
+
+    if (isCustomMode) {
+      startCustomCalibrationSession(
+        nextScreenshot,
+        customCalibrationSession.sourceMode,
+      );
+      return;
+    }
+
+    setScreenshot(nextScreenshot, getSuggestedCalibrationRect(nextScreenshot));
+  };
+
+  const importCustomBottomScreenshot = async () => {
+    setIsHelpOpen(false);
+    setLocalError(null);
+
+    const topScreenshot = customCalibrationSession.topScreenshot;
+    if (!topScreenshot) {
+      return;
+    }
+
+    const nextScreenshot = await pickScreenshot();
+    if (!nextScreenshot) {
+      return;
+    }
+
+    if (!canUseAsSecondCustomScreenshot(topScreenshot, nextScreenshot)) {
+      setLocalError(
+        translate("errors.customCalibrationSecondScreenshotSizeMismatch"),
+      );
+      return;
+    }
+
+    setCustomCalibrationSession({
+      bottomScreenshot: nextScreenshot,
+      mergedHeight: getMergedCustomScreenshotMetrics(
+        topScreenshot,
+        nextScreenshot,
+        topScreenshot.height,
+      ).height,
+    });
   };
 
   const saveCalibration = () => {
@@ -94,6 +165,7 @@ export function useCalibrationScreen() {
       }
 
       acceptCalibrationProfile(customCalibrationDraft);
+      resetCustomCalibrationSession();
       router.dismissTo("/");
       return;
     }
@@ -106,11 +178,14 @@ export function useCalibrationScreen() {
     }
   };
 
-  const displayedScreenshot = screenshot ?? leavingCalibration?.screenshot ?? null;
+  const displayedScreenshot = isCustomMode
+    ? customCalibrationSession.topScreenshot
+    : screenshot ?? leavingCalibration?.screenshot ?? null;
   const displayedRect = calibrationRect ?? leavingCalibration?.rect ?? null;
 
   return {
     calibrationMode,
+    customCalibrationSession,
     error: localError ?? error,
     isHelpOpen,
     displayedScreenshot,
@@ -145,6 +220,19 @@ export function useCalibrationScreen() {
       setLocalError(null);
       markCurrentPresent();
     },
+    setCustomCalibrationSourceMode: (sourceMode: CustomCalibrationSourceMode) => {
+      setLocalError(null);
+      setCustomCalibrationSession({
+        bottomOffsetY: null,
+        bottomScreenshot: null,
+        mergedHeight:
+          sourceMode === "single"
+            ? customCalibrationSession.topScreenshot?.height ?? null
+            : null,
+        sourceMode,
+      });
+    },
+    importCustomBottomScreenshot,
     leaveCustomReview: () => {
       setLocalError(null);
       setCustomCalibrationReview(false);

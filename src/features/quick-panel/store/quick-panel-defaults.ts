@@ -4,6 +4,7 @@ import {
   hasCalibrationForMode,
   panelIds,
 } from "../model/calibration-profile";
+import { createEmptyCustomCalibrationSession } from "../calibration/custom-calibration-session";
 import type {
   CalibrationMode,
   CalibrationProfile,
@@ -13,6 +14,7 @@ import type {
 import { getPresetFromCalibrationProfile } from "../model/custom-preset";
 import { s25PlusOneUi85Preset } from "../model/preset";
 import type {
+  CustomCalibrationSession,
   GeneratedExport,
   ImageTransform,
   PanelId,
@@ -32,6 +34,7 @@ export interface QuickPanelStateData {
   customCalibrationDraft: CustomPanelsCalibrationProfile;
   customCalibrationStep: PanelId;
   isCustomCalibrationReview: boolean;
+  customCalibrationSession: CustomCalibrationSession;
   presetId: string;
   activePreset: QuickPanelPreset;
   screenshot: PickedImage | null;
@@ -80,6 +83,7 @@ export function createInitialQuickPanelStateData(): QuickPanelStateData {
     customCalibrationDraft,
     customCalibrationStep: panelIds[0],
     isCustomCalibrationReview: false,
+    customCalibrationSession: createEmptyCustomCalibrationSession(),
     presetId: activePreset.id,
     activePreset,
     screenshot: null,
