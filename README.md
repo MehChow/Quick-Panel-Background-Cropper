@@ -8,7 +8,8 @@ This app helps you turn one wallpaper or photo into the square panel images used
 
 It includes:
 
-- one-time Quick Panel calibration using a screenshot
+- default-layout calibration using one union box
+- custom-layout calibration using one box per panel
 - live preview for Button box, Brightness, Volume, and Media player
 - pan and zoom adjustment before export
 - PNG export in the same order you need to apply them in Good Lock
@@ -21,30 +22,34 @@ This app is only intended for:
 - Android 16
 - One UI 8.5
 - default Quick Panel layout
+- customized Quick Panel layouts that still use Button box, Brightness, Volume, or Media player
 - mainly Galaxy S series and A series slab phones
 
 Not intended for:
 
 - Fold, Flip, or tablets
 - DeX or external-display layouts
-- heavily customized Quick Panel layouts
 - older or different One UI versions
 
 ## User flow
 
-1. Import a fully expanded Quick Panel screenshot.
-2. Adjust the green calibration box around the whole customizable panel stack.
-3. Save calibration.
-4. Choose one image from your album.
-5. Pan and zoom it in the preview.
-6. Export the PNGs.
-7. Apply them in Good Lock in the shown order.
+1. Choose `Default layout` or `Custom layout`.
+2. Import a fully expanded Quick Panel screenshot.
+3. In `Default layout`, adjust one green box around the whole customizable panel stack.
+4. In `Custom layout`, place a box for Button box, Brightness, Volume, and Media player, or mark a panel hidden.
+5. Review and save calibration.
+6. Choose one image from your album.
+7. Pan and zoom it in the preview.
+8. Export the PNGs.
+9. Apply them in Good Lock in the shown order.
 
 ## How calibration works
 
-The app uses a Galaxy S25+ on One UI 8.5 as the base reference layout, then adapts that layout to your phone using your screenshot.
+The app uses a Galaxy S25+ on One UI 8.5 as the base reference layout.
 
-This works best because the supported phones are expected to have a very similar Quick Panel structure. The full calibration logic and assumptions are documented in [CALIBRATION_PLAN.md](/D:/quick-panel-crop-exporter/CALIBRATION_PLAN.md).
+For `Default layout`, it scales that reference layout from one calibrated outer box. For `Custom layout`, it stores the real user-provided rectangles for each visible panel and skips hidden ones during preview and export.
+
+The full calibration logic and assumptions are documented in [CALIBRATION_PLAN.md](./CALIBRATION_PLAN.md).
 
 ## Screenshots
 
@@ -58,7 +63,8 @@ This works best because the supported phones are expected to have a very similar
 ## Notes
 
 - Use a fully expanded Quick Panel screenshot when calibrating.
-- Keep the default Quick Panel layout for best results.
+- Use `Default layout` when your Quick Panel still matches Samsung's default stack.
+- Use `Custom layout` when you have moved, hidden, or resized supported Quick Panel panels.
 - Good Lock availability depends on Samsung support in your region and device setup.
 
 ## Development

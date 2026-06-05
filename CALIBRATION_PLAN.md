@@ -2,19 +2,27 @@
 
 ## Product scope
 
-This calibration flow is only intended for Samsung phones running Android 16 with One UI 8.5, using the default Quick Panel layout.
+This calibration flow is intended for Samsung phones running Android 16 with One UI 8.5 on Galaxy S25+-class slab phones.
 
-The primary target devices are standard slab phones in Samsung's S series and A series. Fold, Flip, tablets, DeX, external displays, and heavily customized Quick Panel layouts are out of scope for this version.
+The primary target devices are standard slab phones in Samsung's S series and A series. Fold, Flip, tablets, DeX, and external displays are out of scope for this version.
 
-This is not a generic "support every Samsung layout" calibration system. It is a narrow adaptation layer for phones that are expected to look very similar to the base reference device.
+This is still not a generic "support every Samsung layout" calibration system. It is a narrow adaptation layer for phones that are expected to look very similar to the base reference device, but it now supports two calibration modes:
+
+- `Default layout`: one outer union box for Samsung's default Quick Panel stack
+- `Custom layout`: one box per panel for Button box, Brightness, Volume, and Media player, with per-panel hidden support
 
 ## Calibration source
 
 The app uses a Galaxy S25+ on One UI 8.5 with the default Quick Panel layout as the base template. That template stores panel rectangles for Button box, Brightness, Volume, and Media player.
 
-Calibration uses one user-selected rectangle from a fully expanded Quick Panel screenshot. The rectangle should cover the customizable panel stack only: from the top of Button box to the bottom of Media player, and from the left edge to the right edge of those panels.
+Calibration always starts from one fully expanded Quick Panel screenshot.
 
-The user only adjusts this one rectangle. They do not manually crop four separate panels.
+In `Default layout`, the user selects one rectangle covering the customizable panel stack only: from the top of Button box to the bottom of Media player, and from the left edge to the right edge of those panels.
+
+In `Custom layout`, the user steps through Button box, Brightness, Volume, and Media player one by one. Each panel is either:
+
+- marked `present` with its own saved rectangle
+- marked `hidden` and skipped during preview/export
 
 ## Why this scope makes sense
 
@@ -25,21 +33,28 @@ Within the target scope, Samsung phones are expected to keep the same overall Qu
 - very similar internal spacing
 - very similar relative widths and heights
 
-Because of that, the app does not need to discover an entirely new layout for every phone. It only needs to adapt one known-good layout to a slightly different size and position on another similar Samsung phone.
+Because of that, the app does not need to discover an entirely new layout for every phone. It only needs either:
+
+- one calibrated outer box for default-like layouts
+- explicit per-panel rectangles when the user has customized the layout enough that scaling the default template would be wrong
 
 ## Suggested rectangle
 
-The initial suggestion is based on the screenshot size and the base preset's panel-union aspect ratio. It is horizontally inset by a small margin, vertically placed near the expected Quick Panel stack area, and clamped inside the screenshot.
+The initial suggestion is still based on the screenshot size and the base preset's panel-union aspect ratio. It is horizontally inset by a small margin, vertically placed near the expected Quick Panel stack area, and clamped inside the screenshot.
 
-This suggested rectangle is only a starting point. The user can move or resize it to match their own screenshot before confirming.
+In `Default layout`, this becomes the starting outer box.
+
+In `Custom layout`, the app uses that same suggested union to derive first-pass panel rectangles for Button box, Brightness, Volume, and Media player. Those suggested per-panel boxes are only starting points; the user can move, resize, or hide each panel before saving.
 
 ## How the geometry is derived
 
-The existing S25+ preset remains the base template.
+The existing S25+ preset remains the base template for default-layout scaling and for custom-layout suggestions.
+
+### Default layout
 
 First, calculate the union rectangle that contains the four visible panel rectangles in the S25+ preset. This "base union" is the full customizable panel stack on the reference device.
 
-Then, when the user confirms a rectangle on their own Quick Panel screenshot, treat that rectangle as the "calibrated union" for their phone.
+Then, when the user confirms one rectangle on their own Quick Panel screenshot, treat that rectangle as the "calibrated union" for their phone.
 
 The app scales every base panel from the base union into the calibrated union:
 
@@ -60,28 +75,36 @@ This means:
 - if another phone's panel stack is narrower, every panel becomes narrower
 - if another phone's panel stack is taller, every panel becomes taller
 
-The app never needs to know the device's exact Quick Panel size from an API. The screenshot already contains the real layout as rendered on that phone, and the user-provided rectangle gives the app the key measurements it needs.
+### Custom layout
 
-## Why one rectangle is enough in this version
+For custom layouts, the saved rectangles become the runtime geometry source of truth. The app does not infer panel placement from one outer box after save.
 
-The app assumes that, inside the target scope, differences between phones are mostly:
+Each panel record stores:
+
+- `status: present | hidden`
+- `rect` when present
+
+Preview uses only present panels. Export keeps Good Lock order, but hidden panels are skipped.
+
+## Why both modes exist
+
+The app still assumes that, inside the target scope, differences between phones are often mostly:
 
 - overall position
 - overall width
 - overall height
 
-It does not assume the internal layout is completely different.
+That is why `Default layout` still exists and remains the fastest path.
 
-So instead of asking the user to mark Button box, Brightness, Volume, and Media player one by one, the app asks for a single outer rectangle covering the whole stack. That one rectangle gives enough information to infer the inner panel rectangles when the phone's layout is still structurally similar to the S25+ reference.
+But Samsung now allows users to move, hide, and resize supported Quick Panel controls. Once the internal layout diverges too far from the S25+ reference, one outer rectangle is no longer enough. `Custom layout` solves that by storing real per-panel rectangles instead of scaled guesses.
 
 ## Export behavior
 
-The export square logic stays the same. Each visible panel rectangle derives a square crop rectangle centered vertically around the panel. That preserves the current workaround for Samsung's square crop behavior in Good Lock.
+The export square logic stays the same. Each present panel rectangle derives a square crop rectangle centered vertically around the panel. That preserves the current workaround for Samsung's square crop behavior in Good Lock.
 
 ## Notes and limitations
 
-- This approach is designed for Samsung phones on Android 16 and One UI 8.5 with the default Quick Panel layout.
-- It should work best when Samsung keeps the same panel order and nearly the same relative proportions across supported S series and A series phones.
-- If Samsung changes panel order, spacing, or individual panel proportions on a device, the one-rectangle calibration may be imperfect.
-- If a user has significantly customized the Quick Panel layout, the inferred panel rectangles may no longer match.
-- Advanced per-panel calibration can be added later if broader device coverage is needed.
+- This approach is designed for Samsung phones on Android 16 and One UI 8.5.
+- `Default layout` works best when Samsung keeps the same panel order and nearly the same relative proportions as the S25+ reference.
+- `Custom layout` supports moved, resized, and hidden supported panels, but it still only targets the four exportable surfaces: Button box, Brightness, Volume, and Media player.
+- Layouts that introduce unsupported panels, new export targets, foldable-only arrangements, or radically different aspect behavior remain out of scope.
