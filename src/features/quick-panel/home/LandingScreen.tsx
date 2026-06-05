@@ -30,15 +30,15 @@ export function LandingScreen() {
 
   const openCalibration = () => {
     goToCalibration();
-    router.push("/calibration");
+    router.navigate("/calibration");
   };
 
   const openCustomize = () => {
     if (startCustomizing()) {
-      router.push("/customize");
+      router.navigate("/customize");
       return;
     }
-    router.push("/calibration");
+    router.navigate("/calibration");
   };
 
   return (

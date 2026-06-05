@@ -94,7 +94,7 @@ export function useCalibrationScreen() {
       }
 
       acceptCalibrationProfile(customCalibrationDraft);
-      router.replace("/");
+      router.dismissTo("/");
       return;
     }
 
@@ -102,7 +102,7 @@ export function useCalibrationScreen() {
       setLeavingCalibration({ screenshot, rect: calibrationRect });
     }
     if (acceptCalibration()) {
-      router.replace("/");
+      router.dismissTo("/");
     }
   };
 
