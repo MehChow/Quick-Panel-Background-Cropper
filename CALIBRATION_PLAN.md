@@ -86,6 +86,13 @@ Each panel record stores:
 
 Preview uses only present panels. Export keeps Good Lock order, but hidden panels are skipped.
 
+Custom-layout preview and export do not treat those saved rectangles as the final crop source.
+
+Instead, the app now separates:
+
+- panel geometry: the saved visible rectangle and its position in the shared layout
+- crop geometry: the square source window and the snapped runtime crop ratio QuickStar is expected to use
+
 ## Why both modes exist
 
 The app still assumes that, inside the target scope, differences between phones are often mostly:
@@ -98,9 +105,28 @@ That is why `Default layout` still exists and remains the fastest path.
 
 But Samsung now allows users to move, hide, and resize supported Quick Panel controls. Once the internal layout diverges too far from the S25+ reference, one outer rectangle is no longer enough. `Custom layout` solves that by storing real per-panel rectangles instead of scaled guesses.
 
+## Custom-layout crop behavior
+
+For `Custom layout`, each present panel now uses two derived runtime helpers:
+
+- an enclosing square source rect with `side = max(width, height)`
+- a snapped visible ratio chosen from the panel's allowed QuickStar groups
+
+The export PNG is the enclosing square. Preview simulates the same square source and then applies the snapped centered crop inside the visible panel frame.
+
+Current ratio groups used for snapping:
+
+- `buttonBox`: `1:1`, `2:1`, `3:1`, `4:1`, `1:2`, `3:2`, `1:3`, `2:3`, `4:3`
+- `brightness`: `1:1`, `1:2`, `1:3`, `1:4`, `2:1`, `2:3`, `3:1`, `3:2`, `3:4`, `4:1`, `4:3`
+- `volume`: same as `brightness`
+- `mediaPlayer`: `1:1`, `1:2`, `2:3`, `3:4`, `2:1`, `3:1`, `3:2`, `4:1`, `4:3`
+
+This ratio snapping is only for `Custom layout`, and it exists to absorb small calibration noise without changing the saved panel centers.
+
 ## Export behavior
 
-The export square logic stays the same. Each present panel rectangle derives a square crop rectangle centered vertically around the panel. That preserves the current workaround for Samsung's square crop behavior in Good Lock.
+- `Default layout` keeps the previous width-based square export model.
+- `Custom layout` exports enclosing squares and clamps the shared background image against the union of those required square sources.
 
 ## Notes and limitations
 

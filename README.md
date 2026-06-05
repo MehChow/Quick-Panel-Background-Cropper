@@ -49,6 +49,14 @@ The app uses a Galaxy S25+ on One UI 8.5 as the base reference layout.
 
 For `Default layout`, it scales that reference layout from one calibrated outer box. For `Custom layout`, it stores the real user-provided rectangles for each visible panel and skips hidden ones during preview and export.
 
+Custom layouts now model QuickStar as:
+
+- one square source image per panel
+- one centered runtime crop inside that square
+- one shared background transform across all visible panels
+
+That keeps preview and export aligned for retracted Button box, Brightness, Volume, and Media player layouts while leaving default-layout behavior unchanged.
+
 The full calibration logic and assumptions are documented in [CALIBRATION_PLAN.md](./CALIBRATION_PLAN.md).
 
 ## Screenshots
