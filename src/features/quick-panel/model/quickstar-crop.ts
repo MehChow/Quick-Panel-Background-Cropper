@@ -6,6 +6,13 @@ interface QuickStarRatio {
   value: number;
 }
 
+export interface QuickStarPreviewLayout {
+  cropRect: PanelRect;
+  offsetX: number;
+  offsetY: number;
+  scale: number;
+}
+
 export const customLayoutPresetId = "custom-layout-calibrated";
 
 const defineRatio = (width: number, height: number): QuickStarRatio => ({
@@ -88,6 +95,23 @@ export function getSnappedPanelRect(panel: PanelDefinition): PanelRect {
   return ratio >= 1
     ? getCenteredRect(square, square.width, square.height / ratio, panel.rect.radius)
     : getCenteredRect(square, square.width * ratio, square.height, panel.rect.radius);
+}
+
+export function getCustomPreviewLayout(
+  panel: PanelDefinition,
+): QuickStarPreviewLayout {
+  const cropRect = getSnappedPanelRect(panel);
+  const scale = Math.max(
+    panel.rect.width / cropRect.width,
+    panel.rect.height / cropRect.height,
+  );
+
+  return {
+    cropRect,
+    offsetX: (panel.rect.width - cropRect.width * scale) / 2,
+    offsetY: (panel.rect.height - cropRect.height * scale) / 2,
+    scale,
+  };
 }
 
 function getCenteredRect(

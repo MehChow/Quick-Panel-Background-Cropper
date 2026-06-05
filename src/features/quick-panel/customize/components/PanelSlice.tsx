@@ -5,7 +5,7 @@ import Animated, {
   useAnimatedStyle,
 } from "react-native-reanimated";
 import {
-  getSnappedPanelRect,
+  getCustomPreviewLayout,
   usesQuickStarCropModel,
 } from "../../model/quickstar-crop";
 import type {
@@ -38,29 +38,24 @@ export function PanelSlice({
   previewScale,
   transform,
 }: PanelSliceProps) {
-  const cropRect = usesQuickStarCropModel(presetId)
-    ? getSnappedPanelRect(panel)
-    : panel.rect;
+  const isCustomPreview = usesQuickStarCropModel(presetId);
+  const customPreviewLayout = isCustomPreview
+    ? getCustomPreviewLayout(panel)
+    : null;
+  const cropRect = customPreviewLayout?.cropRect ?? panel.rect;
+  const cropScale = customPreviewLayout?.scale ?? 1;
+  const offsetX = customPreviewLayout?.offsetX ?? 0;
+  const offsetY = customPreviewLayout?.offsetY ?? 0;
 
   const imageStyle = useAnimatedStyle(() => ({
-    height:
-      image.height *
-      transform.value.scale *
-      previewScale.value *
-      (panel.rect.height / cropRect.height),
+    height: image.height * transform.value.scale * previewScale.value * cropScale,
     left:
-      (transform.value.x - cropRect.x) *
-      previewScale.value *
-      (panel.rect.width / cropRect.width),
+      (transform.value.x - cropRect.x) * previewScale.value * cropScale +
+      offsetX * previewScale.value,
     top:
-      (transform.value.y - cropRect.y) *
-      previewScale.value *
-      (panel.rect.height / cropRect.height),
-    width:
-      image.width *
-      transform.value.scale *
-      previewScale.value *
-      (panel.rect.width / cropRect.width),
+      (transform.value.y - cropRect.y) * previewScale.value * cropScale +
+      offsetY * previewScale.value,
+    width: image.width * transform.value.scale * previewScale.value * cropScale,
   }));
 
   return (
@@ -82,7 +77,7 @@ export function PanelSlice({
         style={[StyleSheet.absoluteFill, imageStyle]}
       />
       <View className="absolute inset-0 bg-black/10" />
-      <PanelOverlay panelId={panel.id} />
+      <PanelOverlay enabled={!isCustomPreview} panelId={panel.id} />
     </View>
   );
 }
