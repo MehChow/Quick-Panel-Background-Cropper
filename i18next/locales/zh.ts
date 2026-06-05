@@ -13,9 +13,11 @@ const zh = {
     landing: {
       startCustomizing: "開始自訂",
       calibrated: "已完成校準。",
+      calibratedStatus: "已校準",
       recalibrate: "想重新校準？",
       calibration: "校準",
       calibrationRequired: "使用前需先校準一次，日後可再次調整",
+      notCalibratedStatus: "未校準",
       defaultLayoutTitle: "預設版面",
       defaultLayoutDescription: "使用單一方框快速校準預設 One UI 版面。",
       customLayoutTitle: "自訂版面",

@@ -18,6 +18,7 @@ export function LandingScreen() {
   const {
     calibrationMode,
     isCalibrated,
+    modeStatuses,
     setCalibrationMode,
     goToCalibration,
     startCustomizing,
@@ -53,12 +54,22 @@ export function LandingScreen() {
               description={t("landing.defaultLayoutDescription")}
               onPress={() => setCalibrationMode("default-union")}
               selected={calibrationMode === "default-union"}
+              status={
+                modeStatuses["default-union"]
+                  ? t("landing.calibratedStatus")
+                  : t("landing.notCalibratedStatus")
+              }
               title={t("landing.defaultLayoutTitle")}
             />
             <CalibrationModeCard
               description={t("landing.customLayoutDescription")}
               onPress={() => setCalibrationMode("custom-panels")}
               selected={calibrationMode === "custom-panels"}
+              status={
+                modeStatuses["custom-panels"]
+                  ? t("landing.calibratedStatus")
+                  : t("landing.notCalibratedStatus")
+              }
               title={t("landing.customLayoutTitle")}
             />
             <Button
