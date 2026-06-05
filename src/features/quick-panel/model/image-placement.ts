@@ -15,11 +15,15 @@ export function getFitTransform(
 ): ImageTransform {
   const panelUnion = getPanelUnion(preset);
   const scale = getCoverScale(image, preset);
-  return {
-    scale,
-    x: panelUnion.x + (panelUnion.width - image.width * scale) / 2,
-    y: panelUnion.y + (panelUnion.height - image.height * scale) / 2,
-  };
+  return clampTransform(
+    {
+      scale,
+      x: panelUnion.x + (panelUnion.width - image.width * scale) / 2,
+      y: panelUnion.y + (panelUnion.height - image.height * scale) / 2,
+    },
+    image,
+    preset,
+  );
 }
 
 export function clampTransform(
