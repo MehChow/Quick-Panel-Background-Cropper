@@ -19,7 +19,14 @@ Calibration always starts from one fully expanded Quick Panel screenshot.
 
 In `Default layout`, the user selects one rectangle covering the customizable panel stack only: from the top of Button box to the bottom of Media player, and from the left edge to the right edge of those panels.
 
-In `Custom layout`, the user steps through Button box, Brightness, Volume, and Media player one by one. Each panel is either:
+In `Custom layout`, the user can either:
+
+- continue with one screenshot for shorter layouts
+- add one second screenshot for taller layouts, then align the overlap manually
+
+The second screenshot is optional, but the app never accepts more than two screenshots for one custom calibration session.
+
+After the screenshot entry step, the user calibrates Button box, Brightness, Volume, and Media player one by one. Each panel is either:
 
 - marked `present` with its own saved rectangle
 - marked `hidden` and skipped during preview/export
@@ -46,7 +53,9 @@ The initial suggestion is still based on the screenshot size and the base preset
 
 In `Default layout`, this becomes the starting outer box.
 
-In `Custom layout`, the app uses that same suggested union to derive first-pass panel rectangles for Button box, Brightness, Volume, and Media player. Those suggested per-panel boxes are only starting points; the user can move, resize, or hide each panel before saving.
+In `Custom layout`, the app uses that same suggested union to derive first-pass panel rectangles for Button box, Brightness, Volume, and Media player.
+
+When the custom flow uses two screenshots, that suggestion runs against the merged calibration surface after overlap confirmation, not just the first screenshot height. Those suggested per-panel boxes are still only starting points; the user can move, resize, or hide each panel before saving.
 
 ## How the geometry is derived
 
@@ -79,6 +88,14 @@ This means:
 
 ### Custom layout
 
+For taller custom layouts, the app can work in one merged coordinate space built from:
+
+- the top screenshot
+- one optional bottom screenshot
+- one manually chosen `bottomOffsetY`
+
+The alignment step allows vertical dragging only. There is no automatic stitching, CV matching, horizontal sliding, scaling, or rotation.
+
 For custom layouts, the saved rectangles become the runtime geometry source of truth. The app does not infer panel placement from one outer box after save.
 
 Each panel record stores:
@@ -94,6 +111,8 @@ Instead, the app now separates:
 
 - panel geometry: the saved visible rectangle and its position in the shared layout
 - crop geometry: the square source window and the snapped runtime crop ratio QuickStar is expected to use
+
+When two screenshots are used, a panel drawn over the lower screenshot is still stored in that same merged coordinate space by adding `bottomOffsetY` to the local Y value.
 
 ## Why both modes exist
 
@@ -144,4 +163,5 @@ This ratio snapping is only for `Custom layout`, and it exists to absorb small c
 - This approach is designed for Samsung phones on Android 16 and One UI 8.5.
 - `Default layout` works best when Samsung keeps the same panel order and nearly the same relative proportions as the S25+ reference.
 - `Custom layout` supports moved, resized, and hidden supported panels, but it still only targets the four exportable surfaces: Button box, Brightness, Volume, and Media player.
+- `Custom layout` supports at most two screenshots, and two-shot mode depends on manual overlap alignment by the user.
 - Layouts that introduce unsupported panels, new export targets, foldable-only arrangements, or radically different aspect behavior remain out of scope.
