@@ -8,6 +8,7 @@ import { CalibrationControls } from "./CalibrationControls";
 import { CalibrationHelpSheet } from "./CalibrationHelpSheet";
 import { CalibrationCanvas } from "./components/CalibrationCanvas";
 import { CustomCalibrationCanvas } from "./components/CustomCalibrationCanvas";
+import { CustomCalibrationOverlapAligner } from "./components/CustomCalibrationOverlapAligner";
 import { CustomCalibrationReview } from "./components/CustomCalibrationReview";
 import { CustomCalibrationStepper } from "./components/CustomCalibrationStepper";
 import { useCalibrationScreen } from "./hooks/useCalibrationScreen";
@@ -16,6 +17,7 @@ export function CalibrationScreen() {
   const { t } = useTranslation();
   const {
     calibrationMode,
+    customCalibrationSession,
     error,
     isHelpOpen,
     displayedScreenshot,
@@ -36,6 +38,10 @@ export function CalibrationScreen() {
     goToPreviousCustomStep,
     markCurrentCustomHidden,
     markCurrentCustomPresent,
+    setCustomCalibrationSourceMode,
+    setCustomCalibrationBottomOffsetY,
+    importCustomBottomScreenshot,
+    confirmCustomCalibrationAlignment,
     leaveCustomReview,
     saveCalibration,
     openHelp,
@@ -43,6 +49,10 @@ export function CalibrationScreen() {
   } = useCalibrationScreen();
   const isCustomMode = calibrationMode === "custom-panels";
   const currentPanelLabel = getPanelLabel(customCalibrationStep);
+  const topScreenshot = customCalibrationSession.topScreenshot;
+  const isAlignmentConfirmed =
+    customCalibrationSession.sourceMode === "single" ||
+    customCalibrationSession.mergedHeight !== null;
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -66,15 +76,50 @@ export function CalibrationScreen() {
               onSave={saveCalibration}
               profile={customCalibrationDraft}
             />
+          ) : !topScreenshot ? (
+            <View className="gap-4">
+              <CustomCalibrationStepper
+                mode="entry"
+                onSelectSourceMode={setCustomCalibrationSourceMode}
+                sourceMode={customCalibrationSession.sourceMode}
+              />
+              <CalibrationCanvas
+                screenshot={null}
+                rect={null}
+                onImport={importScreenshot}
+                onRectChange={setCalibrationRect}
+                onContinue={saveCalibration}
+                showControls={false}
+              />
+            </View>
+          ) : customCalibrationSession.sourceMode === "double" &&
+            !isAlignmentConfirmed ? (
+            <View className="gap-4">
+              <CustomCalibrationOverlapAligner
+                bottomOffsetY={customCalibrationSession.bottomOffsetY}
+                bottomScreenshot={customCalibrationSession.bottomScreenshot}
+                onBottomOffsetYChange={setCustomCalibrationBottomOffsetY}
+                topScreenshot={topScreenshot}
+              />
+              <CustomCalibrationStepper
+                hasBottomScreenshot={Boolean(
+                  customCalibrationSession.bottomScreenshot,
+                )}
+                mode="alignment"
+                onAddSecondScreenshot={importCustomBottomScreenshot}
+                onContinue={confirmCustomCalibrationAlignment}
+              />
+            </View>
           ) : displayedScreenshot ? (
             <View className="gap-4">
               <CustomCalibrationCanvas
                 isHidden={isCurrentCustomHidden}
                 onRectChange={setCurrentCustomRect}
                 rect={currentCustomRect}
-                screenshot={displayedScreenshot}
+                session={customCalibrationSession}
               />
               <CustomCalibrationStepper
+                mode="panel"
                 canGoBack={currentStepIndex > 0}
                 isHidden={isCurrentCustomHidden}
                 isLastStep={isLastCustomStep}
@@ -88,14 +133,7 @@ export function CalibrationScreen() {
               />
             </View>
           ) : (
-            <CalibrationCanvas
-              screenshot={null}
-              rect={null}
-              onImport={importScreenshot}
-              onRectChange={setCalibrationRect}
-              onContinue={saveCalibration}
-              showControls={false}
-            />
+            <View />
           )
         ) : (
           <CalibrationCanvas

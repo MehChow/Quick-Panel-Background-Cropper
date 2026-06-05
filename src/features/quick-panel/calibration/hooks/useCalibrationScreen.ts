@@ -147,11 +147,38 @@ export function useCalibrationScreen() {
 
     setCustomCalibrationSession({
       bottomScreenshot: nextScreenshot,
-      mergedHeight: getMergedCustomScreenshotMetrics(
-        topScreenshot,
-        nextScreenshot,
-        topScreenshot.height,
-      ).height,
+      bottomOffsetY: topScreenshot.height,
+      mergedHeight: null,
+    });
+  };
+
+  const confirmCustomCalibrationAlignment = () => {
+    setLocalError(null);
+    const { topScreenshot, bottomOffsetY, bottomScreenshot } =
+      customCalibrationSession;
+    if (!topScreenshot || !bottomScreenshot) {
+      return;
+    }
+
+    const nextBottomOffsetY = bottomOffsetY ?? topScreenshot.height;
+    const mergedHeight = getMergedCustomScreenshotMetrics(
+      topScreenshot,
+      bottomScreenshot,
+      nextBottomOffsetY,
+    ).height;
+    const mergedScreenshot = {
+      ...topScreenshot,
+      height: mergedHeight,
+    };
+
+    setCustomCalibrationDraft(
+      createSuggestedCustomCalibrationProfile(mergedScreenshot),
+    );
+    setCustomCalibrationStep(panelIds[0]);
+    setCustomCalibrationReview(false);
+    setCustomCalibrationSession({
+      bottomOffsetY: nextBottomOffsetY,
+      mergedHeight,
     });
   };
 
@@ -232,7 +259,12 @@ export function useCalibrationScreen() {
         sourceMode,
       });
     },
+    setCustomCalibrationBottomOffsetY: (bottomOffsetY: number) => {
+      setLocalError(null);
+      setCustomCalibrationSession({ bottomOffsetY });
+    },
     importCustomBottomScreenshot,
+    confirmCustomCalibrationAlignment,
     leaveCustomReview: () => {
       setLocalError(null);
       setCustomCalibrationReview(false);
