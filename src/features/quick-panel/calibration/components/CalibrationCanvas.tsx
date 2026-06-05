@@ -96,12 +96,12 @@ function ImportScreenshotCard({ onImport }: ImportScreenshotCardProps) {
           <ExamplePanelImage
             icon="check"
             iconColor="green"
-            source={require("@/assets/correct.jpeg")}
+            source={require("@/assets/tutorial/correct.jpeg")}
           />
           <ExamplePanelImage
             icon="x"
             iconColor="red"
-            source={require("@/assets/incorrect.jpeg")}
+            source={require("@/assets/tutorial/incorrect.jpeg")}
           />
         </View>
       </View>

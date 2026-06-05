@@ -19,7 +19,7 @@ export function CalibrationInstructionCard() {
           style={{ aspectRatio: calibrationExampleAspectRatio }}
         >
           <Image
-            source={require("@/assets/calibrate.jpeg")}
+            source={require("@/assets/tutorial/calibrate.jpeg")}
             style={{ height: "100%", width: "100%" }}
             contentFit="contain"
           />

@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import type { LayoutChangeEvent } from "react-native";
 import { View } from "react-native";
 
-const exampleImageAspectRatio = 1080 / 2340;
+const exampleImageAspectRatio = 9 / 19.5;
 const cardPadding = 48;
 const cardContentGap = 20;
 const exampleLabelHeight = 24;

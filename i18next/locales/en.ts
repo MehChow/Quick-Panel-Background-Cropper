@@ -3,6 +3,7 @@ const en = {
     common: {
       cancel: "Cancel",
       close: "Close",
+      confirm: "Confirm",
     },
     home: {
       title: "Quick Panel Background Cropper",
@@ -19,7 +20,7 @@ const en = {
     },
     mode: {
       title: "Select mode",
-      subtitle: "Choose the layout that matches your Quick Panel",
+      subtitle: "Choose your Quick Panel layout",
       default: "Default",
       defaultDescription:
         "For the standard Button box, Brightness, Volume, and Media player layout.",
@@ -55,7 +56,8 @@ const en = {
     },
     advancedCalibration: {
       title: "Advanced customization",
-      outerSubtitle: "Wrap the full area containing your four customizable panels",
+      outerSubtitle:
+        "Wrap the full area containing your four customizable panels",
       panelsSubtitle: "Move and resize each box to match its panel",
       adjustPanels: "Adjust panels",
       adjustOuter: "Adjust outer area",

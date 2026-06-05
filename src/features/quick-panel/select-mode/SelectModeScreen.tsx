@@ -1,81 +1,106 @@
-import { Text } from "@/components/ani-ui/text";
+import { Button } from "@/components/ani-ui/button";
 import { SubPageHeader } from "@/features/quick-panel/shared/SubPageHeader";
 import { useQuickPanelStore } from "@/features/quick-panel/store/quick-panel-store";
 import { quickPanelSelectors } from "@/features/quick-panel/store/selectors";
-import { Image } from "expo-image";
 import { type Href, useRouter } from "expo-router";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Pressable, ScrollView, View } from "react-native";
+import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useShallow } from "zustand/react/shallow";
 import type { CustomizationMode } from "../model/types";
+import { ModeHelpSheet } from "./ModeHelpSheet";
+import { ModeOptionCard } from "./ModeOptionCard";
 
 export function SelectModeScreen() {
   const { t } = useTranslation();
   const router = useRouter();
+  const [isHelpOpen, setIsHelpOpen] = useState(false);
+  const [selectedMode, setSelectedMode] = useState<CustomizationMode | null>(
+    null,
+  );
   const { selectMode } = useQuickPanelStore(
     useShallow(quickPanelSelectors.modeSelectionScreen),
   );
 
-  const chooseMode = (mode: CustomizationMode) => {
+  const confirmMode = () => {
+    if (!selectedMode) {
+      return;
+    }
+
+    const mode = selectedMode;
     const hasCalibration = selectMode(mode);
     if (hasCalibration) {
       router.push("/customize");
       return;
     }
-    router.push((mode === "default" ? "/calibration" : "/advanced-calibration") as Href);
+    router.push(
+      (mode === "default" ? "/calibration" : "/advanced-calibration") as Href,
+    );
   };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <View className="px-5 pt-8">
+      <View className="px-5 pb-6 pt-8">
         <SubPageHeader
+          onHelpPress={() => setIsHelpOpen(true)}
           title={t("mode.title")}
           subtitle={t("mode.subtitle")}
         />
       </View>
-      <ScrollView
-        className="flex-1"
-        contentContainerClassName="gap-4 px-5 pb-8"
-        contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
-        overScrollMode="never"
-      >
-        <ModeCard
-          description={t("mode.defaultDescription")}
-          image={require("@/assets/correct.jpeg")}
-          label={t("mode.default")}
-          onPress={() => chooseMode("default")}
+      <View className="flex-1 justify-center px-5">
+        <View className="flex-row items-start gap-4">
+          <ModeCard
+            isSelected={selectedMode === "default"}
+            label={t("mode.default")}
+            mode="default"
+            onPress={() => setSelectedMode("default")}
+          />
+          <ModeCard
+            isSelected={selectedMode === "advanced"}
+            label={t("mode.advanced")}
+            mode="advanced"
+            onPress={() => setSelectedMode("advanced")}
+          />
+        </View>
+        <Button
+          className="mt-10"
+          disabled={!selectedMode}
+          onPress={confirmMode}
+          textClassName="font-semibold"
+        >
+          {t("common.confirm")}
+        </Button>
+      </View>
+      {isHelpOpen ? (
+        <ModeHelpSheet
+          defaultDescription={t("mode.defaultDescription")}
+          defaultLabel={t("mode.default")}
+          onClose={() => setIsHelpOpen(false)}
+          subtitle={t("mode.subtitle")}
+          title={t("mode.title")}
+          advancedDescription={t("mode.advancedDescription")}
+          advancedLabel={t("mode.advanced")}
         />
-        <ModeCard
-          description={t("mode.advancedDescription")}
-          image={require("@/assets/incorrect.jpeg")}
-          label={t("mode.advanced")}
-          onPress={() => chooseMode("advanced")}
-        />
-      </ScrollView>
+      ) : null}
     </SafeAreaView>
   );
 }
 
 interface ModeCardProps {
-  description: string;
-  image: number;
+  isSelected: boolean;
   label: string;
+  mode: CustomizationMode;
   onPress: () => void;
 }
 
-function ModeCard({ description, image, label, onPress }: ModeCardProps) {
+function ModeCard({ isSelected, label, mode, onPress }: ModeCardProps) {
   return (
-    <Pressable
-      accessibilityRole="button"
-      className="overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900 active:opacity-80"
+    <ModeOptionCard
+      isSelected={isSelected}
+      label={label}
+      mode={mode}
       onPress={onPress}
-    >
-      <Image source={image} contentFit="cover" className="h-52 w-full" />
-      <View className="gap-1 p-4">
-        <Text className="text-lg font-semibold text-white">{label}</Text>
-        <Text className="text-sm leading-5 text-zinc-400">{description}</Text>
-      </View>
-    </Pressable>
+    />
   );
 }

@@ -3,6 +3,7 @@ const zh = {
     common: {
       cancel: "取消",
       close: "關閉",
+      confirm: "確認",
     },
     home: {
       title: "Quick Panel 背景裁切",
@@ -18,11 +19,12 @@ const zh = {
     },
     mode: {
       title: "選擇模式",
-      subtitle: "選擇符合你快速面板配置的模式",
+      subtitle: "選擇你的快速面板配置",
       default: "預設",
       defaultDescription: "適用於標準按鈕框、亮度、音量及媒體播放器配置。",
       advanced: "進階",
-      advancedDescription: "適用於已重新排列、調整大小、垂直或其他自訂面板配置。",
+      advancedDescription:
+        "適用於已重新排列、調整大小、垂直或其他自訂面板配置。",
     },
     calibration: {
       title: "校準",
