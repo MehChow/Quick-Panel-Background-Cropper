@@ -29,7 +29,7 @@ import {
   getStartExportState,
   getTransformState,
 } from "./quick-panel-transitions";
-import { saveCalibrationProfile } from "./storage";
+import { saveCalibrationMode, saveCalibrationProfile } from "./storage";
 
 export interface QuickPanelState extends QuickPanelStateData {
   goToLanding: () => void;
@@ -57,9 +57,11 @@ export const useQuickPanelStore = create<QuickPanelState>((set, get) => ({
   ...initialState,
   goToLanding: () => set(getLandingState()),
   goToCalibration: () =>
-    set(getCalibrationState(get().calibrationMode, get().calibrationProfile)),
-  setCalibrationMode: (mode) =>
-    set(getCalibrationModeState(mode, get().calibrationProfile)),
+    set(getCalibrationState(get().calibrationMode, get().savedCalibrationProfiles)),
+  setCalibrationMode: (mode) => {
+    saveCalibrationMode(mode);
+    set(getCalibrationModeState(mode, get().savedCalibrationProfiles));
+  },
   startCustomizing: () => {
     const result = getStartCustomizingResult(get().isCalibrated);
     set(result.state);
@@ -73,7 +75,10 @@ export const useQuickPanelStore = create<QuickPanelState>((set, get) => ({
     }),
   setCalibrationRect: (rect) => set({ calibrationRect: rect, error: null }),
   acceptCalibration: () => {
-    const result = getAcceptCalibrationResult(get().calibrationRect);
+    const result = getAcceptCalibrationResult(
+      get().calibrationRect,
+      get().savedCalibrationProfiles,
+    );
     if (!result.didAccept) {
       set(result.state);
       return false;
@@ -85,7 +90,7 @@ export const useQuickPanelStore = create<QuickPanelState>((set, get) => ({
   },
   acceptCalibrationProfile: (profile) => {
     saveCalibrationProfile(profile);
-    set(getAcceptedCalibrationState(profile));
+    set(getAcceptedCalibrationState(get().savedCalibrationProfiles, profile));
   },
   setCustomCalibrationDraft: (draft) =>
     set({

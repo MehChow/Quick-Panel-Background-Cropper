@@ -1,4 +1,5 @@
 import {
+  cloneCustomPanelsCalibrationProfile,
   createEmptyCustomPanelsCalibrationProfile,
   hasCalibrationForMode,
   panelIds,
@@ -7,6 +8,7 @@ import type {
   CalibrationMode,
   CalibrationProfile,
   CustomPanelsCalibrationProfile,
+  SavedCalibrationProfiles,
 } from "../model/calibration-profile";
 import { getPresetFromCalibrationProfile } from "../model/custom-preset";
 import { s25PlusOneUi85Preset } from "../model/preset";
@@ -26,6 +28,7 @@ export interface QuickPanelStateData {
   isCalibrated: boolean;
   calibrationMode: CalibrationMode;
   calibrationProfile: CalibrationProfile | null;
+  savedCalibrationProfiles: SavedCalibrationProfiles;
   customCalibrationDraft: CustomPanelsCalibrationProfile;
   customCalibrationStep: PanelId;
   isCustomCalibrationReview: boolean;
@@ -60,21 +63,20 @@ export function createInitialQuickPanelStateData(): QuickPanelStateData {
     try {
       activePreset = getPresetFromCalibrationProfile(calibration.profile);
     } catch {
-      calibration = {
-        isCalibrated: false,
-        mode: "default-union",
-        profile: null,
-        rect: null,
-      };
+      calibration = { ...calibration, isCalibrated: false, profile: null, rect: null };
     }
   }
-  const customCalibrationDraft = createEmptyCustomPanelsCalibrationProfile();
+  const customCalibrationDraft =
+    calibration.profile?.mode === "custom-panels"
+      ? cloneCustomPanelsCalibrationProfile(calibration.profile)
+      : createEmptyCustomPanelsCalibrationProfile();
 
   return {
     step: "landing",
     isCalibrated: hasCalibrationForMode(calibration.mode, calibration.profile),
     calibrationMode: calibration.mode,
     calibrationProfile: calibration.profile,
+    savedCalibrationProfiles: calibration.savedProfiles,
     customCalibrationDraft,
     customCalibrationStep: panelIds[0],
     isCustomCalibrationReview: false,

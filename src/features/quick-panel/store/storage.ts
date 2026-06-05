@@ -1,17 +1,24 @@
 import { createMMKV } from "react-native-mmkv";
 import {
   createDefaultUnionCalibrationProfile,
+  createEmptySavedCalibrationProfiles,
+  getCalibrationProfileForMode,
   isSavableCustomPanelsCalibrationProfile,
   panelIds,
+  upsertSavedCalibrationProfile,
+  type CalibrationMode,
   type CalibrationProfile,
   type CustomPanelsCalibrationProfile,
   type PanelCalibration,
+  type SavedCalibrationProfiles,
 } from "../model/calibration-profile";
 import type { CalibrationStateSnapshot, PanelId, PanelRect } from "../model/types";
 
 const calibrationFlagKey = "quick-panel.is-calibrated";
 const calibrationRectKey = "quick-panel.calibration-rect";
 const calibrationProfileKey = "quick-panel.calibration-profile";
+const calibrationProfilesKey = "quick-panel.calibration-profiles";
+const calibrationModeKey = "quick-panel.calibration-mode";
 
 export const supportedLanguages = ["en", "zh"] as const;
 export type SupportedLanguage = (typeof supportedLanguages)[number];
@@ -24,52 +31,39 @@ export interface SavedCalibration {
 }
 
 export function loadCalibrationProfile(): CalibrationProfile | null {
-  const profileJson = storage.getString(calibrationProfileKey);
-  const profile = profileJson ? parseCalibrationProfile(profileJson) : null;
-  if (profile) {
-    return profile;
-  }
-
-  const rect = loadLegacyCalibrationRect();
-  return rect ? createDefaultUnionCalibrationProfile(rect) : null;
+  return loadCalibrationSnapshot().profile;
 }
 
 export function loadCalibration(): SavedCalibration {
-  const profile = loadCalibrationProfile();
-  if (!profile) {
-    return {
-      isCalibrated: false,
-      rect: null,
-    };
-  }
+  const snapshot = loadCalibrationSnapshot();
 
   return {
-    isCalibrated: true,
-    rect: profile.mode === "default-union" ? profile.rect : null,
+    isCalibrated: snapshot.isCalibrated,
+    rect: snapshot.rect,
   };
 }
 
 export function loadCalibrationSnapshot(): CalibrationStateSnapshot {
-  const profile = loadCalibrationProfile();
-  if (!profile) {
-    return {
-      isCalibrated: false,
-      mode: "default-union",
-      profile: null,
-      rect: null,
-    };
-  }
+  const savedProfiles = loadSavedCalibrationProfiles();
+  const mode = loadSelectedCalibrationMode(savedProfiles);
+  const profile = getCalibrationProfileForMode(mode, savedProfiles);
 
   return {
-    isCalibrated: true,
-    mode: profile.mode,
+    isCalibrated: profile !== null,
+    mode,
     profile,
-    rect: profile.mode === "default-union" ? profile.rect : null,
+    rect: profile?.mode === "default-union" ? profile.rect : null,
+    savedProfiles,
   };
 }
 
 export function saveCalibrationProfile(profile: CalibrationProfile) {
-  storage.set(calibrationProfileKey, JSON.stringify(profile));
+  const savedProfiles = upsertSavedCalibrationProfile(
+    loadSavedCalibrationProfiles(),
+    profile,
+  );
+  storage.set(calibrationProfilesKey, JSON.stringify(savedProfiles));
+  saveCalibrationMode(profile.mode);
   if (profile.mode === "default-union") {
     storage.set(calibrationFlagKey, true);
     storage.set(calibrationRectKey, JSON.stringify(profile.rect));
@@ -78,6 +72,10 @@ export function saveCalibrationProfile(profile: CalibrationProfile) {
 
 export function saveCalibration(rect: PanelRect) {
   saveCalibrationProfile(createDefaultUnionCalibrationProfile(rect));
+}
+
+export function saveCalibrationMode(mode: CalibrationMode) {
+  storage.set(calibrationModeKey, mode);
 }
 
 export function isSupportedLanguage(
@@ -118,38 +116,123 @@ function loadLegacyCalibrationRect(): PanelRect | null {
   return isCalibrated && rect ? rect : null;
 }
 
-function parseCalibrationProfile(value: string): CalibrationProfile | null {
+function loadSavedCalibrationProfiles(): SavedCalibrationProfiles {
+  const profilesJson = storage.getString(calibrationProfilesKey);
+  const savedProfiles = profilesJson ? parseSavedCalibrationProfiles(profilesJson) : null;
+  if (savedProfiles && hasSavedCalibrationProfiles(savedProfiles)) {
+    return savedProfiles;
+  }
+
+  const legacyProfile = loadLegacyCalibrationProfile();
+  if (legacyProfile) {
+    return upsertSavedCalibrationProfile(
+      createEmptySavedCalibrationProfiles(),
+      legacyProfile,
+    );
+  }
+
+  const legacyRect = loadLegacyCalibrationRect();
+  if (legacyRect) {
+    return upsertSavedCalibrationProfile(
+      createEmptySavedCalibrationProfiles(),
+      createDefaultUnionCalibrationProfile(legacyRect),
+    );
+  }
+
+  return savedProfiles
+    ? savedProfiles
+    : createEmptySavedCalibrationProfiles();
+}
+
+function loadSelectedCalibrationMode(
+  savedProfiles: SavedCalibrationProfiles,
+): CalibrationMode {
+  const mode = storage.getString(calibrationModeKey);
+  if (mode === "default-union" || mode === "custom-panels") {
+    return mode;
+  }
+
+  return savedProfiles["default-union"]
+    ? "default-union"
+    : savedProfiles["custom-panels"]
+      ? "custom-panels"
+      : "default-union";
+}
+
+function hasSavedCalibrationProfiles(savedProfiles: SavedCalibrationProfiles) {
+  return (
+    savedProfiles["custom-panels"] !== null ||
+    savedProfiles["default-union"] !== null
+  );
+}
+
+function loadLegacyCalibrationProfile(): CalibrationProfile | null {
+  const profileJson = storage.getString(calibrationProfileKey);
+  return profileJson ? parseCalibrationProfile(profileJson) : null;
+}
+
+function parseSavedCalibrationProfiles(
+  value: string,
+): SavedCalibrationProfiles | null {
   try {
-    const parsed = JSON.parse(value) as Partial<CalibrationProfile>;
-    if (
-      parsed.mode === "default-union" &&
-      parsed.version === 1 &&
-      parsed.rect &&
-      typeof parsed.rect === "object"
-    ) {
-      return createDefaultUnionCalibrationProfile(parsed.rect as PanelRect);
+    const parsed = JSON.parse(value) as
+      | Partial<Record<CalibrationMode, unknown>>
+      | null;
+    if (!parsed || typeof parsed !== "object") {
+      return null;
     }
 
-    if (parsed.mode === "custom-panels" && parsed.version === 1) {
-      const panels = parsePanelCalibrations(
-        (parsed as Partial<CustomPanelsCalibrationProfile>).panels,
-      );
-      if (panels) {
-        const profile = {
-          mode: "custom-panels",
-          panels,
-          version: 1,
-        } satisfies CustomPanelsCalibrationProfile;
-        if (isSavableCustomPanelsCalibrationProfile(profile)) {
-          return profile;
-        };
-      }
-    }
+    const defaultProfile = parseCalibrationProfileValue(parsed["default-union"]);
+    const customProfile = parseCalibrationProfileValue(parsed["custom-panels"]);
+    return {
+      "custom-panels": customProfile?.mode === "custom-panels" ? customProfile : null,
+      "default-union":
+        defaultProfile?.mode === "default-union" ? defaultProfile : null,
+    };
   } catch {
     return null;
   }
+}
 
-  return null;
+function parseCalibrationProfile(value: string): CalibrationProfile | null {
+  try {
+    return parseCalibrationProfileValue(JSON.parse(value));
+  } catch {
+    return null;
+  }
+}
+
+function parseCalibrationProfileValue(value: unknown): CalibrationProfile | null {
+  const parsed = value as Partial<CalibrationProfile> | null;
+  if (!parsed || typeof parsed !== "object") {
+    return null;
+  }
+  if (
+    parsed.mode === "default-union" &&
+    parsed.version === 1 &&
+    parsed.rect &&
+    typeof parsed.rect === "object"
+  ) {
+    return createDefaultUnionCalibrationProfile(parsed.rect as PanelRect);
+  }
+
+  if (parsed.mode !== "custom-panels" || parsed.version !== 1) {
+    return null;
+  }
+
+  const panels = parsePanelCalibrations(
+    (parsed as Partial<CustomPanelsCalibrationProfile>).panels,
+  );
+  if (!panels) {
+    return null;
+  }
+
+  const profile = {
+    mode: "custom-panels",
+    panels,
+    version: 1,
+  } satisfies CustomPanelsCalibrationProfile;
+  return isSavableCustomPanelsCalibrationProfile(profile) ? profile : null;
 }
 
 function parsePanelCalibrations(

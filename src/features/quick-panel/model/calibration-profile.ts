@@ -32,6 +32,11 @@ export type CalibrationProfile =
   | DefaultUnionCalibrationProfile
   | CustomPanelsCalibrationProfile;
 
+export interface SavedCalibrationProfiles {
+  "default-union": DefaultUnionCalibrationProfile | null;
+  "custom-panels": CustomPanelsCalibrationProfile | null;
+}
+
 export function createDefaultUnionCalibrationProfile(
   rect: PanelRect,
 ): DefaultUnionCalibrationProfile {
@@ -46,6 +51,13 @@ export function isCustomPanelsCalibrationProfile(
   profile: CalibrationProfile,
 ): profile is CustomPanelsCalibrationProfile {
   return profile.mode === "custom-panels";
+}
+
+export function createEmptySavedCalibrationProfiles(): SavedCalibrationProfiles {
+  return {
+    "custom-panels": null,
+    "default-union": null,
+  };
 }
 
 export function createEmptyPanelCalibration(id: PanelId): PanelCalibration {
@@ -89,6 +101,22 @@ export function hasCalibrationForMode(
   profile: CalibrationProfile | null,
 ) {
   return profile?.mode === mode;
+}
+
+export function getCalibrationProfileForMode(
+  mode: CalibrationMode,
+  savedProfiles: SavedCalibrationProfiles,
+): CalibrationProfile | null {
+  return savedProfiles[mode];
+}
+
+export function upsertSavedCalibrationProfile(
+  savedProfiles: SavedCalibrationProfiles,
+  profile: CalibrationProfile,
+): SavedCalibrationProfiles {
+  return profile.mode === "default-union"
+    ? { ...savedProfiles, "default-union": profile }
+    : { ...savedProfiles, "custom-panels": profile };
 }
 
 export function isSavableCustomPanelsCalibrationProfile(

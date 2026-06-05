@@ -3,6 +3,7 @@ import type { View } from "react-native";
 import type {
   CalibrationMode,
   CalibrationProfile,
+  SavedCalibrationProfiles,
 } from "./calibration-profile";
 
 export type PanelId = "buttonBox" | "brightness" | "volume" | "mediaPlayer";
@@ -67,4 +68,5 @@ export interface CalibrationStateSnapshot {
   mode: CalibrationMode;
   profile: CalibrationProfile | null;
   rect: PanelRect | null;
+  savedProfiles: SavedCalibrationProfiles;
 }
