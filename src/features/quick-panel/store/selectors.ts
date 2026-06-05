@@ -4,10 +4,10 @@ export const quickPanelSelectors = {
   landingScreen: (state: QuickPanelState) => ({
     calibrationMode: state.calibrationMode,
     isCalibrated: state.isCalibrated,
-    modeStatuses: {
-      "custom-panels": state.savedCalibrationProfiles["custom-panels"] !== null,
-      "default-union": state.savedCalibrationProfiles["default-union"] !== null,
-    },
+    hasCustomCalibration:
+      state.savedCalibrationProfiles["custom-panels"] !== null,
+    hasDefaultCalibration:
+      state.savedCalibrationProfiles["default-union"] !== null,
     setCalibrationMode: state.setCalibrationMode,
     goToCalibration: state.goToCalibration,
     startCustomizing: state.startCustomizing,
