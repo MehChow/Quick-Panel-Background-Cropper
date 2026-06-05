@@ -38,6 +38,8 @@ Because of that, the app does not need to discover an entirely new layout for ev
 - one calibrated outer box for default-like layouts
 - explicit per-panel rectangles when the user has customized the layout enough that scaling the default template would be wrong
 
+Each mode now keeps its own saved calibration. Saving `Custom layout` no longer replaces a previously saved `Default layout` calibration, and vice versa.
+
 ## Suggested rectangle
 
 The initial suggestion is still based on the screenshot size and the base preset's panel-union aspect ratio. It is horizontally inset by a small margin, vertically placed near the expected Quick Panel stack area, and clamped inside the screenshot.
@@ -114,6 +116,14 @@ For `Custom layout`, each present panel now uses two derived runtime helpers:
 
 The export PNG is the enclosing square. Preview simulates the same square source and then applies the snapped centered crop inside the visible panel frame.
 
+For `Custom layout`, preview is intentionally box-only:
+
+- keep the panel border, radius, and clipped background image
+- remove simulated sliders, media controls, and button placeholders
+- use one uniform centered cover scale for the visible crop instead of separate X/Y scaling
+
+This means preview may clip a small amount of extra overflow when a manually drawn panel box is noisy, but it will not squash faces or stretch proportions.
+
 Current ratio groups used for snapping:
 
 - `buttonBox`: `1:1`, `2:1`, `3:1`, `4:1`, `1:2`, `3:2`, `1:3`, `2:3`, `4:3`
@@ -127,6 +137,7 @@ This ratio snapping is only for `Custom layout`, and it exists to absorb small c
 
 - `Default layout` keeps the previous width-based square export model.
 - `Custom layout` exports enclosing squares and clamps the shared background image against the union of those required square sources.
+- `Custom layout` preview is a simplified visual check, while export remains the final geometry source of truth.
 
 ## Notes and limitations
 

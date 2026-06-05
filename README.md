@@ -54,6 +54,9 @@ Custom layouts now model QuickStar as:
 - one square source image per panel
 - one centered runtime crop inside that square
 - one shared background transform across all visible panels
+- one saved calibration slot for `Default layout` and one saved slot for `Custom layout`
+
+Custom-layout preview now keeps only the panel boxes and the clipped background image. It intentionally removes simulated sliders, buttons, and icons so the export model stays the source of truth for the final panel output.
 
 That keeps preview and export aligned for retracted Button box, Brightness, Volume, and Media player layouts while leaving default-layout behavior unchanged.
 
@@ -73,6 +76,7 @@ The full calibration logic and assumptions are documented in [CALIBRATION_PLAN.m
 - Use a fully expanded Quick Panel screenshot when calibrating.
 - Use `Default layout` when your Quick Panel still matches Samsung's default stack.
 - Use `Custom layout` when you have moved, hidden, or resized supported Quick Panel panels.
+- Each mode keeps its own saved calibration, so recalibrating one mode does not replace the other.
 - Good Lock availability depends on Samsung support in your region and device setup.
 
 ## Development
