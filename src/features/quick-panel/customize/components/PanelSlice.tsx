@@ -4,6 +4,10 @@ import Animated, {
   type SharedValue,
   useAnimatedStyle,
 } from "react-native-reanimated";
+import {
+  getSnappedPanelRect,
+  usesQuickStarCropModel,
+} from "../../model/quickstar-crop";
 import type {
   ImageTransform,
   PanelDefinition,
@@ -19,6 +23,7 @@ interface PanelSliceProps {
   layoutScale: number;
   originX: number;
   originY: number;
+  presetId: string;
   previewScale: SharedValue<number>;
   transform: SharedValue<ImageTransform>;
 }
@@ -29,14 +34,33 @@ export function PanelSlice({
   layoutScale,
   originX,
   originY,
+  presetId,
   previewScale,
   transform,
 }: PanelSliceProps) {
+  const cropRect = usesQuickStarCropModel(presetId)
+    ? getSnappedPanelRect(panel)
+    : panel.rect;
+
   const imageStyle = useAnimatedStyle(() => ({
-    height: image.height * transform.value.scale * previewScale.value,
-    left: (transform.value.x - panel.rect.x) * previewScale.value,
-    top: (transform.value.y - panel.rect.y) * previewScale.value,
-    width: image.width * transform.value.scale * previewScale.value,
+    height:
+      image.height *
+      transform.value.scale *
+      previewScale.value *
+      (panel.rect.height / cropRect.height),
+    left:
+      (transform.value.x - cropRect.x) *
+      previewScale.value *
+      (panel.rect.width / cropRect.width),
+    top:
+      (transform.value.y - cropRect.y) *
+      previewScale.value *
+      (panel.rect.height / cropRect.height),
+    width:
+      image.width *
+      transform.value.scale *
+      previewScale.value *
+      (panel.rect.width / cropRect.width),
   }));
 
   return (

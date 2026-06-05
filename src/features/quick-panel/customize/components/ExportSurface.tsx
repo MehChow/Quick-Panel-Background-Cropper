@@ -13,11 +13,12 @@ interface ExportSurfaceProps {
   image: PickedImage;
   transform: ImageTransform;
   side: number;
+  presetId: string;
 }
 
 export const ExportSurface = forwardRef<View, ExportSurfaceProps>(
-  function ExportSurface({ panel, image, transform, side }, ref) {
-    const squareRect = getExportSquareRect(panel);
+  function ExportSurface({ panel, image, presetId, transform, side }, ref) {
+    const squareRect = getExportSquareRect(panel, presetId);
     const squareScale = side / squareRect.width;
     const imageScale = transform.scale * squareScale;
 

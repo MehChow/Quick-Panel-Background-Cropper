@@ -57,6 +57,7 @@ export function QuickPanelPreview({
                 layoutScale={layoutScale}
                 originX={panelUnion.x}
                 originY={panelUnion.y}
+                presetId={preset.id}
                 previewScale={sharedScale}
                 transform={sharedTransform}
               />

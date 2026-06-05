@@ -34,6 +34,7 @@ export function ExportSurfaces({
           ref={refs[id]}
           panel={preset.panels[id]}
           image={image}
+          presetId={preset.id}
           transform={transform}
           side={side}
         />

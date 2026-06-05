@@ -1,4 +1,8 @@
 import { translate } from "./i18n";
+import {
+  getEnclosingSquareRect,
+  usesQuickStarCropModel,
+} from "./quickstar-crop";
 import type { PanelDefinition, PanelRect, QuickPanelPreset } from "./types";
 
 export const exportSidePixels = 1024;
@@ -19,7 +23,7 @@ export function getPanelUnion(preset: QuickPanelPreset): PanelRect {
   };
 }
 
-export function getExportSquareRect(panel: PanelDefinition): PanelRect {
+function getWidthBasedExportSquareRect(panel: PanelDefinition): PanelRect {
   return {
     x: panel.rect.x,
     y: panel.rect.y + (panel.rect.height - panel.rect.width) / 2,
@@ -29,9 +33,18 @@ export function getExportSquareRect(panel: PanelDefinition): PanelRect {
   };
 }
 
+export function getExportSquareRect(
+  panel: PanelDefinition,
+  presetId: string,
+): PanelRect {
+  return usesQuickStarCropModel(presetId)
+    ? getEnclosingSquareRect(panel.rect)
+    : getWidthBasedExportSquareRect(panel);
+}
+
 export function getImageBounds(preset: QuickPanelPreset): PanelRect {
   const rects = preset.visualOrder.map((id) =>
-    getExportSquareRect(preset.panels[id]),
+    getExportSquareRect(preset.panels[id], preset.id),
   );
   const left = Math.min(...rects.map((rect) => rect.x));
   const top = Math.min(...rects.map((rect) => rect.y));

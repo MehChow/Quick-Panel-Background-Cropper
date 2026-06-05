@@ -5,6 +5,7 @@ import type {
 } from "./calibration-profile";
 import { translate } from "./i18n";
 import { goodLockOrder, s25PlusOneUi85Preset, visualOrder } from "./preset";
+import { customLayoutPresetId } from "./quickstar-crop";
 import type { PanelId, PanelRect, QuickPanelPreset } from "./types";
 
 export function getPresetFromCalibrationProfile(
@@ -38,7 +39,7 @@ export function buildCustomPreset(
 
   return {
     ...s25PlusOneUi85Preset,
-    id: "custom-layout-calibrated",
+    id: customLayoutPresetId,
     label: translate("preset.customLabel"),
     width: Math.ceil(union.x * 2 + union.width),
     height: Math.ceil(union.y + union.height),
@@ -75,4 +76,3 @@ function getCustomPanelUnion(
     radius: 0,
   };
 }
-
