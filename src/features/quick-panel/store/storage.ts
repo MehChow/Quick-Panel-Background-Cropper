@@ -1,6 +1,7 @@
 import { createMMKV } from "react-native-mmkv";
 import {
   createDefaultUnionCalibrationProfile,
+  isSavableCustomPanelsCalibrationProfile,
   panelIds,
   type CalibrationProfile,
   type CustomPanelsCalibrationProfile,
@@ -134,10 +135,13 @@ function parseCalibrationProfile(value: string): CalibrationProfile | null {
         (parsed as Partial<CustomPanelsCalibrationProfile>).panels,
       );
       if (panels) {
-        return {
+        const profile = {
           mode: "custom-panels",
           panels,
           version: 1,
+        } satisfies CustomPanelsCalibrationProfile;
+        if (isSavableCustomPanelsCalibrationProfile(profile)) {
+          return profile;
         };
       }
     }

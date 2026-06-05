@@ -130,7 +130,7 @@ export function useCalibrationScreen() {
     goToNextCustomStep: () => {
       setLocalError(null);
       if (!goToNextStep()) {
-        setLocalError(translate("errors.importScreenshotFirst"));
+        setLocalError(translate("errors.customCalibrationIncomplete"));
       }
     },
     goToPreviousCustomStep: () => {

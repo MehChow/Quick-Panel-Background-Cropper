@@ -79,6 +79,34 @@ describe("storage", () => {
     });
   });
 
+  it("ignores an invalid custom calibration profile with no visible panels", () => {
+    const mmkvStore = globalThis as typeof globalThis & {
+      __mmkvStore?: Map<string, boolean | string>;
+    };
+    mmkvStore.__mmkvStore?.set(
+      "quick-panel.calibration-profile",
+      JSON.stringify({
+        mode: "custom-panels",
+        panels: {
+          brightness: { id: "brightness", rect: null, status: "hidden" },
+          buttonBox: { id: "buttonBox", rect: null, status: "hidden" },
+          mediaPlayer: { id: "mediaPlayer", rect: null, status: "hidden" },
+          volume: { id: "volume", rect: null, status: "hidden" },
+        },
+        version: 1,
+      }),
+    );
+
+    const { loadCalibrationSnapshot } = require("@/features/quick-panel/store/storage");
+
+    expect(loadCalibrationSnapshot()).toEqual({
+      isCalibrated: false,
+      mode: "default-union",
+      profile: null,
+      rect: null,
+    });
+  });
+
   it("persists calibration geometry", () => {
     const mmkvStore = globalThis as typeof globalThis & {
       __mmkvStore?: Map<string, boolean | string>;

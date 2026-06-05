@@ -90,3 +90,20 @@ export function hasCalibrationForMode(
 ) {
   return profile?.mode === mode;
 }
+
+export function isSavableCustomPanelsCalibrationProfile(
+  profile: CustomPanelsCalibrationProfile,
+) {
+  const panels = panelIds.map((id) => profile.panels[id]);
+
+  return (
+    panels.every(
+      (panel) =>
+        panel.status === "hidden" ||
+        (panel.status === "present" && panel.rect !== null),
+    ) &&
+    panels.some(
+      (panel) => panel.status === "present" && panel.rect !== null,
+    )
+  );
+}

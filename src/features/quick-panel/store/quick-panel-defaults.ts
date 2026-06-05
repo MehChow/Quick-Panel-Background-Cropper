@@ -53,10 +53,21 @@ export function createResetWorkState() {
 }
 
 export function createInitialQuickPanelStateData(): QuickPanelStateData {
-  const calibration = loadCalibrationSnapshot();
-  const activePreset = calibration.profile
-    ? getPresetFromCalibrationProfile(calibration.profile)
-    : s25PlusOneUi85Preset;
+  let calibration = loadCalibrationSnapshot();
+  let activePreset = s25PlusOneUi85Preset;
+
+  if (calibration.profile) {
+    try {
+      activePreset = getPresetFromCalibrationProfile(calibration.profile);
+    } catch {
+      calibration = {
+        isCalibrated: false,
+        mode: "default-union",
+        profile: null,
+        rect: null,
+      };
+    }
+  }
   const customCalibrationDraft = createEmptyCustomPanelsCalibrationProfile();
 
   return {
