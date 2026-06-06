@@ -11,7 +11,7 @@ It includes:
 - default-layout calibration using one union box
 - custom-layout calibration using one box per panel
 - mode-specific calibration help for `Default layout` and `Custom layout`
-- optional two-screenshot custom calibration with manual overlap alignment
+- optional two-screenshot custom calibration with runtime header trim and manual overlap alignment
 - live preview for Button box, Brightness, Volume, and Media player
 - pan and zoom adjustment before export
 - PNG export in the same order you need to apply them in Good Lock
@@ -38,7 +38,7 @@ Not intended for:
 1. Choose `Default layout` or `Custom layout`.
 2. Import a fully expanded Quick Panel screenshot.
 3. In `Default layout`, adjust one green box around the whole customizable panel stack.
-4. In `Custom layout`, either continue with one screenshot or add one second screenshot and align its overlap manually.
+4. In `Custom layout`, either continue with one screenshot or add a second screenshot, trim its repeated phone header, and align it with the full-width seam control.
 5. In `Custom layout`, place a box for Button box, Brightness, Volume, and Media player, or mark a panel hidden.
 6. Review and save calibration.
 7. Saving calibration returns to one landing root instead of stacking repeated home screens.
@@ -60,6 +60,7 @@ For `Custom layout`, the app stores the real user-provided rectangles for each v
 - one screenshot for shorter layouts
 - a maximum of two screenshots for taller layouts
 - manual vertical overlap alignment only
+- runtime-only trimming of the repeated phone header from screenshot 2 before merged calibration
 
 Custom layouts now model QuickStar as:
 
@@ -89,6 +90,7 @@ The full calibration logic and assumptions are documented in [CALIBRATION_PLAN.m
 - Use `Default layout` when your Quick Panel still matches Samsung's default stack.
 - Use `Custom layout` when you have moved, hidden, or resized supported Quick Panel panels.
 - `Custom layout` supports at most two screenshots, and the second screenshot must be manually aligned before panel calibration starts.
+- In two-shot custom calibration, screenshot 2 is trimmed at runtime to remove the repeated phone header before the merged calibration canvas is confirmed.
 - Each mode keeps its own saved calibration, so recalibrating one mode does not replace the other.
 - Good Lock availability depends on Samsung support in your region and device setup.
 
