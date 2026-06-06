@@ -1,11 +1,16 @@
 import * as React from "react";
-import { render, screen } from "@testing-library/react-native";
+import { act, render, screen } from "@testing-library/react-native";
 import { Text } from "react-native";
 import { CustomCalibrationCanvas } from "@/features/quick-panel/calibration/components/CustomCalibrationCanvas";
 import { CustomCalibrationOverlapAligner } from "@/features/quick-panel/calibration/components/CustomCalibrationOverlapAligner";
 
 const mockReact = React;
 const mockText = Text;
+const panGestures: Array<{
+  onBegin?: () => void;
+  onFinalize?: () => void;
+  onUpdate?: (event: { translationY: number }) => void;
+}> = [];
 
 jest.mock("react-i18next", () => ({
   initReactI18next: {
@@ -45,11 +50,21 @@ jest.mock("react-native-gesture-handler", () => {
       activeOffsetY: () => chain,
       hitSlop: () => chain,
       minDistance: () => chain,
-      onBegin: () => chain,
+      onBegin: (callback: () => void) => {
+        chain.onBegin = callback;
+        return chain;
+      },
       onEnd: () => chain,
-      onFinalize: () => chain,
-      onUpdate: () => chain,
+      onFinalize: (callback: () => void) => {
+        chain.onFinalize = callback;
+        return chain;
+      },
+      onUpdate: (callback: (event: { translationY: number }) => void) => {
+        chain.onUpdate = callback;
+        return chain;
+      },
     };
+    panGestures.push(chain);
 
     return chain;
   };
@@ -93,6 +108,10 @@ const bottomScreenshot = {
 } as const;
 
 describe("custom calibration alignment ui", () => {
+  beforeEach(() => {
+    panGestures.length = 0;
+  });
+
   it("renders trimmed lower content and visible alignment copy", () => {
     render(
       <CustomCalibrationOverlapAligner
@@ -128,5 +147,30 @@ describe("custom calibration alignment ui", () => {
     );
 
     expect(screen.getByTestId("file:///bottom.png").props.style.top).toBe(-120);
+  });
+
+  it("keeps the upward seam drag update when the gesture finalizes", () => {
+    const onBottomOffsetYChange = jest.fn();
+
+    render(
+      <CustomCalibrationOverlapAligner
+        bottomCropTopY={120}
+        bottomOffsetY={1860}
+        bottomScreenshot={bottomScreenshot}
+        onBottomCropTopYChange={jest.fn()}
+        onBottomOffsetYChange={onBottomOffsetYChange}
+        topScreenshot={topScreenshot}
+      />,
+    );
+
+    const seamGesture = panGestures[1];
+    act(() => {
+      seamGesture.onBegin?.();
+      seamGesture.onUpdate?.({ translationY: -540 });
+      seamGesture.onFinalize?.();
+    });
+
+    expect(onBottomOffsetYChange).toHaveBeenCalledTimes(1);
+    expect(onBottomOffsetYChange).toHaveBeenCalledWith(1320);
   });
 });
