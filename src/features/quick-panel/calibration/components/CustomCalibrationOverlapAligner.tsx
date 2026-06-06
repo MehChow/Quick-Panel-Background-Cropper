@@ -8,9 +8,12 @@ import { useSharedValue } from "react-native-reanimated";
 import { scheduleOnRN } from "react-native-worklets";
 import {
   clampBottomCropTopY,
-  clampBottomOffsetY,
   getVisibleBottomScreenshotMetrics,
 } from "../custom-calibration-session";
+import {
+  clampBottomCropTopYWorklet,
+  clampBottomOffsetYWorklet,
+} from "../worklets/custom-calibration-worklets";
 import type { PickedImage } from "../../model/types";
 
 interface CustomCalibrationOverlapAlignerProps {
@@ -62,7 +65,7 @@ export function CustomCalibrationOverlapAligner({
 
       scheduleOnRN(
         onBottomCropTopYChange,
-        clampBottomCropTopY(
+        clampBottomCropTopYWorklet(
           cropOriginY.value + event.translationY / activeScale,
           bottomScreenshot.height,
         ),
@@ -81,7 +84,7 @@ export function CustomCalibrationOverlapAligner({
     .onUpdate((event) => {
       scheduleOnRN(
         onBottomOffsetYChange,
-        clampBottomOffsetY(
+        clampBottomOffsetYWorklet(
           offsetOriginY.value + event.translationY / activeScale,
           topScreenshot.height,
         ),
