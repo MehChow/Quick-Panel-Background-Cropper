@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import {
   canUseAsSecondCustomScreenshot,
+  clampBottomCropTopY,
   getMergedCustomScreenshotMetrics,
 } from "../custom-calibration-session";
 import { panelIds } from "../../model/calibration-profile";
@@ -96,6 +97,7 @@ export function useCalibrationScreen() {
     setCustomCalibrationStep(panelIds[0]);
     setCustomCalibrationReview(false);
     setCustomCalibrationSession({
+      bottomCropTopY: null,
       bottomOffsetY: null,
       bottomScreenshot: null,
       mergedHeight: sourceMode === "single" ? nextScreenshot.height : null,
@@ -146,6 +148,7 @@ export function useCalibrationScreen() {
     }
 
     setCustomCalibrationSession({
+      bottomCropTopY: clampBottomCropTopY(120, nextScreenshot.height),
       bottomScreenshot: nextScreenshot,
       bottomOffsetY: topScreenshot.height,
       mergedHeight: null,
@@ -154,17 +157,19 @@ export function useCalibrationScreen() {
 
   const confirmCustomCalibrationAlignment = () => {
     setLocalError(null);
-    const { topScreenshot, bottomOffsetY, bottomScreenshot } =
+    const { topScreenshot, bottomCropTopY, bottomOffsetY, bottomScreenshot } =
       customCalibrationSession;
     if (!topScreenshot || !bottomScreenshot) {
       return;
     }
 
+    const nextBottomCropTopY = bottomCropTopY ?? 0;
     const nextBottomOffsetY = bottomOffsetY ?? topScreenshot.height;
     const mergedHeight = getMergedCustomScreenshotMetrics(
       topScreenshot,
       bottomScreenshot,
       nextBottomOffsetY,
+      nextBottomCropTopY,
     ).height;
     const mergedScreenshot = {
       ...topScreenshot,
@@ -177,6 +182,7 @@ export function useCalibrationScreen() {
     setCustomCalibrationStep(panelIds[0]);
     setCustomCalibrationReview(false);
     setCustomCalibrationSession({
+      bottomCropTopY: nextBottomCropTopY,
       bottomOffsetY: nextBottomOffsetY,
       mergedHeight,
     });
@@ -250,6 +256,7 @@ export function useCalibrationScreen() {
     setCustomCalibrationSourceMode: (sourceMode: CustomCalibrationSourceMode) => {
       setLocalError(null);
       setCustomCalibrationSession({
+        bottomCropTopY: null,
         bottomOffsetY: null,
         bottomScreenshot: null,
         mergedHeight:
@@ -262,6 +269,20 @@ export function useCalibrationScreen() {
     setCustomCalibrationBottomOffsetY: (bottomOffsetY: number) => {
       setLocalError(null);
       setCustomCalibrationSession({ bottomOffsetY });
+    },
+    setCustomCalibrationBottomCropTopY: (bottomCropTopY: number) => {
+      setLocalError(null);
+      const bottomScreenshot = customCalibrationSession.bottomScreenshot;
+      if (!bottomScreenshot) {
+        return;
+      }
+
+      setCustomCalibrationSession({
+        bottomCropTopY: clampBottomCropTopY(
+          bottomCropTopY,
+          bottomScreenshot.height,
+        ),
+      });
     },
     importCustomBottomScreenshot,
     confirmCustomCalibrationAlignment,

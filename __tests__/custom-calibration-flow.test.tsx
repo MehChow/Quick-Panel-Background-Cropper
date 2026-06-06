@@ -10,6 +10,7 @@ import { useQuickPanelStore } from "@/features/quick-panel/store/quick-panel-sto
 
 const mockReact = React;
 const mockText = Text;
+const mockLaunchImageLibraryAsync = jest.fn();
 
 jest.mock("expo-router", () => ({
   useRouter: () => ({
@@ -19,6 +20,11 @@ jest.mock("expo-router", () => ({
     push: jest.fn(),
     replace: jest.fn(),
   }),
+}));
+
+jest.mock("expo-image-picker", () => ({
+  launchImageLibraryAsync: (...args: unknown[]) =>
+    mockLaunchImageLibraryAsync(...args),
 }));
 
 jest.mock("react-i18next", () => ({
@@ -102,6 +108,7 @@ describe("custom calibration flow", () => {
         onRectChange={jest.fn()}
         rect={null}
         session={{
+          bottomCropTopY: 120,
           bottomOffsetY: 1860,
           bottomScreenshot,
           mergedHeight: 4140,
@@ -122,6 +129,7 @@ describe("custom calibration flow", () => {
         topScreenshot,
       ),
       customCalibrationSession: {
+        bottomCropTopY: 120,
         bottomOffsetY: 1860,
         bottomScreenshot,
         mergedHeight: null,
@@ -136,14 +144,77 @@ describe("custom calibration flow", () => {
       result.current.confirmCustomCalibrationAlignment();
     });
 
-    expect(useQuickPanelStore.getState().customCalibrationSession.mergedHeight).toBe(
-      4140,
-    );
+    expect(
+      useQuickPanelStore.getState().customCalibrationSession.mergedHeight,
+    ).toBe(4020);
+    expect(
+      useQuickPanelStore.getState().customCalibrationSession.bottomCropTopY,
+    ).toBe(120);
     expect(useQuickPanelStore.getState().customCalibrationDraft).toEqual(
       createSuggestedCustomCalibrationProfile({
         ...topScreenshot,
-        height: 4140,
+        height: 4020,
       }),
     );
+  });
+
+  it("keeps the one-shot custom session unchanged when importing the top screenshot", async () => {
+    useQuickPanelStore.setState({
+      calibrationMode: "custom-panels",
+    });
+
+    mockLaunchImageLibraryAsync.mockResolvedValue({
+      assets: [topScreenshot],
+      canceled: false,
+    });
+
+    const { result } = renderHook(() => useCalibrationScreen());
+
+    await act(async () => {
+      await result.current.importScreenshot();
+    });
+
+    expect(useQuickPanelStore.getState().customCalibrationSession).toEqual({
+      bottomCropTopY: null,
+      bottomOffsetY: null,
+      bottomScreenshot: null,
+      mergedHeight: 2400,
+      sourceMode: "single",
+      topScreenshot,
+    });
+  });
+
+  it("seeds a bounded default trim when the second screenshot is imported", async () => {
+    useQuickPanelStore.setState({
+      calibrationMode: "custom-panels",
+      customCalibrationSession: {
+        bottomCropTopY: null,
+        bottomOffsetY: null,
+        bottomScreenshot: null,
+        mergedHeight: null,
+        sourceMode: "double",
+        topScreenshot,
+      },
+    });
+
+    mockLaunchImageLibraryAsync.mockResolvedValue({
+      assets: [bottomScreenshot],
+      canceled: false,
+    });
+
+    const { result } = renderHook(() => useCalibrationScreen());
+
+    await act(async () => {
+      await result.current.importCustomBottomScreenshot();
+    });
+
+    expect(useQuickPanelStore.getState().customCalibrationSession).toEqual({
+      bottomCropTopY: 120,
+      bottomOffsetY: 2400,
+      bottomScreenshot,
+      mergedHeight: null,
+      sourceMode: "double",
+      topScreenshot,
+    });
   });
 });

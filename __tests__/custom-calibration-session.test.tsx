@@ -2,7 +2,9 @@ import { act, renderHook } from "@testing-library/react-native";
 import { useCalibrationScreen } from "@/features/quick-panel/calibration/hooks/useCalibrationScreen";
 import {
   canUseAsSecondCustomScreenshot,
+  clampBottomCropTopY,
   createEmptyCustomCalibrationSession,
+  getVisibleBottomScreenshotMetrics,
   getMergedCustomScreenshotMetrics,
 } from "@/features/quick-panel/calibration/custom-calibration-session";
 import { createInitialQuickPanelStateData } from "@/features/quick-panel/store/quick-panel-defaults";
@@ -80,9 +82,28 @@ describe("custom calibration session", () => {
 
   it("calculates merged screenshot metrics from the bottom offset", () => {
     expect(
-      getMergedCustomScreenshotMetrics(topScreenshot, bottomScreenshot, 1860),
+      getMergedCustomScreenshotMetrics(
+        topScreenshot,
+        bottomScreenshot,
+        1860,
+        120,
+      ),
     ).toEqual({
-      height: 4140,
+      height: 4020,
+      width: 1080,
+    });
+  });
+
+  it("clamps the second screenshot trim to a bounded top band", () => {
+    expect(clampBottomCropTopY(-20, bottomScreenshot.height)).toBe(0);
+    expect(clampBottomCropTopY(500, bottomScreenshot.height)).toBe(240);
+  });
+
+  it("calculates visible metrics from the trimmed second screenshot", () => {
+    expect(
+      getVisibleBottomScreenshotMetrics(bottomScreenshot, 120),
+    ).toEqual({
+      height: 2160,
       width: 1080,
     });
   });
@@ -127,6 +148,7 @@ describe("custom calibration session", () => {
     });
 
     expect(useQuickPanelStore.getState().customCalibrationSession).toEqual({
+      bottomCropTopY: null,
       bottomOffsetY: null,
       bottomScreenshot: null,
       mergedHeight: 2400,
@@ -140,6 +162,7 @@ describe("custom calibration session", () => {
     useQuickPanelStore.setState({
       calibrationMode: "custom-panels",
       customCalibrationSession: {
+        bottomCropTopY: null,
         bottomOffsetY: null,
         bottomScreenshot: null,
         mergedHeight: null,

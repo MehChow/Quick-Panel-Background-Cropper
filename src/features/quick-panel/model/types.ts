@@ -43,6 +43,7 @@ export interface PickedImage {
 export type CustomCalibrationSourceMode = "single" | "double";
 
 export interface CustomCalibrationSession {
+  bottomCropTopY: number | null;
   bottomOffsetY: number | null;
   bottomScreenshot: PickedImage | null;
   mergedHeight: number | null;
