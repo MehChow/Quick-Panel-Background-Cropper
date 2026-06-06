@@ -39,6 +39,7 @@ export function CalibrationScreen() {
     markCurrentCustomHidden,
     markCurrentCustomPresent,
     setCustomCalibrationSourceMode,
+    setCustomCalibrationBottomCropTopY,
     setCustomCalibrationBottomOffsetY,
     importCustomBottomScreenshot,
     confirmCustomCalibrationAlignment,
@@ -96,8 +97,10 @@ export function CalibrationScreen() {
             !isAlignmentConfirmed ? (
             <View className="gap-4">
               <CustomCalibrationOverlapAligner
+                bottomCropTopY={customCalibrationSession.bottomCropTopY}
                 bottomOffsetY={customCalibrationSession.bottomOffsetY}
                 bottomScreenshot={customCalibrationSession.bottomScreenshot}
+                onBottomCropTopYChange={setCustomCalibrationBottomCropTopY}
                 onBottomOffsetYChange={setCustomCalibrationBottomOffsetY}
                 topScreenshot={topScreenshot}
               />

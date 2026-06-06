@@ -40,6 +40,11 @@ const en = {
       chooseFromAlbum: "Choose from album",
       reImport: "Re-import",
       looksGood: "Looks good",
+      continueWithOneScreenshot: "Continue with one screenshot",
+      addSecondScreenshot: "Add second screenshot",
+      alignOverlap: "Prepare two-shot alignment",
+      dragToAlign: "Drag to align",
+      trimSecondHeader: "Trim repeated phone header",
       useBox: "Use box",
       markHidden: "Mark hidden",
       panelStepCounter: "{{current}} / {{total}}",
@@ -90,6 +95,8 @@ const en = {
       importScreenshotFirst: "Import a Quick Panel screenshot first.",
       customCalibrationIncomplete:
         "Configure every panel and keep at least one panel visible before saving.",
+      customCalibrationSecondScreenshotSizeMismatch:
+        "The second screenshot must be a portrait image with the same width as the first screenshot.",
       mediaLibraryPermission:
         "Media library permission is required to save exports.",
       noPanelsToExport: "At least one panel must be visible before export.",

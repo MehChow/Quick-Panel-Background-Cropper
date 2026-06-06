@@ -187,7 +187,7 @@ describe("custom calibration session", () => {
     });
 
     expect(result.current.error).toBe(
-      "errors.customCalibrationSecondScreenshotSizeMismatch",
+      "The second screenshot must be a portrait image with the same width as the first screenshot.",
     );
     expect(useQuickPanelStore.getState().customCalibrationSession.bottomScreenshot).toBeNull();
   });

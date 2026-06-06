@@ -1,6 +1,7 @@
 import { Image } from "expo-image";
 import { useState } from "react";
 import { View } from "react-native";
+import { getVisibleBottomScreenshotMetrics } from "../custom-calibration-session";
 import type {
   CustomCalibrationSession,
   PanelRect,
@@ -49,19 +50,7 @@ export function CustomCalibrationCanvas({
           width: "100%",
         }}
       />
-      {session.bottomScreenshot && session.bottomOffsetY !== null ? (
-        <Image
-          source={{ uri: session.bottomScreenshot.uri }}
-          contentFit="fill"
-          style={{
-            height: session.bottomScreenshot.height * scale,
-            left: 0,
-            position: "absolute",
-            top: session.bottomOffsetY * scale,
-            width: "100%",
-          }}
-        />
-      ) : null}
+      {renderBottomScreenshot(session, scale)}
       <CustomCalibrationOverlay
         isHidden={isHidden}
         onRectChange={onRectChange}
@@ -132,6 +121,43 @@ function getCalibrationSurface(
     ...topScreenshot,
     height: session.mergedHeight ?? topScreenshot.height,
   };
+}
+
+function renderBottomScreenshot(
+  session: CustomCalibrationSession,
+  scale: number,
+) {
+  if (!session.bottomScreenshot || session.bottomOffsetY === null) {
+    return null;
+  }
+
+  const bottomCropTopY = session.bottomCropTopY ?? 0;
+  const visibleBottomHeight = getVisibleBottomScreenshotMetrics(
+    session.bottomScreenshot,
+    bottomCropTopY,
+  ).height;
+
+  return (
+    <View
+      className="absolute left-0 right-0 overflow-hidden"
+      style={{
+        height: visibleBottomHeight * scale,
+        top: session.bottomOffsetY * scale,
+      }}
+    >
+      <Image
+        source={{ uri: session.bottomScreenshot.uri }}
+        contentFit="fill"
+        style={{
+          height: session.bottomScreenshot.height * scale,
+          left: 0,
+          position: "absolute",
+          top: -bottomCropTopY * scale,
+          width: "100%",
+        }}
+      />
+    </View>
+  );
 }
 
 const fallbackRect: PanelRect = { x: 0, y: 0, width: 1, height: 1, radius: 0 };
