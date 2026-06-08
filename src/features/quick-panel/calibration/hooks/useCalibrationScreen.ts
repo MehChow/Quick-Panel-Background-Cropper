@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import {
   canUseAsSecondCustomScreenshot,
-  clampBottomCropTopY,
   getAutomaticBottomCropTopY,
   getMergedCustomScreenshotMetrics,
 } from "../custom-calibration-session";
@@ -270,20 +269,6 @@ export function useCalibrationScreen() {
     setCustomCalibrationBottomOffsetY: (bottomOffsetY: number) => {
       setLocalError(null);
       setCustomCalibrationSession({ bottomOffsetY });
-    },
-    setCustomCalibrationBottomCropTopY: (bottomCropTopY: number) => {
-      setLocalError(null);
-      const bottomScreenshot = customCalibrationSession.bottomScreenshot;
-      if (!bottomScreenshot) {
-        return;
-      }
-
-      setCustomCalibrationSession({
-        bottomCropTopY: clampBottomCropTopY(
-          bottomCropTopY,
-          bottomScreenshot.height,
-        ),
-      });
     },
     importCustomBottomScreenshot,
     confirmCustomCalibrationAlignment,

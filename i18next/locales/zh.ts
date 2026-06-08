@@ -45,7 +45,6 @@ const zh = {
       addSecondScreenshot: "加入第二張截圖",
       alignOverlap: "對齊重疊區域",
       dragToAlign: "拖曳以對齊",
-      trimSecondHeader: "裁切重複的手機頂部",
       useBox: "使用方框",
       markHidden: "標記為隱藏",
       panelStepCounter: "{{current}} / {{total}}",

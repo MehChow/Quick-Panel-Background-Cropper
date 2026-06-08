@@ -44,7 +44,6 @@ const en = {
       addSecondScreenshot: "Add second screenshot",
       alignOverlap: "Prepare two-shot alignment",
       dragToAlign: "Drag to align",
-      trimSecondHeader: "Trim repeated phone header",
       useBox: "Use box",
       markHidden: "Mark hidden",
       panelStepCounter: "{{current}} / {{total}}",

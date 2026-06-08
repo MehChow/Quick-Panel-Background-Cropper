@@ -39,7 +39,6 @@ export function CalibrationScreen() {
     markCurrentCustomHidden,
     markCurrentCustomPresent,
     setCustomCalibrationSourceMode,
-    setCustomCalibrationBottomCropTopY,
     setCustomCalibrationBottomOffsetY,
     importCustomBottomScreenshot,
     confirmCustomCalibrationAlignment,
@@ -100,7 +99,6 @@ export function CalibrationScreen() {
                 bottomCropTopY={customCalibrationSession.bottomCropTopY}
                 bottomOffsetY={customCalibrationSession.bottomOffsetY}
                 bottomScreenshot={customCalibrationSession.bottomScreenshot}
-                onBottomCropTopYChange={setCustomCalibrationBottomCropTopY}
                 onBottomOffsetYChange={setCustomCalibrationBottomOffsetY}
                 topScreenshot={topScreenshot}
               />

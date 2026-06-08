@@ -112,21 +112,24 @@ describe("custom calibration alignment ui", () => {
     panGestures.length = 0;
   });
 
-  it("renders trimmed lower content and visible alignment copy", () => {
+  it("renders trimmed lower content with seam-only alignment controls", () => {
     render(
       <CustomCalibrationOverlapAligner
         bottomCropTopY={120}
         bottomOffsetY={1860}
         bottomScreenshot={bottomScreenshot}
-        onBottomCropTopYChange={jest.fn()}
         onBottomOffsetYChange={jest.fn()}
         topScreenshot={topScreenshot}
       />,
     );
 
     expect(screen.getByText("calibration.dragToAlign")).toBeTruthy();
-    expect(screen.getByText("calibration.trimSecondHeader")).toBeTruthy();
+    expect(screen.queryByText("calibration.trimSecondHeader")).toBeNull();
+    expect(screen.getByTestId("file:///bottom.png").props.style.opacity).toBe(
+      0.55,
+    );
     expect(screen.getByTestId("file:///bottom.png").props.style.top).toBe(-120);
+    expect(panGestures).toHaveLength(1);
   });
 
   it("renders the merged calibration canvas from the trimmed lower screenshot", () => {
@@ -157,13 +160,12 @@ describe("custom calibration alignment ui", () => {
         bottomCropTopY={120}
         bottomOffsetY={1860}
         bottomScreenshot={bottomScreenshot}
-        onBottomCropTopYChange={jest.fn()}
         onBottomOffsetYChange={onBottomOffsetYChange}
         topScreenshot={topScreenshot}
       />,
     );
 
-    const seamGesture = panGestures[1];
+    const seamGesture = panGestures[0];
     act(() => {
       seamGesture.onBegin?.();
       seamGesture.onUpdate?.({ translationY: -540 });
