@@ -22,7 +22,7 @@ In `Default layout`, the user selects one rectangle covering the customizable pa
 In `Custom layout`, the user can either:
 
 - continue with one screenshot for shorter layouts
-- add one second screenshot for taller layouts, trim its repeated phone header, then align the overlap manually
+- add one second screenshot for taller layouts, let the app trim its repeated phone header automatically, then align the overlap manually
 
 The second screenshot is optional, but the app never accepts more than two screenshots for one custom calibration session.
 
@@ -95,7 +95,7 @@ For taller custom layouts, the app can work in one merged coordinate space built
 - one runtime-only `bottomCropTopY` value that trims the repeated top band from screenshot 2
 - one manually chosen `bottomOffsetY`
 
-The alignment step allows vertical dragging only. The second screenshot is rendered as a clipped block, so the trim is reversible and never rewrites the image on disk. There is no automatic stitching, CV matching, horizontal sliding, scaling, or rotation.
+The alignment step allows vertical dragging only. The second screenshot is rendered as a clipped semi-transparent block during alignment, so the trim is reversible and never rewrites the image on disk. There is no automatic stitching, CV matching, horizontal sliding, scaling, or rotation.
 
 For custom layouts, the saved rectangles become the runtime geometry source of truth. The app does not infer panel placement from one outer box after save.
 
@@ -165,5 +165,5 @@ This ratio snapping is only for `Custom layout`, and it exists to absorb small c
 - `Default layout` works best when Samsung keeps the same panel order and nearly the same relative proportions as the S25+ reference.
 - `Custom layout` supports moved, resized, and hidden supported panels, but it still only targets the four exportable surfaces: Button box, Brightness, Volume, and Media player.
 - `Custom layout` supports at most two screenshots, and two-shot mode depends on manual overlap alignment by the user.
-- In two-shot mode, screenshot 2 first trims its repeated phone header at runtime and then uses a fixed-height preparation surface with a full-width seam drag control.
+- In two-shot mode, screenshot 2 first trims its repeated phone header automatically at import time and then uses a fixed-height preparation surface with semi-transparent overlap rendering plus a full-width seam drag control.
 - Layouts that introduce unsupported panels, new export targets, foldable-only arrangements, or radically different aspect behavior remain out of scope.
