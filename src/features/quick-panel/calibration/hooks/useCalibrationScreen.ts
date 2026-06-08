@@ -5,6 +5,7 @@ import { useShallow } from "zustand/react/shallow";
 import {
   canUseAsSecondCustomScreenshot,
   clampBottomCropTopY,
+  getAutomaticBottomCropTopY,
   getMergedCustomScreenshotMetrics,
 } from "../custom-calibration-session";
 import { panelIds } from "../../model/calibration-profile";
@@ -148,7 +149,7 @@ export function useCalibrationScreen() {
     }
 
     setCustomCalibrationSession({
-      bottomCropTopY: clampBottomCropTopY(120, nextScreenshot.height),
+      bottomCropTopY: getAutomaticBottomCropTopY(nextScreenshot),
       bottomScreenshot: nextScreenshot,
       bottomOffsetY: topScreenshot.height,
       mergedHeight: null,

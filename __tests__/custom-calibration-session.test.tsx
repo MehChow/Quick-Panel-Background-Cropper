@@ -4,6 +4,7 @@ import {
   canUseAsSecondCustomScreenshot,
   clampBottomCropTopY,
   createEmptyCustomCalibrationSession,
+  getAutomaticBottomCropTopY,
   getVisibleBottomScreenshotMetrics,
   getMergedCustomScreenshotMetrics,
 } from "@/features/quick-panel/calibration/custom-calibration-session";
@@ -97,6 +98,17 @@ describe("custom calibration session", () => {
   it("clamps the second screenshot trim to a bounded top band", () => {
     expect(clampBottomCropTopY(-20, bottomScreenshot.height)).toBe(0);
     expect(clampBottomCropTopY(500, bottomScreenshot.height)).toBe(240);
+  });
+
+  it("derives the automatic second screenshot trim from width", () => {
+    expect(getAutomaticBottomCropTopY(bottomScreenshot)).toBe(178);
+    expect(
+      getAutomaticBottomCropTopY({
+        ...bottomScreenshot,
+        height: 900,
+        width: 3000,
+      }),
+    ).toBe(180);
   });
 
   it("calculates visible metrics from the trimmed second screenshot", () => {

@@ -3,6 +3,8 @@ import type {
   PickedImage,
 } from "../model/types";
 
+const AUTOMATIC_BOTTOM_CROP_RATIO = 0.165;
+
 export function createEmptyCustomCalibrationSession(): CustomCalibrationSession {
   return {
     bottomCropTopY: null,
@@ -51,6 +53,13 @@ export function clampBottomCropTopY(
 ) {
   const maxTrim = Math.min(screenshotHeight * 0.2, 240);
   return Math.max(0, Math.min(maxTrim, cropTopY));
+}
+
+export function getAutomaticBottomCropTopY(bottomScreenshot: PickedImage) {
+  const estimatedTrim = Math.round(
+    bottomScreenshot.width * AUTOMATIC_BOTTOM_CROP_RATIO,
+  );
+  return clampBottomCropTopY(estimatedTrim, bottomScreenshot.height);
 }
 
 export function getVisibleBottomScreenshotMetrics(
