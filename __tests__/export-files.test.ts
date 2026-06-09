@@ -1,6 +1,9 @@
 import { s25PlusOneUi85Preset } from "@/features/quick-panel/model/preset";
 import type { ExportRefs, QuickPanelPreset } from "@/features/quick-panel/model/types";
-import { captureAndSaveExports } from "@/features/quick-panel/customize/services/export-files";
+import {
+  captureAndSaveExports,
+  waitForExportSurfaces,
+} from "@/features/quick-panel/customize/services/export-files";
 import type { View } from "react-native";
 
 const mockRequestPermissionsAsync = jest.fn();
@@ -53,6 +56,10 @@ function createRefs(): ExportRefs {
 }
 
 describe("captureAndSaveExports", () => {
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
   beforeEach(() => {
     mockRequestPermissionsAsync.mockReset();
     mockAlbumGet.mockReset();
@@ -99,5 +106,46 @@ describe("captureAndSaveExports", () => {
 
     expect(exports.map((file) => file.id)).toEqual(["buttonBox", "brightness"]);
     expect(mockCaptureRef).toHaveBeenCalledTimes(2);
+  });
+
+  it("waits for export images to finish rendering before capture can start", async () => {
+    jest.useFakeTimers();
+    let imagesReady = false;
+    let resolved = false;
+
+    const waitPromise = waitForExportSurfaces(
+      createRefs(),
+      s25PlusOneUi85Preset,
+      () => imagesReady,
+    ).then(() => {
+      resolved = true;
+    });
+
+    await jest.advanceTimersByTimeAsync(100);
+    expect(resolved).toBe(false);
+
+    imagesReady = true;
+
+    await jest.advanceTimersByTimeAsync(32);
+    await waitPromise;
+
+    expect(resolved).toBe(true);
+  });
+
+  it("throws a generic export error when images never finish rendering", async () => {
+    jest.useFakeTimers();
+
+    const waitPromise = waitForExportSurfaces(
+      createRefs(),
+      s25PlusOneUi85Preset,
+      () => false,
+    );
+    const errorPromise = waitPromise.catch((error) => error);
+
+    await jest.advanceTimersByTimeAsync(1100);
+    const error = await errorPromise;
+
+    expect(error).toBeInstanceOf(Error);
+    expect(error.message).toBe("Unable to export images.");
   });
 });

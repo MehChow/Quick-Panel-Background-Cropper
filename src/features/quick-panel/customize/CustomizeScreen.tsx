@@ -21,6 +21,7 @@ export function CustomizeScreen() {
     isExporting,
     error,
     refs,
+    setExportImageReady,
     hasExported,
     isPreviewAdjusting,
     setIsPreviewAdjusting,
@@ -74,6 +75,7 @@ export function CustomizeScreen() {
       {image && !hasExported && isExporting ? (
         <ExportSurfaces
           image={image}
+          onImageReadyChange={setExportImageReady}
           transform={transform}
           preset={activePreset}
           refs={refs}

@@ -55,12 +55,13 @@ export async function captureAndSaveExports(
 export async function waitForExportSurfaces(
   refs: ExportRefs,
   preset: QuickPanelPreset,
+  areImagesReady: () => boolean = () => true,
 ) {
   const deadline = Date.now() + EXPORT_SURFACE_READY_TIMEOUT_MS;
 
-  while (!hasAllExportSurfaceRefs(refs, preset)) {
+  while (!hasAllExportSurfaceRefs(refs, preset) || !areImagesReady()) {
     if (Date.now() >= deadline) {
-      throwMissingExportSurface(refs, preset);
+      throwExportSurfaceWaitError(refs, preset);
     }
 
     await wait(EXPORT_SURFACE_POLL_MS);
@@ -128,6 +129,14 @@ function throwMissingExportSurface(refs: ExportRefs, preset: QuickPanelPreset) {
       panel: getPanelLabel(preset.panels[missingId].id),
     }),
   );
+}
+
+function throwExportSurfaceWaitError(refs: ExportRefs, preset: QuickPanelPreset) {
+  if (!hasAllExportSurfaceRefs(refs, preset)) {
+    throwMissingExportSurface(refs, preset);
+  }
+
+  throw new Error(translate("errors.unableToExport"));
 }
 
 function loadMediaLibraryModule(): typeof import("expo-media-library") {

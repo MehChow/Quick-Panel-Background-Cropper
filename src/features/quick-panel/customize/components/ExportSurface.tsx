@@ -11,13 +11,17 @@ import type {
 interface ExportSurfaceProps {
   panel: PanelDefinition;
   image: PickedImage;
+  onReadyChange: (isReady: boolean) => void;
   transform: ImageTransform;
   side: number;
   presetId: string;
 }
 
 export const ExportSurface = forwardRef<View, ExportSurfaceProps>(
-  function ExportSurface({ panel, image, presetId, transform, side }, ref) {
+  function ExportSurface(
+    { panel, image, onReadyChange, presetId, transform, side },
+    ref,
+  ) {
     const squareRect = getExportSquareRect(panel, presetId);
     const squareScale = side / squareRect.width;
     const imageScale = transform.scale * squareScale;
@@ -30,6 +34,10 @@ export const ExportSurface = forwardRef<View, ExportSurfaceProps>(
         style={{ height: side, width: side }}
       >
         <Image
+          cachePolicy="disk"
+          onDisplay={() => onReadyChange(true)}
+          onError={() => onReadyChange(false)}
+          onLoadStart={() => onReadyChange(false)}
           source={{ uri: image.uri }}
           contentFit="fill"
           style={{

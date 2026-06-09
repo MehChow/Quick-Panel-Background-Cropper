@@ -3,6 +3,7 @@ import { exportSidePixels } from "../../model/panel-geometry";
 import type {
   ExportRefs,
   ImageTransform,
+  PanelId,
   PickedImage,
   QuickPanelPreset,
 } from "../../model/types";
@@ -13,6 +14,7 @@ interface ExportSurfacesProps {
   transform: ImageTransform;
   preset: QuickPanelPreset;
   refs: ExportRefs;
+  onImageReadyChange: (panelId: PanelId, isReady: boolean) => void;
 }
 
 export function ExportSurfaces({
@@ -20,6 +22,7 @@ export function ExportSurfaces({
   transform,
   preset,
   refs,
+  onImageReadyChange,
 }: ExportSurfacesProps) {
   const side = exportSidePixels / PixelRatio.get();
 
@@ -34,6 +37,7 @@ export function ExportSurfaces({
           ref={refs[id]}
           panel={preset.panels[id]}
           image={image}
+          onReadyChange={(isReady) => onImageReadyChange(id, isReady)}
           presetId={preset.id}
           transform={transform}
           side={side}
