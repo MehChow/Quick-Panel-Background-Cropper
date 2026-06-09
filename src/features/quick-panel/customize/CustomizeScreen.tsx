@@ -71,7 +71,7 @@ export function CustomizeScreen() {
           </Text>
         ) : null}
       </ScrollView>
-      {image && !hasExported ? (
+      {image && !hasExported && isExporting ? (
         <ExportSurfaces
           image={image}
           transform={transform}

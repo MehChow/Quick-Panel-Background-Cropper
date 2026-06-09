@@ -8,6 +8,9 @@ import type {
   QuickPanelPreset,
 } from "../../model/types";
 
+const EXPORT_SURFACE_POLL_MS = 16;
+const EXPORT_SURFACE_READY_TIMEOUT_MS = 1000;
+
 export async function captureAndSaveExports(
   refs: ExportRefs,
   preset: QuickPanelPreset,
@@ -47,6 +50,23 @@ export async function captureAndSaveExports(
     previewUri: file.previewUri,
     uri: file.uri,
   }));
+}
+
+export async function waitForExportSurfaces(
+  refs: ExportRefs,
+  preset: QuickPanelPreset,
+) {
+  const deadline = Date.now() + EXPORT_SURFACE_READY_TIMEOUT_MS;
+
+  while (!hasAllExportSurfaceRefs(refs, preset)) {
+    if (Date.now() >= deadline) {
+      throwMissingExportSurface(refs, preset);
+    }
+
+    await wait(EXPORT_SURFACE_POLL_MS);
+  }
+
+  await wait(EXPORT_SURFACE_POLL_MS);
 }
 
 async function captureNamedFiles(refs: ExportRefs, preset: QuickPanelPreset) {
@@ -92,7 +112,29 @@ async function captureNamedFiles(refs: ExportRefs, preset: QuickPanelPreset) {
   return files;
 }
 
+function hasAllExportSurfaceRefs(refs: ExportRefs, preset: QuickPanelPreset) {
+  return preset.goodLockOrder.every((id) => refs[id].current);
+}
+
+function throwMissingExportSurface(refs: ExportRefs, preset: QuickPanelPreset) {
+  const missingId = preset.goodLockOrder.find((id) => !refs[id].current);
+
+  if (!missingId) {
+    return;
+  }
+
+  throw new Error(
+    translate("errors.exportSurfaceMissing", {
+      panel: getPanelLabel(preset.panels[missingId].id),
+    }),
+  );
+}
+
 function loadMediaLibraryModule(): typeof import("expo-media-library") {
   // eslint-disable-next-line @typescript-eslint/no-require-imports -- avoid loading the native module during web startup
   return require("expo-media-library") as typeof import("expo-media-library");
+}
+
+function wait(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }

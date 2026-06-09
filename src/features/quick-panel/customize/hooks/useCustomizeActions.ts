@@ -5,7 +5,10 @@ import { translate } from "../../model/i18n";
 import type { ExportRefs } from "../../model/types";
 import { quickPanelSelectors } from "../../store/selectors";
 import { useQuickPanelStore } from "../../store/quick-panel-store";
-import { captureAndSaveExports } from "../services/export-files";
+import {
+  captureAndSaveExports,
+  waitForExportSurfaces,
+} from "../services/export-files";
 
 export function useCustomizeActions(refs: ExportRefs) {
   const {
@@ -43,6 +46,7 @@ export function useCustomizeActions(refs: ExportRefs) {
       if (image) {
         await ExpoImage.prefetch(image.uri);
       }
+      await waitForExportSurfaces(refs, activePreset);
       const exports = await captureAndSaveExports(refs, activePreset);
       finishExport(exports);
     } catch (error) {
