@@ -97,18 +97,18 @@ describe("custom calibration session", () => {
 
   it("clamps the second screenshot trim to a bounded top band", () => {
     expect(clampBottomCropTopY(-20, bottomScreenshot.height)).toBe(0);
-    expect(clampBottomCropTopY(500, bottomScreenshot.height)).toBe(240);
+    expect(clampBottomCropTopY(500, bottomScreenshot.height)).toBe(480);
   });
 
-  it("derives the automatic second screenshot trim from width", () => {
-    expect(getAutomaticBottomCropTopY(bottomScreenshot)).toBe(178);
+  it("derives the automatic second screenshot trim from a fixed import target", () => {
+    expect(getAutomaticBottomCropTopY(bottomScreenshot)).toBe(480);
     expect(
       getAutomaticBottomCropTopY({
         ...bottomScreenshot,
         height: 900,
         width: 3000,
       }),
-    ).toBe(180);
+    ).toBe(480);
   });
 
   it("calculates visible metrics from the trimmed second screenshot", () => {

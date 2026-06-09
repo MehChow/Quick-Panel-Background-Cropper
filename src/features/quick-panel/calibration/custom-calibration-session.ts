@@ -3,7 +3,8 @@ import type {
   PickedImage,
 } from "../model/types";
 
-const AUTOMATIC_BOTTOM_CROP_RATIO = 0.165;
+const AUTOMATIC_BOTTOM_CROP_TOP_Y = 480;
+const MAX_BOTTOM_CROP_TOP_Y = 480;
 
 export function createEmptyCustomCalibrationSession(): CustomCalibrationSession {
   return {
@@ -51,15 +52,15 @@ export function clampBottomCropTopY(
   cropTopY: number,
   screenshotHeight: number,
 ) {
-  const maxTrim = Math.min(screenshotHeight * 0.2, 240);
+  const maxTrim = Math.min(Math.max(0, screenshotHeight - 1), MAX_BOTTOM_CROP_TOP_Y);
   return Math.max(0, Math.min(maxTrim, cropTopY));
 }
 
 export function getAutomaticBottomCropTopY(bottomScreenshot: PickedImage) {
-  const estimatedTrim = Math.round(
-    bottomScreenshot.width * AUTOMATIC_BOTTOM_CROP_RATIO,
+  return clampBottomCropTopY(
+    AUTOMATIC_BOTTOM_CROP_TOP_Y,
+    bottomScreenshot.height,
   );
-  return clampBottomCropTopY(estimatedTrim, bottomScreenshot.height);
 }
 
 export function getVisibleBottomScreenshotMetrics(

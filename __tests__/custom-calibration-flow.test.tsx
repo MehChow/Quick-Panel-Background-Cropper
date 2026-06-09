@@ -184,7 +184,7 @@ describe("custom calibration flow", () => {
     });
   });
 
-  it("seeds an automatic bounded trim when the second screenshot is imported", async () => {
+  it("seeds a fixed automatic trim when the second screenshot is imported", async () => {
     useQuickPanelStore.setState({
       calibrationMode: "custom-panels",
       customCalibrationSession: {
@@ -209,7 +209,7 @@ describe("custom calibration flow", () => {
     });
 
     expect(useQuickPanelStore.getState().customCalibrationSession).toEqual({
-      bottomCropTopY: 178,
+      bottomCropTopY: 480,
       bottomOffsetY: 2400,
       bottomScreenshot,
       mergedHeight: null,
