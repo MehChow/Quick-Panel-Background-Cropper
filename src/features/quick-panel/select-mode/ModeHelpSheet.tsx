@@ -87,8 +87,8 @@ interface ModeExplanationProps {
 
 function ModeExplanation({ description, label }: ModeExplanationProps) {
   return (
-    <View className="rounded-3xl border border-zinc-800 bg-zinc-900 p-5">
-      <Text className="text-base font-semibold text-white">{label}</Text>
+    <View className="rounded-3xl border border-zinc-800 bg-zinc-800 p-5">
+      <Text className="text-base font-semibold text-orange-200">{label}</Text>
       <Text className="mt-2 text-sm leading-6 text-zinc-300">
         {description}
       </Text>

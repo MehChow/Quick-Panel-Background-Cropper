@@ -64,10 +64,11 @@ export function SelectModeScreen() {
           />
         </View>
         <Button
-          className="mt-10"
+          className="mt-10 p-0"
           disabled={!selectedMode}
           onPress={confirmMode}
-          textClassName="font-semibold"
+          // Somehow it needs w-full on text to make the whole button pressable
+          textClassName="font-semibold w-full"
         >
           {t("common.confirm")}
         </Button>

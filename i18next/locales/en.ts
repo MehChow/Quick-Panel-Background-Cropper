@@ -23,7 +23,7 @@ const en = {
       subtitle: "Choose your Quick Panel layout",
       default: "Default",
       defaultDescription:
-        "For the standard Button box, Brightness, Volume, and Media player layout.",
+        "For the standard panel layout:\nButton box > Brightness > Volume > Media player",
       advanced: "Advanced",
       advancedDescription:
         "For rearranged, resized, vertical, or otherwise customized panel layouts.",
@@ -65,7 +65,7 @@ const en = {
     },
     export: {
       successTitle: "Exported successfully",
-      successSubtitle: "Apply them in Good Lock using this order",
+      successSubtitle: "Apply them in Good Lock correspondingly",
       openGoodLock: "Open Good Lock",
       openingGoodLock: "Opening Good Lock",
       goodLockUnavailableTitle: "Good Lock can't be opened",

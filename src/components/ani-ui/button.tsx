@@ -1,6 +1,6 @@
-import React from "react";
-import { Pressable, Text, ActivityIndicator } from "react-native";
 import { cva, type VariantProps } from "class-variance-authority";
+import React from "react";
+import { ActivityIndicator, Pressable, Text } from "react-native";
 import { cn } from "../../lib/utils";
 
 const buttonVariants = cva(
@@ -23,7 +23,7 @@ const buttonVariants = cva(
       },
     },
     defaultVariants: { variant: "default", size: "md" },
-  }
+  },
 );
 
 const buttonTextVariants = cva("text-center font-medium", {
@@ -42,7 +42,8 @@ const buttonTextVariants = cva("text-center font-medium", {
 });
 
 export interface ButtonProps
-  extends React.ComponentPropsWithoutRef<typeof Pressable>,
+  extends
+    React.ComponentPropsWithoutRef<typeof Pressable>,
     VariantProps<typeof buttonVariants> {
   className?: string;
   textClassName?: string;
@@ -52,13 +53,29 @@ export interface ButtonProps
   loading?: boolean;
 }
 
-export function Button({ variant, size, className, textClassName, children, icon, iconAfter, loading, disabled, ...props }: ButtonProps) {
+export function Button({
+  variant,
+  size,
+  className,
+  textClassName,
+  children,
+  icon,
+  iconAfter,
+  loading,
+  disabled,
+  ...props
+}: ButtonProps) {
   const isDisabled = disabled || loading;
   const light = variant === "default" || variant === "destructive";
 
   return (
     <Pressable
-      className={cn(buttonVariants({ variant, size }), isDisabled && "opacity-50", "active:opacity-80", className)}
+      className={cn(
+        buttonVariants({ variant, size }),
+        isDisabled && "opacity-50",
+        "active:opacity-80",
+        className,
+      )}
       accessibilityRole="button"
       accessible={true}
       disabled={isDisabled}
@@ -66,9 +83,15 @@ export function Button({ variant, size, className, textClassName, children, icon
     >
       {loading ? (
         <ActivityIndicator size="small" color={light ? "#fafafa" : "#18181b"} />
-      ) : icon ?? null}
+      ) : (
+        (icon ?? null)
+      )}
       {children ? (
-        <Text className={cn(buttonTextVariants({ variant, size }), textClassName)}>{children}</Text>
+        <Text
+          className={cn(buttonTextVariants({ variant, size }), textClassName)}
+        >
+          {children}
+        </Text>
       ) : null}
       {!loading && iconAfter ? iconAfter : null}
     </Pressable>

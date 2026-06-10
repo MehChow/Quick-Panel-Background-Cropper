@@ -7,8 +7,8 @@ import {
   NativeScrollEvent,
   NativeSyntheticEvent,
   Pressable,
-  type GestureResponderEvent,
   View,
+  type GestureResponderEvent,
 } from "react-native";
 import type { CustomizationMode } from "../model/types";
 

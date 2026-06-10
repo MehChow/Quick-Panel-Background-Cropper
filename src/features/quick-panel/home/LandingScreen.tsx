@@ -13,8 +13,9 @@ import { useLandingLayout } from "./hooks/useLandingLayout";
 export function LandingScreen() {
   const { t } = useTranslation();
   const router = useRouter();
-  const { goToModeSelection } =
-    useQuickPanelStore(useShallow(quickPanelSelectors.landingScreen));
+  const { goToModeSelection } = useQuickPanelStore(
+    useShallow(quickPanelSelectors.landingScreen),
+  );
   const { cardHeight, handleContainerLayout, handleActionsLayout } =
     useLandingLayout();
 

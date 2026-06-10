@@ -21,7 +21,8 @@ const zh = {
       title: "選擇模式",
       subtitle: "選擇你的快速面板配置",
       default: "預設",
-      defaultDescription: "適用於標準按鈕框、亮度、音量及媒體播放器配置。",
+      defaultDescription:
+        "適用於預設的面版大小及次序:\n按鈕框 > 亮度 > 音量 > 媒體播放器",
       advanced: "進階",
       advancedDescription:
         "適用於已重新排列、調整大小、垂直或其他自訂面板配置。",
@@ -62,7 +63,7 @@ const zh = {
     },
     export: {
       successTitle: "匯出成功",
-      successSubtitle: "請依照這個順序在 Good Lock 中套用",
+      successSubtitle: "請在 Good Lock 中按照位置套用",
       openGoodLock: "開啟 Good Lock",
       openingGoodLock: "正在開啟 Good Lock",
       goodLockUnavailableTitle: "無法開啟 Good Lock",

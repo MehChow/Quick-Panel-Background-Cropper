@@ -45,7 +45,7 @@ export function LandingExampleCard({ maxHeight }: LandingExampleCardProps) {
 
   return (
     <Card
-      className="w-full flex-row items-center gap-5 rounded-2xl border-zinc-800 bg-zinc-900"
+      className="w-full flex-row items-center gap-5 rounded-2xl border-none bg-transparent"
       onLayout={handleCardLayout}
       style={maxHeight ? { height: maxHeight } : undefined}
     >
