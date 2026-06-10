@@ -47,7 +47,7 @@ export function PanelSlice({
       style={{
         borderColor: "rgba(255,255,255,0.9)",
         borderWidth: 1,
-        borderRadius: panel.rect.radius * layoutScale,
+        borderRadius: 32,
         height: panel.rect.height * layoutScale,
         left: (panel.rect.x - originX) * layoutScale,
         top: (panel.rect.y - originY) * layoutScale,
