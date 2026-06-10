@@ -73,7 +73,7 @@ const en = {
         "Good Lock may not be installed or cannot be opened here. Open Samsung Store to install it?",
       openSamsungStore: "Open Samsung Store",
       openingSamsungStore: "Opening Samsung Store",
-      convertAnother: "Convert another",
+      backHome: "Back home",
       albumName: "Quick Panel Exports",
     },
     preset: {

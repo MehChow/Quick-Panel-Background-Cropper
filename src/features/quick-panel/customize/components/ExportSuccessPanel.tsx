@@ -19,12 +19,14 @@ import { useGoodLockLink } from "../useGoodLockLink";
 
 interface ExportSuccessPanelProps {
   exports: GeneratedExport[];
-  onConvertAnother: () => void;
+  onSecondaryAction: () => void;
+  secondaryActionLabel: string;
 }
 
 export function ExportSuccessPanel({
   exports,
-  onConvertAnother,
+  onSecondaryAction,
+  secondaryActionLabel,
 }: ExportSuccessPanelProps) {
   const { t } = useTranslation();
   const {
@@ -79,10 +81,10 @@ export function ExportSuccessPanel({
 
           <Button
             className="w-full bg-black"
-            onPress={onConvertAnother}
+            onPress={onSecondaryAction}
             textClassName="font-semibold text-white"
           >
-            {t("export.convertAnother")}
+            {secondaryActionLabel}
           </Button>
         </View>
       </Card>

@@ -21,6 +21,7 @@ export function AdvancedPanelCanvas({
   const [viewWidth, setViewWidth] = useState(0);
   const [selectedId, setSelectedId] = useState<PanelId>("buttonBox");
   const scale = viewWidth ? viewWidth / screenshot.width : 1;
+  const orderedIds = visualOrder.filter((id) => id !== selectedId).concat(selectedId);
 
   const changePanel = (id: PanelId, rect: PanelRect) => {
     onPanelsChange({ ...panels, [id]: rect });
@@ -43,7 +44,7 @@ export function AdvancedPanelCanvas({
           width: outerRect.width * scale,
         }}
       />
-      {visualOrder.map((id) => (
+      {orderedIds.map((id) => (
         <AdvancedPanelBox
           key={id}
           id={id}

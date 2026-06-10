@@ -3,6 +3,7 @@ import { useRouter } from "expo-router";
 import { useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { getSuggestedCalibrationRect } from "../../calibration/calibration";
+import type { AdvancedCalibrationDraft } from "../../model/types";
 import { useQuickPanelStore } from "../../store/quick-panel-store";
 import { quickPanelSelectors } from "../../store/selectors";
 
@@ -11,6 +12,8 @@ export type AdvancedCalibrationPhase = "outer" | "panels";
 export function useAdvancedCalibrationScreen() {
   const router = useRouter();
   const [phase, setPhase] = useState<AdvancedCalibrationPhase>("outer");
+  const [leavingDraft, setLeavingDraft] = useState<AdvancedCalibrationDraft | null>(null);
+  const [leavingPhase, setLeavingPhase] = useState<AdvancedCalibrationPhase | null>(null);
   const {
     advancedDraft,
     error,
@@ -36,6 +39,8 @@ export function useAdvancedCalibrationScreen() {
         width: asset.width,
       };
       setAdvancedScreenshot(screenshot, getSuggestedCalibrationRect(screenshot));
+      setLeavingDraft(null);
+      setLeavingPhase(null);
       setPhase("outer");
     }
   };
@@ -46,15 +51,22 @@ export function useAdvancedCalibrationScreen() {
   };
 
   const saveCalibration = () => {
+    if (advancedDraft?.screenshot && advancedDraft.outerRect) {
+      setLeavingDraft(advancedDraft);
+      setLeavingPhase(phase);
+    }
     if (acceptAdvancedCalibration()) {
       router.dismissTo("/customize");
     }
   };
 
+  const displayedDraft = advancedDraft ?? leavingDraft;
+  const displayedPhase = advancedDraft ? phase : leavingPhase ?? phase;
+
   return {
-    advancedDraft,
+    advancedDraft: displayedDraft,
     error,
-    phase,
+    phase: displayedPhase,
     importScreenshot,
     continueToPanels,
     returnToOuter: () => setPhase("outer"),

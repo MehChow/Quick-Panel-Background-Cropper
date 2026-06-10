@@ -45,4 +45,8 @@ export const quickPanelSelectors = {
     finishExport: state.finishExport,
     failExport: state.failExport,
   }),
+  resultScreen: (state: QuickPanelState) => ({
+    exports: state.exports,
+    goToLanding: state.goToLanding,
+  }),
 };

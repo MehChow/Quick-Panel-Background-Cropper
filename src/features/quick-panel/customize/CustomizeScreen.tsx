@@ -5,7 +5,6 @@ import { type Href, useRouter } from "expo-router";
 import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { CustomizeActions } from "./components/CustomizeActions";
-import { ExportSuccessPanel } from "./components/ExportSuccessPanel";
 import { ExportSurfaces } from "./components/ExportSurfaces";
 import { ImagePickerCard } from "./components/ImagePickerCard";
 import { QuickPanelPreview } from "./components/QuickPanelPreview";
@@ -20,11 +19,9 @@ export function CustomizeScreen() {
     image,
     transform,
     setTransform,
-    exports,
     isExporting,
     error,
     refs,
-    hasExported,
     isPreviewAdjusting,
     setIsPreviewAdjusting,
     exportImages,
@@ -59,9 +56,7 @@ export function CustomizeScreen() {
         scrollEnabled={!isPreviewAdjusting}
         overScrollMode="never"
       >
-        {hasExported ? (
-          <ExportSuccessPanel exports={exports} onConvertAnother={pickImage} />
-        ) : image ? (
+        {image ? (
           <QuickPanelPreview
             image={image}
             preset={activePreset}
@@ -76,7 +71,7 @@ export function CustomizeScreen() {
             onRecalibrate={recalibrate}
           />
         )}
-        {!hasExported && image ? (
+        {image ? (
           <CustomizeActions
             isExporting={isExporting}
             onExport={exportImages}
@@ -90,7 +85,7 @@ export function CustomizeScreen() {
           </Text>
         ) : null}
       </ScrollView>
-      {image && !hasExported ? (
+      {image ? (
         <ExportSurfaces
           image={image}
           transform={transform}

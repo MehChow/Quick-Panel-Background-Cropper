@@ -71,7 +71,7 @@ const zh = {
         "Good Lock 可能尚未安裝，或目前無法在這裡開啟。要改去 Samsung Store 安裝嗎？",
       openSamsungStore: "開啟 Samsung Store",
       openingSamsungStore: "正在開啟 Samsung Store",
-      convertAnother: "再轉換一張",
+      backHome: "返回主頁",
       albumName: "快速面板匯出",
     },
     preset: {

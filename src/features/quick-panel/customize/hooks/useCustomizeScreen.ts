@@ -48,7 +48,6 @@ export function useCustomizeScreen() {
     isExporting,
     error,
     refs,
-    hasExported: exports.length > 0,
     isPreviewAdjusting,
     setIsPreviewAdjusting,
     exportImages,

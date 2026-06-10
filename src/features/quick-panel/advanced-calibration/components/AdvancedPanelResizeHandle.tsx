@@ -4,6 +4,7 @@ import type { HandlePosition } from "../../calibration/calibration-rect";
 import { useAdvancedPanelResizeResponder } from "../hooks/useAdvancedPanelResizeResponder";
 
 interface Props {
+  color?: string;
   outerRect: PanelRect;
   position: HandlePosition;
   rect: PanelRect;
@@ -20,7 +21,10 @@ export function AdvancedPanelResizeHandle(props: Props) {
       style={{ ...getStyle(props.position), zIndex: 3 }}
     >
       {isCorner(props.position) ? (
-        <View className="h-5 w-5 rounded-full border-2 border-white bg-orange-400" />
+        <View
+          className="h-5 w-5 rounded-full border-2 border-white"
+          style={{ backgroundColor: props.color ?? "#f97316" }}
+        />
       ) : null}
     </View>
   );
