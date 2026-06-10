@@ -1,5 +1,10 @@
 import type { RefObject } from "react";
 import type { View } from "react-native";
+import type {
+  CalibrationMode,
+  CalibrationProfile,
+  SavedCalibrationProfiles,
+} from "./calibration-profile";
 
 export type PanelId = "buttonBox" | "brightness" | "volume" | "mediaPlayer";
 
@@ -35,6 +40,17 @@ export interface PickedImage {
   fileName?: string | null;
 }
 
+export type CustomCalibrationSourceMode = "single" | "double";
+
+export interface CustomCalibrationSession {
+  bottomCropTopY: number | null;
+  bottomOffsetY: number | null;
+  bottomScreenshot: PickedImage | null;
+  mergedHeight: number | null;
+  sourceMode: CustomCalibrationSourceMode;
+  topScreenshot: PickedImage | null;
+}
+
 export interface ImageTransform {
   x: number;
   y: number;
@@ -57,3 +73,11 @@ export type QuickPanelStep =
   | "imageSelection"
   | "adjustBackground"
   | "exported";
+
+export interface CalibrationStateSnapshot {
+  isCalibrated: boolean;
+  mode: CalibrationMode;
+  profile: CalibrationProfile | null;
+  rect: PanelRect | null;
+  savedProfiles: SavedCalibrationProfiles;
+}

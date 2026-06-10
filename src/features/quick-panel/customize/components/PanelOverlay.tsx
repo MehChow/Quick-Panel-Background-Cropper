@@ -3,10 +3,15 @@ import { View } from "react-native";
 import type { PanelId } from "../../model/types";
 
 interface PanelOverlayProps {
+  enabled?: boolean;
   panelId: PanelId;
 }
 
-export function PanelOverlay({ panelId }: PanelOverlayProps) {
+export function PanelOverlay({ enabled = true, panelId }: PanelOverlayProps) {
+  if (!enabled) {
+    return null;
+  }
+
   if (panelId === "buttonBox") {
     return (
       <View

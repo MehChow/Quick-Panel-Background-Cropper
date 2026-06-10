@@ -1,6 +1,19 @@
-import { getCalibratedPreset } from "../calibration/calibration";
 import { clampTransform, getFitTransform } from "../model/image-placement";
+import { createEmptyCustomCalibrationSession } from "../calibration/custom-calibration-session";
+import {
+  cloneCustomPanelsCalibrationProfile,
+  createDefaultUnionCalibrationProfile,
+  createEmptyCustomPanelsCalibrationProfile,
+  getCalibrationProfileForMode,
+  panelIds,
+  upsertSavedCalibrationProfile,
+  type CalibrationMode,
+  type CalibrationProfile,
+  type SavedCalibrationProfiles,
+} from "../model/calibration-profile";
 import { translate } from "../model/i18n";
+import { getPresetFromCalibrationProfile } from "../model/custom-preset";
+import { s25PlusOneUi85Preset } from "../model/preset";
 import type {
   GeneratedExport,
   ImageTransform,
@@ -19,20 +32,41 @@ export function getLandingState(): QuickPanelStatePatch {
   return {
     step: "landing",
     screenshot: null,
+    customCalibrationSession: createEmptyCustomCalibrationSession(),
     ...createResetWorkState(),
     error: null,
   };
 }
 
 export function getCalibrationState(
-  isCalibrated: boolean,
-  calibrationRect: PanelRect | null,
+  mode: CalibrationMode,
+  savedProfiles: SavedCalibrationProfiles,
 ): QuickPanelStatePatch {
+  const modeState = getSelectedModeState(mode, savedProfiles);
+
   return {
     step: "calibration",
+    ...modeState,
+    calibrationMode: mode,
     screenshot: null,
-    calibrationRect: isCalibrated ? calibrationRect : null,
+    customCalibrationStep: panelIds[0],
+    isCustomCalibrationReview: false,
+    customCalibrationSession: createEmptyCustomCalibrationSession(),
     ...createResetWorkState(),
+    error: null,
+  };
+}
+
+export function getCalibrationModeState(
+  mode: CalibrationMode,
+  savedProfiles: SavedCalibrationProfiles,
+): QuickPanelStatePatch {
+  const modeState = getSelectedModeState(mode, savedProfiles);
+
+  return {
+    ...modeState,
+    calibrationMode: mode,
+    customCalibrationSession: createEmptyCustomCalibrationSession(),
     error: null,
   };
 }
@@ -58,7 +92,10 @@ export function getStartCustomizingResult(isCalibrated: boolean) {
   };
 }
 
-export function getAcceptCalibrationResult(rect: PanelRect | null) {
+export function getAcceptCalibrationResult(
+  rect: PanelRect | null,
+  savedProfiles: SavedCalibrationProfiles,
+) {
   if (!rect) {
     return {
       didAccept: false,
@@ -68,19 +105,10 @@ export function getAcceptCalibrationResult(rect: PanelRect | null) {
     };
   }
 
-  const activePreset = getCalibratedPreset(rect);
+  const calibrationProfile = createDefaultUnionCalibrationProfile(rect);
   return {
     didAccept: true,
-    state: {
-      activePreset,
-      presetId: activePreset.id,
-      step: "landing",
-      isCalibrated: true,
-      screenshot: null,
-      calibrationRect: rect,
-      ...createResetWorkState(),
-      error: null,
-    } satisfies QuickPanelStatePatch,
+    state: getAcceptedCalibrationState(savedProfiles, calibrationProfile),
   };
 }
 
@@ -135,4 +163,53 @@ export function getFinishExportState(
 
 export function getFailExportState(message: string): QuickPanelStatePatch {
   return { isExporting: false, error: message };
+}
+
+export function getAcceptedCalibrationState(
+  savedProfiles: SavedCalibrationProfiles,
+  calibrationProfile: CalibrationProfile,
+): QuickPanelStatePatch {
+  const nextSavedProfiles = upsertSavedCalibrationProfile(
+    savedProfiles,
+    calibrationProfile,
+  );
+  const modeState = getSelectedModeState(calibrationProfile.mode, nextSavedProfiles);
+
+  return {
+    ...modeState,
+    calibrationMode: calibrationProfile.mode,
+    savedCalibrationProfiles: nextSavedProfiles,
+    customCalibrationStep: panelIds[0],
+    isCustomCalibrationReview: false,
+    customCalibrationSession: createEmptyCustomCalibrationSession(),
+    step: "landing",
+    screenshot: null,
+    ...createResetWorkState(),
+    error: null,
+  };
+}
+
+function getSelectedModeState(
+  mode: CalibrationMode,
+  savedProfiles: SavedCalibrationProfiles,
+) {
+  const calibrationProfile = getCalibrationProfileForMode(mode, savedProfiles);
+  const activePreset = calibrationProfile
+    ? getPresetFromCalibrationProfile(calibrationProfile)
+    : s25PlusOneUi85Preset;
+
+  return {
+    activePreset,
+    calibrationProfile,
+    calibrationRect:
+      mode === "default-union" && calibrationProfile?.mode === "default-union"
+        ? calibrationProfile.rect
+        : null,
+    customCalibrationDraft:
+      mode === "custom-panels" && calibrationProfile?.mode === "custom-panels"
+        ? cloneCustomPanelsCalibrationProfile(calibrationProfile)
+        : createEmptyCustomPanelsCalibrationProfile(),
+    isCalibrated: calibrationProfile !== null,
+    presetId: activePreset.id,
+  } satisfies QuickPanelStatePatch;
 }

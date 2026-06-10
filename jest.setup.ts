@@ -25,6 +25,26 @@ jest.mock("react-native-mmkv", () => ({
   }),
 }));
 
+jest.mock("react-native-worklets", () => ({
+  createSerializable: <T>(value: T) => value,
+  createWorkletRuntime: () => ({}),
+  isWorkletFunction: () => false,
+  makeShareable: <T>(value: T) => value,
+  makeShareableCloneRecursive: <T>(value: T) => value,
+  runOnJS:
+    <TArgs extends unknown[], TResult>(fn: (...args: TArgs) => TResult) =>
+    (...args: TArgs) =>
+      fn(...args),
+  scheduleOnRN: <TArgs extends unknown[]>(
+    fn: (...args: TArgs) => void,
+    ...args: TArgs
+  ) => fn(...args),
+  scheduleOnUI:
+    <TArgs extends unknown[]>(fn: (...args: TArgs) => void) =>
+    (...args: TArgs) =>
+      fn(...args),
+}));
+
 jest.mock("react-native-reanimated", () => {
   const Reanimated = require("react-native-reanimated/mock");
   Reanimated.default.call = () => {};

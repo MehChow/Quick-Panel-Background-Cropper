@@ -1,5 +1,6 @@
 import { Button } from "@/components/ani-ui/button";
 import { Text } from "@/components/ani-ui/text";
+import { CalibrationModeCard } from "@/features/quick-panel/calibration/components/CalibrationModeCard";
 import { AppHeader } from "@/features/quick-panel/shared/AppHeader";
 import { useQuickPanelStore } from "@/features/quick-panel/store/quick-panel-store";
 import { quickPanelSelectors } from "@/features/quick-panel/store/selectors";
@@ -14,22 +15,30 @@ import { useLandingLayout } from "./hooks/useLandingLayout";
 export function LandingScreen() {
   const { t } = useTranslation();
   const router = useRouter();
-  const { isCalibrated, goToCalibration, startCustomizing } =
+  const {
+    calibrationMode,
+    isCalibrated,
+    hasCustomCalibration,
+    hasDefaultCalibration,
+    setCalibrationMode,
+    goToCalibration,
+    startCustomizing,
+  } =
     useQuickPanelStore(useShallow(quickPanelSelectors.landingScreen));
   const { cardHeight, handleContainerLayout, handleActionsLayout } =
     useLandingLayout();
 
   const openCalibration = () => {
     goToCalibration();
-    router.push("/calibration");
+    router.navigate("/calibration");
   };
 
   const openCustomize = () => {
     if (startCustomizing()) {
-      router.push("/customize");
+      router.navigate("/customize");
       return;
     }
-    router.push("/calibration");
+    router.navigate("/calibration");
   };
 
   return (
@@ -41,7 +50,29 @@ export function LandingScreen() {
         <View className="flex-1 pt-4" onLayout={handleContainerLayout}>
           <LandingExampleCard maxHeight={cardHeight} />
 
-          <View className="mt-4 gap-2" onLayout={handleActionsLayout}>
+          <View className="mt-4 gap-3" onLayout={handleActionsLayout}>
+            <CalibrationModeCard
+              description={t("landing.defaultLayoutDescription")}
+              onPress={() => setCalibrationMode("default-union")}
+              selected={calibrationMode === "default-union"}
+              status={
+                hasDefaultCalibration
+                  ? t("landing.calibratedStatus")
+                  : t("landing.notCalibratedStatus")
+              }
+              title={t("landing.defaultLayoutTitle")}
+            />
+            <CalibrationModeCard
+              description={t("landing.customLayoutDescription")}
+              onPress={() => setCalibrationMode("custom-panels")}
+              selected={calibrationMode === "custom-panels"}
+              status={
+                hasCustomCalibration
+                  ? t("landing.calibratedStatus")
+                  : t("landing.notCalibratedStatus")
+              }
+              title={t("landing.customLayoutTitle")}
+            />
             <Button
               className="w-full"
               onPress={openCustomize}

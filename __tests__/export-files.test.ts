@@ -1,6 +1,10 @@
 import { s25PlusOneUi85Preset } from "@/features/quick-panel/model/preset";
-import type { ExportRefs } from "@/features/quick-panel/model/types";
-import { captureAndSaveExports } from "@/features/quick-panel/customize/services/export-files";
+import type { ExportRefs, QuickPanelPreset } from "@/features/quick-panel/model/types";
+import {
+  captureAndSaveExports,
+  waitForExportSurfaces,
+} from "@/features/quick-panel/customize/services/export-files";
+import type { View } from "react-native";
 
 const mockRequestPermissionsAsync = jest.fn();
 const mockAlbumGet = jest.fn();
@@ -44,14 +48,18 @@ jest.mock("expo-file-system", () => ({
 
 function createRefs(): ExportRefs {
   return {
-    brightness: { current: {} },
-    buttonBox: { current: {} },
-    mediaPlayer: { current: {} },
-    volume: { current: {} },
+    brightness: { current: {} as View },
+    buttonBox: { current: {} as View },
+    mediaPlayer: { current: {} as View },
+    volume: { current: {} as View },
   };
 }
 
 describe("captureAndSaveExports", () => {
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
   beforeEach(() => {
     mockRequestPermissionsAsync.mockReset();
     mockAlbumGet.mockReset();
@@ -84,5 +92,60 @@ describe("captureAndSaveExports", () => {
     await expect(
       captureAndSaveExports(refs, s25PlusOneUi85Preset),
     ).rejects.toThrow("Export surface is missing for Media player.");
+  });
+
+  it("exports only present panels in Good Lock order", async () => {
+    mockRequestPermissionsAsync.mockResolvedValue({ granted: true });
+    const preset = {
+      ...s25PlusOneUi85Preset,
+      goodLockOrder: ["buttonBox", "brightness"],
+      visualOrder: ["buttonBox", "brightness"],
+    } satisfies QuickPanelPreset;
+
+    const exports = await captureAndSaveExports(createRefs(), preset);
+
+    expect(exports.map((file) => file.id)).toEqual(["buttonBox", "brightness"]);
+    expect(mockCaptureRef).toHaveBeenCalledTimes(2);
+  });
+
+  it("waits for export images to finish rendering before capture can start", async () => {
+    jest.useFakeTimers();
+    let imagesReady = false;
+    let resolved = false;
+
+    const waitPromise = waitForExportSurfaces(
+      createRefs(),
+      s25PlusOneUi85Preset,
+      () => imagesReady,
+    ).then(() => {
+      resolved = true;
+    });
+
+    await jest.advanceTimersByTimeAsync(100);
+    expect(resolved).toBe(false);
+
+    imagesReady = true;
+
+    await jest.advanceTimersByTimeAsync(32);
+    await waitPromise;
+
+    expect(resolved).toBe(true);
+  });
+
+  it("throws a generic export error when images never finish rendering", async () => {
+    jest.useFakeTimers();
+
+    const waitPromise = waitForExportSurfaces(
+      createRefs(),
+      s25PlusOneUi85Preset,
+      () => false,
+    );
+    const errorPromise = waitPromise.catch((error) => error);
+
+    await jest.advanceTimersByTimeAsync(1100);
+    const error = await errorPromise;
+
+    expect(error).toBeInstanceOf(Error);
+    expect(error.message).toBe("Unable to export images.");
   });
 });

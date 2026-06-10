@@ -4,6 +4,10 @@ import Animated, {
   type SharedValue,
   useAnimatedStyle,
 } from "react-native-reanimated";
+import {
+  getCustomPreviewLayout,
+  usesQuickStarCropModel,
+} from "../../model/quickstar-crop";
 import type {
   ImageTransform,
   PanelDefinition,
@@ -19,6 +23,7 @@ interface PanelSliceProps {
   layoutScale: number;
   originX: number;
   originY: number;
+  presetId: string;
   previewScale: SharedValue<number>;
   transform: SharedValue<ImageTransform>;
 }
@@ -29,14 +34,28 @@ export function PanelSlice({
   layoutScale,
   originX,
   originY,
+  presetId,
   previewScale,
   transform,
 }: PanelSliceProps) {
+  const isCustomPreview = usesQuickStarCropModel(presetId);
+  const customPreviewLayout = isCustomPreview
+    ? getCustomPreviewLayout(panel)
+    : null;
+  const cropRect = customPreviewLayout?.cropRect ?? panel.rect;
+  const cropScale = customPreviewLayout?.scale ?? 1;
+  const offsetX = customPreviewLayout?.offsetX ?? 0;
+  const offsetY = customPreviewLayout?.offsetY ?? 0;
+
   const imageStyle = useAnimatedStyle(() => ({
-    height: image.height * transform.value.scale * previewScale.value,
-    left: (transform.value.x - panel.rect.x) * previewScale.value,
-    top: (transform.value.y - panel.rect.y) * previewScale.value,
-    width: image.width * transform.value.scale * previewScale.value,
+    height: image.height * transform.value.scale * previewScale.value * cropScale,
+    left:
+      (transform.value.x - cropRect.x) * previewScale.value * cropScale +
+      offsetX * previewScale.value,
+    top:
+      (transform.value.y - cropRect.y) * previewScale.value * cropScale +
+      offsetY * previewScale.value,
+    width: image.width * transform.value.scale * previewScale.value * cropScale,
   }));
 
   return (
@@ -58,7 +77,7 @@ export function PanelSlice({
         style={[StyleSheet.absoluteFill, imageStyle]}
       />
       <View className="absolute inset-0 bg-black/10" />
-      <PanelOverlay panelId={panel.id} />
+      <PanelOverlay enabled={!isCustomPreview} panelId={panel.id} />
     </View>
   );
 }
