@@ -53,7 +53,7 @@ The app uses a Galaxy S25+ on One UI 8.5 as the base reference layout.
 
 For `Default layout`, it scales that reference layout from one calibrated outer box.
 
-For `Custom layout`, the help sheet now changes by mode. `Default layout` keeps the one-box guidance, while `Custom layout` uses `assets/calibrate_customized.jpg` and describes the per-panel workflow.
+For `Custom layout`, the help sheet now changes by mode. `Default layout` keeps the one-box guidance, while `Custom layout` uses `assets/screenshots_custom/custom_calibration_greenbox.jpg` and describes the per-panel workflow.
 
 For `Custom layout`, the app stores the real user-provided rectangles for each visible panel and skips hidden ones during preview and export. Custom mode supports:
 

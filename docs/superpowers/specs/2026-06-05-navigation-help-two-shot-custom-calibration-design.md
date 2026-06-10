@@ -30,7 +30,7 @@ The current help sheet structure is acceptable. The problem is content fidelity:
 
 - `Default layout` needs one-box guidance
 - `Custom layout` needs per-panel guidance
-- the custom mode needs its own illustration, using `assets/calibrate_customized.jpg`
+- the custom mode needs its own illustration, using `assets/screenshots_custom/custom_calibration_greenbox.jpg`
 
 ### 3. Custom calibration must support taller-than-screen layouts
 
@@ -108,7 +108,7 @@ Only the content changes by mode.
 #### Custom layout help
 
 - Instruction explains calibrating the supported panels one by one and marking hidden panels when needed.
-- Illustration switches to `assets/calibrate_customized.jpg`.
+- Illustration switches to `assets/screenshots_custom/custom_calibration_greenbox.jpg`.
 
 ### Custom layout screenshot flow
 
@@ -279,7 +279,7 @@ After that point, the current custom panel step flow should remain conceptually 
 
 - Save calibration, then enter customize, then press back once and confirm only one landing screen remains.
 - Open help in `Default layout` and confirm the copy and image still describe one-box calibration.
-- Open help in `Custom layout` and confirm the copy and image describe per-panel calibration using `assets/calibrate_customized.jpg`.
+- Open help in `Custom layout` and confirm the copy and image describe per-panel calibration using `assets/screenshots_custom/custom_calibration_greenbox.jpg`.
 - Calibrate a short custom layout with one screenshot and confirm the current flow still works.
 - Calibrate a tall custom layout with two screenshots and confirm a panel box can be placed across both the upper and lower regions after overlap confirmation.
 - Confirm saved custom panel rects still drive preview/export as before after calibration save.

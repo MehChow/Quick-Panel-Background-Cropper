@@ -8,7 +8,7 @@ Status: Ready for execution
 
 - [ ] Normalize landing-route navigation so completed calibration dismisses back to one real `/` root instead of stacking repeated home screens.
 - [ ] Split calibration help content by mode while keeping the current bottom-sheet format and illustration card layout unchanged.
-- [ ] Use `assets/calibrate_customized.jpg` for `Custom layout` help and keep the existing default help image for `Default layout`.
+- [ ] Use `assets/screenshots_custom/custom_calibration_greenbox.jpg` for `Custom layout` help and keep the existing default help image for `Default layout`.
 - [ ] Add runtime-only custom calibration session state for one-shot versus two-shot screenshot entry without persisting raw screenshots after save.
 - [ ] Validate the second custom screenshot as same-width portrait input before allowing overlap alignment.
 - [ ] Add a manual overlap-alignment step with a draggable vertical handle for the optional second screenshot.

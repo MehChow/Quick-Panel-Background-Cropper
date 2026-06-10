@@ -8,7 +8,7 @@ export interface CalibrationHelpContent {
 
 export const calibrationHelpContentByMode = {
   "custom-panels": {
-    imageSource: require("../../../../assets/calibrate_customized.jpg"),
+    imageSource: require("../../../../assets/screenshots_custom/custom_calibration_greenbox.jpg"),
     instructionKey: "calibration.customInstruction",
   },
   "default-union": {

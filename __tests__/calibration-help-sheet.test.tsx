@@ -4,7 +4,7 @@ import { Text, View } from "react-native";
 import { render, screen } from "@testing-library/react-native";
 import { CalibrationHelpSheet } from "@/features/quick-panel/calibration/CalibrationHelpSheet";
 
-const mockCustomHelpImage = require("../assets/calibrate_customized.jpg");
+const mockCustomHelpImage = require("../assets/screenshots_custom/custom_calibration_greenbox.jpg");
 const mockDefaultHelpImage = require("../assets/calibrate.jpeg");
 const mockReact = React;
 const mockText = Text;

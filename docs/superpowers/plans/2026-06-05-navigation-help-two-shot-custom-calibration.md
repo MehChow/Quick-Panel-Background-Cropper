@@ -174,7 +174,7 @@ export interface CalibrationHelpContent {
 
 export const calibrationHelpContentByMode = {
   "custom-panels": {
-    imageSource: require("@/assets/calibrate_customized.jpg"),
+    imageSource: require("@/assets/screenshots_custom/custom_calibration_greenbox.jpg"),
     instructionKey: "calibration.customInstruction",
   },
   "default-union": {
@@ -202,7 +202,7 @@ const content = calibrationHelpContentByMode[calibrationMode];
 Expected:
 
 1. `Default layout` help still shows one-box guidance and the original image.
-2. `Custom layout` help shows per-panel guidance and `assets/calibrate_customized.jpg`.
+2. `Custom layout` help shows per-panel guidance and `assets/screenshots_custom/custom_calibration_greenbox.jpg`.
 3. The bottom-sheet layout and spacing remain unchanged.
 
 - [ ] **Step 5: Commit**
