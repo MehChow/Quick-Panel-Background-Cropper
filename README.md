@@ -64,6 +64,20 @@ For a first-time user, the app has two setup paths:
 7. Press **Export PNGs**.
 8. Review the exported results and apply them in Good Lock in the shown order.
 
+<div style="display: flex; gap: 10px; margin-bottom: 10px;">
+  <img src="./flow/v2-default-mode/1.webp" width="200">
+  <img src="./flow/v2-default-mode/2.webp" width="200">
+  <img src="./flow/v2-default-mode/3.webp" width="200">
+  <img src="./flow/v2-default-mode/4.webp" width="200">
+</div>
+
+<div style="display: flex; gap: 10px;">
+  <img src="./flow/v2-default-mode/5.webp" width="200">
+  <img src="./flow/v2-default-mode/6.webp" width="200">
+  <img src="./flow/v2-default-mode/7.webp" width="200">
+  <img src="./flow/v2-default-mode/default-result.webp" width="200">
+</div>
+
 ### Advanced mode
 
 1. Press **Start customizing**.
@@ -78,6 +92,22 @@ For a first-time user, the app has two setup paths:
 10. Press **Export PNGs**.
 11. Review the exported results and apply them in Good Lock in the shown order.
 
+<div style="display: flex; gap: 10px; margin-bottom: 10px;">
+  <img src="./flow/v2-advanced-mode/1.webp" width="200">
+  <img src="./flow/v2-advanced-mode/2.webp" width="200">
+  <img src="./flow/v2-advanced-mode/3.webp" width="200">
+  <img src="./flow/v2-advanced-mode/4.webp" width="200">
+  <img src="./flow/v2-advanced-mode/5.webp" width="200">
+</div>
+
+<div style="display: flex; gap: 10px;">
+  <img src="./flow/v2-advanced-mode/6.webp" width="200">
+  <img src="./flow/v2-advanced-mode/7.webp" width="200">
+  <img src="./flow/v2-advanced-mode/8.webp" width="200">
+  <img src="./flow/v2-advanced-mode/9.webp" width="200">
+  <img src="./flow/v2-advanced-mode/advanced-result.webp" width="200">
+</div>
+
 After you calibrate a mode once, later runs of that mode go straight to image selection, and you can use **Want to recalibrate?** any time to update that saved layout.
 
 ## How calibration works
@@ -87,15 +117,6 @@ Advanced mode lets you mark the outer area and adjust each of the four panel
 boxes independently.
 
 The full calibration logic and assumptions are documented in [CALIBRATION_PLAN.md](/D:/quick-panel-crop-exporter/CALIBRATION_PLAN.md).
-
-## Screenshots
-
-<div style="display: flex; gap: 10px; flex-wrap: nowrap;">
-  <img src="./assets/screenshots/landing.jpeg" alt="Landing" width="200">
-  <img src="./assets/screenshots/calibrate.jpeg" alt="Calibrate" width="200">
-  <img src="./assets/screenshots/customize.jpeg" alt="Customize" width="200">
-  <img src="./assets/screenshots/exported.jpeg" alt="Exported" width="200">
-</div>
 
 ## Notes
 
