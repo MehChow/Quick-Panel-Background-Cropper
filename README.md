@@ -64,14 +64,11 @@ For a first-time user, the app has two setup paths:
 7. Press **Export PNGs**.
 8. Review the exported results and apply them in Good Lock in the shown order.
 
-<div style="display: flex; gap: 10px; margin-bottom: 10px;">
+<div style="display: flex; gap: 10px; flex-wrap: wrap;">
   <img src="./flow/v2-default-mode/1.webp" width="200">
   <img src="./flow/v2-default-mode/2.webp" width="200">
   <img src="./flow/v2-default-mode/3.webp" width="200">
   <img src="./flow/v2-default-mode/4.webp" width="200">
-</div>
-
-<div style="display: flex; gap: 10px;">
   <img src="./flow/v2-default-mode/5.webp" width="200">
   <img src="./flow/v2-default-mode/6.webp" width="200">
   <img src="./flow/v2-default-mode/7.webp" width="200">
@@ -92,15 +89,12 @@ For a first-time user, the app has two setup paths:
 10. Press **Export PNGs**.
 11. Review the exported results and apply them in Good Lock in the shown order.
 
-<div style="display: flex; gap: 10px; margin-bottom: 10px;">
+<div style="display: flex; gap: 10px; flex-wrap: wrap;">
   <img src="./flow/v2-advanced-mode/1.webp" width="200">
   <img src="./flow/v2-advanced-mode/2.webp" width="200">
   <img src="./flow/v2-advanced-mode/3.webp" width="200">
   <img src="./flow/v2-advanced-mode/4.webp" width="200">
   <img src="./flow/v2-advanced-mode/5.webp" width="200">
-</div>
-
-<div style="display: flex; gap: 10px;">
   <img src="./flow/v2-advanced-mode/6.webp" width="200">
   <img src="./flow/v2-advanced-mode/7.webp" width="200">
   <img src="./flow/v2-advanced-mode/8.webp" width="200">
