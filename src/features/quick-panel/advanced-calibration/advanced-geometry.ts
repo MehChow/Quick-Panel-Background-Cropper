@@ -81,11 +81,12 @@ export function arePanelsValid(panels: PanelRects, outerRect: PanelRect) {
 }
 
 function rectanglesOverlap(a: PanelRect, b: PanelRect) {
+  const epsilon = 0.75;
   return (
-    a.x < b.x + b.width &&
-    a.x + a.width > b.x &&
-    a.y < b.y + b.height &&
-    a.y + a.height > b.y
+    a.x < b.x + b.width - epsilon &&
+    a.x + a.width > b.x + epsilon &&
+    a.y < b.y + b.height - epsilon &&
+    a.y + a.height > b.y + epsilon
   );
 }
 

@@ -1,29 +1,39 @@
 import { Image } from "expo-image";
 import { useState } from "react";
 import { View } from "react-native";
-import { visualOrder } from "../../model/preset";
-import type { PanelId, PanelRect, PanelRects, PickedImage } from "../../model/types";
+import type { PanelRect, PanelRects, PickedImage } from "../../model/types";
+import type { AdvancedSnapGrid } from "../advanced-grid";
+import {
+  getVisiblePanelIds,
+  isPanelPhase,
+  type AdvancedCalibrationPhase,
+} from "../advanced-steps";
 import { AdvancedPanelBox } from "./AdvancedPanelBox";
+import { AdvancedSnapGridOverlay } from "./AdvancedSnapGridOverlay";
 
 interface Props {
+  grid: AdvancedSnapGrid;
   outerRect: PanelRect;
+  phase: AdvancedCalibrationPhase;
   panels: PanelRects;
   screenshot: PickedImage;
   onPanelsChange: (panels: PanelRects) => void;
 }
 
 export function AdvancedPanelCanvas({
+  grid,
   outerRect,
+  phase,
   panels,
   screenshot,
   onPanelsChange,
 }: Props) {
   const [viewWidth, setViewWidth] = useState(0);
-  const [selectedId, setSelectedId] = useState<PanelId>("buttonBox");
   const scale = viewWidth ? viewWidth / screenshot.width : 1;
-  const orderedIds = visualOrder.filter((id) => id !== selectedId).concat(selectedId);
+  const activeId = isPanelPhase(phase) ? phase : null;
+  const visibleIds = getVisiblePanelIds(phase);
 
-  const changePanel = (id: PanelId, rect: PanelRect) => {
+  const changePanel = (id: keyof PanelRects, rect: PanelRect) => {
     onPanelsChange({ ...panels, [id]: rect });
   };
 
@@ -44,16 +54,19 @@ export function AdvancedPanelCanvas({
           width: outerRect.width * scale,
         }}
       />
-      {orderedIds.map((id) => (
+      {phase !== "confirm" ? (
+        <AdvancedSnapGridOverlay grid={grid} outerRect={outerRect} scale={scale} />
+      ) : null}
+      {visibleIds.map((id) => (
         <AdvancedPanelBox
           key={id}
-          id={id}
-          isSelected={selectedId === id}
+          grid={grid}
+          isActive={activeId === id}
           outerRect={outerRect}
           rect={panels[id]}
           scale={scale}
           onChange={(rect) => changePanel(id, rect)}
-          onSelect={() => setSelectedId(id)}
+          label={id}
         />
       ))}
     </View>

@@ -55,13 +55,19 @@ const en = {
       recalibrate: "Want to recalibrate?",
     },
     advancedCalibration: {
-      title: "Advanced customization",
+      title: "Advanced calibration",
       outerSubtitle:
         "Wrap the full area containing your four customizable panels",
-      panelsSubtitle: "Move and resize each box to match its panel",
-      adjustPanels: "Adjust panels",
-      adjustOuter: "Adjust outer area",
-      save: "Save layout",
+      panelSubtitle: "Move and resize the {{panel}} box",
+      confirmSubtitle: "Review all four panel boxes before saving",
+      columns: "Columns",
+      rows: "Rows",
+      back: "Back",
+      next: "Next",
+      gridSettingsButton: "Open snapping grid settings",
+      gridSheetTitle: "Snapping grid",
+      gridSheetSubtitle:
+        "Adjust the row and column counts when the grid needs to match your screenshot more closely.",
     },
     export: {
       successTitle: "Exported successfully",

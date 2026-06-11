@@ -1,10 +1,12 @@
 import { View } from "react-native";
 import type { PanelRect } from "../../model/types";
 import type { HandlePosition } from "../../calibration/calibration-rect";
+import type { AdvancedSnapGrid } from "../advanced-grid";
 import { useAdvancedPanelResizeResponder } from "../hooks/useAdvancedPanelResizeResponder";
 
 interface Props {
   color?: string;
+  grid: AdvancedSnapGrid;
   outerRect: PanelRect;
   position: HandlePosition;
   rect: PanelRect;

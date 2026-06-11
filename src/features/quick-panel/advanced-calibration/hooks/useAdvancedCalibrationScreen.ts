@@ -2,18 +2,27 @@ import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { useShallow } from "zustand/react/shallow";
+import {
+  getDefaultAdvancedSnapGrid,
+  type AdvancedSnapGrid,
+} from "../advanced-grid";
+import {
+  getNextPhase,
+  getPreviousPhase,
+  type AdvancedCalibrationPhase,
+} from "../advanced-steps";
 import { getSuggestedCalibrationRect } from "../../calibration/calibration";
 import type { AdvancedCalibrationDraft } from "../../model/types";
 import { useQuickPanelStore } from "../../store/quick-panel-store";
 import { quickPanelSelectors } from "../../store/selectors";
 
-export type AdvancedCalibrationPhase = "outer" | "panels";
-
 export function useAdvancedCalibrationScreen() {
   const router = useRouter();
   const [phase, setPhase] = useState<AdvancedCalibrationPhase>("outer");
+  const [grid, setGrid] = useState<AdvancedSnapGrid>({ columns: 4, rows: 5 });
   const [leavingDraft, setLeavingDraft] = useState<AdvancedCalibrationDraft | null>(null);
   const [leavingPhase, setLeavingPhase] = useState<AdvancedCalibrationPhase | null>(null);
+  const [resumePhase, setResumePhase] = useState<AdvancedCalibrationPhase | null>(null);
   const {
     advancedDraft,
     error,
@@ -38,16 +47,20 @@ export function useAdvancedCalibrationScreen() {
         uri: asset.uri,
         width: asset.width,
       };
-      setAdvancedScreenshot(screenshot, getSuggestedCalibrationRect(screenshot));
+      const suggestedRect = getSuggestedCalibrationRect(screenshot);
+      setAdvancedScreenshot(screenshot, suggestedRect);
+      setGrid(getDefaultAdvancedSnapGrid(suggestedRect));
       setLeavingDraft(null);
       setLeavingPhase(null);
       setPhase("outer");
+      setResumePhase(null);
     }
   };
 
-  const continueToPanels = () => {
+  const continueToNextPhase = () => {
     confirmAdvancedOuterRect();
-    setPhase("panels");
+    setPhase(resumePhase ?? "buttonBox");
+    setResumePhase(null);
   };
 
   const saveCalibration = () => {
@@ -62,14 +75,53 @@ export function useAdvancedCalibrationScreen() {
 
   const displayedDraft = advancedDraft ?? leavingDraft;
   const displayedPhase = advancedDraft ? phase : leavingPhase ?? phase;
+  const previousPhase = getPreviousPhase(displayedPhase);
+  const nextPhase = getNextPhase(displayedPhase);
+
+  const goBack = () => {
+    if (!previousPhase) {
+      return;
+    }
+    if (previousPhase === "outer") {
+      setResumePhase(displayedPhase === "outer" ? null : displayedPhase);
+    }
+    setPhase(previousPhase);
+  };
+
+  const goForward = () => {
+    if (displayedPhase === "outer") {
+      continueToNextPhase();
+      return;
+    }
+    if (!nextPhase) {
+      return;
+    }
+    setPhase(nextPhase);
+  };
+
+  const returnToOuter = () => {
+    if (displayedPhase !== "outer") {
+      setResumePhase(displayedPhase);
+    }
+    setPhase("outer");
+  };
 
   return {
     advancedDraft: displayedDraft,
     error,
+    grid,
     phase: displayedPhase,
+    canGoBack: previousPhase !== null,
     importScreenshot,
-    continueToPanels,
-    returnToOuter: () => setPhase("outer"),
+    decrementColumns: () => setGrid((current) => ({ ...current, columns: Math.max(2, current.columns - 1) })),
+    decrementRows: () => setGrid((current) => ({ ...current, rows: Math.max(2, current.rows - 1) })),
+    goBack,
+    goForward,
+    incrementColumns: () => setGrid((current) => ({ ...current, columns: Math.min(8, current.columns + 1) })),
+    incrementRows: () => setGrid((current) => ({ ...current, rows: Math.min(8, current.rows + 1) })),
+    isConfirmPhase: displayedPhase === "confirm",
+    isOuterPhase: displayedPhase === "outer",
+    returnToOuter,
     saveCalibration,
     setAdvancedOuterRect,
     setAdvancedPanels,

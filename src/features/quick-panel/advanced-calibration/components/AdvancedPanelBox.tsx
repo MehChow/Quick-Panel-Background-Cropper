@@ -2,30 +2,27 @@ import { Text } from "@/components/ani-ui/text";
 import { View } from "react-native";
 import { useTranslation } from "react-i18next";
 import type { PanelId, PanelRect } from "../../model/types";
+import type { AdvancedSnapGrid } from "../advanced-grid";
 import { useAdvancedPanelMoveResponder } from "../hooks/useAdvancedPanelMoveResponder";
 import { AdvancedPanelResizeHandle } from "./AdvancedPanelResizeHandle";
 
-const colors: Record<PanelId, string> = {
-  buttonBox: "#60a5fa",
-  mediaPlayer: "#c084fc",
-  brightness: "#facc15",
-  volume: "#fb7185",
-};
+const activeColor = "#c084fc";
+const completedColor = "#f97316";
 
 interface Props {
-  id: PanelId;
-  isSelected: boolean;
+  grid: AdvancedSnapGrid;
+  isActive: boolean;
+  label: PanelId;
   outerRect: PanelRect;
   rect: PanelRect;
   scale: number;
   onChange: (rect: PanelRect) => void;
-  onSelect: () => void;
 }
 
 export function AdvancedPanelBox(props: Props) {
   const { t } = useTranslation();
   const responder = useAdvancedPanelMoveResponder(props);
-  const color = colors[props.id];
+  const color = props.isActive ? activeColor : completedColor;
   const handleColor = darkenColor(color, 0.18);
 
   return (
@@ -34,24 +31,26 @@ export function AdvancedPanelBox(props: Props) {
       style={{
         backgroundColor: `${color}26`,
         borderColor: color,
-        borderWidth: props.isSelected ? 3 : 2,
+        borderWidth: props.isActive ? 3 : 2,
         height: props.rect.height * props.scale,
         left: props.rect.x * props.scale,
         top: props.rect.y * props.scale,
         width: props.rect.width * props.scale,
-        zIndex: props.isSelected ? 2 : 1,
+        zIndex: props.isActive ? 2 : 1,
       }}
-      onTouchStart={props.onSelect}
     >
-      <View {...responder.panHandlers} className="absolute inset-0 items-center justify-center">
+      <View
+        {...(props.isActive ? responder.panHandlers : {})}
+        className="absolute inset-0 items-center justify-center"
+      >
         <Text
           className="rounded-md px-2 py-1 text-xs font-semibold text-black"
           style={{ backgroundColor: color }}
         >
-          {t(`panels.${props.id}`)}
+          {t(`panels.${props.label}`)}
         </Text>
       </View>
-      {props.isSelected ? (
+      {props.isActive ? (
         <>
           <AdvancedPanelResizeHandle {...props} color={handleColor} position="topLeft" />
           <AdvancedPanelResizeHandle {...props} position="top" />

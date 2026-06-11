@@ -4,9 +4,13 @@ import {
   type PanResponderGestureState,
 } from "react-native";
 import type { PanelRect } from "../../model/types";
-import { clampPanelRect } from "../panel-constraints";
+import {
+  snapMovedPanelRect,
+  type AdvancedSnapGrid,
+} from "../advanced-grid";
 
 interface Params {
+  grid: AdvancedSnapGrid;
   outerRect: PanelRect;
   rect: PanelRect;
   scale: number;
@@ -14,6 +18,7 @@ interface Params {
 }
 
 export function useAdvancedPanelMoveResponder({
+  grid,
   outerRect,
   rect,
   scale,
@@ -32,11 +37,11 @@ export function useAdvancedPanelMoveResponder({
       gesture: PanResponderGestureState,
     ) => {
       const start = startRect;
-      onChange(clampPanelRect({
+      onChange(snapMovedPanelRect({
         ...start,
         x: start.x + gesture.dx / scale,
         y: start.y + gesture.dy / scale,
-      }, outerRect));
+      }, start, outerRect, grid));
     },
   });
 }

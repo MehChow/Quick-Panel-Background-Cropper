@@ -5,9 +5,13 @@ import {
 } from "react-native";
 import type { PanelRect } from "../../model/types";
 import { resizeRect, type HandlePosition } from "../../calibration/calibration-rect";
-import { clampPanelRect } from "../panel-constraints";
+import {
+  snapResizedPanelRect,
+  type AdvancedSnapGrid,
+} from "../advanced-grid";
 
 interface Params {
+  grid: AdvancedSnapGrid;
   outerRect: PanelRect;
   position: HandlePosition;
   rect: PanelRect;
@@ -16,6 +20,7 @@ interface Params {
 }
 
 export function useAdvancedPanelResizeResponder({
+  grid,
   outerRect,
   position,
   rect,
@@ -41,7 +46,9 @@ export function useAdvancedPanelResizeResponder({
         gesture.dx / scale,
         gesture.dy / scale,
       );
-      onChange(clampPanelRect(resized, outerRect));
+      onChange(
+        snapResizedPanelRect(resized, startRect, outerRect, grid, position),
+      );
     },
   });
 }

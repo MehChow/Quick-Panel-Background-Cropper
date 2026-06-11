@@ -5,17 +5,24 @@ import { useTranslation } from "react-i18next";
 import { BackButton } from "./BackButton";
 
 interface SubPageHeaderProps {
+  actionAccessibilityLabel?: string;
+  actionIcon?: React.ComponentProps<typeof Lucide>["name"];
+  onActionPress?: () => void;
   onHelpPress?: () => void;
   title: string;
   subtitle: string;
 }
 
 export function SubPageHeader({
+  actionAccessibilityLabel,
+  actionIcon,
+  onActionPress,
   onHelpPress,
   title,
   subtitle,
 }: SubPageHeaderProps) {
   const { t } = useTranslation();
+  const handlePress = onActionPress ?? onHelpPress;
 
   return (
     <View className="mb-5 flex-row items-center gap-3">
@@ -28,14 +35,14 @@ export function SubPageHeader({
           {subtitle}
         </Text>
       </View>
-      {onHelpPress ? (
+      {handlePress ? (
         <Pressable
-          accessibilityLabel={t("calibration.helpButton")}
+          accessibilityLabel={actionAccessibilityLabel ?? t("calibration.helpButton")}
           accessibilityRole="button"
           className="h-11 w-11 items-center justify-center rounded-full bg-zinc-900 active:opacity-80"
-          onPress={onHelpPress}
+          onPress={handlePress}
         >
-          <Lucide color="#fafafa" name="circle-help" size={22} />
+          <Lucide color="#fafafa" name={actionIcon ?? "circle-help"} size={22} />
         </Pressable>
       ) : null}
     </View>
