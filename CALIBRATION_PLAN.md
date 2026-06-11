@@ -3,17 +3,19 @@
 ## Product scope
 
 Quick Panel Background Cropper targets Samsung phones running Android 16 with
-One UI 8.5. It exports backgrounds for the same four Good Lock targets:
-Button box, Media player, Brightness, and Volume.
+One UI 8.5. In v2 it only exports backgrounds for the four Good Lock
+**Controls** targets: Button box, Media player, Brightness, and Volume.
 
 The app provides two modes:
 
-- Default customization for phones using the standard Quick Panel layout.
+- Default customization for phones using the standard Quick Panel Controls
+  layout.
 - Advanced customization for users who have rearranged or resized those four
-  panels.
+  Controls panels.
 
 Fold, Flip, tablets, DeX, external displays, other One UI versions, additional
-panel types, and multiple saved layout profiles remain out of scope.
+panel types, the Good Lock **Buttons** tab, and multiple saved layout profiles
+remain out of scope.
 
 ## Default customization
 
@@ -38,13 +40,19 @@ This remains the fastest path when the panel structure is unchanged.
 
 ## Advanced customization
 
-Advanced mode also starts from a fully expanded Quick Panel screenshot, but it
-does not infer the internal layout from the S25+ preset.
+Advanced mode also starts from a fully expanded Quick Panel screenshot. The
+outer customization area is still anchored from the same S25+ preset logic used
+in Default mode, and the first set of four boxes is initialized from that
+calibrated preset.
 
 The user first confirms a required outer rectangle around the full area
 containing the four customizable panels. The app then initializes four labeled
 boxes from the default preset and lets the user move and resize each box to
 match the screenshot.
+
+If the user already saved an Advanced calibration before, re-importing a new
+screenshot rescales that saved Advanced layout into the new screenshot first,
+so the user starts from their previous arrangement instead of the default one.
 
 The outer rectangle:
 

@@ -4,9 +4,13 @@ Read the exact versioned docs at https://docs.expo.dev/versions/v56.0.0/ before 
 
 ## App brief
 
-Quick Panel Exporter is an Expo app for creating Samsung Good Lock Quick Panel background PNGs from one user-selected image. Users calibrate once by importing a fully expanded Quick Panel screenshot, adjusting one green rectangle around the customizable panel stack, and saving that geometry for future exports.
+Quick Panel Exporter is an Expo app for creating Samsung Good Lock Quick Panel background PNGs from one user-selected image. In v2, the app only supports the Quick Panel **Controls** tab, not the **Buttons** tab. The supported panels are Button box, Media player, Brightness, and Volume.
 
-The app then lets users choose a background image, pan/zoom it against a preview of the calibrated Button box, Brightness, Volume, and Media player panels, and export square PNGs in the Good Lock application order. The S25+ One UI 8.5 preset remains the base template; calibration scales that template into the user's screenshot-derived panel union.
+The user flow is: landing -> mode selection -> calibration -> image selection -> preview adjustment -> export result. Default mode asks the user to import a fully expanded Quick Panel screenshot, adjust one green rectangle around the full Controls area, and save it as the layout basis. Advanced mode adds a second step where the user moves and resizes four labeled panel boxes after confirming the outer area.
+
+After calibration, the app lets users choose a background image, pan/zoom it against a live preview of the four supported Controls panels, and export square PNGs in Good Lock application order. The S25+ One UI 8.5 preset remains the base template. Default mode scales that preset into the calibrated outer union, while Advanced mode starts from preset-based boxes and then lets the user fine-tune each panel.
+
+For the exact v2 UI flow, refer to the screenshots under `flow/`.
 
 ## Tech Stack
 
