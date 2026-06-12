@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import type { PanelRect } from "../../../model/types";
+import type { PanelId, PanelRect } from "../../../model/types";
 import type { HandlePosition } from "../../shared/calibration-rect";
 import type { AdvancedSnapGrid } from "../advanced-grid";
 import { useAdvancedPanelResizeResponder } from "../hooks/useAdvancedPanelResizeResponder";
@@ -7,6 +7,7 @@ import { useAdvancedPanelResizeResponder } from "../hooks/useAdvancedPanelResize
 interface Props {
   color?: string;
   grid: AdvancedSnapGrid;
+  label: PanelId;
   outerRect: PanelRect;
   position: HandlePosition;
   rect: PanelRect;

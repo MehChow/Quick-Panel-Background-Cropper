@@ -3,14 +3,18 @@ import {
   type GestureResponderEvent,
   type PanResponderGestureState,
 } from "react-native";
-import type { PanelRect } from "../../../model/types";
+import type { PanelId, PanelRect } from "../../../model/types";
 import {
   snapMovedPanelRect,
   type AdvancedSnapGrid,
 } from "../advanced-grid";
+import { triggerSnapHaptic } from "../snap-haptics";
+
+const lastSnapKeys = new Map<PanelId, string | null>();
 
 interface Params {
   grid: AdvancedSnapGrid;
+  label: PanelId;
   outerRect: PanelRect;
   rect: PanelRect;
   scale: number;
@@ -19,29 +23,39 @@ interface Params {
 
 export function useAdvancedPanelMoveResponder({
   grid,
+  label,
   outerRect,
   rect,
   scale,
   onChange,
 }: Params) {
-  let startRect = rect;
-
   return PanResponder.create({
     onStartShouldSetPanResponder: () => true,
     onMoveShouldSetPanResponder: () => true,
     onPanResponderGrant: () => {
-      startRect = rect;
+      lastSnapKeys.set(label, null);
     },
     onPanResponderMove: (
       _event: GestureResponderEvent,
       gesture: PanResponderGestureState,
     ) => {
-      const start = startRect;
-      onChange(snapMovedPanelRect({
+      const start = rect;
+      const result = snapMovedPanelRect({
         ...start,
         x: start.x + gesture.dx / scale,
         y: start.y + gesture.dy / scale,
-      }, start, outerRect, grid));
+      }, start, outerRect, grid);
+      if (result.snapKey && result.snapKey !== lastSnapKeys.get(label)) {
+        triggerSnapHaptic();
+      }
+      lastSnapKeys.set(label, result.snapKey);
+      onChange(result.rect);
+    },
+    onPanResponderRelease: () => {
+      lastSnapKeys.set(label, null);
+    },
+    onPanResponderTerminate: () => {
+      lastSnapKeys.set(label, null);
     },
   });
 }

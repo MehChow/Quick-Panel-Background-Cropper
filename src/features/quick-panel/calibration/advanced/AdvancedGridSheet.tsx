@@ -5,7 +5,9 @@ import BottomSheet, {
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
 import { useTranslation } from "react-i18next";
-import { useWindowDimensions, View } from "react-native";
+import { View } from "react-native";
+
+const calibrationExampleAspectRatio = 1080 / 2340;
 
 interface Props {
   columns: number;
@@ -27,7 +29,6 @@ export function AdvancedGridSheet({
   rows,
 }: Props) {
   const { t } = useTranslation();
-  const { height } = useWindowDimensions();
 
   return (
     <BottomSheet
@@ -54,7 +55,6 @@ export function AdvancedGridSheet({
         width: 48,
       }}
       index={0}
-      maxDynamicContentSize={height * 0.6}
       onClose={onClose}
     >
       <BottomSheetView
@@ -73,6 +73,7 @@ export function AdvancedGridSheet({
               {t("advancedCalibration.gridSheetSubtitle")}
             </Text>
           </View>
+
           <View className="flex-row gap-3">
             <GridCounter
               label={t("advancedCalibration.columns")}
@@ -107,7 +108,7 @@ function GridCounter({
   value,
 }: GridCounterProps) {
   return (
-    <View className="flex-1 rounded-2xl border border-white/10 bg-zinc-800 p-4">
+    <View className="flex-1 rounded-2xl border border-white/10 bg-zinc-800 p-4 items-center">
       <Text className="text-xs font-semibold uppercase tracking-[1px] text-zinc-400">
         {label}
       </Text>

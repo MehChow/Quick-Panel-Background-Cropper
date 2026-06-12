@@ -60,7 +60,13 @@ export function PanelSlice({
         style={[StyleSheet.absoluteFill, imageStyle]}
       />
       <View className="absolute inset-0 bg-black/10" />
-      {showOverlay ? <PanelOverlay panelId={panel.id} /> : null}
+      {showOverlay ? (
+        <PanelOverlay
+          height={panel.rect.height * layoutScale}
+          panelId={panel.id}
+          width={panel.rect.width * layoutScale}
+        />
+      ) : null}
     </View>
   );
 }
