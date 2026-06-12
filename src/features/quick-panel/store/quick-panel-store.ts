@@ -2,7 +2,7 @@ import { create } from "zustand";
 import {
   getInitialAdvancedPanels,
   scalePanelsToOuter,
-} from "../advanced-calibration/advanced-geometry";
+} from "../calibration/advanced/advanced-geometry";
 import type {
   CustomizationMode,
   GeneratedExport,

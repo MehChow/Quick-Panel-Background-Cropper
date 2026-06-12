@@ -1,5 +1,5 @@
-import { createAdvancedPreset } from "../advanced-calibration/advanced-geometry";
-import { getCalibratedPreset } from "../calibration/calibration";
+import { createAdvancedPreset } from "../calibration/advanced/advanced-geometry";
+import { getCalibratedPreset } from "../calibration/shared/calibration-preset";
 import { clampTransform, getFitTransform } from "../model/image-placement";
 import { translate } from "../model/i18n";
 import type {

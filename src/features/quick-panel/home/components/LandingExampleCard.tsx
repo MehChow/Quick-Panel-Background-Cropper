@@ -1,5 +1,6 @@
 import { Card } from "@/components/ani-ui/card";
 import { Text } from "@/components/ani-ui/text";
+import { images } from "@/data/images";
 import { Image } from "expo-image";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -55,7 +56,7 @@ export function LandingExampleCard({ maxHeight }: LandingExampleCardProps) {
       >
         <View style={{ height: doroSize, width: doroSize }}>
           <Image
-            source={require("@/assets/doro_like.gif")}
+            source={images.mascotDoro}
             style={{ height: "100%", width: "100%" }}
             contentFit="contain"
           />
@@ -71,7 +72,7 @@ export function LandingExampleCard({ maxHeight }: LandingExampleCardProps) {
           style={{ height: imageHeight, width: imageWidth }}
         >
           <Image
-            source={require("@/assets/example.jpeg")}
+            source={images.example}
             style={{ height: "100%", width: "100%" }}
             contentFit="contain"
           />

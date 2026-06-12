@@ -1,7 +1,7 @@
 import {
   arePanelsValid,
   scalePanelsToOuter,
-} from "../advanced-calibration/advanced-geometry";
+} from "../calibration/advanced/advanced-geometry";
 import type {
   AdvancedCalibration,
   AdvancedCalibrationDraft,

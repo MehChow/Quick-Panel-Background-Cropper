@@ -35,6 +35,11 @@
       "version": "0.3.0",
       "hash": "ddacc252",
       "addedAt": "2026-06-02T10:10:37.964Z"
+    },
+    "carousel": {
+      "version": "0.3.0",
+      "hash": "d750292a",
+      "addedAt": "2026-06-11T09:27:53.694Z"
     }
   }
 }

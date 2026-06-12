@@ -1,5 +1,5 @@
-import { createAdvancedPreset } from "../advanced-calibration/advanced-geometry";
-import { getCalibratedPreset } from "../calibration/calibration";
+import { createAdvancedPreset } from "../calibration/advanced/advanced-geometry";
+import { getCalibratedPreset } from "../calibration/shared/calibration-preset";
 import { s25PlusOneUi85Preset } from "../model/preset";
 import type {
   AdvancedCalibration,

@@ -43,7 +43,8 @@ export function SelectModeScreen() {
     <SafeAreaView style={{ flex: 1 }}>
       <View className="px-5 pb-6 pt-8">
         <SubPageHeader
-          onHelpPress={() => setIsHelpOpen(true)}
+          actionIcon="circle-help"
+          onActionPress={() => setIsHelpOpen(true)}
           title={t("mode.title")}
           subtitle={t("mode.subtitle")}
         />

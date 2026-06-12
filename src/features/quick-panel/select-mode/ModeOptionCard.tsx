@@ -1,3 +1,4 @@
+import { images } from "@/data/images";
 import { Text } from "@/components/ani-ui/text";
 import { cn } from "@/lib/utils";
 import { Image } from "expo-image";
@@ -13,9 +14,9 @@ import {
 import type { CustomizationMode } from "../model/types";
 
 const advancedImages = [
-  require("@/assets/mode/advanced_1.jpeg"),
-  require("@/assets/mode/advanced_2.jpeg"),
-  require("@/assets/mode/advanced_3.jpeg"),
+  images.modeAdvanced1,
+  images.modeAdvanced2,
+  images.modeAdvanced3,
 ] as const;
 
 interface ModeOptionCardProps {
@@ -77,7 +78,7 @@ export function ModeOptionCard({
             onPress={onPress}
           >
             <Image
-              source={require("@/assets/mode/default.jpeg")}
+              source={images.modeDefault}
               contentFit="cover"
               className="w-full"
               style={{ aspectRatio: 0.48 }}

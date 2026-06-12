@@ -1,0 +1,15 @@
+export const images = {
+  calibrateExample1: require("@/assets/tutorial/calibrate/example1.webp"),
+  calibrateExample2: require("@/assets/tutorial/calibrate/example2.webp"),
+  calibrateGood: require("@/assets/tutorial/calibrate/good.webp"),
+  calibrateBad: require("@/assets/tutorial/calibrate/bad.webp"),
+
+  example: require("@/assets/example.webp"),
+  modeAdvanced1: require("@/assets/mode/advanced_1.webp"),
+  modeAdvanced2: require("@/assets/mode/advanced_2.webp"),
+  modeAdvanced3: require("@/assets/mode/advanced_3.webp"),
+  modeDefault: require("@/assets/mode/default.webp"),
+  tutorialCorrect: require("@/assets/tutorial/correct.webp"),
+  tutorialIncorrect: require("@/assets/tutorial/incorrect.webp"),
+  mascotDoro: require("@/assets/doro_like.gif"),
+} as const;

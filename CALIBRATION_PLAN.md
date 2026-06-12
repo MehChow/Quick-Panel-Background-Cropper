@@ -47,8 +47,18 @@ calibrated preset.
 
 The user first confirms a required outer rectangle around the full area
 containing the four customizable panels. The app then initializes four labeled
-boxes from the default preset and lets the user move and resize each box to
-match the screenshot.
+boxes from the default preset and guides the user through them one at a time in
+this order:
+
+- Button box
+- Brightness
+- Volume
+- Media player
+
+This wizard-style flow keeps the screen focused on one active box instead of
+making all four boxes editable at once. Completed boxes stay visible as fixed
+references, so the user can compare the remaining panels against what has
+already been aligned.
 
 If the user already saved an Advanced calibration before, re-importing a new
 screenshot rescales that saved Advanced layout into the new screenshot first,
@@ -59,6 +69,26 @@ The outer rectangle:
 - defines the background customization area
 - constrains all four panel boxes
 - provides alignment edges and a stable preview coordinate space
+
+### Snapping grid
+
+Advanced mode includes a snapping grid helper inside the confirmed outer
+rectangle.
+
+- The default grid starts at 4 columns and usually 5 rows.
+- During panel-box adjustment, the user can open a small settings sheet and
+  change the row and column counts if the default grid does not match their
+  screenshot well.
+- The active panel box snaps against nearby grid targets while still allowing
+  slow, precise drag and resize adjustments.
+- Interior snap targets intentionally leave small visible gaps between panel
+  boxes, which better matches the real Quick Panel spacing and reduces accidental
+  overlap.
+
+The goal of the grid is not to force a rigid layout. It acts as a lightweight
+alignment assist so customized Samsung layouts can be matched more accurately,
+with less manual pixel-pushing, while still letting users override the grid
+when needed.
 
 Panel boxes may be horizontal, vertical, square, reordered, or separated. They
 must remain inside the outer rectangle and may not overlap.

@@ -32,7 +32,11 @@ const en = {
       title: "Calibration",
       subtitle: "Match your device's layout",
       instruction:
-        "Drag any edge or corner to resize the green box around the whole customizable control panel.",
+        "Drag any edge or corner to resize the green box around the whole customizable control panel, including Button box, Brightness, Volume and Meida player.",
+      bestResultTitle: "For best result",
+      bestResultGood:
+        "Wrap the green box right outside the panel edges for the most accurate crop.",
+      bestResultBad: "Avoid stacking the green box edge with panel box",
       helpButton: "Open calibration help",
       helpTitle: "How to calibrate",
       likeThis: "Like this",
