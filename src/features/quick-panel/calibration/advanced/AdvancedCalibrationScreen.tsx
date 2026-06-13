@@ -7,10 +7,7 @@ import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { CalibrationCanvas } from "../shared/CalibrationCanvas";
 import { AdvancedGridSheet } from "./AdvancedGridSheet";
-import {
-  isPanelPhase,
-  type AdvancedCalibrationPhase,
-} from "./advanced-steps";
+import { isPanelPhase, type AdvancedCalibrationPhase } from "./advanced-steps";
 import { AdvancedCalibrationControls } from "./AdvancedCalibrationControls";
 import { AdvancedOuterOverlay } from "./components/AdvancedOuterOverlay";
 import { AdvancedPanelCanvas } from "./components/AdvancedPanelCanvas";
@@ -27,15 +24,13 @@ export function AdvancedCalibrationScreen() {
     goBack,
     goForward,
     grid,
-    incrementColumns,
-    incrementRows,
-    decrementColumns,
-    decrementRows,
     isConfirmPhase,
     isOuterPhase,
     phase,
     importScreenshot,
     saveCalibration,
+    setColumns,
+    setRows,
     setAdvancedOuterRect,
     setAdvancedPanels,
   } = useAdvancedCalibrationScreen();
@@ -47,34 +42,17 @@ export function AdvancedCalibrationScreen() {
   const showGridSheet = isPanelStep && isGridSheetOpen;
   const showHelpButton = isOuterPhase && isEditing;
 
-  const handleBack = () => {
-    setIsGridSheetOpen(false);
-    goBack();
-  };
-
-  const handleNext = () => {
-    setIsGridSheetOpen(false);
-    goForward();
-  };
-
-  const handleSave = () => {
-    setIsGridSheetOpen(false);
-    saveCalibration();
-  };
+  const handleBack = () => { setIsGridSheetOpen(false); goBack(); };
+  const handleNext = () => { setIsGridSheetOpen(false); goForward(); };
+  const handleSave = () => { setIsGridSheetOpen(false); saveCalibration(); };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View className="px-5 pt-8">
         <SubPageHeader
-          actionAccessibilityLabel={showHelpButton
-            ? t("calibration.helpButton")
-            : t("advancedCalibration.gridSettingsButton")}
+          actionAccessibilityLabel={showHelpButton ? t("calibration.helpButton") : t("advancedCalibration.gridSettingsButton")}
           actionIcon={showHelpButton ? "circle-help" : "settings-2"}
-          onActionPress={showHelpButton
-            ? () => setIsHelpOpen(true)
-            : isPanelStep
-              ? () => setIsGridSheetOpen(true)
-              : undefined}
+          onActionPress={showHelpButton ? () => setIsHelpOpen(true) : isPanelStep ? () => setIsGridSheetOpen(true) : undefined}
           title={t("advancedCalibration.title")}
           subtitle={getSubtitle(phase, t)}
         />
@@ -124,26 +102,21 @@ export function AdvancedCalibrationScreen() {
         <View className="border-t border-white/10 px-5">
           <AdvancedCalibrationControls
             canGoBack={canGoBack}
+            columns={grid.columns}
+            isGridVisible={isPanelStep}
             isConfirmPhase={isConfirmPhase}
             isOuterPhase={isOuterPhase}
             onBack={handleBack}
-            onNext={handleNext}
+            onColumnsChange={setColumns}
             onImport={importScreenshot}
+            onNext={handleNext}
+            onRowsChange={setRows}
             onSave={handleSave}
+            rows={grid.rows}
           />
         </View>
       ) : null}
-      {showGridSheet ? (
-        <AdvancedGridSheet
-          columns={grid.columns}
-          onClose={() => setIsGridSheetOpen(false)}
-          onDecreaseColumns={decrementColumns}
-          onDecreaseRows={decrementRows}
-          onIncreaseColumns={incrementColumns}
-          onIncreaseRows={incrementRows}
-          rows={grid.rows}
-        />
-      ) : null}
+      {showGridSheet ? <AdvancedGridSheet onClose={() => setIsGridSheetOpen(false)} /> : null}
       {isHelpOpen ? <CalibrationHelpSheet onClose={() => setIsHelpOpen(false)} /> : null}
     </SafeAreaView>
   );

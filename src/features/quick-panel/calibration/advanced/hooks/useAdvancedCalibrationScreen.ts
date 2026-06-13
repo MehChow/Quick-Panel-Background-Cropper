@@ -123,6 +123,8 @@ export function useAdvancedCalibrationScreen() {
     isOuterPhase: displayedPhase === "outer",
     returnToOuter,
     saveCalibration,
+    setColumns: (columns: number) => setGrid((current) => ({ ...current, columns })),
+    setRows: (rows: number) => setGrid((current) => ({ ...current, rows })),
     setAdvancedOuterRect,
     setAdvancedPanels,
   };

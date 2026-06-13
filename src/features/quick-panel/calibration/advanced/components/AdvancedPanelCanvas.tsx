@@ -28,55 +28,87 @@ export function AdvancedPanelCanvas({
   screenshot,
   onPanelsChange,
 }: Props) {
-  const [viewWidth, setViewWidth] = useState(0);
-  const scale = viewWidth ? viewWidth / screenshot.width : 1;
+  const [contentWidth, setContentWidth] = useState(0);
+  const viewportRect = getViewportRect(outerRect, screenshot);
+  const scale = contentWidth ? contentWidth / viewportRect.width : 1;
   const activeId = isPanelPhase(phase) ? phase : null;
   const visibleIds = getVisiblePanelIds(phase);
+  const localOuterRect = toLocalRect(outerRect, viewportRect);
 
   const changePanel = (id: keyof PanelRects, rect: PanelRect) => {
-    onPanelsChange({ ...panels, [id]: rect });
+    onPanelsChange({ ...panels, [id]: fromLocalRect(rect, viewportRect) });
   };
 
   return (
     <View
-      className="overflow-hidden rounded-[28px] border border-zinc-800 bg-black"
-      onLayout={(event) => setViewWidth(event.nativeEvent.layout.width)}
-      style={{ aspectRatio: screenshot.width / screenshot.height }}
+      className="overflow-hidden border border-zinc-800 bg-black"
+      style={{ aspectRatio: viewportRect.width / viewportRect.height }}
     >
-      <Image
-        source={{ uri: screenshot.uri }}
-        contentFit="fill"
-        style={{ height: "100%", width: "100%" }}
-      />
       <View
-        pointerEvents="none"
-        className="absolute border-2 border-emerald-300 bg-emerald-300/5"
-        style={{
-          height: outerRect.height * scale,
-          left: outerRect.x * scale,
-          top: outerRect.y * scale,
-          width: outerRect.width * scale,
-        }}
-      />
-      {phase !== "confirm" ? (
-        <AdvancedSnapGridOverlay
-          grid={grid}
-          outerRect={outerRect}
-          scale={scale}
+        className="absolute inset-px overflow-hidden"
+        onLayout={(event) => setContentWidth(event.nativeEvent.layout.width)}
+      >
+        <Image
+          source={{ uri: screenshot.uri }}
+          contentFit="fill"
+          style={{
+            height: screenshot.height * scale,
+            left: -viewportRect.x * scale,
+            position: "absolute",
+            top: -viewportRect.y * scale,
+            width: screenshot.width * scale,
+          }}
         />
-      ) : null}
-      {visibleIds.map((id) => (
-        <AdvancedPanelBox
-          key={id}
-          grid={grid}
-          isActive={activeId === id}
-          outerRect={outerRect}
-          rect={panels[id]}
-          scale={scale}
-          onChange={(rect) => changePanel(id, rect)}
-          label={id}
+        <View
+          pointerEvents="none"
+          className="absolute inset-0 border-2 border-emerald-300 bg-emerald-300/5"
         />
-      ))}
+        {phase !== "confirm" ? (
+          <AdvancedSnapGridOverlay
+            grid={grid}
+            outerRect={localOuterRect}
+            scale={scale}
+          />
+        ) : null}
+        {visibleIds.map((id) => (
+          <AdvancedPanelBox
+            key={id}
+            grid={grid}
+            isActive={activeId === id}
+            outerRect={localOuterRect}
+            rect={toLocalRect(panels[id], viewportRect)}
+            scale={scale}
+            onChange={(rect) => changePanel(id, rect)}
+            label={id}
+          />
+        ))}
+      </View>
     </View>
   );
+}
+
+function getViewportRect(outerRect: PanelRect, screenshot: PickedImage): PanelRect {
+  return {
+    x: outerRect.x,
+    y: outerRect.y,
+    width: Math.min(outerRect.width, screenshot.width - outerRect.x),
+    height: Math.min(outerRect.height, screenshot.height - outerRect.y),
+    radius: 0,
+  };
+}
+
+function toLocalRect(rect: PanelRect, viewportRect: PanelRect): PanelRect {
+  return {
+    ...rect,
+    x: rect.x - viewportRect.x,
+    y: rect.y - viewportRect.y,
+  };
+}
+
+function fromLocalRect(rect: PanelRect, viewportRect: PanelRect): PanelRect {
+  return {
+    ...rect,
+    x: rect.x + viewportRect.x,
+    y: rect.y + viewportRect.y,
+  };
 }

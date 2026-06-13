@@ -90,6 +90,45 @@ alignment assist so customized Samsung layouts can be matched more accurately,
 with less manual pixel-pushing, while still letting users override the grid
 when needed.
 
+### Current implementation notes
+
+The current advanced panel-editing screen intentionally behaves differently
+from the outer-rectangle confirmation step:
+
+- The **outer confirmation step** still shows the full imported screenshot so
+  the user can place the master green rectangle against the full Quick Panel.
+- The **panel-box editing and confirm steps** crop the displayed screenshot to
+  the confirmed outer rectangle only. This reduces wasted vertical space and
+  makes room for the grid controls.
+
+Important implementation details for future changes:
+
+- The app still stores `outerRect` and all panel rects in **full screenshot
+  coordinates**.
+- `AdvancedPanelCanvas.tsx` creates a **local cropped viewport** for display
+  only.
+- The canvas uses a real inner wrapper with `inset-px` so the green border can
+  be visible on all four sides without corrupting snapping math.
+- The image, green outer border, orange panel boxes, and snap points are all
+  rendered inside that same inner wrapper. This keeps the visible alignment
+  correct and avoids the right/bottom drift that happened when inset math was
+  applied separately to overlays.
+- `toLocalRect(...)` and `fromLocalRect(...)` convert between stored full-image
+  coordinates and cropped local display coordinates. If a future change touches
+  drag, resize, or snapping behavior, this transform layer is the first place
+  to inspect.
+
+Grid controls also changed from the original bottom-sheet-only approach:
+
+- The help/examples still live in the bottom sheet opened from the header
+  settings button during panel-box adjustment.
+- The live grid controls were moved into the fixed bottom action area.
+- The current control UI is a compact **axis chip + shared slider** dock:
+  `Col`/`Row` chips show the current values, and one slider adjusts whichever
+  chip is active.
+- The slider box intentionally does **not** repeat the label/value because the
+  top chips already carry that context.
+
 Panel boxes may be horizontal, vertical, square, reordered, or separated. They
 must remain inside the outer rectangle and may not overlap.
 
