@@ -64,6 +64,16 @@ const en = {
         "Wrap the full area containing your four customizable panels",
       panelSubtitle: "Move and resize the {{panel}} box",
       confirmSubtitle: "Review all four panel boxes before saving",
+      panelHelpTitle: "How to align this panel box",
+      panelHelpBody:
+        "Resize the purple box so it sits exactly on the panel edges. The grid dots should stay in the gaps between panels, not under the purple border. When the box is aligned correctly, those dots show the spacing around the panel, which helps keep the layout even and accurate.",
+      panelHelpGood:
+        "Match the purple box to the panel edge so the grid dots stay in the gaps.",
+      panelHelpBad:
+        "Do not place the purple border over the grid dots or inside the panel spacing.",
+      reviewHelpTitle: "How to review your calibration",
+      reviewHelpBody:
+        "Before saving, check that every orange box sits cleanly on its panel edges and that the gaps between panels look even. A precise review here helps ensure your exported crops line up correctly in Good Lock.",
       columns: "Columns",
       rows: "Rows",
       back: "Back",

@@ -5,6 +5,9 @@ export const images = {
   calibrateBad: require("@/assets/tutorial/calibrate/bad.webp"),
   calibrateGridCountExample1: require("@/assets/tutorial/calibrate/gridCountExample1.webp"),
   calibrateGridCountExample2: require("@/assets/tutorial/calibrate/gridCountExample2.webp"),
+  calibratePanelBoxGood: require("@/assets/tutorial/calibrate/panelboxDragGood.webp"),
+  calibratePanelBoxBad: require("@/assets/tutorial/calibrate/panelboxDragBad.webp"),
+  calibratePanelBoxReview: require("@/assets/tutorial/calibrate/panelboxReviewExample.webp"),
 
   example: require("@/assets/example.webp"),
   modeAdvanced1: require("@/assets/mode/advanced_1.webp"),

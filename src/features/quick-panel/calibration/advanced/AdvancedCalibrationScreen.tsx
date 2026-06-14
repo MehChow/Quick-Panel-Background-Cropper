@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { Text } from "@/components/ani-ui/text";
 import { CalibrationHelpSheet } from "@/features/quick-panel/shared/CalibrationHelpSheet";
+import { PanelAlignmentHelpSheet } from "@/features/quick-panel/shared/PanelAlignmentHelpSheet";
+import { PanelReviewHelpSheet } from "@/features/quick-panel/shared/PanelReviewHelpSheet";
 import { SubPageHeader } from "@/features/quick-panel/shared/SubPageHeader";
 import { useTranslation } from "react-i18next";
 import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { CalibrationCanvas } from "../shared/CalibrationCanvas";
-import { AdvancedGridSheet } from "./AdvancedGridSheet";
 import { isPanelPhase, type AdvancedCalibrationPhase } from "./advanced-steps";
 import { AdvancedCalibrationControls } from "./AdvancedCalibrationControls";
 import { AdvancedOuterOverlay } from "./components/AdvancedOuterOverlay";
@@ -16,7 +17,6 @@ import { useAdvancedCalibrationScreen } from "./hooks/useAdvancedCalibrationScre
 export function AdvancedCalibrationScreen() {
   const { t } = useTranslation();
   const [isHelpOpen, setIsHelpOpen] = useState(false);
-  const [isGridSheetOpen, setIsGridSheetOpen] = useState(false);
   const {
     advancedDraft,
     canGoBack,
@@ -39,20 +39,19 @@ export function AdvancedCalibrationScreen() {
   const panels = advancedDraft?.panels ?? null;
   const isEditing = Boolean(screenshot && outerRect);
   const isPanelStep = isPanelPhase(phase);
-  const showGridSheet = isPanelStep && isGridSheetOpen;
-  const showHelpButton = isOuterPhase && isEditing;
+  const showHelpButton = isEditing && (isOuterPhase || isPanelStep || isConfirmPhase);
 
-  const handleBack = () => { setIsGridSheetOpen(false); goBack(); };
-  const handleNext = () => { setIsGridSheetOpen(false); goForward(); };
-  const handleSave = () => { setIsGridSheetOpen(false); saveCalibration(); };
+  const handleBack = () => { goBack(); };
+  const handleNext = () => { goForward(); };
+  const handleSave = () => { saveCalibration(); };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View className="px-5 pt-8">
         <SubPageHeader
-          actionAccessibilityLabel={showHelpButton ? t("calibration.helpButton") : t("advancedCalibration.gridSettingsButton")}
-          actionIcon={showHelpButton ? "circle-help" : "settings-2"}
-          onActionPress={showHelpButton ? () => setIsHelpOpen(true) : isPanelStep ? () => setIsGridSheetOpen(true) : undefined}
+          actionAccessibilityLabel={showHelpButton ? t("calibration.helpButton") : undefined}
+          actionIcon={showHelpButton ? "circle-help" : undefined}
+          onActionPress={showHelpButton ? () => setIsHelpOpen(true) : undefined}
           title={t("advancedCalibration.title")}
           subtitle={getSubtitle(phase, t)}
         />
@@ -116,8 +115,9 @@ export function AdvancedCalibrationScreen() {
           />
         </View>
       ) : null}
-      {showGridSheet ? <AdvancedGridSheet onClose={() => setIsGridSheetOpen(false)} /> : null}
-      {isHelpOpen ? <CalibrationHelpSheet onClose={() => setIsHelpOpen(false)} /> : null}
+      {isHelpOpen && isOuterPhase ? <CalibrationHelpSheet onClose={() => setIsHelpOpen(false)} /> : null}
+      {isHelpOpen && isPanelStep ? <PanelAlignmentHelpSheet onClose={() => setIsHelpOpen(false)} /> : null}
+      {isHelpOpen && isConfirmPhase ? <PanelReviewHelpSheet onClose={() => setIsHelpOpen(false)} /> : null}
     </SafeAreaView>
   );
 }
