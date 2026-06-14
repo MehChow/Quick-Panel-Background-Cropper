@@ -53,6 +53,7 @@ export function QuickPanelPreview({
               <PanelSlice
                 key={id}
                 showOverlay
+                mode={preset.mode}
                 panel={preset.panels[id]}
                 image={image}
                 layoutScale={layoutScale}

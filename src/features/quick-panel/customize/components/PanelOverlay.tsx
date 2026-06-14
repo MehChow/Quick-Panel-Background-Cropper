@@ -1,31 +1,28 @@
 import { Lucide } from "@react-native-vector-icons/lucide";
 import { View } from "react-native";
-import type { PanelId } from "../../model/types";
+import type { CustomizationMode, PanelId } from "../../model/types";
 
 interface PanelOverlayProps {
   height: number;
+  mode: CustomizationMode;
   panelId: PanelId;
   width: number;
 }
 
-interface ButtonGrid {
-  columns: number;
-  rows: number;
-}
-
-const minButtonBoxWidth = 72;
-const minButtonBoxHeight = 48;
-
-export function PanelOverlay({ height, panelId, width }: PanelOverlayProps) {
+export function PanelOverlay({
+  height,
+  mode,
+  panelId,
+  width,
+}: PanelOverlayProps) {
   if (panelId === "buttonBox") {
-    const grid = getButtonGrid(width, height);
-    if (!grid) {
+    if (mode !== "default") {
       return null;
     }
 
     const iconSize = Math.max(
       18,
-      Math.min(42, width / (grid.columns * 2.3), height / (grid.rows * 1.8)),
+      Math.min(42, width / 9.2, height / 3.6),
     );
 
     return (
@@ -33,9 +30,9 @@ export function PanelOverlay({ height, panelId, width }: PanelOverlayProps) {
         className="absolute inset-0 justify-evenly"
         style={{ paddingHorizontal: Math.max(12, width * 0.08) }}
       >
-        {Array.from({ length: grid.rows }, (_, row) => (
+        {Array.from({ length: 2 }, (_, row) => (
           <View key={row} className="flex-row justify-between">
-            {Array.from({ length: grid.columns }, (_, column) => (
+            {Array.from({ length: 4 }, (_, column) => (
               <View
                 key={column}
                 className="rounded-full bg-black/30"
@@ -72,14 +69,59 @@ export function PanelOverlay({ height, panelId, width }: PanelOverlayProps) {
   const iconSize = Math.max(18, Math.min(28, height * 0.42));
   const iconContainerSize = Math.max(28, Math.min(44, height * 0.72));
   const horizontalPadding = Math.max(12, width * 0.07);
+  const isVerticalControl = mode === "advanced" && height > width;
   const availableBarWidth = width - horizontalPadding * 2 -
     iconContainerSize - 12;
+  const verticalPadding = Math.max(12, height * 0.07);
   const barWidth = Math.max(
     0,
     Math.min(panelId === "brightness" ? 160 : 96, availableBarWidth),
   );
   const showBar = barWidth >= 36 && height >= 32;
+  const verticalBarMaxHeight = panelId === "brightness"
+    ? height * 0.44
+    : height * 0.3;
+  const verticalBarHeight = Math.max(
+    0,
+    Math.min(
+      height - verticalPadding * 2 - iconContainerSize - 12,
+      verticalBarMaxHeight,
+    ),
+  );
+  const showVerticalBar = verticalBarHeight >= 36 && width >= 32;
   const showIcon = width >= 52 && height >= 32;
+
+  if (isVerticalControl) {
+    return showIcon || showVerticalBar ? (
+      <View
+        className="absolute inset-0 items-center"
+        style={{ paddingHorizontal: horizontalPadding, paddingVertical: verticalPadding }}
+      >
+        {showVerticalBar ? (
+          <View
+            className="rounded-full bg-white/70"
+            style={{
+              height: verticalBarHeight,
+              marginTop: Math.max(4, height * 0.04),
+              width: Math.max(16, Math.min(32, width * 0.36)),
+            }}
+          />
+        ) : null}
+        {showIcon ? (
+          <View
+            className="mt-auto self-center items-center justify-center rounded-full bg-white/75"
+            style={{ height: iconContainerSize, width: iconContainerSize }}
+          >
+            <Lucide
+              color="rgba(0,0,0,0.7)"
+              name={panelId === "brightness" ? "moon" : "volume-2"}
+              size={iconSize}
+            />
+          </View>
+        ) : null}
+      </View>
+    ) : null;
+  }
 
   return (
     <View
@@ -106,22 +148,4 @@ export function PanelOverlay({ height, panelId, width }: PanelOverlayProps) {
       ) : null}
     </View>
   );
-}
-
-function getButtonGrid(width: number, height: number): ButtonGrid | null {
-  if (width < minButtonBoxWidth || height < minButtonBoxHeight) {
-    return null;
-  }
-
-  const aspectRatio = width / height;
-  if (aspectRatio >= 2.35) {
-    return { columns: 4, rows: height >= 86 ? 2 : 1 };
-  }
-  if (aspectRatio >= 1.35) {
-    return { columns: 3, rows: height >= 92 ? 2 : 1 };
-  }
-  if (aspectRatio >= 0.75) {
-    return { columns: 2, rows: height >= 92 ? 2 : 1 };
-  }
-  return { columns: 1, rows: height >= 132 ? 3 : 2 };
 }

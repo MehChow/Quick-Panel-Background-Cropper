@@ -5,6 +5,7 @@ import Animated, {
   useAnimatedStyle,
 } from "react-native-reanimated";
 import type {
+  CustomizationMode,
   ImageTransform,
   PanelDefinition,
   PickedImage,
@@ -15,6 +16,7 @@ const AnimatedImage = Animated.createAnimatedComponent(Image);
 
 interface PanelSliceProps {
   showOverlay: boolean;
+  mode: CustomizationMode;
   panel: PanelDefinition;
   image: PickedImage;
   layoutScale: number;
@@ -26,6 +28,7 @@ interface PanelSliceProps {
 
 export function PanelSlice({
   showOverlay,
+  mode,
   panel,
   image,
   layoutScale,
@@ -63,6 +66,7 @@ export function PanelSlice({
       {showOverlay ? (
         <PanelOverlay
           height={panel.rect.height * layoutScale}
+          mode={mode}
           panelId={panel.id}
           width={panel.rect.width * layoutScale}
         />
