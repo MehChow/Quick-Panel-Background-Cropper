@@ -79,8 +79,8 @@ export function SelectModeScreen() {
           defaultDescription={t("mode.defaultDescription")}
           defaultLabel={t("mode.default")}
           onClose={() => setIsHelpOpen(false)}
-          subtitle={t("mode.subtitle")}
-          title={t("mode.title")}
+          subtitle={t("mode.helpSubtitle")}
+          title={t("mode.helpTitle")}
           advancedDescription={t("mode.advancedDescription")}
           advancedLabel={t("mode.advanced")}
         />

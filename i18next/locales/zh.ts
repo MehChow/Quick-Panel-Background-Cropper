@@ -7,7 +7,7 @@ const zh = {
     },
     home: {
       title: "Quick Panel 背景裁切工具",
-      subtitle: "在 Quick Panel 自訂你的背景",
+      subtitle: "將一張圖片無縫延伸到你的 Quick Panel 控制面板",
     },
     landing: {
       startCustomizing: "開始自訂",
@@ -19,22 +19,26 @@ const zh = {
     },
     mode: {
       title: "選擇模式",
-      subtitle: "選擇你的 Quick Panel 版面",
+      subtitle: "選擇最符合你的 Quick Panel 版面",
       default: "預設",
       defaultDescription:
-        "適合標準面板排列：\n按鈕區 > 亮度條 > 音量條 > 媒體播放器",
+        "適合標準版面：\n按鈕區 > 亮度條 > 音量條 > 媒體播放器",
       advanced: "進階",
       advancedDescription:
-        "適合重新排列、調整大小、垂直排列，或其他自訂過的面板版面。",
+        "適合已重新排列、調整大小、垂直排列，或其他自訂過的版面。",
+      helpTitle: "該選哪個模式？",
+      helpSubtitle: "選擇最符合你目前 Quick Panel 版面的模式。",
     },
     calibration: {
       title: "校正",
       subtitle: "對齊你裝置上的版面",
+      greenBoxLabel: "綠框",
+      layoutBoundaryLabel: "版面邊界",
       instruction:
-        "拖曳任一邊或角落，調整綠框大小，包住整個可自訂控制面板區域 (包括按鈕區、亮度條、音量條及媒體播放器)。",
+        "拖曳任一邊或角落，調整綠框大小，包住整個可自訂控制版面區域 (包括按鈕區、亮度條、音量條及媒體播放器)。",
       bestResultTitle: "最佳效果",
-      bestResultGood: "讓綠框剛好貼齊面板外緣，裁出的結果會最準確。",
-      bestResultBad: "避免把綠框拉到與面板重疊。",
+      bestResultGood: "讓綠框外緣剛好貼齊版面邊界，裁切會更準確。",
+      bestResultBad: "避免讓綠框邊緣和版面邊界重疊。",
       helpButton: "開啟校正說明",
       helpTitle: "如何校正",
       likeThis: "像這樣",
@@ -42,7 +46,7 @@ const zh = {
       importSubtitle: "請使用完全展開的 Quick Panel",
       chooseFromAlbum: "從相簿選擇",
       reImport: "重新匯入",
-      looksGood: "看起來不錯",
+      looksGood: "確認",
     },
     customize: {
       title: "自訂",
@@ -71,7 +75,7 @@ const zh = {
     },
     export: {
       successTitle: "匯出成功",
-      successSubtitle: "請依序套用到 Good Lock",
+      successSubtitle: "請依序套用到 QuickStar",
       openGoodLock: "開啟 Good Lock",
       openingGoodLock: "正在開啟 Good Lock",
       goodLockUnavailableTitle: "無法開啟 Good Lock",

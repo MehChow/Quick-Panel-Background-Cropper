@@ -7,7 +7,7 @@ const en = {
     },
     home: {
       title: "Quick Panel Background Cropper",
-      subtitle: "Customize your background in the Quick Panel",
+      subtitle: "Split one image seamlessly across your Quick Panel controls",
     },
     landing: {
       startCustomizing: "Start customizing",
@@ -20,23 +20,28 @@ const en = {
     },
     mode: {
       title: "Select mode",
-      subtitle: "Choose your Quick Panel layout",
+      subtitle: "Choose the Quick Panel layout that matches yours",
       default: "Default",
       defaultDescription:
-        "For the standard panel layout:\nButton box > Brightness > Volume > Media player",
+        "For the standard layout:\nButton box > Brightness > Volume > Media player",
       advanced: "Advanced",
       advancedDescription:
-        "For rearranged, resized, vertical, or otherwise customized panel layouts.",
+        "For customized layouts with rearranged, resized, vertical, or other adjusted panels.",
+      helpTitle: "Which mode should I choose?",
+      helpSubtitle:
+        "Pick the one that matches how your Quick Panel is arranged.",
     },
     calibration: {
       title: "Calibration",
       subtitle: "Match your device's layout",
+      greenBoxLabel: "green box",
+      layoutBoundaryLabel: "panel edge",
       instruction:
         "Drag any edge or corner to resize the green box around the whole customizable control panel, including Button box, Brightness, Volume and Meida player.",
       bestResultTitle: "For best result",
       bestResultGood:
-        "Wrap the green box right outside the panel edges for the most accurate crop.",
-      bestResultBad: "Avoid stacking the green box edge with panel box",
+        "Keep the green box just outside the panel edge for the most accurate crop.",
+      bestResultBad: "Do not let the green box edge overlap the panel edge.",
       helpButton: "Open calibration help",
       helpTitle: "How to calibrate",
       likeThis: "Like this",
@@ -44,7 +49,7 @@ const en = {
       importSubtitle: "Use a fully expanded Quick Panel",
       chooseFromAlbum: "Choose from album",
       reImport: "Re-import",
-      looksGood: "Looks good",
+      looksGood: "Confirm",
     },
     customize: {
       title: "Customize",
@@ -56,7 +61,7 @@ const en = {
       exportPngs: "Export PNGs",
       defaultCalibrated: "Default layout calibrated.",
       advancedCalibrated: "Advanced layout calibrated.",
-      recalibrate: "Want to recalibrate?",
+      recalibrate: "Wanna recalibrate?",
     },
     advancedCalibration: {
       title: "Advanced calibration",
@@ -85,12 +90,12 @@ const en = {
     },
     export: {
       successTitle: "Exported successfully",
-      successSubtitle: "Apply them in Good Lock correspondingly",
+      successSubtitle: "Apply them in QuickStar correspondingly",
       openGoodLock: "Open Good Lock",
       openingGoodLock: "Opening Good Lock",
       goodLockUnavailableTitle: "Good Lock can't be opened",
       goodLockUnavailableDescription:
-        "Good Lock may not be installed or cannot be opened here. Open Samsung Store to install it?",
+        "Good Lock might not be installed, or it can't be opened from here. Open Samsung Store to install it?",
       openSamsungStore: "Open Samsung Store",
       openingSamsungStore: "Opening Samsung Store",
       backHome: "Back home",

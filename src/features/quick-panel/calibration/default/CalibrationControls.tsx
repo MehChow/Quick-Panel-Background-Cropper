@@ -27,7 +27,7 @@ export function CalibrationControls({
         onPress={onContinue}
         textClassName="font-semibold text-green-900"
       >
-        {t("calibration.looksGood")}
+        {t("common.confirm")}
       </Button>
     </View>
   );
