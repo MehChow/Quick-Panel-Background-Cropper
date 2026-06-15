@@ -62,16 +62,27 @@ const zh = {
     },
     advancedCalibration: {
       title: "進階校正",
-      outerSubtitle: "框住包含四個可自訂面板的完整區域",
-      panelSubtitle: "移動並調整 {{panel}} 方框",
-      confirmSubtitle: "儲存前確認四個面板方框",
+      outerSubtitle: "框住包含四個可自訂版面的完整區域",
+      panelSubtitle: "拖曳並調整 {{panel}} 範圍",
+      confirmSubtitle: "儲存前確認四個版面方框",
+      panelHelpTitle: "如何對齊這個版面範圍",
+      panelHelpBody:
+        "拖曳並調整紫色方框，讓它剛好貼齊這個版面的邊緣。格線圓點應該落在版面周圍的留白處，而不是被紫色邊框壓住。當方框對齊正確時，這些圓點能幫助你判斷間距，讓整體版面更平均、更準確。",
+      panelHelpGood:
+        "讓紫色方框貼齊版面邊緣，讓格線圓點留在周圍留白處。",
+      panelHelpBad:
+        "不要讓紫色邊框壓到格線圓點，或跑進版面周圍的留白。",
+      reviewHelpTitle: "如何檢查校正結果",
+      reviewHelpBody:
+        "儲存前，請確認每個橘色方框都準確貼齊對應版面的邊緣，版面之間的間距看起來也平均一致。這一步檢查得越精準，匯出的裁切圖片在 Good Lock 裡就越容易對齊。",
       columns: "欄",
       rows: "列",
       back: "返回",
       next: "下一步",
-      gridSettingsButton: "開啟吸附格線設定",
-      gridSheetTitle: "吸附格線",
-      gridSheetSubtitle: "當格線需要更貼近你的截圖時，可調整列數與欄數。",
+      gridHelpButton: "格線說明",
+      gridSheetTitle: "如何設定格線",
+      gridSheetSubtitle:
+        "選擇能讓格線圓點落在控制項之間留白處的列數與欄數。可參考下方範例，判斷哪一種格線更貼近你的截圖。",
     },
     export: {
       successTitle: "匯出成功",
@@ -101,11 +112,11 @@ const zh = {
       mustCalibrate: "請先校正 Quick Panel 區域，再開始自訂。",
       importScreenshotFirst: "請先匯入 Quick Panel 截圖。",
       mediaLibraryPermission: "需要媒體庫權限才能儲存匯出圖片。",
-      exportSurfaceMissing: "{{panel}} 的匯出畫面不存在。",
+      exportSurfaceMissing: "{{panel}} 的匯出預覽無法使用。",
       unableToExport: "無法匯出圖片。",
       confirmOuterFirst: "請先確認外層可自訂區域。",
       invalidAdvancedPanels:
-        "請讓四個面板方框都保持在外層區域內，且不要互相重疊。",
+        "請讓四個版面方框都保持在外層區域內，且不要互相重疊。",
     },
   },
 };

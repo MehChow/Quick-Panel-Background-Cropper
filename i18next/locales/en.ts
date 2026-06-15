@@ -67,15 +67,15 @@ const en = {
       title: "Advanced calibration",
       outerSubtitle:
         "Wrap the full area containing your four customizable panels",
-      panelSubtitle: "Move and resize the {{panel}} box",
+      panelSubtitle: "Drag and resize the {{panel}} area",
       confirmSubtitle: "Review all four panel boxes before saving",
-      panelHelpTitle: "How to align this panel box",
+      panelHelpTitle: "How to align this area",
       panelHelpBody:
-        "Resize the purple box so it sits exactly on the panel edges. The grid dots should stay in the gaps between panels, not under the purple border. When the box is aligned correctly, those dots show the spacing around the panel, which helps keep the layout even and accurate.",
+        "Drag and resize the purple box so it sits exactly on the edges of this area. The grid dots should stay in the gaps around it, not under the purple border. When the box is aligned correctly, those dots help you judge the spacing and keep the overall layout even and accurate.",
       panelHelpGood:
-        "Match the purple box to the panel edge so the grid dots stay in the gaps.",
+        "Match the purple box to the area edges so the grid dots stay in the gaps.",
       panelHelpBad:
-        "Do not place the purple border over the grid dots or inside the panel spacing.",
+        "Do not place the purple border over the grid dots or into the spacing around the area.",
       reviewHelpTitle: "How to review your calibration",
       reviewHelpBody:
         "Before saving, check that every orange box sits cleanly on its panel edges and that the gaps between panels look even. A precise review here helps ensure your exported crops line up correctly in Good Lock.",
@@ -83,10 +83,10 @@ const en = {
       rows: "Rows",
       back: "Back",
       next: "Next",
-      gridSettingsButton: "Open snapping grid settings",
-      gridSheetTitle: "Snapping grid",
+      gridHelpButton: "Grid help",
+      gridSheetTitle: "How to set the grid",
       gridSheetSubtitle:
-        "Adjust the row and column counts when the grid needs to match your screenshot more closely.",
+        "Choose the row and column counts that make the grid dots fall into the gaps between your controls. Use the examples below to decide which grid matches your screenshot more closely.",
     },
     export: {
       successTitle: "Exported successfully",
@@ -117,7 +117,7 @@ const en = {
       importScreenshotFirst: "Import a Quick Panel screenshot first.",
       mediaLibraryPermission:
         "Media library permission is required to save exports.",
-      exportSurfaceMissing: "Export surface is missing for {{panel}}.",
+      exportSurfaceMissing: "The export preview for {{panel}} is unavailable.",
       unableToExport: "Unable to export images.",
       confirmOuterFirst: "Confirm the outer customization area first.",
       invalidAdvancedPanels:

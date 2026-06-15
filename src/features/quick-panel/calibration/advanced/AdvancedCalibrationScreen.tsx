@@ -8,6 +8,7 @@ import { useTranslation } from "react-i18next";
 import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { CalibrationCanvas } from "../shared/CalibrationCanvas";
+import { AdvancedGridSheet } from "./AdvancedGridSheet";
 import { isPanelPhase, type AdvancedCalibrationPhase } from "./advanced-steps";
 import { AdvancedCalibrationControls } from "./AdvancedCalibrationControls";
 import { AdvancedOuterOverlay } from "./components/AdvancedOuterOverlay";
@@ -17,6 +18,7 @@ import { useAdvancedCalibrationScreen } from "./hooks/useAdvancedCalibrationScre
 export function AdvancedCalibrationScreen() {
   const { t } = useTranslation();
   const [isHelpOpen, setIsHelpOpen] = useState(false);
+  const [isGridHelpOpen, setIsGridHelpOpen] = useState(false);
   const {
     advancedDraft,
     canGoBack,
@@ -107,6 +109,7 @@ export function AdvancedCalibrationScreen() {
             isOuterPhase={isOuterPhase}
             onBack={handleBack}
             onColumnsChange={setColumns}
+            onGridHelpPress={() => setIsGridHelpOpen(true)}
             onImport={importScreenshot}
             onNext={handleNext}
             onRowsChange={setRows}
@@ -118,6 +121,7 @@ export function AdvancedCalibrationScreen() {
       {isHelpOpen && isOuterPhase ? <CalibrationHelpSheet onClose={() => setIsHelpOpen(false)} /> : null}
       {isHelpOpen && isPanelStep ? <PanelAlignmentHelpSheet onClose={() => setIsHelpOpen(false)} /> : null}
       {isHelpOpen && isConfirmPhase ? <PanelReviewHelpSheet onClose={() => setIsHelpOpen(false)} /> : null}
+      {isGridHelpOpen && isPanelStep ? <AdvancedGridSheet onClose={() => setIsGridHelpOpen(false)} /> : null}
     </SafeAreaView>
   );
 }

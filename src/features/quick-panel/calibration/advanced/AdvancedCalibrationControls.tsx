@@ -4,6 +4,7 @@ import { Text } from "@/components/ani-ui/text";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Pressable, View } from "react-native";
+import { GridHelpButton } from "./components/GridHelpButton";
 
 interface Props {
   canGoBack: boolean;
@@ -13,6 +14,7 @@ interface Props {
   isOuterPhase: boolean;
   onBack: () => void;
   onColumnsChange: (value: number) => void;
+  onGridHelpPress: () => void;
   onImport: () => void;
   onNext: () => void;
   onRowsChange: (value: number) => void;
@@ -28,6 +30,7 @@ export function AdvancedCalibrationControls({
   isOuterPhase,
   onBack,
   onColumnsChange,
+  onGridHelpPress,
   onImport,
   onNext,
   onRowsChange,
@@ -45,6 +48,15 @@ export function AdvancedCalibrationControls({
     <View className="gap-3 py-4">
       {isGridVisible ? (
         <View className="gap-2 rounded-2xl border border-white/10 bg-zinc-900/90 px-3 py-2.5">
+          <View className="flex-row items-center justify-between">
+            <Text className="text-xs font-semibold uppercase tracking-[0.8px] text-zinc-400">
+              {t("advancedCalibration.gridSheetTitle")}
+            </Text>
+            <GridHelpButton
+              label={t("advancedCalibration.gridHelpButton")}
+              onPress={onGridHelpPress}
+            />
+          </View>
           <View className="flex-row gap-2">
             <AxisChip
               isActive={isColumnsActive}
@@ -100,11 +112,7 @@ interface AxisChipProps {
   onPress: () => void;
   value: number;
 }
-
-interface GridSliderProps {
-  onValueChange: (value: number) => void;
-  value: number;
-}
+interface GridSliderProps { onValueChange: (value: number) => void; value: number; }
 
 function AxisChip({ isActive, label, onPress, value }: AxisChipProps) {
   return (
