@@ -1,10 +1,10 @@
 import { Text } from "@/components/ani-ui/text";
+import type { ScrollEventsHandlersHookType } from "@gorhom/bottom-sheet";
 import BottomSheet, {
   BottomSheetBackdrop,
   BottomSheetFlatList,
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
-import type { ScrollEventsHandlersHookType } from "@gorhom/bottom-sheet";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -30,7 +30,7 @@ const helpSlides: HelpSlide[] = [{ id: "tips" }, { id: "example" }];
 
 const useHorizontalPagerScrollEvents: ScrollEventsHandlersHookType = (
   _ref,
-  contentOffsetY
+  contentOffsetY,
 ) => ({
   handleOnScroll: ({ contentOffset: { y } }) => {
     "worklet";
@@ -125,7 +125,7 @@ export function CalibrationHelpSheet({ onClose }: CalibrationHelpSheetProps) {
           </View>
         </View>
 
-        <View className="h-100" onLayout={handlePagerLayout}>
+        <View onLayout={handlePagerLayout}>
           {slideWidth > 0 ? (
             <BottomSheetFlatList
               data={helpSlides}

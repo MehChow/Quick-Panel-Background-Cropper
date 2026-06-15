@@ -2,7 +2,8 @@ import { getLocales } from "expo-localization";
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import {
-  type SupportedLanguage
+  isSupportedLanguage,
+  type SupportedLanguage,
 } from "../src/features/quick-panel/store/storage";
 import en from "./locales/en";
 import zh from "./locales/zh";
@@ -11,9 +12,9 @@ function getLanguage(): SupportedLanguage {
   const locale = getLocales()[0];
   const languageCode = locale?.languageCode?.toLowerCase();
 
-  // if (isSupportedLanguage(languageCode)) {
-  //   return languageCode;
-  // }
+  if (isSupportedLanguage(languageCode)) {
+    return languageCode;
+  }
 
   return "en";
 }

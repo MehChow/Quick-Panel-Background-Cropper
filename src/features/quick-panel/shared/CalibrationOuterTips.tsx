@@ -2,8 +2,8 @@ import { Text } from "@/components/ani-ui/text";
 import { images } from "@/data/images";
 import Lucide from "@react-native-vector-icons/lucide";
 import { Image } from "expo-image";
-import { useTranslation } from "react-i18next";
 import type { ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 
 interface TipCardProps {
