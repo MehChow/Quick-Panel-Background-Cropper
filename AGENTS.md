@@ -47,6 +47,11 @@ For the exact v2 UI flow, refer to the screenshots under `flow/`.
 - Extract business logic into custom hook
 - Keep files small, each file under 150 lines of code
 
+## Git Workflow
+
+- When the user asks to stage, commit, or push changes, use the personal skill `project-git-finish` at `C:\Users\User\.codex\skills\project-git-finish\SKILL.md`
+- Use commit messages in the format `action: description`
+
 ## Testing Notes
 
 - Keep tests secondary and lightweight; prioritize high-value coverage over broad test volume
