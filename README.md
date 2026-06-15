@@ -72,7 +72,7 @@ For a first-time user, the app has two setup paths:
   <img src="./flow/v2-default-mode/5.webp" width="200">
   <img src="./flow/v2-default-mode/6.webp" width="200">
   <img src="./flow/v2-default-mode/7.webp" width="200">
-  <img src="./flow/v2-default-mode/default-result.webp" width="200">
+  <img src="./flow/v2-default-mode/8.webp" width="200">
 </div>
 
 ### Advanced mode
@@ -81,14 +81,17 @@ For a first-time user, the app has two setup paths:
 2. Choose **Advanced** mode and press **Confirm**.
 3. Import one fully expanded Quick Panel screenshot from your album.
 4. Adjust the outer rectangle so it wraps the full area containing your four customizable panels.
-5. Press **Next** to enter the guided panel-box steps.
-6. Adjust Button box, Brightness, Volume, and Media player one by one.
-7. If needed, open the snapping-grid settings during panel adjustment and change the row or column count so the box snapping matches your screenshot more closely.
-8. Confirm the final four-box preview and save the layout.
-9. Choose one background image from your album.
-10. Pan and zoom it in the preview until the four exported slices line up the way you want.
-11. Press **Export PNGs**.
-12. Review the exported results and apply them in Good Lock in the shown order.
+5. Press **Next** to enter four separate guided panel-box steps.
+6. Drag and resize **Button box**.
+7. Drag and resize **Brightness**.
+8. Drag and resize **Volume**.
+9. Drag and resize **Media player**.
+10. If needed during any of those four steps, tune the snapping grid by changing the **Col** and **Row** counts so box snapping matches your screenshot more closely.
+11. Confirm the final four-box preview and save the layout.
+12. Choose one background image from your album.
+13. Pan and zoom it in the preview until the four exported slices line up the way you want.
+14. Press **Export PNGs**.
+15. Review the exported results and apply them in Good Lock in the shown order.
 
 <div style="display: flex; gap: 10px; flex-wrap: wrap;">
   <img src="./flow/v2-advanced-mode/1.webp" width="200">
@@ -100,7 +103,10 @@ For a first-time user, the app has two setup paths:
   <img src="./flow/v2-advanced-mode/7.webp" width="200">
   <img src="./flow/v2-advanced-mode/8.webp" width="200">
   <img src="./flow/v2-advanced-mode/9.webp" width="200">
-  <img src="./flow/v2-advanced-mode/advanced-result.webp" width="200">
+  <img src="./flow/v2-advanced-mode/10.webp" width="200">
+  <img src="./flow/v2-advanced-mode/11.webp" width="200">
+  <img src="./flow/v2-advanced-mode/12.webp" width="200">
+  <img src="./flow/v2-advanced-mode/13.webp" width="200">
 </div>
 
 After you calibrate a mode once, later runs of that mode go straight to image selection, and you can use **Want to recalibrate?** any time to update that saved layout.
@@ -108,9 +114,11 @@ After you calibrate a mode once, later runs of that mode go straight to image se
 ## How calibration works
 
 Default mode adapts a Galaxy S25+ reference layout using one outer rectangle.
-Advanced mode lets you mark the outer area and adjust each of the four panel
-boxes independently, with an optional snapping grid to make advanced alignment
-faster and more accurate on customized layouts.
+Advanced mode lets you mark the outer area, then walks through four separate
+panel-box adjustment steps in this order: Button box, Brightness, Volume, and
+Media player. A configurable snapping grid inside the confirmed outer area
+helps those advanced adjustments line up faster and more accurately on
+customized layouts.
 
 The full calibration logic and assumptions are documented in [CALIBRATION_PLAN.md](/D:/quick-panel-crop-exporter/CALIBRATION_PLAN.md).
 

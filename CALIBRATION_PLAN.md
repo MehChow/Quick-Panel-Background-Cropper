@@ -47,8 +47,8 @@ calibrated preset.
 
 The user first confirms a required outer rectangle around the full area
 containing the four customizable panels. The app then initializes four labeled
-boxes from the default preset and guides the user through them one at a time in
-this order:
+boxes from the default preset and guides the user through four separate
+adjustment steps in this order:
 
 - Button box
 - Brightness
@@ -58,7 +58,7 @@ this order:
 This wizard-style flow keeps the screen focused on one active box instead of
 making all four boxes editable at once. Completed boxes stay visible as fixed
 references, so the user can compare the remaining panels against what has
-already been aligned.
+already been aligned before moving to the final four-box review screen.
 
 If the user already saved an Advanced calibration before, re-importing a new
 screenshot rescales that saved Advanced layout into the new screenshot first,
@@ -76,9 +76,9 @@ Advanced mode includes a snapping grid helper inside the confirmed outer
 rectangle.
 
 - The default grid starts at 4 columns and usually 5 rows.
-- During panel-box adjustment, the user can open a small settings sheet and
-  change the row and column counts if the default grid does not match their
-  screenshot well.
+- During each panel-box adjustment step, the user can tune the grid live by
+  selecting `Col` or `Row` and changing that value if the default grid does not
+  match their screenshot well.
 - The active panel box snaps against nearby grid targets while still allowing
   slow, precise drag and resize adjustments.
 - Interior snap targets intentionally leave small visible gaps between panel
@@ -124,8 +124,8 @@ Grid controls also changed from the original bottom-sheet-only approach:
   settings button during panel-box adjustment.
 - The live grid controls were moved into the fixed bottom action area.
 - The current control UI is a compact **axis chip + shared slider** dock:
-  `Col`/`Row` chips show the current values, and one slider adjusts whichever
-  chip is active.
+  `Col`/`Row` chips show the current values, and one shared slider adjusts
+  whichever axis is active during the current panel step.
 - The slider box intentionally does **not** repeat the label/value because the
   top chips already carry that context.
 
