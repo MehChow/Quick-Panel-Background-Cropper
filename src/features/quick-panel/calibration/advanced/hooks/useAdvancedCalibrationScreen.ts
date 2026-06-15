@@ -4,26 +4,24 @@ import { useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import {
   getDefaultAdvancedSnapGrid,
-  type AdvancedSnapGrid,
 } from "../advanced-grid";
 import {
   getNextPhase,
   getPreviousPhase,
   type AdvancedCalibrationPhase,
 } from "../advanced-steps";
-import type { AdvancedCalibrationDraft } from "../../../model/types";
+import type {
+  AdvancedCalibrationDraft,
+  AdvancedSnapGrid,
+} from "../../../model/types";
 import { useQuickPanelStore } from "../../../store/quick-panel-store";
 import { quickPanelSelectors } from "../../../store/selectors";
 import { getSuggestedCalibrationRect } from "../../shared/calibration-preset";
 
 export function useAdvancedCalibrationScreen() {
   const router = useRouter();
-  const [phase, setPhase] = useState<AdvancedCalibrationPhase>("outer");
-  const [grid, setGrid] = useState<AdvancedSnapGrid>({ columns: 4, rows: 5 });
-  const [leavingDraft, setLeavingDraft] = useState<AdvancedCalibrationDraft | null>(null);
-  const [leavingPhase, setLeavingPhase] = useState<AdvancedCalibrationPhase | null>(null);
-  const [resumePhase, setResumePhase] = useState<AdvancedCalibrationPhase | null>(null);
   const {
+    advancedCalibration,
     advancedDraft,
     error,
     setAdvancedScreenshot,
@@ -32,6 +30,13 @@ export function useAdvancedCalibrationScreen() {
     setAdvancedPanels,
     acceptAdvancedCalibration,
   } = useQuickPanelStore(useShallow(quickPanelSelectors.advancedCalibrationScreen));
+  const [phase, setPhase] = useState<AdvancedCalibrationPhase>("outer");
+  const [grid, setGrid] = useState<AdvancedSnapGrid>(() =>
+    advancedCalibration?.grid ?? { columns: 4, rows: 5 }
+  );
+  const [leavingDraft, setLeavingDraft] = useState<AdvancedCalibrationDraft | null>(null);
+  const [leavingPhase, setLeavingPhase] = useState<AdvancedCalibrationPhase | null>(null);
+  const [resumePhase, setResumePhase] = useState<AdvancedCalibrationPhase | null>(null);
 
   const importScreenshot = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -49,7 +54,7 @@ export function useAdvancedCalibrationScreen() {
       };
       const suggestedRect = getSuggestedCalibrationRect(screenshot);
       setAdvancedScreenshot(screenshot, suggestedRect);
-      setGrid(getDefaultAdvancedSnapGrid(suggestedRect));
+      setGrid(advancedCalibration?.grid ?? getDefaultAdvancedSnapGrid(suggestedRect));
       setLeavingDraft(null);
       setLeavingPhase(null);
       setPhase("outer");
@@ -68,7 +73,7 @@ export function useAdvancedCalibrationScreen() {
       setLeavingDraft(advancedDraft);
       setLeavingPhase(phase);
     }
-    if (acceptAdvancedCalibration()) {
+    if (acceptAdvancedCalibration(grid)) {
       router.dismissTo("/customize");
     }
   };

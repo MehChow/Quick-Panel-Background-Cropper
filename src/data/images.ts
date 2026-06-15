@@ -1,6 +1,6 @@
 export const images = {
-  calibrateExample1: require("@/assets/tutorial/calibrate/example1.webp"),
-  calibrateExample2: require("@/assets/tutorial/calibrate/example2.webp"),
+  calibrateOuterExample1: require("@/assets/tutorial/calibrate/outerExample1.webp"),
+  calibrateOuterExample2: require("@/assets/tutorial/calibrate/outerExample2.webp"),
   calibrateGood: require("@/assets/tutorial/calibrate/good.webp"),
   calibrateBad: require("@/assets/tutorial/calibrate/bad.webp"),
   calibrateGridCountExample1: require("@/assets/tutorial/calibrate/gridCountExample1.webp"),

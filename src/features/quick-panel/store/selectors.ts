@@ -16,6 +16,7 @@ export const quickPanelSelectors = {
     acceptCalibration: state.acceptCalibration,
   }),
   advancedCalibrationScreen: (state: QuickPanelState) => ({
+    advancedCalibration: state.advancedCalibration,
     advancedDraft: state.advancedDraft,
     error: state.error,
     setAdvancedScreenshot: state.setAdvancedScreenshot,

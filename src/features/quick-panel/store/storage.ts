@@ -1,6 +1,7 @@
 import { createMMKV } from "react-native-mmkv";
 import type {
   AdvancedCalibration,
+  AdvancedSnapGrid,
   DefaultCalibration,
   PanelRect,
   PanelRects,
@@ -95,15 +96,23 @@ function parseAdvancedCalibration(value: unknown): AdvancedCalibration | null {
   const item = value as Partial<AdvancedCalibration>;
   const outerRect = parseRectValue(item.outerRect);
   const panels = parsePanelRects(item.panels);
+  const grid = parseAdvancedGrid(item.grid);
   if (
     typeof item.screenshotWidth !== "number" ||
     typeof item.screenshotHeight !== "number" ||
+    !grid ||
     !outerRect ||
     !panels
   ) {
     return null;
   }
-  return { screenshotWidth: item.screenshotWidth, screenshotHeight: item.screenshotHeight, outerRect, panels };
+  return {
+    screenshotWidth: item.screenshotWidth,
+    screenshotHeight: item.screenshotHeight,
+    grid,
+    outerRect,
+    panels,
+  };
 }
 
 function parsePanelRects(value: unknown): PanelRects | null {
@@ -117,6 +126,16 @@ function parsePanelRects(value: unknown): PanelRects | null {
   const mediaPlayer = parseRectValue(panels.mediaPlayer);
   return buttonBox && brightness && volume && mediaPlayer
     ? { buttonBox, brightness, volume, mediaPlayer }
+    : null;
+}
+
+function parseAdvancedGrid(value: unknown): AdvancedSnapGrid | null {
+  if (!value || typeof value !== "object") {
+    return null;
+  }
+  const grid = value as Partial<AdvancedSnapGrid>;
+  return isGridValue(grid.columns) && isGridValue(grid.rows)
+    ? { columns: grid.columns, rows: grid.rows }
     : null;
 }
 
@@ -136,4 +155,8 @@ function parseRectValue(value: unknown): PanelRect | null {
   return ["x", "y", "width", "height", "radius"].every(
     (key) => typeof rect[key as keyof PanelRect] === "number",
   ) ? rect as PanelRect : null;
+}
+
+function isGridValue(value: unknown): value is number {
+  return typeof value === "number" && Number.isInteger(value) && value >= 2 && value <= 8;
 }

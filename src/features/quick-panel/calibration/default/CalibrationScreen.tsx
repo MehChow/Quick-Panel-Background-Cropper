@@ -29,7 +29,7 @@ export function CalibrationScreen() {
       <View className="px-5 pt-8">
         <SubPageHeader
           actionAccessibilityLabel={t("calibration.helpButton")}
-          actionIcon="circle-help"
+          actionVariant="helper-balanced"
           onActionPress={isCalibrating ? openHelp : undefined}
           title={t("calibration.title")}
           subtitle={t("calibration.subtitle")}

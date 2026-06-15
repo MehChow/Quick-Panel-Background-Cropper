@@ -37,9 +37,15 @@ export interface DefaultCalibration {
   rect: PanelRect;
 }
 
+export interface AdvancedSnapGrid {
+  columns: number;
+  rows: number;
+}
+
 export interface AdvancedCalibration {
   screenshotWidth: number;
   screenshotHeight: number;
+  grid: AdvancedSnapGrid;
   outerRect: PanelRect;
   panels: PanelRects;
 }

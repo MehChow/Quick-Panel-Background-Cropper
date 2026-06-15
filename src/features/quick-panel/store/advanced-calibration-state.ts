@@ -5,6 +5,7 @@ import {
 import type {
   AdvancedCalibration,
   AdvancedCalibrationDraft,
+  AdvancedSnapGrid,
   PanelRect,
   PickedImage,
 } from "../model/types";
@@ -31,6 +32,7 @@ export function createAdvancedDraft(
 
 export function getCalibrationFromDraft(
   draft: AdvancedCalibrationDraft | null,
+  grid: AdvancedSnapGrid,
 ): AdvancedCalibration | null {
   if (
     !draft?.screenshot ||
@@ -43,6 +45,7 @@ export function getCalibrationFromDraft(
   return {
     screenshotWidth: draft.screenshot.width,
     screenshotHeight: draft.screenshot.height,
+    grid,
     outerRect: draft.outerRect,
     panels: draft.panels,
   };

@@ -22,7 +22,7 @@ export function CalibrationOuterExample() {
         >
           <Image
             contentFit="contain"
-            source={images.calibrateExample1}
+            source={images.calibrateOuterExample1}
             style={{ height: "100%", width: "100%" }}
           />
         </View>
@@ -33,7 +33,7 @@ export function CalibrationOuterExample() {
         >
           <Image
             contentFit="contain"
-            source={images.calibrateExample2}
+            source={images.calibrateOuterExample2}
             style={{ height: "100%", width: "100%" }}
           />
         </View>

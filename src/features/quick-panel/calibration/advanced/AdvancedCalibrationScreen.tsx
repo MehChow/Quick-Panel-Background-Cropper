@@ -50,7 +50,7 @@ export function AdvancedCalibrationScreen() {
       <View className="px-5 pt-8">
         <SubPageHeader
           actionAccessibilityLabel={showHelpButton ? t("calibration.helpButton") : undefined}
-          actionIcon={showHelpButton ? "circle-help" : undefined}
+          actionVariant={showHelpButton ? "helper-balanced" : undefined}
           onActionPress={showHelpButton ? () => setIsHelpOpen(true) : undefined}
           title={t("advancedCalibration.title")}
           subtitle={getSubtitle(phase, t)}

@@ -1,11 +1,8 @@
 import type { HandlePosition } from "../shared/calibration-rect";
-import type { PanelRect } from "../../model/types";
+import type { AdvancedSnapGrid, PanelRect } from "../../model/types";
 import { clampPanelRect } from "./panel-constraints";
 
-export interface AdvancedSnapGrid {
-  columns: number;
-  rows: number;
-}
+export type { AdvancedSnapGrid } from "../../model/types";
 
 interface SnapAxis {
   lines: number[];

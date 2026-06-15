@@ -4,6 +4,7 @@ import {
   scalePanelsToOuter,
 } from "../calibration/advanced/advanced-geometry";
 import type {
+  AdvancedSnapGrid,
   CustomizationMode,
   GeneratedExport,
   ImageTransform,
@@ -47,7 +48,7 @@ export interface QuickPanelState extends QuickPanelStateData {
   setAdvancedOuterRect: (rect: PanelRect) => void;
   confirmAdvancedOuterRect: () => void;
   setAdvancedPanels: (panels: PanelRects) => void;
-  acceptAdvancedCalibration: () => boolean;
+  acceptAdvancedCalibration: (grid: AdvancedSnapGrid) => boolean;
   setImage: (image: PickedImage) => void;
   setTransform: (transform: ImageTransform) => void;
   resetFit: () => void;
@@ -120,9 +121,9 @@ export const useQuickPanelStore = create<QuickPanelState>((set, get) => ({
     advancedDraft: state.advancedDraft ? { ...state.advancedDraft, panels } : null,
     error: null,
   })),
-  acceptAdvancedCalibration: () => {
+  acceptAdvancedCalibration: (grid) => {
     const state = get();
-    const calibration = getCalibrationFromDraft(state.advancedDraft);
+    const calibration = getCalibrationFromDraft(state.advancedDraft, grid);
     if (!calibration) {
       set({ error: translate("errors.invalidAdvancedPanels") });
       return false;
