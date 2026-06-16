@@ -37,8 +37,9 @@ coverage/
 # typescript
 *.tsbuildinfo
 
-example
-
 # generated native folders
 /ios
 /android
+
+# google play console
+quick-panel-background-cropper-6040e62063a2.json
