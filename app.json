@@ -1,15 +1,15 @@
 {
   "expo": {
     "name": "Quick Panel Background Cropper",
-    "slug": "quick-panel-crop-exporter",
+    "slug": "quick-panel-background-cropper",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/appicon.png",
-    "scheme": "quickpanelcropexporter",
+    "scheme": "quickpanelbackgroundcropper",
     "userInterfaceStyle": "automatic",
     "android": {
       "predictiveBackGestureEnabled": false,
-      "package": "com.meh_chow.quickpanelcropexporter"
+      "package": "com.meh_chow.quickpanelbackgroundcropper"
     },
     "plugins": [
       "expo-router",
@@ -41,18 +41,19 @@
           }
         }
       ],
-      "expo-localization"
+      "expo-localization",
+      "expo-image"
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
     },
+    "owner": "meh_chow",
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "f8089b12-e85d-4096-bf3d-6d6398213426"
+        "projectId": "a6ede84a-b016-4465-9663-198d32a222cc"
       }
-    },
-    "owner": "meh_chow"
+    }
   }
 }
