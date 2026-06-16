@@ -9,12 +9,6 @@
     "userInterfaceStyle": "automatic",
     "android": {
       "predictiveBackGestureEnabled": false,
-      "permissions": [
-        "android.permission.READ_EXTERNAL_STORAGE",
-        "android.permission.WRITE_EXTERNAL_STORAGE",
-        "android.permission.READ_MEDIA_VISUAL_USER_SELECTED",
-        "android.permission.READ_MEDIA_IMAGES"
-      ],
       "package": "com.meh_chow.quickpanelcropexporter"
     },
     "plugins": [
@@ -32,7 +26,7 @@
         {
           "photosPermission": "Allow access to save quick panel export images.",
           "savePhotosPermission": "Save quick panel export images to your photo library.",
-          "granularPermissions": ["photo"],
+          "granularPermissions": [],
           "isAccessMediaLocationEnabled": false
         }
       ],
