@@ -1,10 +1,10 @@
 import { Text } from "@/components/ani-ui/text";
 import { images } from "@/data/images";
 import Lucide from "@react-native-vector-icons/lucide";
-import { Image } from "expo-image";
 import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
+import { HelpSheetZoomImage } from "./HelpSheetZoomImage";
 
 interface TipCardProps {
   description: ReactNode;
@@ -114,16 +114,7 @@ function TipCard({ description, icon, iconColor, source }: TipCardProps) {
     <View className="flex-col items-center gap-4 flex-1">
       <Lucide color={iconColor} name={icon} size={28} />
 
-      <View
-        className="w-32 overflow-hidden rounded-2xl border border-white/90"
-        style={{ aspectRatio: 1 }}
-      >
-        <Image
-          contentFit="cover"
-          source={source}
-          style={{ height: "100%", width: "100%" }}
-        />
-      </View>
+      <HelpSheetZoomImage source={source} />
 
       <Text className="text-sm font-medium text-center text-zinc-200">
         {description}

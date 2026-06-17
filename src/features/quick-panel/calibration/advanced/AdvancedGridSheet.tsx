@@ -1,9 +1,9 @@
 import { Text } from "@/components/ani-ui/text";
 import { images } from "@/data/images";
 import BottomSheet, { BottomSheetBackdrop, BottomSheetView } from "@gorhom/bottom-sheet";
-import { Image } from "expo-image";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
+import { HelpSheetZoomImage } from "@/features/quick-panel/shared/HelpSheetZoomImage";
 
 interface Props {
   onClose: () => void;
@@ -64,24 +64,22 @@ export function AdvancedGridSheet({ onClose }: Props) {
             <View className="flex-row gap-4">
               <View className="flex-1 items-center">
                 {firstExampleLabels}
-                <View className="mt-3 h-56 w-full overflow-hidden rounded-2xl bg-zinc-900">
-                  <Image
-                    contentFit="contain"
-                    source={images.calibrateGridCountExample1}
-                    style={{ height: "100%", width: "100%" }}
-                  />
-                </View>
+                <HelpSheetZoomImage
+                  contentFit="contain"
+                  source={images.calibrateGridCountExample1}
+                  thumbnailClassName="mt-3 h-56 w-full border-0 bg-zinc-900"
+                  thumbnailStyle={{ aspectRatio: undefined }}
+                />
               </View>
 
               <View className="flex-1 items-center">
                 {secondExampleLabels}
-                <View className="mt-3 h-56 w-full overflow-hidden rounded-2xl bg-zinc-900">
-                  <Image
-                    contentFit="contain"
-                    source={images.calibrateGridCountExample2}
-                    style={{ height: "100%", width: "100%" }}
-                  />
-                </View>
+                <HelpSheetZoomImage
+                  contentFit="contain"
+                  source={images.calibrateGridCountExample2}
+                  thumbnailClassName="mt-3 h-56 w-full border-0 bg-zinc-900"
+                  thumbnailStyle={{ aspectRatio: undefined }}
+                />
               </View>
             </View>
           </View>

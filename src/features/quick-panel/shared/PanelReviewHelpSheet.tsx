@@ -4,9 +4,9 @@ import BottomSheet, {
   BottomSheetBackdrop,
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
-import { Image } from "expo-image";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
+import { HelpSheetZoomImage } from "./HelpSheetZoomImage";
 
 interface PanelReviewHelpSheetProps {
   onClose: () => void;
@@ -57,13 +57,11 @@ export function PanelReviewHelpSheet({ onClose }: PanelReviewHelpSheetProps) {
             {t("landing.example")}
           </Text>
 
-          <View className="mt-4 mb-8 w-3/4 rounded-2xl bg-zinc-900">
-            <Image
-              contentFit="contain"
-              source={images.calibratePanelBoxReview}
-              style={{ aspectRatio: 1, width: "100%" }}
-            />
-          </View>
+          <HelpSheetZoomImage
+            contentFit="contain"
+            source={images.calibratePanelBoxReview}
+            thumbnailClassName="mt-4 mb-8 w-3/4 border-0 bg-zinc-900"
+          />
         </View>
       </BottomSheetView>
     </BottomSheet>

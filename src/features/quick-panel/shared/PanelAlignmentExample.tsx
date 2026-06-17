@@ -1,8 +1,8 @@
 import { Text } from "@/components/ani-ui/text";
 import { images } from "@/data/images";
-import { Image } from "expo-image";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
+import { HelpSheetZoomImage } from "./HelpSheetZoomImage";
 
 const panelAlignmentAspectRatio = 1080 / 1350;
 
@@ -29,15 +29,12 @@ interface ExampleCardProps {
 
 function ExampleCard({ source }: ExampleCardProps) {
   return (
-    <View
-      className="w-[45%] overflow-hidden rounded-2xl border border-white/90"
-      style={{ aspectRatio: panelAlignmentAspectRatio }}
-    >
-      <Image
-        contentFit="contain"
-        source={source}
-        style={{ height: "100%", width: "100%" }}
-      />
-    </View>
+    <HelpSheetZoomImage
+      contentFit="contain"
+      previewAspectRatio={panelAlignmentAspectRatio}
+      source={source}
+      thumbnailClassName="w-[45%]"
+      thumbnailStyle={{ aspectRatio: panelAlignmentAspectRatio }}
+    />
   );
 }
