@@ -8,6 +8,11 @@
     "scheme": "quickpanelbackgroundcropper",
     "userInterfaceStyle": "automatic",
     "android": {
+      "blockedPermissions": [
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.READ_MEDIA_VISUAL_USER_SELECTED"
+      ],
       "predictiveBackGestureEnabled": false,
       "package": "com.meh_chow.quickpanelbackgroundcropper"
     },
@@ -44,7 +49,6 @@
       "expo-localization",
       "expo-image",
       [
-        // Target only for Android 16 (One UI 8.5 available)
         "expo-build-properties",
         {
           "android": {

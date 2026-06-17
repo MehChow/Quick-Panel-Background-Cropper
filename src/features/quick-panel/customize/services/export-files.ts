@@ -1,6 +1,5 @@
 import { File, Paths } from "expo-file-system";
-import { Album, Asset, requestPermissionsAsync } from "expo-media-library";
-import { Platform } from "react-native";
+import { Asset } from "expo-media-library";
 import { captureRef, releaseCapture } from "react-native-view-shot";
 import { getPanelLabel, translate } from "../../model/i18n";
 import { exportSidePixels } from "../../model/panel-geometry";
@@ -14,41 +13,10 @@ export async function captureAndSaveExports(
   refs: ExportRefs,
   preset: QuickPanelPreset,
 ): Promise<GeneratedExport[]> {
-  const albumName = translate("export.albumName");
   const capturedFiles = await captureNamedFiles(refs, preset);
 
-  if (Platform.OS === "android" && Platform.Version >= 33) {
-    for (const file of capturedFiles) {
-      await Asset.create(file.uri);
-    }
-
-    return capturedFiles.map((file) => ({
-      fileName: file.fileName,
-      id: file.id,
-      label: file.label,
-      previewUri: file.previewUri,
-      uri: file.uri,
-    }));
-  }
-
-  const permission = await requestPermissionsAsync();
-
-  if (!permission.granted) {
-    throw new Error(translate("errors.mediaLibraryPermission"));
-  }
-
-  let album = await Album.get(albumName);
-
-  if (!album) {
-    album = await Album.create(
-      albumName,
-      capturedFiles.map((file) => file.uri),
-      false,
-    );
-  } else {
-    for (const file of capturedFiles) {
-      await Asset.create(file.uri, album);
-    }
+  for (const file of capturedFiles) {
+    await Asset.create(file.uri);
   }
 
   return capturedFiles.map((file) => ({
