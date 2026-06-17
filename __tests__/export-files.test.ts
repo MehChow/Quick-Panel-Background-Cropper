@@ -85,6 +85,6 @@ describe("captureAndSaveExports", () => {
 
     await expect(
       captureAndSaveExports(refs, s25PlusOneUi85Preset),
-    ).rejects.toThrow("Export surface is missing for Media player.");
+    ).rejects.toThrow("The export preview for Media player is unavailable.");
   });
 });
