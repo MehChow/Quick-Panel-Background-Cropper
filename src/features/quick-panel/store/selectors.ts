@@ -2,9 +2,10 @@ import type { QuickPanelState } from "./quick-panel-store";
 
 export const quickPanelSelectors = {
   landingScreen: (state: QuickPanelState) => ({
-    isCalibrated: state.isCalibrated,
-    goToCalibration: state.goToCalibration,
-    startCustomizing: state.startCustomizing,
+    goToModeSelection: state.goToModeSelection,
+  }),
+  modeSelectionScreen: (state: QuickPanelState) => ({
+    selectMode: state.selectMode,
   }),
   calibrationScreen: (state: QuickPanelState) => ({
     screenshot: state.screenshot,
@@ -14,7 +15,18 @@ export const quickPanelSelectors = {
     setCalibrationRect: state.setCalibrationRect,
     acceptCalibration: state.acceptCalibration,
   }),
+  advancedCalibrationScreen: (state: QuickPanelState) => ({
+    advancedCalibration: state.advancedCalibration,
+    advancedDraft: state.advancedDraft,
+    error: state.error,
+    setAdvancedScreenshot: state.setAdvancedScreenshot,
+    setAdvancedOuterRect: state.setAdvancedOuterRect,
+    confirmAdvancedOuterRect: state.confirmAdvancedOuterRect,
+    setAdvancedPanels: state.setAdvancedPanels,
+    acceptAdvancedCalibration: state.acceptAdvancedCalibration,
+  }),
   customizeScreen: (state: QuickPanelState) => ({
+    selectedMode: state.selectedMode,
     activePreset: state.activePreset,
     image: state.image,
     transform: state.transform,
@@ -22,6 +34,8 @@ export const quickPanelSelectors = {
     exports: state.exports,
     isExporting: state.isExporting,
     error: state.error,
+    goToCalibration: state.goToCalibration,
+    goToAdvancedCalibration: state.goToAdvancedCalibration,
   }),
   customizeActions: (state: QuickPanelState) => ({
     activePreset: state.activePreset,
@@ -31,5 +45,9 @@ export const quickPanelSelectors = {
     startExport: state.startExport,
     finishExport: state.finishExport,
     failExport: state.failExport,
+  }),
+  resultScreen: (state: QuickPanelState) => ({
+    exports: state.exports,
+    goToLanding: state.goToLanding,
   }),
 };

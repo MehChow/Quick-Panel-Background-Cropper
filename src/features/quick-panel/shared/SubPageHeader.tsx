@@ -1,17 +1,27 @@
 import { Text } from "@/components/ani-ui/text";
 import { Lucide } from "@react-native-vector-icons/lucide";
-import { Pressable, View } from "react-native";
 import { useTranslation } from "react-i18next";
+import { View } from "react-native";
 import { BackButton } from "./BackButton";
+import {
+  HeaderActionButton,
+  type HeaderActionVariant,
+} from "./HeaderActionButton";
 
 interface SubPageHeaderProps {
-  onHelpPress?: () => void;
+  actionAccessibilityLabel?: string;
+  actionIcon?: React.ComponentProps<typeof Lucide>["name"];
+  actionVariant?: HeaderActionVariant;
+  onActionPress?: () => void;
   title: string;
   subtitle: string;
 }
 
 export function SubPageHeader({
-  onHelpPress,
+  actionAccessibilityLabel,
+  actionIcon,
+  actionVariant,
+  onActionPress,
   title,
   subtitle,
 }: SubPageHeaderProps) {
@@ -24,19 +34,17 @@ export function SubPageHeader({
         <Text className="text-2xl font-semibold leading-7 text-white">
           {title}
         </Text>
-        <Text className="mt-1 text-sm leading-5 text-zinc-400">
-          {subtitle}
-        </Text>
+        <Text className="mt-1 text-sm leading-5 text-zinc-400">{subtitle}</Text>
       </View>
-      {onHelpPress ? (
-        <Pressable
-          accessibilityLabel={t("calibration.helpButton")}
-          accessibilityRole="button"
-          className="h-11 w-11 items-center justify-center rounded-full bg-zinc-900 active:opacity-80"
-          onPress={onHelpPress}
-        >
-          <Lucide color="#fafafa" name="circle-help" size={22} />
-        </Pressable>
+      {onActionPress ? (
+        <HeaderActionButton
+          accessibilityLabel={
+            actionAccessibilityLabel ?? t("calibration.helpButton")
+          }
+          icon={actionIcon}
+          onPress={onActionPress}
+          variant={actionVariant}
+        />
       ) : null}
     </View>
   );

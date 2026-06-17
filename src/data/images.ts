@@ -1,0 +1,20 @@
+export const images = {
+  calibrateOuterExample1: require("@/assets/tutorial/calibrate/outerExample1.webp"),
+  calibrateOuterExample2: require("@/assets/tutorial/calibrate/outerExample2.webp"),
+  calibrateGood: require("@/assets/tutorial/calibrate/good.webp"),
+  calibrateBad: require("@/assets/tutorial/calibrate/bad.webp"),
+  calibrateGridCountExample1: require("@/assets/tutorial/calibrate/gridCountExample1.webp"),
+  calibrateGridCountExample2: require("@/assets/tutorial/calibrate/gridCountExample2.webp"),
+  calibratePanelBoxGood: require("@/assets/tutorial/calibrate/panelboxDragGood.webp"),
+  calibratePanelBoxBad: require("@/assets/tutorial/calibrate/panelboxDragBad.webp"),
+  calibratePanelBoxReview: require("@/assets/tutorial/calibrate/panelboxReviewExample.webp"),
+
+  example: require("@/assets/example.webp"),
+  modeAdvanced1: require("@/assets/mode/advanced_1.webp"),
+  modeAdvanced2: require("@/assets/mode/advanced_2.webp"),
+  modeAdvanced3: require("@/assets/mode/advanced_3.webp"),
+  modeDefault: require("@/assets/mode/default.webp"),
+  tutorialCorrect: require("@/assets/tutorial/correct.webp"),
+  tutorialIncorrect: require("@/assets/tutorial/incorrect.webp"),
+  mascotDoro: require("@/assets/doro_like.gif"),
+} as const;

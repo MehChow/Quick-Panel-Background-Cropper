@@ -2,6 +2,7 @@ import type { RefObject } from "react";
 import type { View } from "react-native";
 
 export type PanelId = "buttonBox" | "brightness" | "volume" | "mediaPlayer";
+export type CustomizationMode = "default" | "advanced";
 
 export interface PanelRect {
   x: number;
@@ -21,11 +22,38 @@ export interface PanelDefinition {
 export interface QuickPanelPreset {
   id: string;
   label: string;
+  mode: CustomizationMode;
   width: number;
   height: number;
+  customizationArea: PanelRect;
   panels: Record<PanelId, PanelDefinition>;
   visualOrder: PanelId[];
   goodLockOrder: PanelId[];
+}
+
+export type PanelRects = Record<PanelId, PanelRect>;
+
+export interface DefaultCalibration {
+  rect: PanelRect;
+}
+
+export interface AdvancedSnapGrid {
+  columns: number;
+  rows: number;
+}
+
+export interface AdvancedCalibration {
+  screenshotWidth: number;
+  screenshotHeight: number;
+  grid: AdvancedSnapGrid;
+  outerRect: PanelRect;
+  panels: PanelRects;
+}
+
+export interface AdvancedCalibrationDraft {
+  screenshot: PickedImage | null;
+  outerRect: PanelRect | null;
+  panels: PanelRects | null;
 }
 
 export interface PickedImage {
@@ -53,7 +81,9 @@ export type ExportRefs = Record<PanelId, RefObject<View | null>>;
 
 export type QuickPanelStep =
   | "landing"
+  | "selectMode"
   | "calibration"
+  | "advancedCalibration"
   | "imageSelection"
   | "adjustBackground"
   | "exported";

@@ -35,6 +35,16 @@
       "version": "0.3.0",
       "hash": "ddacc252",
       "addedAt": "2026-06-02T10:10:37.964Z"
+    },
+    "carousel": {
+      "version": "0.3.0",
+      "hash": "d750292a",
+      "addedAt": "2026-06-11T09:27:53.694Z"
+    },
+    "slider": {
+      "version": "0.3.0",
+      "hash": "887c5e0f",
+      "addedAt": "2026-06-13T16:41:21.923Z"
     }
   }
 }

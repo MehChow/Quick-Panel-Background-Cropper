@@ -1,12 +1,13 @@
 import { Card } from "@/components/ani-ui/card";
 import { Text } from "@/components/ani-ui/text";
+import { images } from "@/data/images";
 import { Image } from "expo-image";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { LayoutChangeEvent } from "react-native";
 import { View } from "react-native";
 
-const exampleImageAspectRatio = 1080 / 2340;
+const exampleImageAspectRatio = 9 / 19.5;
 const cardPadding = 48;
 const cardContentGap = 20;
 const exampleLabelHeight = 24;
@@ -45,7 +46,7 @@ export function LandingExampleCard({ maxHeight }: LandingExampleCardProps) {
 
   return (
     <Card
-      className="w-full flex-row items-center gap-5 rounded-2xl border-zinc-800 bg-zinc-900"
+      className="w-full flex-row items-center gap-5 rounded-2xl border-none bg-transparent"
       onLayout={handleCardLayout}
       style={maxHeight ? { height: maxHeight } : undefined}
     >
@@ -55,7 +56,7 @@ export function LandingExampleCard({ maxHeight }: LandingExampleCardProps) {
       >
         <View style={{ height: doroSize, width: doroSize }}>
           <Image
-            source={require("@/assets/doro_like.gif")}
+            source={images.mascotDoro}
             style={{ height: "100%", width: "100%" }}
             contentFit="contain"
           />
@@ -71,7 +72,7 @@ export function LandingExampleCard({ maxHeight }: LandingExampleCardProps) {
           style={{ height: imageHeight, width: imageWidth }}
         >
           <Image
-            source={require("@/assets/example.jpeg")}
+            source={images.example}
             style={{ height: "100%", width: "100%" }}
             contentFit="contain"
           />

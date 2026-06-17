@@ -19,12 +19,14 @@ import { useGoodLockLink } from "../useGoodLockLink";
 
 interface ExportSuccessPanelProps {
   exports: GeneratedExport[];
-  onConvertAnother: () => void;
+  onSecondaryAction: () => void;
+  secondaryActionLabel: string;
 }
 
 export function ExportSuccessPanel({
   exports,
-  onConvertAnother,
+  onSecondaryAction,
+  secondaryActionLabel,
 }: ExportSuccessPanelProps) {
   const { t } = useTranslation();
   const {
@@ -79,10 +81,10 @@ export function ExportSuccessPanel({
 
           <Button
             className="w-full bg-black"
-            onPress={onConvertAnother}
+            onPress={onSecondaryAction}
             textClassName="font-semibold text-white"
           >
-            {t("export.convertAnother")}
+            {secondaryActionLabel}
           </Button>
         </View>
       </Card>
@@ -91,7 +93,7 @@ export function ExportSuccessPanel({
         open={isGoodLockDialogOpen}
         onOpenChange={closeGoodLockDialog}
       >
-        <AlertDialogContent>
+        <AlertDialogContent className="border border-slate-700 bg-slate-950">
           <AlertDialogHeader>
             <AlertDialogTitle>
               {t("export.goodLockUnavailableTitle")}
@@ -101,7 +103,10 @@ export function ExportSuccessPanel({
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel onPress={closeGoodLockDialog}>
+            <AlertDialogCancel
+              onPress={closeGoodLockDialog}
+              className="border-0"
+            >
               {t("common.cancel")}
             </AlertDialogCancel>
             <AlertDialogAction

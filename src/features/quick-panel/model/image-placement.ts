@@ -1,5 +1,5 @@
 import type { ImageTransform, PickedImage, QuickPanelPreset } from "./types";
-import { getImageBounds, getPanelUnion } from "./panel-geometry";
+import { getImageBounds } from "./panel-geometry";
 
 export function getCoverScale(image: PickedImage, preset: QuickPanelPreset) {
   const imageBounds = getImageBounds(preset);
@@ -13,13 +13,13 @@ export function getFitTransform(
   image: PickedImage,
   preset: QuickPanelPreset,
 ): ImageTransform {
-  const panelUnion = getPanelUnion(preset);
+  const area = preset.customizationArea;
   const scale = getCoverScale(image, preset);
-  return {
+  return clampTransform({
     scale,
-    x: panelUnion.x + (panelUnion.width - image.width * scale) / 2,
-    y: panelUnion.y + (panelUnion.height - image.height * scale) / 2,
-  };
+    x: area.x + (area.width - image.width * scale) / 2,
+    y: area.y + (area.height - image.height * scale) / 2,
+  }, image, preset);
 }
 
 export function clampTransform(

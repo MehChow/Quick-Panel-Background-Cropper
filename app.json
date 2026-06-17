@@ -1,21 +1,20 @@
 {
   "expo": {
     "name": "Quick Panel Background Cropper",
-    "slug": "quick-panel-crop-exporter",
+    "slug": "quick-panel-background-cropper",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/appicon.png",
-    "scheme": "quickpanelcropexporter",
+    "scheme": "quickpanelbackgroundcropper",
     "userInterfaceStyle": "automatic",
     "android": {
-      "predictiveBackGestureEnabled": false,
-      "permissions": [
+      "blockedPermissions": [
         "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.WRITE_EXTERNAL_STORAGE",
-        "android.permission.READ_MEDIA_VISUAL_USER_SELECTED",
-        "android.permission.READ_MEDIA_IMAGES"
+        "android.permission.READ_MEDIA_VISUAL_USER_SELECTED"
       ],
-      "package": "com.meh_chow.quickpanelcropexporter"
+      "predictiveBackGestureEnabled": false,
+      "package": "com.meh_chow.quickpanelbackgroundcropper"
     },
     "plugins": [
       "expo-router",
@@ -32,7 +31,7 @@
         {
           "photosPermission": "Allow access to save quick panel export images.",
           "savePhotosPermission": "Save quick panel export images to your photo library.",
-          "granularPermissions": ["photo"],
+          "granularPermissions": [],
           "isAccessMediaLocationEnabled": false
         }
       ],
@@ -47,18 +46,29 @@
           }
         }
       ],
-      "expo-localization"
+      "expo-localization",
+      "expo-image",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "minSdkVersion": 36,
+            "targetSdkVersion": 36,
+            "compileSdkVersion": 36
+          }
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
     },
+    "owner": "meh_chow",
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "f8089b12-e85d-4096-bf3d-6d6398213426"
+        "projectId": "a6ede84a-b016-4465-9663-198d32a222cc"
       }
-    },
-    "owner": "meh_chow"
+    }
   }
 }

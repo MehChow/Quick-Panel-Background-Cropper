@@ -1,6 +1,6 @@
 {
   "cli": {
-    "version": ">= 18.8.1",
+    "version": ">= 20.2.0",
     "appVersionSource": "remote"
   },
   "build": {
@@ -16,6 +16,11 @@
     }
   },
   "submit": {
-    "production": {}
+    "production": {
+      "android": {
+        "track": "internal",
+        "releaseStatus": "completed"
+      }
+    }
   }
 }

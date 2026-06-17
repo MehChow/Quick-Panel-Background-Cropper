@@ -52,6 +52,8 @@ export function QuickPanelPreview({
           ? preset.visualOrder.map((id) => (
               <PanelSlice
                 key={id}
+                showOverlay
+                mode={preset.mode}
                 panel={preset.panels[id]}
                 image={image}
                 layoutScale={layoutScale}

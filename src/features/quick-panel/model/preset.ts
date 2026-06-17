@@ -18,8 +18,10 @@ export const goodLockOrder: PanelId[] = [
 export const s25PlusOneUi85Preset: QuickPanelPreset = {
   id: "s25-plus-one-ui-8-5-default",
   label: translate("preset.defaultLabel"),
+  mode: "default",
   width: 298,
   height: 654,
+  customizationArea: { x: 14, y: 164, width: 272, height: 311, radius: 0 },
   visualOrder,
   goodLockOrder,
   panels: {

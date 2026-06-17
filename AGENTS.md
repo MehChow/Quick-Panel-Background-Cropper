@@ -4,9 +4,13 @@ Read the exact versioned docs at https://docs.expo.dev/versions/v56.0.0/ before 
 
 ## App brief
 
-Quick Panel Exporter is an Expo app for creating Samsung Good Lock Quick Panel background PNGs from one user-selected image. Users calibrate once by importing a fully expanded Quick Panel screenshot, adjusting one green rectangle around the customizable panel stack, and saving that geometry for future exports.
+Quick Panel Exporter is an Expo app for creating Samsung Good Lock Quick Panel background PNGs from one user-selected image. In v2, the app only supports the Quick Panel **Controls** tab, not the **Buttons** tab. The supported panels are Button box, Media player, Brightness, and Volume.
 
-The app then lets users choose a background image, pan/zoom it against a preview of the calibrated Button box, Brightness, Volume, and Media player panels, and export square PNGs in the Good Lock application order. The S25+ One UI 8.5 preset remains the base template; calibration scales that template into the user's screenshot-derived panel union.
+The user flow is: landing -> mode selection -> calibration -> image selection -> preview adjustment -> export result. Default mode asks the user to import a fully expanded Quick Panel screenshot, adjust one green rectangle around the full Controls area, and save it as the layout basis. Advanced mode adds a guided second stage where the user confirms the outer area first, then goes through four separate panel-box steps in this order: Button box, Brightness, Volume, and Media player. Advanced mode also includes an editable snapping grid inside the confirmed outer area so users can fine-tune row and column counts while matching customized layouts.
+
+After calibration, the app lets users choose a background image, pan/zoom it against a live preview of the four supported Controls panels, and export square PNGs in Good Lock application order. The S25+ One UI 8.5 preset remains the base template. Default mode scales that preset into the calibrated outer union, while Advanced mode starts from preset-based boxes and then lets the user fine-tune each panel.
+
+For the exact v2 UI flow, refer to the screenshots under `flow/`.
 
 ## Tech Stack
 
@@ -23,7 +27,7 @@ The app then lets users choose a background image, pan/zoom it against a preview
 
 - Concise, type-safe TypeScript
 - Modular, feature-organized files
-- Prevent using `useMemo, useCallback, React.memo` as it is handled by React Complier
+- Prevent using `useMemo, useCallback, React.memo` as it is handled by React Complier (except AniUI components under `src/components/ani-ui`)
 
 ## Naming
 
@@ -42,6 +46,11 @@ The app then lets users choose a background image, pan/zoom it against a preview
 - DRY principle
 - Extract business logic into custom hook
 - Keep files small, each file under 150 lines of code
+
+## Git Workflow
+
+- When the user asks to stage, commit, or push changes, use the personal skill `project-git-finish` at `C:\Users\User\.codex\skills\project-git-finish\SKILL.md`
+- Use commit messages in the format `action: description`
 
 ## Testing Notes
 

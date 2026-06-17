@@ -1,6 +1,7 @@
 import { s25PlusOneUi85Preset } from "@/features/quick-panel/model/preset";
 import type { ExportRefs } from "@/features/quick-panel/model/types";
 import { captureAndSaveExports } from "@/features/quick-panel/customize/services/export-files";
+import type { View } from "react-native";
 
 const mockRequestPermissionsAsync = jest.fn();
 const mockAlbumGet = jest.fn();
@@ -43,11 +44,12 @@ jest.mock("expo-file-system", () => ({
 }));
 
 function createRefs(): ExportRefs {
+  const view = {} as View;
   return {
-    brightness: { current: {} },
-    buttonBox: { current: {} },
-    mediaPlayer: { current: {} },
-    volume: { current: {} },
+    brightness: { current: view },
+    buttonBox: { current: view },
+    mediaPlayer: { current: view },
+    volume: { current: view },
   };
 }
 
@@ -83,6 +85,6 @@ describe("captureAndSaveExports", () => {
 
     await expect(
       captureAndSaveExports(refs, s25PlusOneUi85Preset),
-    ).rejects.toThrow("Export surface is missing for Media player.");
+    ).rejects.toThrow("The export preview for Media player is unavailable.");
   });
 });

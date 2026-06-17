@@ -4,7 +4,7 @@ import { Gesture } from "react-native-gesture-handler";
 import { useSharedValue } from "react-native-reanimated";
 import { scheduleOnRN } from "react-native-worklets";
 import { getCoverScale } from "../../model/image-placement";
-import { getImageBounds, getPanelUnion } from "../../model/panel-geometry";
+import { getImageBounds } from "../../model/panel-geometry";
 import type {
   ImageTransform,
   PickedImage,
@@ -32,7 +32,7 @@ export function useQuickPanelPreviewGestures({
   const sharedScale = useSharedValue(1);
   const sharedTransform = useSharedValue(transform);
   const startTransform = useSharedValue(transform);
-  const panelUnion = getPanelUnion(preset);
+  const panelUnion = preset.customizationArea;
   const imageBounds = getImageBounds(preset);
   const minScale = getCoverScale(image, preset);
 

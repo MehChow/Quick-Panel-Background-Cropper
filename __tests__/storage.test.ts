@@ -73,4 +73,97 @@ describe("storage", () => {
       }),
     );
   });
+
+  it("restores advanced calibration grid settings", () => {
+    const mmkvStore = globalThis as typeof globalThis & {
+      __mmkvStore?: Map<string, boolean | string>;
+    };
+    mmkvStore.__mmkvStore?.set(
+      "quick-panel.calibrations-v2",
+      JSON.stringify({
+        version: 2,
+        default: null,
+        advanced: {
+          screenshotWidth: 1080,
+          screenshotHeight: 2340,
+          grid: { columns: 6, rows: 7 },
+          outerRect: {
+            x: 10,
+            y: 20,
+            width: 300,
+            height: 600,
+            radius: 12,
+          },
+          panels: {
+            buttonBox: { x: 20, y: 40, width: 100, height: 120, radius: 0 },
+            brightness: { x: 20, y: 180, width: 200, height: 80, radius: 0 },
+            volume: { x: 240, y: 40, width: 60, height: 220, radius: 0 },
+            mediaPlayer: { x: 20, y: 280, width: 280, height: 160, radius: 0 },
+          },
+        },
+      }),
+    );
+
+    const { loadCalibrations } = require("@/features/quick-panel/store/storage");
+
+    expect(loadCalibrations().advanced?.grid).toEqual({
+      columns: 6,
+      rows: 7,
+    });
+  });
+
+  it("persists advanced calibration grid settings", () => {
+    const mmkvStore = globalThis as typeof globalThis & {
+      __mmkvStore?: Map<string, boolean | string>;
+    };
+    const { saveCalibrations } = require("@/features/quick-panel/store/storage");
+
+    saveCalibrations({
+      version: 2,
+      default: null,
+      advanced: {
+        screenshotWidth: 1080,
+        screenshotHeight: 2340,
+        grid: { columns: 5, rows: 6 },
+        outerRect: {
+          x: 10,
+          y: 20,
+          width: 300,
+          height: 600,
+          radius: 12,
+        },
+        panels: {
+          buttonBox: { x: 20, y: 40, width: 100, height: 120, radius: 0 },
+          brightness: { x: 20, y: 180, width: 200, height: 80, radius: 0 },
+          volume: { x: 240, y: 40, width: 60, height: 220, radius: 0 },
+          mediaPlayer: { x: 20, y: 280, width: 280, height: 160, radius: 0 },
+        },
+      },
+    });
+
+    expect(mmkvStore.__mmkvStore?.get("quick-panel.calibrations-v2")).toBe(
+      JSON.stringify({
+        version: 2,
+        default: null,
+        advanced: {
+          screenshotWidth: 1080,
+          screenshotHeight: 2340,
+          grid: { columns: 5, rows: 6 },
+          outerRect: {
+            x: 10,
+            y: 20,
+            width: 300,
+            height: 600,
+            radius: 12,
+          },
+          panels: {
+            buttonBox: { x: 20, y: 40, width: 100, height: 120, radius: 0 },
+            brightness: { x: 20, y: 180, width: 200, height: 80, radius: 0 },
+            volume: { x: 240, y: 40, width: 60, height: 220, radius: 0 },
+            mediaPlayer: { x: 20, y: 280, width: 280, height: 160, radius: 0 },
+          },
+        },
+      }),
+    );
+  });
 });

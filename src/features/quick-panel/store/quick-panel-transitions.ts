@@ -1,7 +1,11 @@
-import { getCalibratedPreset } from "../calibration/calibration";
+import { createAdvancedPreset } from "../calibration/advanced/advanced-geometry";
+import { getCalibratedPreset } from "../calibration/shared/calibration-preset";
 import { clampTransform, getFitTransform } from "../model/image-placement";
 import { translate } from "../model/i18n";
 import type {
+  AdvancedCalibration,
+  CustomizationMode,
+  DefaultCalibration,
   GeneratedExport,
   ImageTransform,
   PanelRect,
@@ -10,72 +14,79 @@ import type {
 } from "../model/types";
 import {
   createResetWorkState,
+  getPresetForMode,
   type QuickPanelStateData,
 } from "./quick-panel-defaults";
 
 type QuickPanelStatePatch = Partial<QuickPanelStateData>;
 
 export function getLandingState(): QuickPanelStatePatch {
+  return { step: "landing", selectedMode: null, screenshot: null, advancedDraft: null, ...createResetWorkState(), error: null };
+}
+
+export function getModeSelectionState(): QuickPanelStatePatch {
+  return { step: "selectMode", selectedMode: null, screenshot: null, advancedDraft: null, ...createResetWorkState(), error: null };
+}
+
+export function getModeState(
+  mode: CustomizationMode,
+  defaultCalibration: DefaultCalibration | null,
+  advancedCalibration: AdvancedCalibration | null,
+): QuickPanelStatePatch {
+  const hasCalibration = mode === "default" ? Boolean(defaultCalibration) : Boolean(advancedCalibration);
   return {
-    step: "landing",
+    selectedMode: mode,
+    activePreset: getPresetForMode(mode, defaultCalibration, advancedCalibration),
+    step: hasCalibration ? "imageSelection" : mode === "default" ? "calibration" : "advancedCalibration",
     screenshot: null,
+    calibrationRect: mode === "default" ? defaultCalibration?.rect ?? null : null,
+    advancedDraft: null,
     ...createResetWorkState(),
     error: null,
   };
 }
 
-export function getCalibrationState(
-  isCalibrated: boolean,
-  calibrationRect: PanelRect | null,
+export function getDefaultCalibrationState(
+  defaultCalibration: DefaultCalibration | null,
 ): QuickPanelStatePatch {
   return {
+    selectedMode: "default",
     step: "calibration",
     screenshot: null,
-    calibrationRect: isCalibrated ? calibrationRect : null,
+    calibrationRect: defaultCalibration?.rect ?? null,
     ...createResetWorkState(),
     error: null,
   };
 }
 
-export function getStartCustomizingResult(isCalibrated: boolean) {
-  if (!isCalibrated) {
-    return {
-      didStart: false,
-      state: {
-        step: "calibration",
-        error: translate("errors.mustCalibrate"),
-      } satisfies QuickPanelStatePatch,
-    };
-  }
-
+export function getAdvancedCalibrationState(
+  advancedCalibration: AdvancedCalibration | null,
+): QuickPanelStatePatch {
   return {
-    didStart: true,
-    state: {
-      step: "imageSelection",
-      ...createResetWorkState(),
-      error: null,
-    } satisfies QuickPanelStatePatch,
+    selectedMode: "advanced",
+    step: "advancedCalibration",
+    advancedDraft: {
+      screenshot: null,
+      outerRect: advancedCalibration?.outerRect ?? null,
+      panels: advancedCalibration?.panels ?? null,
+    },
+    ...createResetWorkState(),
+    error: null,
   };
 }
 
 export function getAcceptCalibrationResult(rect: PanelRect | null) {
   if (!rect) {
-    return {
-      didAccept: false,
-      state: {
-        error: translate("errors.importScreenshotFirst"),
-      } satisfies QuickPanelStatePatch,
-    };
+    return { didAccept: false, state: { error: translate("errors.importScreenshotFirst") } satisfies QuickPanelStatePatch };
   }
-
-  const activePreset = getCalibratedPreset(rect);
+  const defaultCalibration = { rect };
   return {
     didAccept: true,
+    defaultCalibration,
     state: {
-      activePreset,
-      presetId: activePreset.id,
-      step: "landing",
-      isCalibrated: true,
+      defaultCalibration,
+      activePreset: getCalibratedPreset(rect),
+      step: "imageSelection",
       screenshot: null,
       calibrationRect: rect,
       ...createResetWorkState(),
@@ -84,52 +95,40 @@ export function getAcceptCalibrationResult(rect: PanelRect | null) {
   };
 }
 
-export function getImageState(
-  image: PickedImage,
-  activePreset: QuickPanelPreset,
-): QuickPanelStatePatch {
+export function getAcceptAdvancedCalibrationResult(calibration: AdvancedCalibration) {
   return {
-    image,
-    transform: getFitTransform(image, activePreset),
-    exports: [],
-    step: "adjustBackground",
+    activePreset: createAdvancedPreset(calibration),
+    advancedCalibration: calibration,
+    advancedDraft: null,
+    step: "imageSelection",
+    ...createResetWorkState(),
     error: null,
-  };
+  } satisfies QuickPanelStatePatch;
 }
 
-export function getTransformState(
-  transform: ImageTransform,
-  image: PickedImage | null,
-  activePreset: QuickPanelPreset,
-): QuickPanelStatePatch {
-  return {
-    transform: image
-      ? clampTransform(transform, image, activePreset)
-      : transform,
-  };
+export function getStartCustomizingResult(isCalibrated: boolean) {
+  return isCalibrated
+    ? { didStart: true, state: { step: "imageSelection", ...createResetWorkState(), error: null } satisfies QuickPanelStatePatch }
+    : { didStart: false, state: { step: "calibration", error: translate("errors.mustCalibrate") } satisfies QuickPanelStatePatch };
 }
 
-export function getResetFitState(
-  image: PickedImage | null,
-  activePreset: QuickPanelPreset,
-): QuickPanelStatePatch | null {
-  if (!image) {
-    return null;
-  }
+export function getImageState(image: PickedImage, activePreset: QuickPanelPreset): QuickPanelStatePatch {
+  return { image, transform: getFitTransform(image, activePreset), exports: [], step: "adjustBackground", error: null };
+}
 
-  return {
-    transform: getFitTransform(image, activePreset),
-    error: null,
-  };
+export function getTransformState(transform: ImageTransform, image: PickedImage | null, activePreset: QuickPanelPreset): QuickPanelStatePatch {
+  return { transform: image ? clampTransform(transform, image, activePreset) : transform };
+}
+
+export function getResetFitState(image: PickedImage | null, activePreset: QuickPanelPreset): QuickPanelStatePatch | null {
+  return image ? { transform: getFitTransform(image, activePreset), error: null } : null;
 }
 
 export function getStartExportState(): QuickPanelStatePatch {
   return { isExporting: true, error: null, exports: [] };
 }
 
-export function getFinishExportState(
-  exports: GeneratedExport[],
-): QuickPanelStatePatch {
+export function getFinishExportState(exports: GeneratedExport[]): QuickPanelStatePatch {
   return { isExporting: false, exports, step: "exported" };
 }
 

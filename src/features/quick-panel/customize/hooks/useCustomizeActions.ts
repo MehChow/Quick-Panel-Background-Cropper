@@ -1,5 +1,6 @@
 import { Image as ExpoImage } from "expo-image";
 import * as ImagePicker from "expo-image-picker";
+import { useRouter } from "expo-router";
 import { useShallow } from "zustand/react/shallow";
 import { translate } from "../../model/i18n";
 import type { ExportRefs } from "../../model/types";
@@ -8,6 +9,7 @@ import { useQuickPanelStore } from "../../store/quick-panel-store";
 import { captureAndSaveExports } from "../services/export-files";
 
 export function useCustomizeActions(refs: ExportRefs) {
+  const router = useRouter();
   const {
     activePreset,
     image,
@@ -45,6 +47,7 @@ export function useCustomizeActions(refs: ExportRefs) {
       }
       const exports = await captureAndSaveExports(refs, activePreset);
       finishExport(exports);
+      router.replace("/result");
     } catch (error) {
       failExport(
         error instanceof Error
