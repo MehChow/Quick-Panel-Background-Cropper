@@ -37,7 +37,7 @@ const en = {
       greenBoxLabel: "green box",
       layoutBoundaryLabel: "panel edge",
       instruction:
-        "Drag any edge or corner to resize the green box around the whole customizable control panel, including Button box, Brightness, Volume and Meida player.",
+        "Drag any edge or corner to resize the green box around the whole customizable control panel, including Button box, Brightness, Volume and Media player.",
       bestResultTitle: "For best result",
       bestResultGood:
         "Keep the green box just outside the panel edge for the most accurate crop.",
