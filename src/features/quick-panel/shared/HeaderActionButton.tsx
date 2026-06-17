@@ -75,7 +75,7 @@ export function HeaderActionButton({
           )}
         >
           {theme.showInnerRing ? (
-            <View className="absolute inset-[2px] rounded-[14px] border border-white/8" />
+            <View className="absolute inset-0.5 rounded-[14px] border border-white/8" />
           ) : null}
           <Lucide
             color={theme.iconColor}
