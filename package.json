@@ -9,6 +9,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "expo": "~56.0.8",
+    "expo-build-properties": "~56.0.19",
     "expo-constants": "~56.0.16",
     "expo-dev-client": "~56.0.20",
     "expo-device": "~56.0.4",

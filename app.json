@@ -42,7 +42,18 @@
         }
       ],
       "expo-localization",
-      "expo-image"
+      "expo-image",
+      [
+        // Target only for Android 16 (One UI 8.5 available)
+        "expo-build-properties",
+        {
+          "android": {
+            "minSdkVersion": 36,
+            "targetSdkVersion": 36,
+            "compileSdkVersion": 36
+          }
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,

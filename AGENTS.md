@@ -27,7 +27,7 @@ For the exact v2 UI flow, refer to the screenshots under `flow/`.
 
 - Concise, type-safe TypeScript
 - Modular, feature-organized files
-- Prevent using `useMemo, useCallback, React.memo` as it is handled by React Complier
+- Prevent using `useMemo, useCallback, React.memo` as it is handled by React Complier (except AniUI components under `src/components/ani-ui`)
 
 ## Naming
 
