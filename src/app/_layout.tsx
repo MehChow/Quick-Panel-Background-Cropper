@@ -1,4 +1,5 @@
 import { AppGradientBackground } from "@/features/quick-panel/shared/AppGradientBackground";
+import { FloatingLanguageSwitchButton } from "@/features/quick-panel/shared/LanguageSwitchButton";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
@@ -28,7 +29,7 @@ export default function RootLayout() {
               }}
             />
           </View>
-          {/* {__DEV__ ? <FloatingLanguageSwitchButton /> : null} */}
+          {__DEV__ ? <FloatingLanguageSwitchButton /> : null}
         </BottomSheetModalProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
