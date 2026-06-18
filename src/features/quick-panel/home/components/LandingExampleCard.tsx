@@ -39,7 +39,7 @@ export function LandingExampleCard({ maxHeight }: LandingExampleCardProps) {
 
   return (
     <Card
-      className="w-full items-center rounded-2xl border-none bg-transparent px-6 py-6"
+      className="w-full items-center rounded-2xl border-none border-0 bg-transparent px-6 py-6"
       onLayout={handleLayout}
       style={maxHeight ? { height: maxHeight } : undefined}
     >
@@ -49,7 +49,7 @@ export function LandingExampleCard({ maxHeight }: LandingExampleCardProps) {
 
       <View className="flex-1 items-center justify-center self-stretch">
         <View
-          className="relative overflow-hidden border border-white/10 bg-[#24161f]"
+          className="relative overflow-hidden"
           style={{
             borderRadius: frameCornerRadius,
             height: frameHeight,
