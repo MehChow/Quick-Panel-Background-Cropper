@@ -9,12 +9,14 @@ export const images = {
   calibratePanelBoxBad: require("@/assets/tutorial/calibrate/panelboxDragBad.webp"),
   calibratePanelBoxReview: require("@/assets/tutorial/calibrate/panelboxReviewExample.webp"),
 
-  example: require("@/assets/example.webp"),
+  exampleResult: require("@/assets/example/result.webp"),
+  exampleSrc: require("@/assets/example/src.webp"),
+
   modeAdvanced1: require("@/assets/mode/advanced_1.webp"),
   modeAdvanced2: require("@/assets/mode/advanced_2.webp"),
   modeAdvanced3: require("@/assets/mode/advanced_3.webp"),
   modeDefault: require("@/assets/mode/default.webp"),
+
   tutorialCorrect: require("@/assets/tutorial/correct.webp"),
   tutorialIncorrect: require("@/assets/tutorial/incorrect.webp"),
-  mascotDoro: require("@/assets/doro_like.gif"),
 } as const;

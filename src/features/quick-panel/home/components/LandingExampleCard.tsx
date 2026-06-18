@@ -7,13 +7,13 @@ import { useTranslation } from "react-i18next";
 import type { LayoutChangeEvent } from "react-native";
 import { View } from "react-native";
 
-const exampleImageAspectRatio = 9 / 19.5;
+const previewAspectRatio = 9 / 19.5;
 const cardPadding = 48;
-const cardContentGap = 20;
-const exampleLabelHeight = 24;
-const exampleLabelGap = 4;
-const doroColumnWidth = 96;
-const doroImageSize = 88;
+const labelHeight = 24;
+const labelGap = 12;
+const frameCornerRadius = 34;
+const frameMaxHeightRatio = 0.94;
+const frameMaxWidthRatio = 0.9;
 
 interface LandingExampleCardProps {
   maxHeight: number;
@@ -22,59 +22,44 @@ interface LandingExampleCardProps {
 export function LandingExampleCard({ maxHeight }: LandingExampleCardProps) {
   const { t } = useTranslation();
   const [cardWidth, setCardWidth] = useState(0);
-  const rightColumnWidth = Math.max(
+  const contentWidth = Math.max(0, cardWidth - cardPadding);
+  const contentHeight = Math.max(
     0,
-    cardWidth - cardPadding - doroColumnWidth - cardContentGap,
+    maxHeight - cardPadding - labelHeight - labelGap,
   );
-  const imageHeightLimit = Math.max(
-    0,
-    maxHeight - cardPadding - exampleLabelHeight - exampleLabelGap,
+  const frameWidth = Math.min(
+    contentWidth * frameMaxWidthRatio,
+    contentHeight * previewAspectRatio * frameMaxHeightRatio,
   );
-  const imageHeightFromWidth = rightColumnWidth
-    ? rightColumnWidth / exampleImageAspectRatio
-    : imageHeightLimit;
-  const imageHeight = Math.min(imageHeightLimit, imageHeightFromWidth);
-  const imageWidth = imageHeight * exampleImageAspectRatio;
-  const doroSize = Math.min(
-    doroImageSize,
-    Math.max(0, maxHeight - cardPadding),
-  );
+  const frameHeight = frameWidth / previewAspectRatio;
 
-  const handleCardLayout = (event: LayoutChangeEvent) => {
+  const handleLayout = (event: LayoutChangeEvent) => {
     setCardWidth(event.nativeEvent.layout.width);
   };
 
   return (
     <Card
-      className="w-full flex-row items-center gap-5 rounded-2xl border-none bg-transparent"
-      onLayout={handleCardLayout}
+      className="w-full items-center rounded-2xl border-none bg-transparent px-6 py-6"
+      onLayout={handleLayout}
       style={maxHeight ? { height: maxHeight } : undefined}
     >
-      <View
-        className="items-center justify-center"
-        style={{ width: doroColumnWidth }}
-      >
-        <View style={{ height: doroSize, width: doroSize }}>
-          <Image
-            source={images.mascotDoro}
-            style={{ height: "100%", width: "100%" }}
-            contentFit="contain"
-          />
-        </View>
-      </View>
+      <Text className="text-center font-semibold text-orange-400">
+        {t("landing.example")}
+      </Text>
 
-      <View className="flex-1 gap-1">
-        <Text className="text-center font-semibold text-orange-400">
-          {t("landing.example")}
-        </Text>
+      <View className="flex-1 items-center justify-center self-stretch">
         <View
-          className="self-center overflow-hidden rounded-2xl border border-white"
-          style={{ height: imageHeight, width: imageWidth }}
+          className="relative overflow-hidden border border-white/10 bg-[#24161f]"
+          style={{
+            borderRadius: frameCornerRadius,
+            height: frameHeight,
+            width: frameWidth,
+          }}
         >
           <Image
-            source={images.example}
+            source={images.exampleResult}
             style={{ height: "100%", width: "100%" }}
-            contentFit="contain"
+            contentFit="cover"
           />
         </View>
       </View>
