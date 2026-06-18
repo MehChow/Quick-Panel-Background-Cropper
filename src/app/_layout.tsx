@@ -1,4 +1,5 @@
 import { AppGradientBackground } from "@/features/quick-panel/shared/AppGradientBackground";
+import BuildVersion from "@/features/quick-panel/shared/BuildVersion";
 import { FloatingLanguageSwitchButton } from "@/features/quick-panel/shared/LanguageSwitchButton";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { Stack } from "expo-router";
@@ -28,6 +29,8 @@ export default function RootLayout() {
                 headerShown: false,
               }}
             />
+            {/* 🚀 Encapsulated Global Overlay Layer */}
+            <BuildVersion />
           </View>
           {__DEV__ ? <FloatingLanguageSwitchButton /> : null}
         </BottomSheetModalProvider>
