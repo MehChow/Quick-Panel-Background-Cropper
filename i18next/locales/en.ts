@@ -54,6 +54,8 @@ const en = {
     customize: {
       title: "Customize",
       subtitle: "Choose an image, then adjust the position",
+      optimizingImage: "Optimizing image...",
+      imageOptimized: "Selected image was optimized for smoother adjustment.",
       pickerTitle: "Choose an image from album",
       pickerSubtitle: "PNG, JPG, and WEBP are supported.",
       chooseAnotherImage: "Choose another image",
@@ -118,6 +120,9 @@ const en = {
       mediaLibraryPermission:
         "Media library permission is required to save exports.",
       exportSurfaceMissing: "The export preview for {{panel}} is unavailable.",
+      imageTooLarge:
+        "This image is too large to process smoothly. Please choose a smaller image.",
+      unableToProcessImage: "Unable to process this image.",
       unableToExport: "Unable to export images.",
       confirmOuterFirst: "Confirm the outer customization area first.",
       invalidAdvancedPanels:

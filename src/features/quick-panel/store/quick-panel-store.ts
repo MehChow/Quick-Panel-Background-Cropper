@@ -25,10 +25,13 @@ import {
   getFailExportState,
   getFinishExportState,
   getImageState,
+  getFinishImageProcessingState,
+  getFailImageProcessingState,
   getLandingState,
   getModeSelectionState,
   getModeState,
   getResetFitState,
+  getStartImageProcessingState,
   getStartExportState,
   getTransformState,
 } from "./quick-panel-transitions";
@@ -49,6 +52,9 @@ export interface QuickPanelState extends QuickPanelStateData {
   confirmAdvancedOuterRect: () => void;
   setAdvancedPanels: (panels: PanelRects) => void;
   acceptAdvancedCalibration: (grid: AdvancedSnapGrid) => boolean;
+  startImageProcessing: () => void;
+  finishImageProcessing: (image: PickedImage, noticeKey: string | null) => void;
+  failImageProcessing: (message: string | null, errorKey: string | null) => void;
   setImage: (image: PickedImage) => void;
   setTransform: (transform: ImageTransform) => void;
   resetFit: () => void;
@@ -132,6 +138,11 @@ export const useQuickPanelStore = create<QuickPanelState>((set, get) => ({
     set(getAcceptAdvancedCalibrationResult(calibration));
     return true;
   },
+  startImageProcessing: () => set(getStartImageProcessingState()),
+  finishImageProcessing: (image, noticeKey) =>
+    set(getFinishImageProcessingState(image, get().activePreset, noticeKey)),
+  failImageProcessing: (message, errorKey) =>
+    set(getFailImageProcessingState(message, errorKey)),
   setImage: (image) => set(getImageState(image, get().activePreset)),
   setTransform: (transform) => set(getTransformState(transform, get().image, get().activePreset)),
   resetFit: () => {

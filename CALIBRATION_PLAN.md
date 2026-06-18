@@ -117,6 +117,11 @@ Important implementation details for future changes:
   coordinates and cropped local display coordinates. If a future change touches
   drag, resize, or snapping behavior, this transform layer is the first place
   to inspect.
+- Advanced validation now intentionally allows a small inside-edge tolerance
+  (`0.75`) when checking whether panel boxes remain inside the outer rectangle.
+  This prevents false invalidation when snapping/scaling leaves a box only a
+  fraction of a pixel outside the stored bounds even though it still appears
+  visually inside on screen.
 
 Grid controls also changed from the original bottom-sheet-only approach:
 
@@ -148,6 +153,35 @@ The same background transform is rendered into all four centered export
 squares, preserving continuity across arbitrary panel layouts. PNGs are always
 exported in Good Lock application order: Button box, Media player, Brightness,
 then Volume.
+
+### Export rendering notes
+
+The current export flow mounts hidden export surfaces only when export begins in
+order to keep preview adjustment responsive with large source images.
+
+Important implementation details for future changes:
+
+- Hidden export surfaces must not be captured immediately after they mount.
+- `ExportSurface.tsx` now reports when its image finishes loading.
+- `ExportSurfaces.tsx` waits until all four hidden export images have reported
+  loaded before signaling readiness.
+- `useCustomizeScreen.ts` only starts `captureRef(...)` after that readiness
+  signal. Without this gate, the first export tile can be captured before its
+  image paints and appear as a black square, most noticeably for Button box
+  because it is first in Good Lock export order.
+
+### Customization image handling
+
+Customization image import now behaves differently from calibration screenshot
+import:
+
+- Calibration screenshot import remains untouched and is still meant to reflect
+  the user’s real Quick Panel screenshot as directly as possible.
+- Customization background import may downscale large images locally for
+  smoother drag/zoom adjustment.
+- User-facing optimize/too-large messages should be stored as translation keys
+  and translated at render time, not pretranslated strings, so language toggles
+  update inline feedback correctly.
 
 ## Persistence
 

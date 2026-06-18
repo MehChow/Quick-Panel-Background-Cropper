@@ -93,13 +93,14 @@ function rectanglesOverlap(a: PanelRect, b: PanelRect) {
 
 
 function isRectInside(rect: PanelRect, outer: PanelRect) {
+  const epsilon = 0.75;
   return (
     rect.width > 0 &&
     rect.height > 0 &&
-    rect.x >= outer.x &&
-    rect.y >= outer.y &&
-    rect.x + rect.width <= outer.x + outer.width &&
-    rect.y + rect.height <= outer.y + outer.height
+    rect.x >= outer.x - epsilon &&
+    rect.y >= outer.y - epsilon &&
+    rect.x + rect.width <= outer.x + outer.width + epsilon &&
+    rect.y + rect.height <= outer.y + outer.height + epsilon
   );
 }
 

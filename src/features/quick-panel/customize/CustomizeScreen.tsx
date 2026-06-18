@@ -20,13 +20,19 @@ export function CustomizeScreen() {
     transform,
     setTransform,
     isExporting,
+    isProcessingImage,
+    noticeKey,
+    errorKey,
     error,
     refs,
     isPreviewAdjusting,
     setIsPreviewAdjusting,
     exportImages,
+    exportLoadToken,
     pickImage,
     resetFit,
+    setIsExportSurfaceReady,
+    shouldRenderExportSurfaces,
     goToCalibration,
     goToAdvancedCalibration,
   } = useCustomizeScreen();
@@ -69,25 +75,39 @@ export function CustomizeScreen() {
             mode={selectedMode ?? "default"}
             onPick={pickImage}
             onRecalibrate={recalibrate}
+            isProcessing={isProcessingImage}
           />
         )}
         {image ? (
           <CustomizeActions
             isExporting={isExporting}
+            isProcessingImage={isProcessingImage}
             onExport={exportImages}
             onPick={pickImage}
             onReset={resetFit}
           />
+        ) : null}
+        {noticeKey ? (
+          <Text className="mt-4 rounded-md bg-green-500/15 p-3 text-sm text-green-100">
+            {t(noticeKey)}
+          </Text>
         ) : null}
         {error ? (
           <Text className="mt-4 rounded-md bg-red-500/15 p-3 text-sm text-red-100">
             {error}
           </Text>
         ) : null}
+        {errorKey ? (
+          <Text className="mt-4 rounded-md bg-red-500/15 p-3 text-sm text-red-100">
+            {t(errorKey)}
+          </Text>
+        ) : null}
       </ScrollView>
-      {image ? (
+      {image && shouldRenderExportSurfaces ? (
         <ExportSurfaces
           image={image}
+          loadToken={exportLoadToken}
+          onReady={setIsExportSurfaceReady}
           transform={transform}
           preset={activePreset}
           refs={refs}

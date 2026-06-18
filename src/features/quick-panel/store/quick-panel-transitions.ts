@@ -116,6 +116,30 @@ export function getImageState(image: PickedImage, activePreset: QuickPanelPreset
   return { image, transform: getFitTransform(image, activePreset), exports: [], step: "adjustBackground", error: null };
 }
 
+export function getStartImageProcessingState(): QuickPanelStatePatch {
+  return { error: null, errorKey: null, isProcessingImage: true, noticeKey: null };
+}
+
+export function getFinishImageProcessingState(
+  image: PickedImage,
+  activePreset: QuickPanelPreset,
+  noticeKey: string | null,
+): QuickPanelStatePatch {
+  return {
+    ...getImageState(image, activePreset),
+    errorKey: null,
+    isProcessingImage: false,
+    noticeKey,
+  };
+}
+
+export function getFailImageProcessingState(
+  message: string | null,
+  errorKey: string | null,
+): QuickPanelStatePatch {
+  return { error: message, errorKey, isProcessingImage: false, noticeKey: null };
+}
+
 export function getTransformState(transform: ImageTransform, image: PickedImage | null, activePreset: QuickPanelPreset): QuickPanelStatePatch {
   return { transform: image ? clampTransform(transform, image, activePreset) : transform };
 }

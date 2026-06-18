@@ -5,11 +5,17 @@ import type { CustomizationMode } from "../../model/types";
 
 interface ImagePickerCardProps {
   mode: CustomizationMode;
+  isProcessing: boolean;
   onPick: () => void;
   onRecalibrate: () => void;
 }
 
-export function ImagePickerCard({ mode, onPick, onRecalibrate }: ImagePickerCardProps) {
+export function ImagePickerCard({
+  mode,
+  isProcessing,
+  onPick,
+  onRecalibrate,
+}: ImagePickerCardProps) {
   const { t } = useTranslation();
 
   return (
@@ -17,10 +23,13 @@ export function ImagePickerCard({ mode, onPick, onRecalibrate }: ImagePickerCard
       <Pressable
         accessibilityRole="button"
         className="h-120 items-center justify-center rounded-2xl border border-zinc-800 bg-zinc-900 px-6 active:opacity-80"
+        disabled={isProcessing}
         onPress={onPick}
       >
         <Text className="text-center text-lg font-semibold text-white">
-          {t("customize.pickerTitle")}
+          {isProcessing
+            ? t("customize.optimizingImage")
+            : t("customize.pickerTitle")}
         </Text>
         <Text className="mt-2 text-center text-sm leading-5 text-zinc-400">
           {t("customize.pickerSubtitle")}

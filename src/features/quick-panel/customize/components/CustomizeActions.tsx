@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 
 interface CustomizeActionsProps {
   isExporting: boolean;
+  isProcessingImage: boolean;
   onExport: () => void;
   onPick: () => void;
   onReset: () => void;
@@ -12,21 +13,26 @@ interface CustomizeActionsProps {
 
 export function CustomizeActions({
   isExporting,
+  isProcessingImage,
   onExport,
   onPick,
   onReset,
 }: CustomizeActionsProps) {
   const { t } = useTranslation();
+  const isBusy = isExporting || isProcessingImage;
 
   return (
     <View className="mt-5 gap-3">
-      <Button onPress={onPick} textClassName="font-semibold">
-        {t("customize.chooseAnotherImage")}
+      <Button disabled={isBusy} onPress={onPick} textClassName="font-semibold">
+        {isProcessingImage
+          ? t("customize.optimizingImage")
+          : t("customize.chooseAnotherImage")}
       </Button>
       <View className="flex-row gap-3 pb-4">
         <View className="basis-0 flex-1">
           <Button
             className="w-full bg-black"
+            disabled={isBusy}
             onPress={onReset}
             textClassName="font-semibold text-white"
           >
@@ -37,10 +43,15 @@ export function CustomizeActions({
           <Button
             className="w-full bg-green-200/90"
             loading={isExporting}
+            disabled={isProcessingImage}
             onPress={onExport}
             textClassName="font-semibold text-green-900"
           >
-            {isExporting ? "" : t("customize.exportPngs")}
+            {isExporting
+              ? ""
+              : isProcessingImage
+                ? t("customize.optimizingImage")
+                : t("customize.exportPngs")}
           </Button>
           {isExporting ? (
             <Skeleton

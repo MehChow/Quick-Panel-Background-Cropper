@@ -49,6 +49,8 @@ const zh = {
       looksGood: "確認",
     },
     customize: {
+      optimizingImage: "最佳化圖片中...",
+      imageOptimized: "已優化所選圖片，拖動調整會更順暢。",
       title: "自訂",
       subtitle: "選擇圖片後，再調整位置",
       pickerTitle: "從相簿選擇圖片",
@@ -109,6 +111,8 @@ const zh = {
       mediaPlayer: "媒體播放器",
     },
     errors: {
+      imageTooLarge: "這張圖片太大，無法順暢處理，請改選較小的圖片。",
+      unableToProcessImage: "無法處理這張圖片。",
       mustCalibrate: "請先校正 Quick Panel 區域，再開始自訂。",
       importScreenshotFirst: "請先匯入 Quick Panel 截圖。",
       mediaLibraryPermission: "需要媒體庫權限才能儲存匯出圖片。",

@@ -61,6 +61,9 @@ export interface PickedImage {
   width: number;
   height: number;
   fileName?: string | null;
+  originalWidth?: number;
+  originalHeight?: number;
+  wasOptimized?: boolean;
 }
 
 export interface ImageTransform {

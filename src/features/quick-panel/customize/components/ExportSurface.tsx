@@ -13,10 +13,11 @@ interface ExportSurfaceProps {
   image: PickedImage;
   transform: ImageTransform;
   side: number;
+  onImageLoad: () => void;
 }
 
 export const ExportSurface = forwardRef<View, ExportSurfaceProps>(
-  function ExportSurface({ panel, image, transform, side }, ref) {
+  function ExportSurface({ panel, image, transform, side, onImageLoad }, ref) {
     const squareRect = getExportSquareRect(panel);
     const squareScale = side / squareRect.width;
     const imageScale = transform.scale * squareScale;
@@ -31,6 +32,7 @@ export const ExportSurface = forwardRef<View, ExportSurfaceProps>(
         <Image
           source={{ uri: image.uri }}
           contentFit="fill"
+          onLoad={onImageLoad}
           style={{
             height: image.height * imageScale,
             left: (transform.x - squareRect.x) * squareScale,

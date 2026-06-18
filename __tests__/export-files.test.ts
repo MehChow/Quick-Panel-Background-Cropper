@@ -3,24 +3,15 @@ import type { ExportRefs } from "@/features/quick-panel/model/types";
 import { captureAndSaveExports } from "@/features/quick-panel/customize/services/export-files";
 import type { View } from "react-native";
 
-const mockRequestPermissionsAsync = jest.fn();
-const mockAlbumGet = jest.fn();
-const mockAlbumCreate = jest.fn();
 const mockAssetCreate = jest.fn();
 const mockCaptureRef = jest.fn();
 const mockReleaseCapture = jest.fn();
 const mockCopy = jest.fn();
 
 jest.mock("expo-media-library", () => ({
-  Album: {
-    create: (...args: unknown[]) => mockAlbumCreate(...args),
-    get: (...args: unknown[]) => mockAlbumGet(...args),
-  },
   Asset: {
     create: (...args: unknown[]) => mockAssetCreate(...args),
   },
-  requestPermissionsAsync: (...args: unknown[]) =>
-    mockRequestPermissionsAsync(...args),
 }));
 
 jest.mock("react-native-view-shot", () => ({
@@ -55,9 +46,6 @@ function createRefs(): ExportRefs {
 
 describe("captureAndSaveExports", () => {
   beforeEach(() => {
-    mockRequestPermissionsAsync.mockReset();
-    mockAlbumGet.mockReset();
-    mockAlbumCreate.mockReset();
     mockAssetCreate.mockReset();
     mockCaptureRef.mockReset();
     mockReleaseCapture.mockReset();
@@ -68,15 +56,33 @@ describe("captureAndSaveExports", () => {
         `file:///tmp/${options.fileName}.png`,
     );
     mockCopy.mockResolvedValue(undefined);
-    mockAlbumGet.mockResolvedValue({ id: "existing-album" });
+    mockAssetCreate.mockResolvedValue(undefined);
   });
 
-  it("throws a translated error when media permission is denied", async () => {
-    mockRequestPermissionsAsync.mockResolvedValue({ granted: false });
+  it("creates media library assets for each captured export", async () => {
+    const result = await captureAndSaveExports(
+      createRefs(),
+      s25PlusOneUi85Preset,
+    );
 
-    await expect(
-      captureAndSaveExports(createRefs(), s25PlusOneUi85Preset),
-    ).rejects.toThrow("Media library permission is required to save exports.");
+    expect(result).toHaveLength(4);
+    expect(mockAssetCreate).toHaveBeenCalledTimes(4);
+    expect(mockAssetCreate).toHaveBeenNthCalledWith(
+      1,
+      "file:///cache/01-button-box.png",
+    );
+    expect(mockAssetCreate).toHaveBeenNthCalledWith(
+      2,
+      "file:///cache/02-media-player.png",
+    );
+    expect(mockAssetCreate).toHaveBeenNthCalledWith(
+      3,
+      "file:///cache/03-brightness.png",
+    );
+    expect(mockAssetCreate).toHaveBeenNthCalledWith(
+      4,
+      "file:///cache/04-volume.png",
+    );
   });
 
   it("throws when an export surface ref is missing", async () => {

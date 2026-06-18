@@ -1,4 +1,6 @@
+import { useEffect, useRef } from "react";
 import { PixelRatio, View } from "react-native";
+import { createExportSurfaceReadiness } from "../export-surface-readiness";
 import { exportSidePixels } from "../../model/panel-geometry";
 import type {
   ExportRefs,
@@ -13,6 +15,8 @@ interface ExportSurfacesProps {
   transform: ImageTransform;
   preset: QuickPanelPreset;
   refs: ExportRefs;
+  loadToken: number;
+  onReady: () => void;
 }
 
 export function ExportSurfaces({
@@ -20,8 +24,29 @@ export function ExportSurfaces({
   transform,
   preset,
   refs,
+  loadToken,
+  onReady,
 }: ExportSurfacesProps) {
   const side = exportSidePixels / PixelRatio.get();
+  const readinessRef = useRef(
+    createExportSurfaceReadiness(preset.goodLockOrder),
+  );
+  const isReadyReportedRef = useRef(false);
+
+  useEffect(() => {
+    readinessRef.current = createExportSurfaceReadiness(preset.goodLockOrder);
+    isReadyReportedRef.current = false;
+  }, [image.uri, loadToken, preset.goodLockOrder, preset.id]);
+
+  const handleImageLoad = (id: (typeof preset.goodLockOrder)[number]) => {
+    if (isReadyReportedRef.current) {
+      return;
+    }
+    if (readinessRef.current.markLoaded(id)) {
+      isReadyReportedRef.current = true;
+      onReady();
+    }
+  };
 
   return (
     <View
@@ -34,6 +59,7 @@ export function ExportSurfaces({
           ref={refs[id]}
           panel={preset.panels[id]}
           image={image}
+          onImageLoad={() => handleImageLoad(id)}
           transform={transform}
           side={side}
         />
