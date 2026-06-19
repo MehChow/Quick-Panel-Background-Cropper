@@ -1,5 +1,6 @@
 import { AppGradientBackground } from "@/features/quick-panel/shared/AppGradientBackground";
 import BuildVersion from "@/features/quick-panel/shared/BuildVersion";
+import { shouldShowBuildVersion } from "@/features/quick-panel/shared/buildFlags";
 import { FloatingLanguageSwitchButton } from "@/features/quick-panel/shared/LanguageSwitchButton";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { Stack } from "expo-router";
@@ -16,9 +17,7 @@ SplashScreen.setOptions({
 });
 
 export default function RootLayout() {
-  // Explicitly check if the string matches 'true'
-  const shouldShowVersion =
-    process.env.EXPO_PUBLIC_SHOW_VERSION?.trim() === "true";
+  const shouldShowVersion = !__DEV__ && shouldShowBuildVersion;
 
   return (
     <GestureHandlerRootView className="flex-1">
