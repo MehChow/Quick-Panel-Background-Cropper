@@ -16,6 +16,8 @@ SplashScreen.setOptions({
 });
 
 export default function RootLayout() {
+  const isApkBuild = process.env.EXPO_PUBLIC_BUILD_TYPE === "apk";
+
   return (
     <GestureHandlerRootView className="flex-1">
       <SafeAreaProvider>
@@ -30,7 +32,7 @@ export default function RootLayout() {
               }}
             />
             {/* 🚀 Encapsulated Global Overlay Layer */}
-            <BuildVersion />
+            {isApkBuild && <BuildVersion />}
           </View>
           {__DEV__ ? <FloatingLanguageSwitchButton /> : null}
         </BottomSheetModalProvider>
