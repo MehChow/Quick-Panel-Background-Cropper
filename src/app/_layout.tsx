@@ -16,7 +16,9 @@ SplashScreen.setOptions({
 });
 
 export default function RootLayout() {
-  const isApkBuild = process.env.EXPO_PUBLIC_BUILD_TYPE === "apk";
+  // Explicitly check if the string matches 'true'
+  const shouldShowVersion =
+    process.env.EXPO_PUBLIC_SHOW_VERSION?.trim() === "true";
 
   return (
     <GestureHandlerRootView className="flex-1">
@@ -31,8 +33,8 @@ export default function RootLayout() {
                 headerShown: false,
               }}
             />
-            {/* 🚀 Encapsulated Global Overlay Layer */}
-            {isApkBuild && <BuildVersion />}
+            {/* 🎯 Displays ONLY when compiling for Closed Testing bundle */}
+            {shouldShowVersion && <BuildVersion />}
           </View>
           {__DEV__ ? <FloatingLanguageSwitchButton /> : null}
         </BottomSheetModalProvider>
