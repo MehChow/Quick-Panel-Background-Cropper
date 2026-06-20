@@ -13,6 +13,7 @@ import { isPanelPhase, type AdvancedCalibrationPhase } from "./advanced-steps";
 import { AdvancedCalibrationControls } from "./AdvancedCalibrationControls";
 import { AdvancedOuterOverlay } from "./components/AdvancedOuterOverlay";
 import { AdvancedPanelCanvas } from "./components/AdvancedPanelCanvas";
+import { AdvancedPanelSelection } from "./components/AdvancedPanelSelection";
 import { useAdvancedCalibrationScreen } from "./hooks/useAdvancedCalibrationScreen";
 
 export function AdvancedCalibrationScreen() {
@@ -22,6 +23,7 @@ export function AdvancedCalibrationScreen() {
   const {
     advancedDraft,
     canGoBack,
+    enabledPanels,
     error,
     goBack,
     goForward,
@@ -29,11 +31,13 @@ export function AdvancedCalibrationScreen() {
     isConfirmPhase,
     isGridPhase,
     isOuterPhase,
+    isPanelSelectionPhase,
     phase,
     importScreenshot,
     saveCalibration,
     setColumns,
     setRows,
+    setAdvancedEnabledPanels,
     setAdvancedOuterRect,
     setAdvancedPanels,
   } = useAdvancedCalibrationScreen();
@@ -42,7 +46,8 @@ export function AdvancedCalibrationScreen() {
   const panels = advancedDraft?.panels ?? null;
   const isEditing = Boolean(screenshot && outerRect);
   const isPanelStep = isPanelPhase(phase);
-  const showHelpButton = isEditing && (isOuterPhase || isGridPhase || isPanelStep || isConfirmPhase);
+  const showHelpButton = isEditing &&
+    (isOuterPhase || isGridPhase || isPanelStep || isConfirmPhase);
   const actionAccessibilityLabel = isGridPhase
     ? t("advancedCalibration.gridHelpButton")
     : showHelpButton
@@ -77,9 +82,15 @@ export function AdvancedCalibrationScreen() {
         contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
         overScrollMode="never"
       >
-        {!isOuterPhase && screenshot && outerRect && panels ? (
+        {isPanelSelectionPhase && screenshot && outerRect ? (
+          <AdvancedPanelSelection
+            enabledPanels={enabledPanels}
+            onEnabledPanelsChange={setAdvancedEnabledPanels}
+          />
+        ) : !isOuterPhase && screenshot && outerRect && panels ? (
           <AdvancedPanelCanvas
             grid={grid}
+            enabledPanels={enabledPanels}
             screenshot={screenshot}
             outerRect={outerRect}
             phase={phase}
@@ -145,6 +156,9 @@ function getSubtitle(
 ) {
   if (phase === "outer") {
     return t("advancedCalibration.outerSubtitle");
+  }
+  if (phase === "panelSelection") {
+    return t("advancedCalibration.panelSelectionSubtitle");
   }
   if (phase === "grid") {
     return t("advancedCalibration.gridSubtitle");

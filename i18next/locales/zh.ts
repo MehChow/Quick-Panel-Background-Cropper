@@ -65,9 +65,10 @@ const zh = {
     advancedCalibration: {
       title: "進階校正",
       outerSubtitle: "框住包含四個可自訂版面的完整區域",
-      gridSubtitle: "先設定格線，再逐一調整四個版面方框",
+      panelSelectionSubtitle: "關閉 Quick Panel 版面中不存在的面板",
+      gridSubtitle: "先設定格線，再逐一調整已選擇的版面方框",
       panelSubtitle: "拖曳並調整 {{panel}} 範圍",
-      confirmSubtitle: "儲存前確認四個版面方框",
+      confirmSubtitle: "儲存前確認已選擇的版面方框",
       panelHelpTitle: "如何對齊這個版面範圍",
       panelHelpBody:
         "拖曳並調整紫色方框，讓它剛好貼齊這個版面的邊緣。格線圓點應該落在版面周圍的留白處，而不是被紫色邊框壓住。當方框對齊正確時，這些圓點能幫助你判斷間距，讓整體版面更平均、更準確。",
@@ -84,6 +85,11 @@ const zh = {
       next: "下一步",
       gridHelpButton: "格線說明",
       gridControlsTitle: "設定對齊格線",
+      panelSelectionTitle: "你的版面包含哪些面板？",
+      panelSelectionBody:
+        "關閉 Quick Panel 中沒有的 Controls 面板。已關閉的面板不需要校準，也不會匯出。",
+      panelEnabled: "開",
+      panelDisabled: "關",
       gridSheetTitle: "如何設定格線",
       gridSheetSubtitle:
         "選擇能讓格線圓點落在控制項之間留白處的列數與欄數。可參考下方範例，判斷哪一種格線更貼近你的截圖。",
@@ -122,7 +128,8 @@ const zh = {
       unableToExport: "無法匯出圖片。",
       confirmOuterFirst: "請先確認外層可自訂區域。",
       invalidAdvancedPanels:
-        "請讓四個版面方框都保持在外層區域內，且不要互相重疊。",
+        "請讓已選擇的版面方框保持在外層區域內，且不要互相重疊。",
+      selectAdvancedPanel: "請至少選擇一個面板。",
     },
   },
 };

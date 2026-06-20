@@ -8,11 +8,13 @@ import {
 import {
   getNextPhase,
   getPreviousPhase,
+  isPanelPhase,
   type AdvancedCalibrationPhase,
 } from "../advanced-steps";
 import type {
   AdvancedCalibrationDraft,
   AdvancedSnapGrid,
+  PanelId,
 } from "../../../model/types";
 import { useQuickPanelStore } from "../../../store/quick-panel-store";
 import { quickPanelSelectors } from "../../../store/selectors";
@@ -27,6 +29,7 @@ export function useAdvancedCalibrationScreen() {
     setAdvancedScreenshot,
     setAdvancedOuterRect,
     confirmAdvancedOuterRect,
+    setAdvancedEnabledPanels,
     setAdvancedPanels,
     acceptAdvancedCalibration,
   } = useQuickPanelStore(useShallow(quickPanelSelectors.advancedCalibrationScreen));
@@ -64,7 +67,7 @@ export function useAdvancedCalibrationScreen() {
 
   const continueToNextPhase = () => {
     confirmAdvancedOuterRect();
-    setPhase(resumePhase ?? "grid");
+    setPhase(resumePhase ?? "panelSelection");
     setResumePhase(null);
   };
 
@@ -80,8 +83,9 @@ export function useAdvancedCalibrationScreen() {
 
   const displayedDraft = advancedDraft ?? leavingDraft;
   const displayedPhase = advancedDraft ? phase : leavingPhase ?? phase;
-  const previousPhase = getPreviousPhase(displayedPhase);
-  const nextPhase = getNextPhase(displayedPhase);
+  const enabledPanels = displayedDraft?.enabledPanels ?? [];
+  const previousPhase = getPreviousPhase(displayedPhase, enabledPanels);
+  const nextPhase = getNextPhase(displayedPhase, enabledPanels);
 
   const goBack = () => {
     if (!previousPhase) {
@@ -98,6 +102,10 @@ export function useAdvancedCalibrationScreen() {
       continueToNextPhase();
       return;
     }
+    if (displayedPhase === "panelSelection" && enabledPanels.length === 0) {
+      setAdvancedEnabledPanels([]);
+      return;
+    }
     if (!nextPhase) {
       return;
     }
@@ -111,15 +119,23 @@ export function useAdvancedCalibrationScreen() {
     setPhase("outer");
   };
 
+  const updateEnabledPanels = (nextPanels: PanelId[]) => {
+    setAdvancedEnabledPanels(nextPanels);
+    if (isPanelPhase(displayedPhase) && !nextPanels.includes(displayedPhase)) {
+      setPhase("panelSelection");
+    }
+  };
+
   return {
     advancedDraft: displayedDraft,
+    enabledPanels,
     error,
     grid,
     phase: displayedPhase,
     canGoBack: previousPhase !== null,
     importScreenshot,
-    decrementColumns: () => setGrid((current) => ({ ...current, columns: Math.max(2, current.columns - 1) })),
-    decrementRows: () => setGrid((current) => ({ ...current, rows: Math.max(2, current.rows - 1) })),
+    decrementColumns: () => setGrid((current) => ({ ...current, columns: Math.max(1, current.columns - 1) })),
+    decrementRows: () => setGrid((current) => ({ ...current, rows: Math.max(1, current.rows - 1) })),
     goBack,
     goForward,
     incrementColumns: () => setGrid((current) => ({ ...current, columns: Math.min(8, current.columns + 1) })),
@@ -127,10 +143,12 @@ export function useAdvancedCalibrationScreen() {
     isConfirmPhase: displayedPhase === "confirm",
     isGridPhase: displayedPhase === "grid",
     isOuterPhase: displayedPhase === "outer",
+    isPanelSelectionPhase: displayedPhase === "panelSelection",
     returnToOuter,
     saveCalibration,
     setColumns: (columns: number) => setGrid((current) => ({ ...current, columns })),
     setRows: (rows: number) => setGrid((current) => ({ ...current, rows })),
+    setAdvancedEnabledPanels: updateEnabledPanels,
     setAdvancedOuterRect,
     setAdvancedPanels,
   };

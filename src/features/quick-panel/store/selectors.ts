@@ -22,6 +22,7 @@ export const quickPanelSelectors = {
     setAdvancedScreenshot: state.setAdvancedScreenshot,
     setAdvancedOuterRect: state.setAdvancedOuterRect,
     confirmAdvancedOuterRect: state.confirmAdvancedOuterRect,
+    setAdvancedEnabledPanels: state.setAdvancedEnabledPanels,
     setAdvancedPanels: state.setAdvancedPanels,
     acceptAdvancedCalibration: state.acceptAdvancedCalibration,
   }),

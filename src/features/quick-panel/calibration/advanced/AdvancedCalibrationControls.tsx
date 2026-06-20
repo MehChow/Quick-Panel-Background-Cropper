@@ -137,7 +137,7 @@ function GridSlider({ onValueChange, value }: GridSliderProps) {
     <View className="rounded-xl bg-zinc-800/70 px-3 py-2">
       <Slider
         max={8}
-        min={2}
+        min={1}
         onValueChange={onValueChange}
         size="sm"
         step={1}

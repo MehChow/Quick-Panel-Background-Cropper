@@ -18,7 +18,7 @@ export interface SnapResult {
 
 const defaultColumns = 4;
 const defaultRows = 5;
-const minGridValue = 2;
+const minGridValue = 1;
 const maxGridValue = 8;
 const nearbyRowCounts = [4, 5, 6];
 

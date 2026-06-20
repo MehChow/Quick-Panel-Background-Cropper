@@ -69,10 +69,12 @@ const en = {
       title: "Advanced calibration",
       outerSubtitle:
         "Wrap the full area containing your four customizable panels",
+      panelSelectionSubtitle:
+        "Turn off panels that are missing from your Quick Panel layout",
       gridSubtitle:
-        "Set the grid once before aligning the four panel boxes",
+        "Set the grid once before aligning the selected panel boxes",
       panelSubtitle: "Drag and resize the {{panel}} area",
-      confirmSubtitle: "Review all four panel boxes before saving",
+      confirmSubtitle: "Review the selected panel boxes before saving",
       panelHelpTitle: "How to align this area",
       panelHelpBody:
         "Drag and resize the purple box so it sits exactly on the edges of this area. The grid dots should stay in the gaps around it, not under the purple border. When the box is aligned correctly, those dots help you judge the spacing and keep the overall layout even and accurate.",
@@ -89,6 +91,11 @@ const en = {
       next: "Next",
       gridHelpButton: "Grid help",
       gridControlsTitle: "Set the snapping grid",
+      panelSelectionTitle: "Which panels are in your layout?",
+      panelSelectionBody:
+        "Turn off any Controls panel that is missing from your Quick Panel. Disabled panels will not be aligned or exported.",
+      panelEnabled: "On",
+      panelDisabled: "Off",
       gridSheetTitle: "How to set the grid",
       gridSheetSubtitle:
         "Choose the row and column counts that make the grid dots fall into the gaps between your controls. Use the examples below to decide which grid matches your screenshot more closely.",
@@ -129,7 +136,8 @@ const en = {
       unableToExport: "Unable to export images.",
       confirmOuterFirst: "Confirm the outer customization area first.",
       invalidAdvancedPanels:
-        "Keep all four panel boxes inside the outer area without overlapping.",
+        "Keep selected panel boxes inside the outer area without overlapping.",
+      selectAdvancedPanel: "Select at least one panel to continue.",
     },
   },
 };

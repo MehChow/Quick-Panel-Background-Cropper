@@ -1,7 +1,7 @@
 import { Image } from "expo-image";
 import { useState } from "react";
 import { View } from "react-native";
-import type { PanelRect, PanelRects, PickedImage } from "../../../model/types";
+import type { PanelId, PanelRect, PanelRects, PickedImage } from "../../../model/types";
 import type { AdvancedSnapGrid } from "../advanced-grid";
 import {
   getVisiblePanelIds,
@@ -13,6 +13,7 @@ import { AdvancedSnapGridOverlay } from "./AdvancedSnapGridOverlay";
 
 interface Props {
   grid: AdvancedSnapGrid;
+  enabledPanels: PanelId[];
   outerRect: PanelRect;
   phase: AdvancedCalibrationPhase;
   panels: PanelRects;
@@ -22,6 +23,7 @@ interface Props {
 
 export function AdvancedPanelCanvas({
   grid,
+  enabledPanels,
   outerRect,
   phase,
   panels,
@@ -32,7 +34,7 @@ export function AdvancedPanelCanvas({
   const viewportRect = getViewportRect(outerRect, screenshot);
   const scale = contentWidth ? contentWidth / viewportRect.width : 1;
   const activeId = isPanelPhase(phase) ? phase : null;
-  const visibleIds = getVisiblePanelIds(phase);
+  const visibleIds = getVisiblePanelIds(phase, enabledPanels);
   const localOuterRect = toLocalRect(outerRect, viewportRect);
 
   const changePanel = (id: keyof PanelRects, rect: PanelRect) => {

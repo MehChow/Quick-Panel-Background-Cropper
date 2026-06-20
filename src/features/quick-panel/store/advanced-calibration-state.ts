@@ -6,9 +6,11 @@ import type {
   AdvancedCalibration,
   AdvancedCalibrationDraft,
   AdvancedSnapGrid,
+  PanelId,
   PanelRect,
   PickedImage,
 } from "../model/types";
+import { panelIds } from "../model/panel-ids";
 
 export function createAdvancedDraft(
   screenshot: PickedImage,
@@ -16,7 +18,12 @@ export function createAdvancedDraft(
   saved: AdvancedCalibration | null,
 ): AdvancedCalibrationDraft {
   if (!saved) {
-    return { screenshot, outerRect: suggestedOuter, panels: null };
+    return {
+      screenshot,
+      outerRect: suggestedOuter,
+      enabledPanels: panelIds,
+      panels: null,
+    };
   }
   const outerRect = scaleRect(
     saved.outerRect,
@@ -26,6 +33,7 @@ export function createAdvancedDraft(
   return {
     screenshot,
     outerRect,
+    enabledPanels: sanitizeEnabledPanels(saved.enabledPanels),
     panels: scalePanelsToOuter(saved.panels, saved.outerRect, outerRect),
   };
 }
@@ -38,7 +46,7 @@ export function getCalibrationFromDraft(
     !draft?.screenshot ||
     !draft.outerRect ||
     !draft.panels ||
-    !arePanelsValid(draft.panels, draft.outerRect)
+    !arePanelsValid(draft.panels, draft.outerRect, draft.enabledPanels)
   ) {
     return null;
   }
@@ -47,8 +55,19 @@ export function getCalibrationFromDraft(
     screenshotHeight: draft.screenshot.height,
     grid,
     outerRect: draft.outerRect,
+    enabledPanels: draft.enabledPanels,
     panels: draft.panels,
   };
+}
+
+export function sanitizeEnabledPanels(panels: PanelId[] | undefined): PanelId[] {
+  const uniquePanels = panels?.filter((id, index) =>
+    panelIds.includes(id) && panels.indexOf(id) === index
+  ) ?? [];
+
+  return uniquePanels.length > 0
+    ? panelIds.filter((id) => uniquePanels.includes(id))
+    : panelIds;
 }
 
 function scaleRect(rect: PanelRect, scaleX: number, scaleY: number): PanelRect {
