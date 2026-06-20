@@ -64,7 +64,7 @@ export function useAdvancedCalibrationScreen() {
 
   const continueToNextPhase = () => {
     confirmAdvancedOuterRect();
-    setPhase(resumePhase ?? "buttonBox");
+    setPhase(resumePhase ?? "grid");
     setResumePhase(null);
   };
 
@@ -125,6 +125,7 @@ export function useAdvancedCalibrationScreen() {
     incrementColumns: () => setGrid((current) => ({ ...current, columns: Math.min(8, current.columns + 1) })),
     incrementRows: () => setGrid((current) => ({ ...current, rows: Math.min(8, current.rows + 1) })),
     isConfirmPhase: displayedPhase === "confirm",
+    isGridPhase: displayedPhase === "grid",
     isOuterPhase: displayedPhase === "outer",
     returnToOuter,
     saveCalibration,

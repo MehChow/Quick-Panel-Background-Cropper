@@ -65,6 +65,7 @@ const zh = {
     advancedCalibration: {
       title: "進階校正",
       outerSubtitle: "框住包含四個可自訂版面的完整區域",
+      gridSubtitle: "先設定格線，再逐一調整四個版面方框",
       panelSubtitle: "拖曳並調整 {{panel}} 範圍",
       confirmSubtitle: "儲存前確認四個版面方框",
       panelHelpTitle: "如何對齊這個版面範圍",
@@ -82,6 +83,7 @@ const zh = {
       back: "返回",
       next: "下一步",
       gridHelpButton: "格線說明",
+      gridControlsTitle: "設定對齊格線",
       gridSheetTitle: "如何設定格線",
       gridSheetSubtitle:
         "選擇能讓格線圓點落在控制項之間留白處的列數與欄數。可參考下方範例，判斷哪一種格線更貼近你的截圖。",

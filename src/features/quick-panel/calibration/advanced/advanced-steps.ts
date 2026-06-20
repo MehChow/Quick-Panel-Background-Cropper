@@ -2,6 +2,7 @@ import type { PanelId } from "../../model/types";
 
 export type AdvancedCalibrationPhase =
   | "outer"
+  | "grid"
   | "buttonBox"
   | "brightness"
   | "volume"
@@ -17,6 +18,7 @@ export const advancedPanelPhases: PanelId[] = [
 
 const phaseOrder: AdvancedCalibrationPhase[] = [
   "outer",
+  "grid",
   ...advancedPanelPhases,
   "confirm",
 ];
@@ -42,7 +44,7 @@ export function getPreviousPhase(
 }
 
 export function getVisiblePanelIds(phase: AdvancedCalibrationPhase): PanelId[] {
-  if (phase === "outer") {
+  if (phase === "outer" || phase === "grid") {
     return [];
   }
   if (phase === "confirm") {

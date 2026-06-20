@@ -46,9 +46,9 @@ in Default mode, and the first set of four boxes is initialized from that
 calibrated preset.
 
 The user first confirms a required outer rectangle around the full area
-containing the four customizable panels. The app then initializes four labeled
-boxes from the default preset and guides the user through four separate
-adjustment steps in this order:
+containing the four customizable panels. The app then asks the user to set the
+snapping grid once, initializes four labeled boxes from the default preset,
+and guides the user through four separate adjustment steps in this order:
 
 - Button box
 - Brightness
@@ -76,9 +76,11 @@ Advanced mode includes a snapping grid helper inside the confirmed outer
 rectangle.
 
 - The default grid starts at 4 columns and usually 5 rows.
-- During each panel-box adjustment step, the user can tune the grid live by
-  selecting `Col` or `Row` and changing that value if the default grid does not
-  match their screenshot well.
+- Right after the outer area is confirmed, the user chooses the column and row
+  counts once before the first panel-box adjustment step.
+- The chosen grid remains visible as alignment guidance during panel-box
+  adjustment and review. To change it later, the user goes back to the grid
+  step instead of editing it inline on each panel step.
 - The active panel box snaps against nearby grid targets while still allowing
   slow, precise drag and resize adjustments.
 - Interior snap targets intentionally leave small visible gaps between panel
@@ -97,9 +99,9 @@ from the outer-rectangle confirmation step:
 
 - The **outer confirmation step** still shows the full imported screenshot so
   the user can place the master green rectangle against the full Quick Panel.
-- The **panel-box editing and confirm steps** crop the displayed screenshot to
-  the confirmed outer rectangle only. This reduces wasted vertical space and
-  makes room for the grid controls.
+- The **grid, panel-box editing, and confirm steps** crop the displayed
+  screenshot to the confirmed outer rectangle only. This reduces wasted
+  vertical space and keeps the alignment view focused.
 
 Important implementation details for future changes:
 
@@ -126,11 +128,12 @@ Important implementation details for future changes:
 Grid controls also changed from the original bottom-sheet-only approach:
 
 - The help/examples still live in the bottom sheet opened from the header
-  settings button during panel-box adjustment.
-- The live grid controls were moved into the fixed bottom action area.
+  helper button or the inline grid help button during the dedicated grid step.
+- The live grid controls now appear only during the dedicated grid step in the
+  fixed bottom action area.
 - The current control UI is a compact **axis chip + shared slider** dock:
   `Col`/`Row` chips show the current values, and one shared slider adjusts
-  whichever axis is active during the current panel step.
+  whichever axis is active while the user is on the grid step.
 - The slider box intentionally does **not** repeat the label/value because the
   top chips already carry that context.
 

@@ -9,8 +9,8 @@ import { GridHelpButton } from "./components/GridHelpButton";
 interface Props {
   canGoBack: boolean;
   columns: number;
-  isGridVisible: boolean;
   isConfirmPhase: boolean;
+  isGridPhase: boolean;
   isOuterPhase: boolean;
   onBack: () => void;
   onColumnsChange: (value: number) => void;
@@ -25,8 +25,8 @@ interface Props {
 export function AdvancedCalibrationControls({
   canGoBack,
   columns,
-  isGridVisible,
   isConfirmPhase,
+  isGridPhase,
   isOuterPhase,
   onBack,
   onColumnsChange,
@@ -46,11 +46,11 @@ export function AdvancedCalibrationControls({
 
   return (
     <View className="gap-3 py-4">
-      {isGridVisible ? (
+      {isGridPhase ? (
         <View className="gap-2 rounded-2xl border border-white/10 bg-zinc-900/90 px-3 py-2.5">
           <View className="flex-row items-center justify-between">
             <Text className="text-xs font-semibold uppercase tracking-[0.8px] text-zinc-400">
-              {t("advancedCalibration.gridSheetTitle")}
+              {t("advancedCalibration.gridControlsTitle")}
             </Text>
             <GridHelpButton
               label={t("advancedCalibration.gridHelpButton")}

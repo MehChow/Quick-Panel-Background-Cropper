@@ -69,6 +69,8 @@ const en = {
       title: "Advanced calibration",
       outerSubtitle:
         "Wrap the full area containing your four customizable panels",
+      gridSubtitle:
+        "Set the grid once before aligning the four panel boxes",
       panelSubtitle: "Drag and resize the {{panel}} area",
       confirmSubtitle: "Review all four panel boxes before saving",
       panelHelpTitle: "How to align this area",
@@ -86,6 +88,7 @@ const en = {
       back: "Back",
       next: "Next",
       gridHelpButton: "Grid help",
+      gridControlsTitle: "Set the snapping grid",
       gridSheetTitle: "How to set the grid",
       gridSheetSubtitle:
         "Choose the row and column counts that make the grid dots fall into the gaps between your controls. Use the examples below to decide which grid matches your screenshot more closely.",

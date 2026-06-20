@@ -27,6 +27,7 @@ export function AdvancedCalibrationScreen() {
     goForward,
     grid,
     isConfirmPhase,
+    isGridPhase,
     isOuterPhase,
     phase,
     importScreenshot,
@@ -41,7 +42,19 @@ export function AdvancedCalibrationScreen() {
   const panels = advancedDraft?.panels ?? null;
   const isEditing = Boolean(screenshot && outerRect);
   const isPanelStep = isPanelPhase(phase);
-  const showHelpButton = isEditing && (isOuterPhase || isPanelStep || isConfirmPhase);
+  const showHelpButton = isEditing && (isOuterPhase || isGridPhase || isPanelStep || isConfirmPhase);
+  const actionAccessibilityLabel = isGridPhase
+    ? t("advancedCalibration.gridHelpButton")
+    : showHelpButton
+      ? t("calibration.helpButton")
+      : undefined;
+  const openActiveHelp = () => {
+    if (isGridPhase) {
+      setIsGridHelpOpen(true);
+      return;
+    }
+    setIsHelpOpen(true);
+  };
 
   const handleBack = () => { goBack(); };
   const handleNext = () => { goForward(); };
@@ -51,9 +64,9 @@ export function AdvancedCalibrationScreen() {
     <SafeAreaView style={{ flex: 1 }}>
       <View className="px-5 pt-8">
         <SubPageHeader
-          actionAccessibilityLabel={showHelpButton ? t("calibration.helpButton") : undefined}
+          actionAccessibilityLabel={actionAccessibilityLabel}
           actionVariant={showHelpButton ? "helper-balanced" : undefined}
-          onActionPress={showHelpButton ? () => setIsHelpOpen(true) : undefined}
+          onActionPress={showHelpButton ? openActiveHelp : undefined}
           title={t("advancedCalibration.title")}
           subtitle={getSubtitle(phase, t)}
         />
@@ -104,8 +117,8 @@ export function AdvancedCalibrationScreen() {
           <AdvancedCalibrationControls
             canGoBack={canGoBack}
             columns={grid.columns}
-            isGridVisible={isPanelStep}
             isConfirmPhase={isConfirmPhase}
+            isGridPhase={isGridPhase}
             isOuterPhase={isOuterPhase}
             onBack={handleBack}
             onColumnsChange={setColumns}
@@ -121,7 +134,7 @@ export function AdvancedCalibrationScreen() {
       {isHelpOpen && isOuterPhase ? <CalibrationHelpSheet onClose={() => setIsHelpOpen(false)} /> : null}
       {isHelpOpen && isPanelStep ? <PanelAlignmentHelpSheet onClose={() => setIsHelpOpen(false)} /> : null}
       {isHelpOpen && isConfirmPhase ? <PanelReviewHelpSheet onClose={() => setIsHelpOpen(false)} /> : null}
-      {isGridHelpOpen && isPanelStep ? <AdvancedGridSheet onClose={() => setIsGridHelpOpen(false)} /> : null}
+      {isGridHelpOpen && isGridPhase ? <AdvancedGridSheet onClose={() => setIsGridHelpOpen(false)} /> : null}
     </SafeAreaView>
   );
 }
@@ -132,6 +145,9 @@ function getSubtitle(
 ) {
   if (phase === "outer") {
     return t("advancedCalibration.outerSubtitle");
+  }
+  if (phase === "grid") {
+    return t("advancedCalibration.gridSubtitle");
   }
   if (phase === "confirm") {
     return t("advancedCalibration.confirmSubtitle");
