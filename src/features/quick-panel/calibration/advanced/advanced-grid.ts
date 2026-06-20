@@ -7,7 +7,7 @@ import {
   maybeSnap,
 } from "./advanced-snap-axis";
 import { getMatchSnapKey, getSnapKey } from "./advanced-snap-key";
-import { clampPanelRect } from "./panel-constraints";
+import { clampPanelRect, clampResizedPanelRect } from "./panel-constraints";
 
 export type { AdvancedSnapGrid } from "../../model/types";
 
@@ -138,7 +138,7 @@ export function snapResizedPanelRect(
   }
 
   return {
-    rect: clampPanelRect(
+    rect: clampResizedPanelRect(
       {
         x: left,
         y: top,
@@ -147,6 +147,7 @@ export function snapResizedPanelRect(
         radius: 0,
       },
       outerRect,
+      position,
     ),
     snapKey: getSnapKey(snapKeys),
   };
