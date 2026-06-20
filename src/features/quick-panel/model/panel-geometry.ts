@@ -49,6 +49,21 @@ export function getImageBounds(preset: QuickPanelPreset): PanelRect {
   };
 }
 
+export function getImagePlacementBounds(preset: QuickPanelPreset): PanelRect {
+  const exportBounds = getImageBounds(preset);
+  const area = preset.customizationArea;
+  const top = Math.min(area.y, exportBounds.y);
+  const bottom = Math.max(area.y + area.height, exportBounds.y + exportBounds.height);
+
+  return {
+    x: area.x,
+    y: top,
+    width: area.width,
+    height: bottom - top,
+    radius: 0,
+  };
+}
+
 export function scalePresetToUnion(
   basePreset: QuickPanelPreset,
   targetUnion: PanelRect,
