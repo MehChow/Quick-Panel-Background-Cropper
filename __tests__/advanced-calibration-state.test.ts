@@ -4,6 +4,7 @@ import type {
   AdvancedSnapGrid,
   PanelRects,
 } from "@/features/quick-panel/model/types";
+import { visualOrder } from "@/features/quick-panel/model/preset";
 
 const grid: AdvancedSnapGrid = { columns: 4, rows: 5 };
 
@@ -54,6 +55,7 @@ function createDraft(panels: PanelRects): AdvancedCalibrationDraft {
       height: 240,
       radius: 0,
     },
+    enabledPanels: visualOrder,
     panels,
   };
 }

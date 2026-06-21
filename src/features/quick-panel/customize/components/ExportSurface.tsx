@@ -26,8 +26,8 @@ export const ExportSurface = forwardRef<View, ExportSurfaceProps>(
       <View
         ref={ref}
         collapsable={false}
-        className="overflow-hidden bg-black"
-        style={{ height: side, width: side }}
+        className="overflow-hidden"
+        style={{ backgroundColor: "transparent", height: side, width: side }}
       >
         <Image
           source={{ uri: image.uri }}

@@ -73,8 +73,11 @@
     "web": "expo start --web",
     "lint": "expo lint",
     "convert-assets": "node ./convert-to-webp.js",
-    "build-android": "set EXPO_PUBLIC_BUILD_TYPE=aab && node -e \"const fs = require('fs'); const code = Math.floor(Date.now() / 60000); fs.appendFileSync('android/local.properties', Buffer.from([10]) + 'MYAPP_VERSION_CODE=' + code + Buffer.from([10]));\" && cd android && gradlew app:bundleRelease",
-    "build-apk": "set EXPO_PUBLIC_BUILD_TYPE=apk && node -e \"const fs = require('fs'); const code = Math.floor(Date.now() / 60000); fs.appendFileSync('android/local.properties', Buffer.from([10]) + 'MYAPP_VERSION_CODE=' + code + Buffer.from([10]));\" && cd android && gradlew app:assembleRelease"
+    "build-apk": "node .\\scripts\\prepare-android-build.cjs apk false && cd android && gradlew app:assembleRelease",
+    "build-apk-show-version": "node .\\scripts\\prepare-android-build.cjs apk true && cd android && gradlew app:assembleRelease",
+    "build-apk-bump-show-version": "node .\\scripts\\prepare-android-build.cjs apk-bump true && cd android && gradlew app:assembleRelease",
+    "build-internal": "node .\\scripts\\prepare-android-build.cjs internal false && cd android && gradlew app:bundleRelease",
+    "build-closed": "node .\\scripts\\prepare-android-build.cjs closed true && cd android && gradlew app:bundleRelease"
   },
   "jest": {
     "preset": "jest-expo",

@@ -39,6 +39,12 @@ export function createAdvancedPreset(
   calibration: AdvancedCalibration,
 ): QuickPanelPreset {
   const base = getCalibratedPreset(calibration.outerRect);
+  const enabledVisualOrder = visualOrder.filter((id) =>
+    calibration.enabledPanels.includes(id),
+  );
+  const enabledGoodLockOrder = goodLockOrder.filter((id) =>
+    calibration.enabledPanels.includes(id),
+  );
   return {
     ...base,
     id: "one-ui-8-5-advanced",
@@ -47,8 +53,8 @@ export function createAdvancedPreset(
     width: calibration.screenshotWidth,
     height: calibration.screenshotHeight,
     customizationArea: calibration.outerRect,
-    visualOrder,
-    goodLockOrder,
+    visualOrder: enabledVisualOrder,
+    goodLockOrder: enabledGoodLockOrder,
     panels: mapPanels((id) => ({
       ...base.panels[id],
       id,
@@ -64,21 +70,30 @@ export function getPanelRectUnion(panels: PanelRects): PanelRect {
     screenshotWidth: 1,
     grid: { columns: 4, rows: 5 },
     outerRect: { x: 0, y: 0, width: 1, height: 1, radius: 0 },
+    enabledPanels: visualOrder,
     panels,
   }));
 }
 
-export function hasOverlappingPanels(panels: PanelRects): boolean {
-  return visualOrder.some((id, index) =>
-    visualOrder.slice(index + 1).some((otherId) =>
+export function hasOverlappingPanels(
+  panels: PanelRects,
+  enabledPanels: PanelId[],
+): boolean {
+  return enabledPanels.some((id, index) =>
+    enabledPanels.slice(index + 1).some((otherId) =>
       rectanglesOverlap(panels[id], panels[otherId]),
     ),
   );
 }
 
-export function arePanelsValid(panels: PanelRects, outerRect: PanelRect) {
-  return visualOrder.every((id) => isRectInside(panels[id], outerRect)) &&
-    !hasOverlappingPanels(panels);
+export function arePanelsValid(
+  panels: PanelRects,
+  outerRect: PanelRect,
+  enabledPanels: PanelId[],
+) {
+  return enabledPanels.length > 0 &&
+    enabledPanels.every((id) => isRectInside(panels[id], outerRect)) &&
+    !hasOverlappingPanels(panels, enabledPanels);
 }
 
 function rectanglesOverlap(a: PanelRect, b: PanelRect) {

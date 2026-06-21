@@ -7,7 +7,7 @@ const zh = {
     },
     home: {
       title: "Quick Panel 背景裁切工具",
-      subtitle: "將一張圖片無縫延伸到你的 Quick Panel 控制面板",
+      subtitle: "將一張圖片無縫延伸到你的 Quick Panel 控制版面",
     },
     landing: {
       startCustomizing: "開始自訂",
@@ -25,7 +25,7 @@ const zh = {
         "適合標準版面：\n按鈕區 > 亮度條 > 音量條 > 媒體播放器",
       advanced: "進階",
       advancedDescription:
-        "適合已重新排列、調整大小、垂直排列，或其他自訂過的版面。",
+        "適合已重新排列、調整大小、移除、垂直排列，或其他自訂過的控制版面。",
       helpTitle: "該選哪個模式？",
       helpSubtitle: "選擇最符合你目前 Quick Panel 版面的模式。",
     },
@@ -64,16 +64,16 @@ const zh = {
     },
     advancedCalibration: {
       title: "進階校正",
-      outerSubtitle: "框住包含四個可自訂版面的完整區域",
+      outerSubtitle: "框住你想校正的完整區域",
+      panelSelectionSubtitle: "關閉這個區域中不適用的版面",
+      gridSubtitle: "先設定格線，再逐一調整已啟用的版面方框",
       panelSubtitle: "拖曳並調整 {{panel}} 範圍",
-      confirmSubtitle: "儲存前確認四個版面方框",
+      confirmSubtitle: "儲存前確認已啟用的版面方框",
       panelHelpTitle: "如何對齊這個版面範圍",
       panelHelpBody:
         "拖曳並調整紫色方框，讓它剛好貼齊這個版面的邊緣。格線圓點應該落在版面周圍的留白處，而不是被紫色邊框壓住。當方框對齊正確時，這些圓點能幫助你判斷間距，讓整體版面更平均、更準確。",
-      panelHelpGood:
-        "讓紫色方框貼齊版面邊緣，讓格線圓點留在周圍留白處。",
-      panelHelpBad:
-        "不要讓紫色邊框壓到格線圓點，或跑進版面周圍的留白。",
+      panelHelpGood: "讓紫色方框貼齊版面邊緣，讓格線圓點留在周圍留白處。",
+      panelHelpBad: "不要讓紫色邊框壓到格線圓點，或跑進版面周圍的留白。",
       reviewHelpTitle: "如何檢查校正結果",
       reviewHelpBody:
         "儲存前，請確認每個橘色方框都準確貼齊對應版面的邊緣，版面之間的間距看起來也平均一致。這一步檢查得越精準，匯出的裁切圖片在 Good Lock 裡就越容易對齊。",
@@ -82,13 +82,19 @@ const zh = {
       back: "返回",
       next: "下一步",
       gridHelpButton: "格線說明",
+      gridControlsTitle: "設定對齊格線",
+      panelSelectionTitle: "這個區域包含哪些版面？",
+      panelSelectionBody:
+        "關閉這個區域中沒有的控制版面。已關閉的版面不需要校準，也不會匯出。",
+      panelEnabled: "開",
+      panelDisabled: "關",
       gridSheetTitle: "如何設定格線",
       gridSheetSubtitle:
         "選擇能讓格線圓點落在控制項之間留白處的列數與欄數。可參考下方範例，判斷哪一種格線更貼近你的截圖。",
     },
     export: {
       successTitle: "匯出成功",
-      successSubtitle: "請依序套用到 QuickStar",
+      successSubtitle: "請依畫面顯示順序套用到 QuickStar",
       openGoodLock: "開啟 Good Lock",
       openingGoodLock: "正在開啟 Good Lock",
       goodLockUnavailableTitle: "無法開啟 Good Lock",
@@ -102,7 +108,7 @@ const zh = {
     preset: {
       defaultLabel: "Galaxy S25+ / One UI 8.5 預設版面",
       calibratedLabel: "{{label}} 已校正",
-      advancedLabel: "One UI 8.5 進階版面",
+      advancedLabel: "One UI 8.5 進階自訂版面",
     },
     panels: {
       buttonBox: "按鈕區",
@@ -120,7 +126,8 @@ const zh = {
       unableToExport: "無法匯出圖片。",
       confirmOuterFirst: "請先確認外層可自訂區域。",
       invalidAdvancedPanels:
-        "請讓四個版面方框都保持在外層區域內，且不要互相重疊。",
+        "請讓已選擇的版面方框保持在外層區域內，且不要互相重疊。",
+      selectAdvancedPanel: "請至少選擇一個面板。",
     },
   },
 };

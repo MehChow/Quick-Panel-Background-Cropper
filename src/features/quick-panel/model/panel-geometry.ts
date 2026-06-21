@@ -4,6 +4,9 @@ import type { PanelDefinition, PanelRect, QuickPanelPreset } from "./types";
 export const exportSidePixels = 1024;
 
 export function getPanelUnion(preset: QuickPanelPreset): PanelRect {
+  if (preset.visualOrder.length === 0) {
+    return { ...preset.customizationArea };
+  }
   const rects = preset.visualOrder.map((id) => preset.panels[id].rect);
   const left = Math.min(...rects.map((rect) => rect.x));
   const top = Math.min(...rects.map((rect) => rect.y));
@@ -32,6 +35,9 @@ export function getExportSquareRect(panel: PanelDefinition): PanelRect {
 }
 
 export function getImageBounds(preset: QuickPanelPreset): PanelRect {
+  if (preset.visualOrder.length === 0) {
+    return { ...preset.customizationArea };
+  }
   const rects = preset.visualOrder.map((id) =>
     getExportSquareRect(preset.panels[id]),
   );
@@ -44,6 +50,21 @@ export function getImageBounds(preset: QuickPanelPreset): PanelRect {
     x: left,
     y: top,
     width: right - left,
+    height: bottom - top,
+    radius: 0,
+  };
+}
+
+export function getImagePlacementBounds(preset: QuickPanelPreset): PanelRect {
+  const exportBounds = getImageBounds(preset);
+  const area = preset.customizationArea;
+  const top = Math.min(area.y, exportBounds.y);
+  const bottom = Math.max(area.y + area.height, exportBounds.y + exportBounds.height);
+
+  return {
+    x: area.x,
+    y: top,
+    width: area.width,
     height: bottom - top,
     radius: 0,
   };

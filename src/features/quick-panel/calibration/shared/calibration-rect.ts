@@ -24,6 +24,46 @@ export function clampRect(rect: PanelRect, screenshot: PickedImage): PanelRect {
   };
 }
 
+export function clampResizedRect(
+  rect: PanelRect,
+  screenshot: PickedImage,
+  position: HandlePosition,
+): PanelRect {
+  const minSize = Math.min(screenshot.width, screenshot.height) * 0.1;
+  let left = rect.x;
+  let top = rect.y;
+  let right = rect.x + rect.width;
+  let bottom = rect.y + rect.height;
+
+  if (position === "left" || position === "topLeft" || position === "bottomLeft") {
+    left = Math.max(0, Math.min(left, right - minSize));
+  } else if (
+    position === "right" ||
+    position === "topRight" ||
+    position === "bottomRight"
+  ) {
+    right = Math.min(screenshot.width, Math.max(right, left + minSize));
+  }
+
+  if (position === "top" || position === "topLeft" || position === "topRight") {
+    top = Math.max(0, Math.min(top, bottom - minSize));
+  } else if (
+    position === "bottom" ||
+    position === "bottomLeft" ||
+    position === "bottomRight"
+  ) {
+    bottom = Math.min(screenshot.height, Math.max(bottom, top + minSize));
+  }
+
+  return {
+    x: left,
+    y: top,
+    width: right - left,
+    height: bottom - top,
+    radius: 0,
+  };
+}
+
 export function resizeRect(
   rect: PanelRect,
   position: HandlePosition,

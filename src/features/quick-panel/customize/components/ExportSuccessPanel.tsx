@@ -51,7 +51,7 @@ export function ExportSuccessPanel({
         <View className="mt-7 w-full flex-row flex-wrap justify-between gap-y-5">
           {exports.map((item) => (
             <View key={item.id} className="w-[47%] items-center">
-              <View className="aspect-square w-full overflow-hidden rounded-2xl border border-emerald-300/40 bg-sky-200">
+              <View className="aspect-square w-full overflow-hidden rounded-2xl border border-emerald-300/40">
                 <Image
                   key={`${item.id}-${item.previewUri}`}
                   cachePolicy="none"
