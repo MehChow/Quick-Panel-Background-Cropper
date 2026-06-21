@@ -8,7 +8,7 @@ const supportedModes = new Set(["apk", ...incrementModes]);
 
 if (!supportedModes.has(mode)) {
   console.error(
-    "Usage: node scripts/prepare-android-build.cjs <apk|apk-bump|internal|closed> <true|false>"
+    "Usage: node scripts/prepare-android-build.cjs <apk|apk-bump|internal|closed> <true|false>",
   );
   process.exit(1);
 }
@@ -29,7 +29,7 @@ const buildFlagsPath = path.join(
   "features",
   "quick-panel",
   "shared",
-  "buildFlags.ts"
+  "buildFlags.ts",
 );
 
 function readJson(filePath) {
@@ -67,23 +67,30 @@ const appJson = readJson(appJsonPath);
 const configVersionCode = appJson.expo?.android?.versionCode;
 
 if (!Number.isInteger(configVersionCode) || configVersionCode < 1) {
-  throw new Error("app.json expo.android.versionCode must be a positive integer");
+  throw new Error(
+    "app.json expo.android.versionCode must be a positive integer",
+  );
 }
 
 const { content: gradleContent, versionCode: gradleVersionCode } =
   readGradleVersionCode(gradlePath);
 const currentVersionCode = Math.max(configVersionCode, gradleVersionCode);
-const nextVersionCode = incrementModes.has(mode) ? currentVersionCode + 1 : currentVersionCode;
+const nextVersionCode = incrementModes.has(mode)
+  ? currentVersionCode + 1
+  : currentVersionCode;
 const shouldShowBuildVersion = showVersionArg === "true";
 
 appJson.expo.android.versionCode = nextVersionCode;
 writeJson(appJsonPath, appJson);
 
-const nextGradleContent = updateGradleVersionCode(gradleContent, nextVersionCode);
+const nextGradleContent = updateGradleVersionCode(
+  gradleContent,
+  nextVersionCode,
+);
 fs.writeFileSync(gradlePath, nextGradleContent);
 writeBuildFlags(buildFlagsPath, shouldShowBuildVersion);
 
 const action = incrementModes.has(mode) ? "incremented" : "kept";
 console.log(
-  `[prepare-android-build] ${mode} build ${action} android versionCode at ${nextVersionCode}; show version: ${shouldShowBuildVersion}.`
+  `[prepare-android-build] ${mode} build ${action} android versionCode at ${nextVersionCode}; show version: ${shouldShowBuildVersion}.`,
 );

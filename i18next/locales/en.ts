@@ -7,7 +7,8 @@ const en = {
     },
     home: {
       title: "Quick Panel Background Cropper",
-      subtitle: "Split one image seamlessly across your Quick Panel controls",
+      subtitle:
+        "Split one image seamlessly across your Quick Panel Controls area",
     },
     landing: {
       startCustomizing: "Start customizing",
@@ -26,7 +27,7 @@ const en = {
         "For the standard layout:\nButton box > Brightness > Volume > Media player",
       advanced: "Advanced",
       advancedDescription:
-        "For customized layouts with rearranged, resized, vertical, or other adjusted panels.",
+        "For customized layouts with rearranged, resized, removed, vertical, or other adjusted Controls panels.",
       helpTitle: "Which mode should I choose?",
       helpSubtitle:
         "Pick the one that matches how your Quick Panel is arranged.",
@@ -67,10 +68,12 @@ const en = {
     },
     advancedCalibration: {
       title: "Advanced calibration",
-      outerSubtitle:
-        "Wrap the full area containing your four customizable panels",
+      outerSubtitle: "Wrap the full region you want to calibrate",
+      panelSelectionSubtitle:
+        "Turn off the unwanted panels that are missing from this region",
+      gridSubtitle: "Set the grid before aligning the enabled panel boxes",
       panelSubtitle: "Drag and resize the {{panel}} area",
-      confirmSubtitle: "Review all four panel boxes before saving",
+      confirmSubtitle: "Review the enabled panel boxes before saving",
       panelHelpTitle: "How to align this area",
       panelHelpBody:
         "Drag and resize the purple box so it sits exactly on the edges of this area. The grid dots should stay in the gaps around it, not under the purple border. When the box is aligned correctly, those dots help you judge the spacing and keep the overall layout even and accurate.",
@@ -86,13 +89,19 @@ const en = {
       back: "Back",
       next: "Next",
       gridHelpButton: "Grid help",
+      gridControlsTitle: "Set the snapping grid",
+      panelSelectionTitle: "Which panels are in this region?",
+      panelSelectionBody:
+        "Turn off any unwanted Controls panel that is missing from this region. Disabled panels will not be aligned or exported.",
+      panelEnabled: "On",
+      panelDisabled: "Off",
       gridSheetTitle: "How to set the grid",
       gridSheetSubtitle:
         "Choose the row and column counts that make the grid dots fall into the gaps between your controls. Use the examples below to decide which grid matches your screenshot more closely.",
     },
     export: {
       successTitle: "Exported successfully",
-      successSubtitle: "Apply them in QuickStar correspondingly",
+      successSubtitle: "Apply them in QuickStar in the shown order",
       openGoodLock: "Open Good Lock",
       openingGoodLock: "Opening Good Lock",
       goodLockUnavailableTitle: "Good Lock can't be opened",
@@ -106,7 +115,7 @@ const en = {
     preset: {
       defaultLabel: "Galaxy S25+ / One UI 8.5 default",
       calibratedLabel: "{{label}} calibrated",
-      advancedLabel: "One UI 8.5 advanced layout",
+      advancedLabel: "One UI 8.5 custom advanced layout",
     },
     panels: {
       buttonBox: "Button box",
@@ -126,7 +135,8 @@ const en = {
       unableToExport: "Unable to export images.",
       confirmOuterFirst: "Confirm the outer customization area first.",
       invalidAdvancedPanels:
-        "Keep all four panel boxes inside the outer area without overlapping.",
+        "Keep selected panel boxes inside the outer area without overlapping.",
+      selectAdvancedPanel: "Select at least one panel to continue.",
     },
   },
 };

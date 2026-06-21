@@ -3,9 +3,11 @@ import type {
   AdvancedCalibration,
   AdvancedSnapGrid,
   DefaultCalibration,
+  PanelId,
   PanelRect,
   PanelRects,
 } from "../model/types";
+import { panelIds } from "../model/panel-ids";
 
 const calibrationFlagKey = "quick-panel.is-calibrated";
 const calibrationRectKey = "quick-panel.calibration-rect";
@@ -97,6 +99,7 @@ function parseAdvancedCalibration(value: unknown): AdvancedCalibration | null {
   const outerRect = parseRectValue(item.outerRect);
   const panels = parsePanelRects(item.panels);
   const grid = parseAdvancedGrid(item.grid);
+  const enabledPanels = parseEnabledPanels(item.enabledPanels);
   if (
     typeof item.screenshotWidth !== "number" ||
     typeof item.screenshotHeight !== "number" ||
@@ -111,8 +114,22 @@ function parseAdvancedCalibration(value: unknown): AdvancedCalibration | null {
     screenshotHeight: item.screenshotHeight,
     grid,
     outerRect,
+    enabledPanels,
     panels,
   };
+}
+
+function parseEnabledPanels(value: unknown): PanelId[] {
+  if (!Array.isArray(value)) {
+    return panelIds;
+  }
+  const panels = value.filter((item): item is PanelId =>
+    typeof item === "string" && panelIds.includes(item as PanelId)
+  );
+  const uniquePanels = panels.filter((id, index) => panels.indexOf(id) === index);
+  return uniquePanels.length > 0
+    ? panelIds.filter((id) => uniquePanels.includes(id))
+    : panelIds;
 }
 
 function parsePanelRects(value: unknown): PanelRects | null {
@@ -158,5 +175,5 @@ function parseRectValue(value: unknown): PanelRect | null {
 }
 
 function isGridValue(value: unknown): value is number {
-  return typeof value === "number" && Number.isInteger(value) && value >= 2 && value <= 8;
+  return typeof value === "number" && Number.isInteger(value) && value >= 1 && value <= 8;
 }

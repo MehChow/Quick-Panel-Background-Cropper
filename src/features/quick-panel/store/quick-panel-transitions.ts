@@ -12,6 +12,7 @@ import type {
   PickedImage,
   QuickPanelPreset,
 } from "../model/types";
+import { panelIds } from "../model/panel-ids";
 import {
   createResetWorkState,
   getPresetForMode,
@@ -68,6 +69,7 @@ export function getAdvancedCalibrationState(
     advancedDraft: {
       screenshot: null,
       outerRect: advancedCalibration?.outerRect ?? null,
+      enabledPanels: advancedCalibration?.enabledPanels ?? panelIds,
       panels: advancedCalibration?.panels ?? null,
     },
     ...createResetWorkState(),

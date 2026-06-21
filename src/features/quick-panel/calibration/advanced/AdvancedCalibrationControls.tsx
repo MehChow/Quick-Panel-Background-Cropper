@@ -9,8 +9,9 @@ import { GridHelpButton } from "./components/GridHelpButton";
 interface Props {
   canGoBack: boolean;
   columns: number;
-  isGridVisible: boolean;
   isConfirmPhase: boolean;
+  isGridPhase: boolean;
+  isNextDisabled: boolean;
   isOuterPhase: boolean;
   onBack: () => void;
   onColumnsChange: (value: number) => void;
@@ -25,8 +26,9 @@ interface Props {
 export function AdvancedCalibrationControls({
   canGoBack,
   columns,
-  isGridVisible,
   isConfirmPhase,
+  isGridPhase,
+  isNextDisabled,
   isOuterPhase,
   onBack,
   onColumnsChange,
@@ -46,11 +48,11 @@ export function AdvancedCalibrationControls({
 
   return (
     <View className="gap-3 py-4">
-      {isGridVisible ? (
+      {isGridPhase ? (
         <View className="gap-2 rounded-2xl border border-white/10 bg-zinc-900/90 px-3 py-2.5">
           <View className="flex-row items-center justify-between">
             <Text className="text-xs font-semibold uppercase tracking-[0.8px] text-zinc-400">
-              {t("advancedCalibration.gridSheetTitle")}
+              {t("advancedCalibration.gridControlsTitle")}
             </Text>
             <GridHelpButton
               label={t("advancedCalibration.gridHelpButton")}
@@ -79,24 +81,46 @@ export function AdvancedCalibrationControls({
       ) : null}
       {isOuterPhase ? (
         <View className="flex-row gap-3">
-          <Button className="flex-1" onPress={onImport} textClassName="font-semibold">
+          <Button
+            className="flex-1"
+            onPress={onImport}
+            textClassName="font-semibold"
+          >
             {t("calibration.reImport")}
           </Button>
-          <Button className="flex-1 bg-green-200/90" onPress={onNext} textClassName="font-semibold text-green-900">
+          <Button
+            className="flex-1 bg-green-200/90 px-0"
+            onPress={onNext}
+            textClassName="font-semibold text-green-900 w-full"
+          >
             {t("advancedCalibration.next")}
           </Button>
         </View>
       ) : (
         <View className="flex-row gap-3">
-          <Button className="flex-1" disabled={!canGoBack} onPress={onBack} textClassName="font-semibold">
+          <Button
+            className="flex-1"
+            disabled={!canGoBack}
+            onPress={onBack}
+            textClassName="font-semibold"
+          >
             {t("advancedCalibration.back")}
           </Button>
           {isConfirmPhase ? (
-            <Button className="flex-1 bg-green-200/90" onPress={onSave} textClassName="font-semibold text-green-900">
+            <Button
+              className="flex-1 bg-green-200/90 px-0"
+              onPress={onSave}
+              textClassName="font-semibold text-green-900 w-full"
+            >
               {t("common.confirm")}
             </Button>
           ) : (
-            <Button className="flex-1 bg-green-200/90" onPress={onNext} textClassName="font-semibold text-green-900">
+            <Button
+              className="flex-1 bg-green-200/90 px-0"
+              disabled={isNextDisabled}
+              onPress={onNext}
+              textClassName="font-semibold text-green-900 w-full"
+            >
               {t("advancedCalibration.next")}
             </Button>
           )}
@@ -112,7 +136,10 @@ interface AxisChipProps {
   onPress: () => void;
   value: number;
 }
-interface GridSliderProps { onValueChange: (value: number) => void; value: number; }
+interface GridSliderProps {
+  onValueChange: (value: number) => void;
+  value: number;
+}
 
 function AxisChip({ isActive, label, onPress, value }: AxisChipProps) {
   return (
@@ -121,10 +148,14 @@ function AxisChip({ isActive, label, onPress, value }: AxisChipProps) {
       onPress={onPress}
     >
       <View className="flex-row items-center justify-between">
-        <Text className={`text-[10px] font-semibold uppercase tracking-[0.8px] ${isActive ? "text-white" : "text-zinc-400"}`}>
+        <Text
+          className={`text-[10px] font-semibold uppercase tracking-[0.8px] ${isActive ? "text-white" : "text-zinc-400"}`}
+        >
           {label}
         </Text>
-        <Text className={`text-sm font-semibold ${isActive ? "text-white" : "text-zinc-300"}`}>
+        <Text
+          className={`text-sm font-semibold ${isActive ? "text-white" : "text-zinc-300"}`}
+        >
           {value}
         </Text>
       </View>
@@ -137,7 +168,7 @@ function GridSlider({ onValueChange, value }: GridSliderProps) {
     <View className="rounded-xl bg-zinc-800/70 px-3 py-2">
       <Slider
         max={8}
-        min={2}
+        min={1}
         onValueChange={onValueChange}
         size="sm"
         step={1}

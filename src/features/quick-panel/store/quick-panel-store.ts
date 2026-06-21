@@ -8,6 +8,7 @@ import type {
   CustomizationMode,
   GeneratedExport,
   ImageTransform,
+  PanelId,
   PanelRect,
   PanelRects,
   PickedImage,
@@ -50,6 +51,7 @@ export interface QuickPanelState extends QuickPanelStateData {
   setAdvancedScreenshot: (screenshot: PickedImage, suggestedOuter: PanelRect) => void;
   setAdvancedOuterRect: (rect: PanelRect) => void;
   confirmAdvancedOuterRect: () => void;
+  setAdvancedEnabledPanels: (enabledPanels: PanelId[]) => void;
   setAdvancedPanels: (panels: PanelRects) => void;
   acceptAdvancedCalibration: (grid: AdvancedSnapGrid) => boolean;
   startImageProcessing: () => void;
@@ -123,6 +125,12 @@ export const useQuickPanelStore = create<QuickPanelState>((set, get) => ({
       error: null,
     };
   }),
+  setAdvancedEnabledPanels: (enabledPanels) => set((state) => ({
+    advancedDraft: state.advancedDraft
+      ? { ...state.advancedDraft, enabledPanels }
+      : null,
+    error: enabledPanels.length > 0 ? null : translate("errors.selectAdvancedPanel"),
+  })),
   setAdvancedPanels: (panels) => set((state) => ({
     advancedDraft: state.advancedDraft ? { ...state.advancedDraft, panels } : null,
     error: null,
