@@ -89,9 +89,9 @@ export function AdvancedCalibrationControls({
             {t("calibration.reImport")}
           </Button>
           <Button
-            className="flex-1 bg-green-200/90"
+            className="flex-1 bg-green-200/90 px-0"
             onPress={onNext}
-            textClassName="font-semibold text-green-900"
+            textClassName="font-semibold text-green-900 w-full"
           >
             {t("advancedCalibration.next")}
           </Button>
@@ -110,7 +110,7 @@ export function AdvancedCalibrationControls({
             <Button
               className="flex-1 bg-green-200/90 px-0"
               onPress={onSave}
-              textClassName="font-semibold text-green-900  w-full"
+              textClassName="font-semibold text-green-900 w-full"
             >
               {t("common.confirm")}
             </Button>

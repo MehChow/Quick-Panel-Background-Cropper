@@ -58,18 +58,23 @@ export function CustomizeScreen() {
       <ScrollView
         className="flex-1"
         contentContainerClassName="px-5 pb-8"
-        contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
+        contentContainerStyle={{
+          flexGrow: 1,
+          justifyContent: "center",
+        }}
         scrollEnabled={!isPreviewAdjusting}
         overScrollMode="never"
       >
         {image ? (
-          <QuickPanelPreview
-            image={image}
-            preset={activePreset}
-            onAdjustingChange={setIsPreviewAdjusting}
-            transform={transform}
-            onTransformChange={setTransform}
-          />
+          <View className="items-center">
+            <QuickPanelPreview
+              image={image}
+              preset={activePreset}
+              onAdjustingChange={setIsPreviewAdjusting}
+              transform={transform}
+              onTransformChange={setTransform}
+            />
+          </View>
         ) : (
           <ImagePickerCard
             mode={selectedMode ?? "default"}
@@ -78,15 +83,6 @@ export function CustomizeScreen() {
             isProcessing={isProcessingImage}
           />
         )}
-        {image ? (
-          <CustomizeActions
-            isExporting={isExporting}
-            isProcessingImage={isProcessingImage}
-            onExport={exportImages}
-            onPick={pickImage}
-            onReset={resetFit}
-          />
-        ) : null}
         {noticeKey ? (
           <Text className="mt-4 rounded-md bg-green-500/15 p-3 text-sm text-green-100">
             {t(noticeKey)}
@@ -103,6 +99,17 @@ export function CustomizeScreen() {
           </Text>
         ) : null}
       </ScrollView>
+      {image ? (
+        <View className="border-t border-white/10 px-5">
+          <CustomizeActions
+            isExporting={isExporting}
+            isProcessingImage={isProcessingImage}
+            onExport={exportImages}
+            onPick={pickImage}
+            onReset={resetFit}
+          />
+        </View>
+      ) : null}
       {image && shouldRenderExportSurfaces ? (
         <ExportSurfaces
           image={image}
