@@ -1,6 +1,4 @@
 import { AppGradientBackground } from "@/features/quick-panel/shared/AppGradientBackground";
-import { shouldShowBuildVersion } from "@/features/quick-panel/shared/buildFlags";
-import BuildVersion from "@/features/quick-panel/shared/BuildVersion";
 import { FloatingLanguageSwitchButton } from "@/features/quick-panel/shared/LanguageSwitchButton";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { Stack } from "expo-router";
@@ -17,8 +15,6 @@ SplashScreen.setOptions({
 });
 
 export default function RootLayout() {
-  const shouldShowVersion = !__DEV__ && shouldShowBuildVersion;
-
   return (
     <GestureHandlerRootView className="flex-1">
       <SafeAreaProvider>
@@ -32,8 +28,6 @@ export default function RootLayout() {
                 headerShown: false,
               }}
             />
-            {/* 🎯 Displays ONLY when compiling for Closed Testing bundle */}
-            {shouldShowVersion && <BuildVersion />}
           </View>
           {__DEV__ ? <FloatingLanguageSwitchButton /> : null}
         </BottomSheetModalProvider>

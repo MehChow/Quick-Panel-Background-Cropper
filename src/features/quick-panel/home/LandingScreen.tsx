@@ -1,5 +1,7 @@
 import { Button } from "@/components/ani-ui/button";
 import { AppHeader } from "@/features/quick-panel/shared/AppHeader";
+import BuildVersion from "@/features/quick-panel/shared/BuildVersion";
+import { shouldShowBuildVersion } from "@/features/quick-panel/shared/buildFlags";
 import { useQuickPanelStore } from "@/features/quick-panel/store/quick-panel-store";
 import { quickPanelSelectors } from "@/features/quick-panel/store/selectors";
 import { type Href, useRouter } from "expo-router";
@@ -13,6 +15,7 @@ import { useLandingLayout } from "./hooks/useLandingLayout";
 export function LandingScreen() {
   const { t } = useTranslation();
   const router = useRouter();
+  const shouldShowVersion = !__DEV__ && shouldShowBuildVersion;
   const { goToModeSelection } = useQuickPanelStore(
     useShallow(quickPanelSelectors.landingScreen),
   );
@@ -33,7 +36,8 @@ export function LandingScreen() {
         <View className="flex-1 pt-4" onLayout={handleContainerLayout}>
           <LandingExampleCard maxHeight={cardHeight} />
 
-          <View className="mt-4 gap-2" onLayout={handleActionsLayout}>
+          <View className="mt-4" onLayout={handleActionsLayout}>
+            {shouldShowVersion && <BuildVersion />}
             <Button
               className="w-full"
               onPress={openCustomize}
