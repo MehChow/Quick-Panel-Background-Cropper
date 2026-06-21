@@ -1,8 +1,8 @@
 import { Text } from "@/components/ani-ui/text";
 import { useTranslation } from "react-i18next";
 import { Pressable, View } from "react-native";
-import { advancedPanelPhases } from "../advanced-steps";
 import type { PanelId } from "../../../model/types";
+import { advancedPanelPhases } from "../advanced-steps";
 
 interface Props {
   enabledPanels: PanelId[];
@@ -19,8 +19,8 @@ export function AdvancedPanelSelection({
     const isEnabled = enabledPanels.includes(panelId);
     const nextPanels = isEnabled
       ? enabledPanels.filter((id) => id !== panelId)
-      : advancedPanelPhases.filter((id) =>
-          id === panelId || enabledPanels.includes(id),
+      : advancedPanelPhases.filter(
+          (id) => id === panelId || enabledPanels.includes(id),
         );
     onEnabledPanelsChange(nextPanels);
   };

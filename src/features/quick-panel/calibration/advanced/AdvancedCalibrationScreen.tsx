@@ -46,13 +46,12 @@ export function AdvancedCalibrationScreen() {
   const panels = advancedDraft?.panels ?? null;
   const isEditing = Boolean(screenshot && outerRect);
   const isPanelStep = isPanelPhase(phase);
+  const isNextDisabled = isPanelSelectionPhase && enabledPanels.length === 0;
   const showHelpButton = isEditing &&
-    (isOuterPhase || isGridPhase || isPanelStep || isConfirmPhase);
-  const actionAccessibilityLabel = isGridPhase
-    ? t("advancedCalibration.gridHelpButton")
-    : showHelpButton
-      ? t("calibration.helpButton")
-      : undefined;
+    (isOuterPhase || isPanelStep || isConfirmPhase);
+  const actionAccessibilityLabel = showHelpButton
+    ? t("calibration.helpButton")
+    : undefined;
   const openActiveHelp = () => {
     if (isGridPhase) {
       setIsGridHelpOpen(true);
@@ -130,6 +129,7 @@ export function AdvancedCalibrationScreen() {
             columns={grid.columns}
             isConfirmPhase={isConfirmPhase}
             isGridPhase={isGridPhase}
+            isNextDisabled={isNextDisabled}
             isOuterPhase={isOuterPhase}
             onBack={handleBack}
             onColumnsChange={setColumns}
