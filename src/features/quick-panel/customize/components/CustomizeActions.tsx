@@ -1,7 +1,7 @@
 import { Button } from "@/components/ani-ui/button";
 import { Skeleton } from "@/components/ani-ui/skeleton";
-import { View } from "react-native";
 import { useTranslation } from "react-i18next";
+import { View } from "react-native";
 
 interface CustomizeActionsProps {
   isExporting: boolean;
@@ -23,7 +23,12 @@ export function CustomizeActions({
 
   return (
     <View className="mt-5 gap-3">
-      <Button disabled={isBusy} onPress={onPick} textClassName="font-semibold">
+      <Button
+        className="px-0"
+        disabled={isBusy}
+        onPress={onPick}
+        textClassName="font-semibold w-full"
+      >
         {isProcessingImage
           ? t("customize.optimizingImage")
           : t("customize.chooseAnotherImage")}
@@ -31,21 +36,21 @@ export function CustomizeActions({
       <View className="flex-row gap-3 pb-4">
         <View className="basis-0 flex-1">
           <Button
-            className="w-full bg-black"
+            className="w-full bg-black px-0"
             disabled={isBusy}
             onPress={onReset}
-            textClassName="font-semibold text-white"
+            textClassName="font-semibold text-white w-full"
           >
             {t("customize.resetPosition")}
           </Button>
         </View>
         <View className="basis-0 flex-1 overflow-hidden rounded-md">
           <Button
-            className="w-full bg-green-200/90"
+            className="w-full bg-green-200/90 px-0"
             loading={isExporting}
             disabled={isProcessingImage}
             onPress={onExport}
-            textClassName="font-semibold text-green-900"
+            textClassName="font-semibold text-green-900 w-full"
           >
             {isExporting
               ? ""

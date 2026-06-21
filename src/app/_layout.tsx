@@ -1,7 +1,6 @@
 import { AppGradientBackground } from "@/features/quick-panel/shared/AppGradientBackground";
 import { shouldShowBuildVersion } from "@/features/quick-panel/shared/buildFlags";
 import BuildVersion from "@/features/quick-panel/shared/BuildVersion";
-import { shouldShowBuildVersion } from "@/features/quick-panel/shared/buildFlags";
 import { FloatingLanguageSwitchButton } from "@/features/quick-panel/shared/LanguageSwitchButton";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { Stack } from "expo-router";
