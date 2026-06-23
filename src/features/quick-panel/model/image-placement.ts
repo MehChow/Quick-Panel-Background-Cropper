@@ -22,6 +22,19 @@ export function getFitTransform(
   }, image, preset);
 }
 
+export function isTransformAtFit(
+  transform: ImageTransform,
+  image: PickedImage,
+  preset: QuickPanelPreset,
+) {
+  const fit = getFitTransform(image, preset);
+  return (
+    isNearlyEqual(transform.scale, fit.scale) &&
+    isNearlyEqual(transform.x, fit.x) &&
+    isNearlyEqual(transform.y, fit.y)
+  );
+}
+
 export function clampTransform(
   transform: ImageTransform,
   image: PickedImage,
@@ -54,4 +67,8 @@ function clampAxis(
   }
 
   return Math.max(min, Math.min(max, value));
+}
+
+function isNearlyEqual(a: number, b: number) {
+  return Math.abs(a - b) < 0.01;
 }

@@ -58,6 +58,7 @@ jest.mock("@/features/quick-panel/customize/hooks/useCustomizeScreen", () => ({
       volume: { current: null },
     },
     resetFit: jest.fn(),
+    canReset: false,
     selectedMode: "default",
     setIsExportSurfaceReady: jest.fn(),
     setIsPreviewAdjusting: jest.fn(),

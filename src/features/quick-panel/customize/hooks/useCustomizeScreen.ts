@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import type { View } from "react-native";
 import { useShallow } from "zustand/react/shallow";
 import type { ExportRefs } from "../../model/types";
+import { isTransformAtFit } from "../../model/image-placement";
 import { useQuickPanelStore } from "../../store/quick-panel-store";
 import { quickPanelSelectors } from "../../store/selectors";
 import { scheduleExportWork } from "../schedule-export-work";
@@ -44,6 +45,9 @@ export function useCustomizeScreen() {
   } =
     useQuickPanelStore(useShallow(quickPanelSelectors.customizeScreen));
   const { beginExport, exportImages, pickImage, resetFit } = useCustomizeActions(refs);
+  const canReset = image
+    ? !isTransformAtFit(transform, image, activePreset)
+    : false;
 
   const startExport = () => {
     if (!image || isProcessingImage || isExporting) {
@@ -93,6 +97,7 @@ export function useCustomizeScreen() {
     exportLoadToken,
     pickImage,
     resetFit,
+    canReset,
     setIsExportSurfaceReady: () => setReadyExportLoadToken(exportLoadToken),
     shouldRenderExportSurfaces: Boolean(image && isExporting),
     goToCalibration,

@@ -61,6 +61,7 @@ function createScreenState(shouldRenderExportSurfaces: boolean) {
       volume: { current: null },
     },
     resetFit: jest.fn(),
+    canReset: false,
     selectedMode: "default",
     setIsPreviewAdjusting: jest.fn(),
     setIsExportSurfaceReady: jest.fn(),

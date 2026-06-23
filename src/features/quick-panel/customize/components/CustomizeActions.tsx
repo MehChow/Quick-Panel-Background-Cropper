@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 
 interface CustomizeActionsProps {
+  canReset: boolean;
   isExporting: boolean;
   isProcessingImage: boolean;
   onExport: () => void;
@@ -12,6 +13,7 @@ interface CustomizeActionsProps {
 }
 
 export function CustomizeActions({
+  canReset,
   isExporting,
   isProcessingImage,
   onExport,
@@ -37,7 +39,7 @@ export function CustomizeActions({
         <View className="basis-0 flex-1">
           <Button
             className="w-full bg-black px-0"
-            disabled={isBusy}
+            disabled={isBusy || !canReset}
             onPress={onReset}
             textClassName="font-semibold text-white w-full"
           >
