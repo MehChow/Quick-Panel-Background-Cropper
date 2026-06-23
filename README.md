@@ -143,5 +143,6 @@ the same device.
 
 - `npm run android` uses `APP_VARIANT=dev`
 - the Android debug build gets the package suffix `.dev`
+- `npm run build-apk` uses `APP_VARIANT=apk` and installs as `QPBC apk`
 - after native config changes, run `npx expo prebuild --clean` again so the
   generated `android/` project picks up the latest config-plugin changes
