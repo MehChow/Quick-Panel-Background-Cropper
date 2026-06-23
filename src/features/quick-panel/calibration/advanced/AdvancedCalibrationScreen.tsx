@@ -5,7 +5,7 @@ import { PanelAlignmentHelpSheet } from "@/features/quick-panel/shared/PanelAlig
 import { PanelReviewHelpSheet } from "@/features/quick-panel/shared/PanelReviewHelpSheet";
 import { SubPageHeader } from "@/features/quick-panel/shared/SubPageHeader";
 import { useTranslation } from "react-i18next";
-import { ScrollView, View } from "react-native";
+import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { CalibrationCanvas } from "../shared/CalibrationCanvas";
 import { AdvancedGridSheet } from "./AdvancedGridSheet";
@@ -75,17 +75,14 @@ export function AdvancedCalibrationScreen() {
           subtitle={getSubtitle(phase, t)}
         />
       </View>
-      <ScrollView
-        className="flex-1"
-        contentContainerClassName="px-5 pb-8"
-        contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
-        overScrollMode="never"
-      >
+      <View className="flex-1 px-5 pb-4">
         {isPanelSelectionPhase && screenshot && outerRect ? (
-          <AdvancedPanelSelection
-            enabledPanels={enabledPanels}
-            onEnabledPanelsChange={setAdvancedEnabledPanels}
-          />
+          <View className="flex-1 justify-center">
+            <AdvancedPanelSelection
+              enabledPanels={enabledPanels}
+              onEnabledPanelsChange={setAdvancedEnabledPanels}
+            />
+          </View>
         ) : !isOuterPhase && screenshot && outerRect && panels ? (
           <AdvancedPanelCanvas
             grid={grid}
@@ -121,7 +118,7 @@ export function AdvancedCalibrationScreen() {
             {error}
           </Text>
         ) : null}
-      </ScrollView>
+      </View>
       {isEditing ? (
         <View className="border-t border-white/10 px-5">
           <AdvancedCalibrationControls
