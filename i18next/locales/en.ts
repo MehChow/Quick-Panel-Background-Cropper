@@ -57,7 +57,7 @@ const en = {
       subtitle: "Choose an image, then adjust the position",
       optimizingImage: "Optimizing image...",
       imageOptimized: "Selected image was optimized for smoother adjustment.",
-      pickerTitle: "Choose an image from album",
+      pickerTitle: "Choose background image",
       pickerSubtitle: "PNG, JPG, and WEBP are supported.",
       chooseAnotherImage: "Choose another image",
       resetPosition: "Reset position",
