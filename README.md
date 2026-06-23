@@ -133,5 +133,15 @@ The full calibration logic and assumptions are documented in [CALIBRATION_PLAN.m
 
 ```bash
 npm install
-npx expo run:android
+npx expo prebuild --clean
+npm run android
 ```
+
+This repo's default Android development flow installs a side-by-side debug app
+named `QPBC dev` so you can keep the Play Store or closed-test app installed on
+the same device.
+
+- `npm run android` uses `APP_VARIANT=dev`
+- the Android debug build gets the package suffix `.dev`
+- after native config changes, run `npx expo prebuild --clean` again so the
+  generated `android/` project picks up the latest config-plugin changes

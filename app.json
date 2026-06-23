@@ -70,6 +70,9 @@
       "eas": {
         "projectId": "a6ede84a-b016-4465-9663-198d32a222cc"
       }
+    },
+    "ios": {
+      "bundleIdentifier": "com.meh-chow.quickpanelbackgroundcropper"
     }
   }
 }
