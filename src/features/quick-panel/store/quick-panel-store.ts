@@ -36,7 +36,7 @@ import {
   getStartExportState,
   getTransformState,
 } from "./quick-panel-transitions";
-import { saveCalibration, saveCalibrations } from "./storage";
+import { saveCalibration, saveCalibrations, saveLastExportedMode } from "./storage";
 import { createAdvancedDraft, getCalibrationFromDraft } from "./advanced-calibration-state";
 
 export interface QuickPanelState extends QuickPanelStateData {
@@ -158,6 +158,15 @@ export const useQuickPanelStore = create<QuickPanelState>((set, get) => ({
     if (nextState) set(nextState);
   },
   startExport: () => set(getStartExportState()),
-  finishExport: (exports) => set(getFinishExportState(exports)),
+  finishExport: (exports) => {
+    const selectedMode = get().selectedMode;
+    if (exports.length > 0 && selectedMode) {
+      saveLastExportedMode(selectedMode);
+    }
+    set({
+      ...getFinishExportState(exports),
+      lastExportedMode: exports.length > 0 ? selectedMode : get().lastExportedMode,
+    });
+  },
   failExport: (message) => set(getFailExportState(message)),
 }));

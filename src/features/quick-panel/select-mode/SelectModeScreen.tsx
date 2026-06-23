@@ -16,11 +16,11 @@ export function SelectModeScreen() {
   const { t } = useTranslation();
   const router = useRouter();
   const [isHelpOpen, setIsHelpOpen] = useState(false);
-  const [selectedMode, setSelectedMode] = useState<CustomizationMode | null>(
-    null,
-  );
-  const { selectMode } = useQuickPanelStore(
+  const { lastExportedMode, selectMode } = useQuickPanelStore(
     useShallow(quickPanelSelectors.modeSelectionScreen),
+  );
+  const [selectedMode, setSelectedMode] = useState<CustomizationMode | null>(
+    lastExportedMode,
   );
 
   const confirmMode = () => {

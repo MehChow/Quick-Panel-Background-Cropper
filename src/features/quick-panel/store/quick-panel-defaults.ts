@@ -13,11 +13,12 @@ import type {
   QuickPanelPreset,
   QuickPanelStep,
 } from "../model/types";
-import { loadCalibrations } from "./storage";
+import { loadCalibrations, loadLastExportedMode } from "./storage";
 
 export interface QuickPanelStateData {
   step: QuickPanelStep;
   selectedMode: CustomizationMode | null;
+  lastExportedMode: CustomizationMode | null;
   defaultCalibration: DefaultCalibration | null;
   advancedCalibration: AdvancedCalibration | null;
   activePreset: QuickPanelPreset;
@@ -68,6 +69,7 @@ export function createInitialQuickPanelStateData(): QuickPanelStateData {
   return {
     step: "landing",
     selectedMode: null,
+    lastExportedMode: loadLastExportedMode(),
     defaultCalibration: saved.default,
     advancedCalibration: saved.advanced,
     activePreset: s25PlusOneUi85Preset,
