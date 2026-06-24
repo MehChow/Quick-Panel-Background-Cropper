@@ -6,7 +6,7 @@ import BottomSheet, {
 import { useTranslation } from "react-i18next";
 import { useWindowDimensions, View } from "react-native";
 import { PanelAlignmentTips } from "./PanelAlignmentTips";
-import { getHelpSheetLayout } from "./help-sheet-layout";
+import { getHelpSheetMediaLayout } from "./help-sheet-media-layout";
 
 interface PanelAlignmentHelpSheetProps {
   onClose: () => void;
@@ -17,7 +17,7 @@ export function PanelAlignmentHelpSheet({
 }: PanelAlignmentHelpSheetProps) {
   const { t } = useTranslation();
   const { height, width } = useWindowDimensions();
-  const layout = getHelpSheetLayout(width, height);
+  const layout = getHelpSheetMediaLayout(width, height);
 
   return (
     <BottomSheet

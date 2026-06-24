@@ -20,23 +20,17 @@ const advancedImages = [
 ] as const;
 
 interface ModeOptionCardProps {
-  cardMaxWidth: number;
   isSelected: boolean;
-  isStacked: boolean;
   label: string;
   mode: CustomizationMode;
   onPress: () => void;
-  previewMaxHeight: number;
 }
 
 export function ModeOptionCard({
-  cardMaxWidth,
   isSelected,
-  isStacked,
   label,
   mode,
   onPress,
-  previewMaxHeight,
 }: ModeOptionCardProps) {
   const [pageIndex, setPageIndex] = useState(0);
   const [carouselWidth, setCarouselWidth] = useState(0);
@@ -76,14 +70,12 @@ export function ModeOptionCard({
   return (
     <View
       className={cn(
-        isStacked ? "w-full" : "flex-1",
+        "w-full",
         isSelected ? "opacity-100" : "opacity-55",
       )}
-      style={{ maxWidth: cardMaxWidth }}
     >
       <View
-        className="self-center overflow-hidden rounded-2xl border border-white/15 bg-zinc-900/80"
-        style={{ maxHeight: previewMaxHeight, width: "100%" }}
+        className="max-h-[460px] w-full self-center overflow-hidden rounded-2xl border border-white/15 bg-zinc-900/80"
       >
         {mode === "default" ? (
           <Pressable
@@ -95,8 +87,8 @@ export function ModeOptionCard({
             <Image
               source={images.modeDefault}
               contentFit="cover"
-              className="w-full"
-              style={{ aspectRatio: 0.48, maxHeight: previewMaxHeight }}
+              className="max-h-[460px] w-full"
+              style={{ aspectRatio: 0.48 }}
             />
           </Pressable>
         ) : (
@@ -125,9 +117,9 @@ export function ModeOptionCard({
                 <Image
                   source={item}
                   contentFit="cover"
+                  className="max-h-[460px]"
                   style={{
                     aspectRatio: 0.48,
-                    maxHeight: previewMaxHeight,
                     width: carouselWidth,
                   }}
                 />

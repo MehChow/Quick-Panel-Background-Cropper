@@ -2,6 +2,7 @@ import { Button } from "@/components/ani-ui/button";
 import { AppHeader } from "@/features/quick-panel/shared/AppHeader";
 import BuildVersion from "@/features/quick-panel/shared/BuildVersion";
 import { shouldShowBuildVersion } from "@/features/quick-panel/shared/buildFlags";
+import { QuickPanelScreenShell } from "@/features/quick-panel/shared/QuickPanelScreenShell";
 import { useQuickPanelStore } from "@/features/quick-panel/store/quick-panel-store";
 import { quickPanelSelectors } from "@/features/quick-panel/store/selectors";
 import { type Href, useRouter } from "expo-router";
@@ -29,10 +30,10 @@ export function LandingScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <View className="px-5 pt-6">
-        <AppHeader />
-      </View>
-      <View className="flex-1 px-5 pb-8">
+      <QuickPanelScreenShell
+        bodyClassName="pb-8"
+        header={<AppHeader />}
+      >
         <View className="flex-1 pt-4" onLayout={handleContainerLayout}>
           <LandingExampleCard maxHeight={cardHeight} />
 
@@ -47,7 +48,7 @@ export function LandingScreen() {
             </Button>
           </View>
         </View>
-      </View>
+      </QuickPanelScreenShell>
     </SafeAreaView>
   );
 }

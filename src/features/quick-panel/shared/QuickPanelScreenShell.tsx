@@ -1,38 +1,49 @@
 import { cn } from "@/lib/utils";
 import type { ReactNode } from "react";
 import { View } from "react-native";
+import { phoneColumnClassName, phoneFooterClassName } from "./screen-layout";
 
 interface QuickPanelScreenShellProps {
+  bodyClassName?: string;
   children: ReactNode;
-  contentMaxWidth: number;
+  contentClassName?: string;
   footer?: ReactNode;
-  footerMaxWidth?: number;
+  footerClassName?: string;
   footerTestID?: string;
   header: ReactNode;
+  headerClassName?: string;
 }
 
 export function QuickPanelScreenShell({
+  bodyClassName,
   children,
-  contentMaxWidth,
+  contentClassName,
   footer,
-  footerMaxWidth = contentMaxWidth,
+  footerClassName,
   footerTestID,
   header,
+  headerClassName,
 }: QuickPanelScreenShellProps) {
   return (
     <View className="flex-1">
       <View className="px-5 pt-8">
         <View
-          className="self-center"
-          style={{ maxWidth: contentMaxWidth, width: "100%" }}
+          className={cn(
+            "self-center",
+            phoneColumnClassName,
+            headerClassName,
+          )}
         >
           {header}
         </View>
       </View>
-      <View className="flex-1 px-5 pb-4">
+      <View className={cn("flex-1 px-5 pb-4", bodyClassName)}>
         <View
-          className="flex-1 self-center"
-          style={{ maxWidth: contentMaxWidth, width: "100%" }}
+          className={cn(
+            "flex-1 self-center",
+            phoneColumnClassName,
+            contentClassName,
+          )}
         >
           {children}
         </View>
@@ -43,8 +54,11 @@ export function QuickPanelScreenShell({
           testID={footerTestID}
         >
           <View
-            className="self-center"
-            style={{ maxWidth: footerMaxWidth, width: "100%" }}
+            className={cn(
+              "self-center",
+              phoneFooterClassName,
+              footerClassName,
+            )}
           >
             {footer}
           </View>

@@ -5,10 +5,9 @@ import { PanelAlignmentHelpSheet } from "@/features/quick-panel/shared/PanelAlig
 import { PanelReviewHelpSheet } from "@/features/quick-panel/shared/PanelReviewHelpSheet";
 import { QuickPanelScreenShell } from "@/features/quick-panel/shared/QuickPanelScreenShell";
 import { SubPageHeader } from "@/features/quick-panel/shared/SubPageHeader";
-import { getWideScreenLayout } from "@/features/quick-panel/shared/wide-screen-layout";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useWindowDimensions, View } from "react-native";
+import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { CalibrationCanvas } from "../shared/CalibrationCanvas";
 import { isPanelPhase, type AdvancedCalibrationPhase } from "./advanced-steps";
@@ -21,8 +20,6 @@ import { useAdvancedCalibrationScreen } from "./hooks/useAdvancedCalibrationScre
 
 export function AdvancedCalibrationScreen() {
   const { t } = useTranslation();
-  const { height, width } = useWindowDimensions();
-  const layout = getWideScreenLayout(width, height);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
   const [isGridHelpOpen, setIsGridHelpOpen] = useState(false);
   const {
@@ -78,7 +75,6 @@ export function AdvancedCalibrationScreen() {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <QuickPanelScreenShell
-        contentMaxWidth={layout.contentMaxWidth}
         footer={
           isEditing ? (
             <AdvancedCalibrationControls
@@ -107,7 +103,6 @@ export function AdvancedCalibrationScreen() {
             </Button>
           )
         }
-        footerMaxWidth={layout.footerMaxWidth}
         footerTestID="advanced-calibration-footer"
         header={
           <SubPageHeader
@@ -138,8 +133,6 @@ export function AdvancedCalibrationScreen() {
           />
         ) : (
           <CalibrationCanvas
-            emptyCardMaxWidth={layout.importCardMaxWidth}
-            emptyExampleRowMaxWidth={layout.importExampleRowMaxWidth}
             screenshot={screenshot}
             rect={outerRect}
             onImport={importScreenshot}

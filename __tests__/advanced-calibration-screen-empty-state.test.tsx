@@ -50,12 +50,8 @@ jest.mock("@/features/quick-panel/calibration/advanced/AdvancedCalibrationContro
 
 jest.mock("@/features/quick-panel/calibration/shared/CalibrationCanvas", () => ({
   CalibrationCanvas: ({
-    emptyCardMaxWidth,
-    emptyExampleRowMaxWidth,
     showImportButton,
   }: {
-    emptyCardMaxWidth?: number;
-    emptyExampleRowMaxWidth?: number;
     showImportButton?: boolean;
   }) => {
     const React = jest.requireActual("react");
@@ -63,8 +59,6 @@ jest.mock("@/features/quick-panel/calibration/shared/CalibrationCanvas", () => (
     return React.createElement(
       React.Fragment,
       null,
-      React.createElement(Text, null, `card:${String(emptyCardMaxWidth)}`),
-      React.createElement(Text, null, `row:${String(emptyExampleRowMaxWidth)}`),
       React.createElement(Text, null, `import:${String(showImportButton)}`),
     );
   },
@@ -94,28 +88,10 @@ jest.mock("@/features/quick-panel/calibration/advanced/hooks/useAdvancedCalibrat
   }),
 }));
 
-jest.mock("@/features/quick-panel/shared/wide-screen-layout", () => ({
-  getWideScreenLayout: () => ({
-    isWideScreen: true,
-    footerMaxWidth: 560,
-    contentMaxWidth: 540,
-    heroMaxWidth: 520,
-    importCardMaxWidth: 560,
-    importExampleRowMaxWidth: 380,
-    resultGridMaxWidth: 460,
-    selectCardMaxWidth: 220,
-    selectContentMaxWidth: 640,
-    selectPreviewMaxHeight: 460,
-    shouldStackSelectCards: false,
-  }),
-}));
-
 describe("AdvancedCalibrationScreen empty state", () => {
-  it("uses the same bounded import card inputs as default calibration", () => {
+  it("renders the import footer without showing the canvas import button", () => {
     render(<AdvancedCalibrationScreen />);
 
-    expect(screen.getByText("card:560")).toBeTruthy();
-    expect(screen.getByText("row:380")).toBeTruthy();
     expect(screen.getByText("import:false")).toBeTruthy();
     expect(screen.getByTestId("advanced-calibration-footer")).toBeTruthy();
     expect(screen.getByText("calibration.chooseFromAlbum")).toBeTruthy();

@@ -7,7 +7,7 @@ import BottomSheet, {
 import { useTranslation } from "react-i18next";
 import { useWindowDimensions, View } from "react-native";
 import { HelpSheetZoomImage } from "./HelpSheetZoomImage";
-import { getHelpSheetLayout } from "./help-sheet-layout";
+import { getHelpSheetMediaLayout } from "./help-sheet-media-layout";
 
 interface PanelReviewHelpSheetProps {
   onClose: () => void;
@@ -16,7 +16,7 @@ interface PanelReviewHelpSheetProps {
 export function PanelReviewHelpSheet({ onClose }: PanelReviewHelpSheetProps) {
   const { t } = useTranslation();
   const { height, width } = useWindowDimensions();
-  const layout = getHelpSheetLayout(width, height);
+  const layout = getHelpSheetMediaLayout(width, height);
   const panelReviewAspectRatio = 1080 / 1346;
 
   return (

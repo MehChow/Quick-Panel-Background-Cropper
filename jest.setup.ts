@@ -1,5 +1,13 @@
 import "react-native-gesture-handler/jestSetup";
 
+process.env.EXPO_OS = "web";
+
+Object.defineProperty(globalThis, "fetch", {
+  configurable: true,
+  value: jest.fn(),
+  writable: true,
+});
+
 const mockMmkvStore = new Map<string, boolean | string>();
 (globalThis as typeof globalThis & {
   __mmkvStore?: Map<string, boolean | string>;

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/immutability */
 import { Image } from "expo-image";
 import { useState } from "react";
 import { cn } from "@/lib/utils";

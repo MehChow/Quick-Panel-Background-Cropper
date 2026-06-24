@@ -4,7 +4,7 @@ import BottomSheet, { BottomSheetBackdrop, BottomSheetScrollView } from "@gorhom
 import { useTranslation } from "react-i18next";
 import { useWindowDimensions, View } from "react-native";
 import { HelpSheetZoomImage } from "@/features/quick-panel/shared/HelpSheetZoomImage";
-import { getHelpSheetLayout } from "@/features/quick-panel/shared/help-sheet-layout";
+import { getHelpSheetMediaLayout } from "@/features/quick-panel/shared/help-sheet-media-layout";
 
 interface Props {
   onClose: () => void;
@@ -13,7 +13,7 @@ interface Props {
 export function AdvancedGridSheet({ onClose }: Props) {
   const { i18n, t } = useTranslation();
   const { height, width } = useWindowDimensions();
-  const layout = getHelpSheetLayout(width, height);
+  const layout = getHelpSheetMediaLayout(width, height);
   const isEnglish = i18n.resolvedLanguage === "en";
   const columnUnit = isEnglish ? "col" : t("advancedCalibration.columns");
   const rowUnit = isEnglish ? "row" : t("advancedCalibration.rows");

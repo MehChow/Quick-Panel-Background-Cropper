@@ -1,8 +1,8 @@
-import { getHelpSheetLayout } from "@/features/quick-panel/shared/help-sheet-layout";
+import { getHelpSheetMediaLayout } from "@/features/quick-panel/shared/help-sheet-media-layout";
 
-describe("getHelpSheetLayout", () => {
-  it("caps tall example widths on wide foldable screens", () => {
-    expect(getHelpSheetLayout(884, 981)).toEqual({
+describe("getHelpSheetMediaLayout", () => {
+  it("caps thumbnail widths when help sheets have wider viewports", () => {
+    expect(getHelpSheetMediaLayout(884, 981)).toEqual({
       gridExampleWidth: 180,
       maxHeight: 720,
       panelExampleWidth: 168,
@@ -12,7 +12,7 @@ describe("getHelpSheetLayout", () => {
   });
 
   it("keeps smaller fixed example widths on regular phones", () => {
-    expect(getHelpSheetLayout(412, 915)).toEqual({
+    expect(getHelpSheetMediaLayout(412, 915)).toEqual({
       gridExampleWidth: 156,
       maxHeight: 720,
       panelExampleWidth: 150,

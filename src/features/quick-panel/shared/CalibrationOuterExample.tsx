@@ -3,14 +3,14 @@ import { images } from "@/data/images";
 import { useTranslation } from "react-i18next";
 import { useWindowDimensions, View } from "react-native";
 import { HelpSheetZoomImage } from "./HelpSheetZoomImage";
-import { getHelpSheetLayout } from "./help-sheet-layout";
+import { getHelpSheetMediaLayout } from "./help-sheet-media-layout";
 
 const calibrationExampleAspectRatio = 1080 / 2340;
 
 export function CalibrationOuterExample() {
   const { t } = useTranslation();
   const { height, width } = useWindowDimensions();
-  const layout = getHelpSheetLayout(width, height);
+  const layout = getHelpSheetMediaLayout(width, height);
 
   return (
     <View className="items-center">

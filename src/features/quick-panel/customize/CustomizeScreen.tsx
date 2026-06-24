@@ -1,4 +1,5 @@
 import { Text } from "@/components/ani-ui/text";
+import { QuickPanelScreenShell } from "@/features/quick-panel/shared/QuickPanelScreenShell";
 import { SubPageHeader } from "@/features/quick-panel/shared/SubPageHeader";
 import { useTranslation } from "react-i18next";
 import { type Href, useRouter } from "expo-router";
@@ -50,58 +51,8 @@ export function CustomizeScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <View className="px-5 pt-8">
-        <SubPageHeader
-          title={t("customize.title")}
-          subtitle={t("customize.subtitle")}
-        />
-      </View>
-      <ScrollView
-        className="flex-1"
-        contentContainerClassName="px-5 pb-8"
-        contentContainerStyle={{
-          flexGrow: 1,
-          justifyContent: "center",
-        }}
-        scrollEnabled={!isPreviewAdjusting}
-        overScrollMode="never"
-      >
-        {image ? (
-          <View className="items-center">
-            <QuickPanelPreview
-              image={image}
-              preset={activePreset}
-              onAdjustingChange={setIsPreviewAdjusting}
-              transform={transform}
-              onTransformChange={setTransform}
-            />
-          </View>
-        ) : (
-          <ImagePickerCard
-            mode={selectedMode ?? "default"}
-            onPick={pickImage}
-            onRecalibrate={recalibrate}
-            isProcessing={isProcessingImage}
-          />
-        )}
-        {noticeKey ? (
-          <Text className="mt-4 rounded-md bg-green-500/15 p-3 text-sm text-green-100">
-            {t(noticeKey)}
-          </Text>
-        ) : null}
-        {error ? (
-          <Text className="mt-4 rounded-md bg-red-500/15 p-3 text-sm text-red-100">
-            {error}
-          </Text>
-        ) : null}
-        {errorKey ? (
-          <Text className="mt-4 rounded-md bg-red-500/15 p-3 text-sm text-red-100">
-            {t(errorKey)}
-          </Text>
-        ) : null}
-      </ScrollView>
-      {image ? (
-        <View className="border-t border-white/10 px-5">
+      <QuickPanelScreenShell
+        footer={image ? (
           <CustomizeActions
             isExporting={isExporting}
             isProcessingImage={isProcessingImage}
@@ -110,8 +61,56 @@ export function CustomizeScreen() {
             onReset={resetFit}
             canReset={canReset}
           />
-        </View>
-      ) : null}
+        ) : null}
+        header={
+          <SubPageHeader
+            title={t("customize.title")}
+            subtitle={t("customize.subtitle")}
+          />
+        }
+      >
+        <ScrollView
+          className="flex-1"
+          contentContainerClassName="grow justify-center pb-4"
+          scrollEnabled={!isPreviewAdjusting}
+          overScrollMode="never"
+          showsVerticalScrollIndicator={false}
+        >
+          {image ? (
+            <View className="items-center">
+              <QuickPanelPreview
+                image={image}
+                preset={activePreset}
+                onAdjustingChange={setIsPreviewAdjusting}
+                transform={transform}
+                onTransformChange={setTransform}
+              />
+            </View>
+          ) : (
+            <ImagePickerCard
+              mode={selectedMode ?? "default"}
+              onPick={pickImage}
+              onRecalibrate={recalibrate}
+              isProcessing={isProcessingImage}
+            />
+          )}
+          {noticeKey ? (
+            <Text className="mt-4 rounded-md bg-green-500/15 p-3 text-sm text-green-100">
+              {t(noticeKey)}
+            </Text>
+          ) : null}
+          {error ? (
+            <Text className="mt-4 rounded-md bg-red-500/15 p-3 text-sm text-red-100">
+              {error}
+            </Text>
+          ) : null}
+          {errorKey ? (
+            <Text className="mt-4 rounded-md bg-red-500/15 p-3 text-sm text-red-100">
+              {t(errorKey)}
+            </Text>
+          ) : null}
+        </ScrollView>
+      </QuickPanelScreenShell>
       {image && shouldRenderExportSurfaces ? (
         <ExportSurfaces
           image={image}

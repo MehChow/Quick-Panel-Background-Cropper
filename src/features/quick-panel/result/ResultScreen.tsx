@@ -3,20 +3,19 @@ import { ExportSuccessPanel } from "@/features/quick-panel/customize/components/
 import { GoodLockUnavailableDialog } from "@/features/quick-panel/customize/components/GoodLockUnavailableDialog";
 import { useGoodLockLink } from "@/features/quick-panel/customize/useGoodLockLink";
 import { QuickPanelScreenShell } from "@/features/quick-panel/shared/QuickPanelScreenShell";
-import { getWideScreenLayout } from "@/features/quick-panel/shared/wide-screen-layout";
 import { useQuickPanelStore } from "@/features/quick-panel/store/quick-panel-store";
 import { quickPanelSelectors } from "@/features/quick-panel/store/selectors";
 import { Redirect, useRouter } from "expo-router";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { View, useWindowDimensions } from "react-native";
+import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useShallow } from "zustand/react/shallow";
 
 export function ResultScreen() {
   const { t } = useTranslation();
   const router = useRouter();
-  const { height, width } = useWindowDimensions();
-  const layout = getWideScreenLayout(width, height);
+  const [contentSize, setContentSize] = useState({ height: 0, width: 0 });
   const { exports, goToLanding } = useQuickPanelStore(
     useShallow(quickPanelSelectors.resultScreen),
   );
@@ -41,7 +40,6 @@ export function ResultScreen() {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <QuickPanelScreenShell
-        contentMaxWidth={layout.heroMaxWidth}
         footer={
           <>
             <Button
@@ -63,20 +61,22 @@ export function ResultScreen() {
             </Button>
           </>
         }
-        footerMaxWidth={layout.footerMaxWidth}
         footerTestID="result-footer"
         header={null}
       >
         <View
-          className={
-            layout.isWideScreen
-              ? "flex-1 items-center pt-4"
-              : "flex-1 justify-center"
+          className="flex-1 justify-center"
+          onLayout={(event) =>
+            setContentSize({
+              height: event.nativeEvent.layout.height,
+              width: event.nativeEvent.layout.width,
+            })
           }
         >
           <ExportSuccessPanel
+            availableHeight={contentSize.height}
+            availableWidth={contentSize.width}
             exports={exports}
-            previewGridMaxWidth={layout.resultGridMaxWidth}
           />
         </View>
       </QuickPanelScreenShell>

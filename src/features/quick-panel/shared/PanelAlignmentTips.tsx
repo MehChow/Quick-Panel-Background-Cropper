@@ -4,7 +4,7 @@ import Lucide from "@react-native-vector-icons/lucide";
 import { useTranslation } from "react-i18next";
 import { useWindowDimensions, View } from "react-native";
 import { HelpSheetZoomImage } from "./HelpSheetZoomImage";
-import { getHelpSheetLayout } from "./help-sheet-layout";
+import { getHelpSheetMediaLayout } from "./help-sheet-media-layout";
 
 const panelAlignmentGoodAspectRatio = 1080 / 1291;
 const panelAlignmentBadAspectRatio = 1080 / 1293;
@@ -21,7 +21,7 @@ interface TipCardProps {
 export function PanelAlignmentTips() {
   const { t } = useTranslation();
   const { height, width } = useWindowDimensions();
-  const layout = getHelpSheetLayout(width, height);
+  const layout = getHelpSheetMediaLayout(width, height);
 
   return (
     <View className="gap-4">

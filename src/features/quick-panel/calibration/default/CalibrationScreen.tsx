@@ -3,9 +3,7 @@ import { Text } from "@/components/ani-ui/text";
 import { CalibrationHelpSheet } from "@/features/quick-panel/shared/CalibrationHelpSheet";
 import { QuickPanelScreenShell } from "@/features/quick-panel/shared/QuickPanelScreenShell";
 import { SubPageHeader } from "@/features/quick-panel/shared/SubPageHeader";
-import { getWideScreenLayout } from "@/features/quick-panel/shared/wide-screen-layout";
 import { useTranslation } from "react-i18next";
-import { useWindowDimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { CalibrationCanvas } from "../shared/CalibrationCanvas";
 import { CalibrationControls } from "./CalibrationControls";
@@ -14,8 +12,6 @@ import { useCalibrationScreen } from "./hooks/useCalibrationScreen";
 
 export function CalibrationScreen() {
   const { t } = useTranslation();
-  const { height, width } = useWindowDimensions();
-  const layout = getWideScreenLayout(width, height);
   const {
     error,
     isHelpOpen,
@@ -32,7 +28,6 @@ export function CalibrationScreen() {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <QuickPanelScreenShell
-        contentMaxWidth={layout.contentMaxWidth}
         footer={isCalibrating ? (
           <CalibrationControls
             onContinue={saveCalibration}
@@ -47,7 +42,6 @@ export function CalibrationScreen() {
             {t("calibration.chooseFromAlbum")}
           </Button>
         )}
-        footerMaxWidth={layout.footerMaxWidth}
         footerTestID="calibration-footer"
         header={(
           <SubPageHeader
@@ -60,8 +54,6 @@ export function CalibrationScreen() {
         )}
       >
         <CalibrationCanvas
-          emptyCardMaxWidth={layout.importCardMaxWidth}
-          emptyExampleRowMaxWidth={layout.importExampleRowMaxWidth}
           screenshot={displayedScreenshot}
           rect={displayedRect}
           onImport={importScreenshot}

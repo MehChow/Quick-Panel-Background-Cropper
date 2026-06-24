@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 import { useWindowDimensions, View } from "react-native";
 import { CalibrationOuterExample } from "./CalibrationOuterExample";
 import { CalibrationOuterTips } from "./CalibrationOuterTips";
-import { getHelpSheetLayout } from "./help-sheet-layout";
+import { getHelpSheetMediaLayout } from "./help-sheet-media-layout";
 
 interface CalibrationHelpSheetProps {
   onClose: () => void;
@@ -16,7 +16,7 @@ interface CalibrationHelpSheetProps {
 export function CalibrationHelpSheet({ onClose }: CalibrationHelpSheetProps) {
   const { t } = useTranslation();
   const { height, width } = useWindowDimensions();
-  const layout = getHelpSheetLayout(width, height);
+  const layout = getHelpSheetMediaLayout(width, height);
 
   return (
     <BottomSheet
