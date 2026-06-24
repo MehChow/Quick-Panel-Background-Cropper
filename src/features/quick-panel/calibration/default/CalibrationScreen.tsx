@@ -2,7 +2,7 @@ import { Text } from "@/components/ani-ui/text";
 import { CalibrationHelpSheet } from "@/features/quick-panel/shared/CalibrationHelpSheet";
 import { SubPageHeader } from "@/features/quick-panel/shared/SubPageHeader";
 import { useTranslation } from "react-i18next";
-import { ScrollView, View } from "react-native";
+import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { CalibrationCanvas } from "../shared/CalibrationCanvas";
 import { CalibrationControls } from "./CalibrationControls";
@@ -35,22 +35,11 @@ export function CalibrationScreen() {
           subtitle={t("calibration.subtitle")}
         />
       </View>
-      <ScrollView
-        className="flex-1"
-        contentContainerClassName="px-5 pb-8"
-        contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
-        overScrollMode="never"
-      >
+      <View className="flex-1 px-5 pb-4">
         <CalibrationCanvas
           screenshot={displayedScreenshot}
           rect={displayedRect}
           onImport={importScreenshot}
-          controls={(
-            <CalibrationControls
-              onContinue={saveCalibration}
-              onImport={importScreenshot}
-            />
-          )}
           renderOverlay={(scale) => (
             displayedRect && displayedScreenshot
               ? (
@@ -63,14 +52,14 @@ export function CalibrationScreen() {
               )
               : null
           )}
-          showControls={!isCalibrating}
+          showControls={false}
         />
         {error ? (
           <Text className="mt-4 rounded-md bg-red-500/15 p-3 text-sm text-red-100">
             {error}
           </Text>
         ) : null}
-      </ScrollView>
+      </View>
       {isCalibrating ? (
         <View className="border-t border-white/10 px-5">
           <CalibrationControls

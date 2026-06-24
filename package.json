@@ -66,18 +66,17 @@
   "scripts": {
     "start": "expo start",
     "reset-project": "node ./scripts/reset-project.js",
-    "android": "expo run:android",
-    "ios": "expo run:ios",
+    "android": "APP_VARIANT=dev expo run:android",
     "test": "jest",
     "test:watch": "jest --watch",
-    "web": "expo start --web",
     "lint": "expo lint",
     "convert-assets": "node ./convert-to-webp.js",
-    "build-apk": "node .\\scripts\\prepare-android-build.cjs apk false && cd android && gradlew app:assembleRelease",
-    "build-apk-show-version": "node .\\scripts\\prepare-android-build.cjs apk true && cd android && gradlew app:assembleRelease",
-    "build-apk-bump-show-version": "node .\\scripts\\prepare-android-build.cjs apk-bump true && cd android && gradlew app:assembleRelease",
-    "build-internal": "node .\\scripts\\prepare-android-build.cjs internal false && cd android && gradlew app:bundleRelease",
-    "build-closed": "node .\\scripts\\prepare-android-build.cjs closed true && cd android && gradlew app:bundleRelease"
+    "build-apk-win": "set APP_VARIANT=apk && node .\\scripts\\prepare-android-build.cjs apk false && set APP_VARIANT=apk && npx expo prebuild --platform android && cd android && gradlew app:assembleRelease",
+    "build-internal-win": "node .\\scripts\\prepare-android-build.cjs internal false && cd android && gradlew app:bundleRelease",
+    "build-closed-win": "node .\\scripts\\prepare-android-build.cjs closed true && cd android && gradlew app:bundleRelease",
+    "build-apk-mac": "APP_VARIANT=apk node ./scripts/prepare-android-build.cjs apk false && APP_VARIANT=apk npx expo prebuild --platform android && cd android && APP_VARIANT=apk ./gradlew app:assembleRelease",
+    "build-internal-mac": "node ./scripts/prepare-android-build.cjs internal false && cd android && ./gradlew app:bundleRelease",
+    "build-closed-mac": "node ./scripts/prepare-android-build.cjs closed true && cd android && ./gradlew app:bundleRelease"
   },
   "jest": {
     "preset": "jest-expo",

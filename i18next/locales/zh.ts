@@ -53,7 +53,7 @@ const zh = {
       imageOptimized: "已優化所選圖片，拖動調整會更順暢。",
       title: "自訂",
       subtitle: "選擇圖片後，再調整位置",
-      pickerTitle: "從相簿選擇圖片",
+      pickerTitle: "選擇背景圖片",
       pickerSubtitle: "支援 PNG、JPG 和 WEBP。",
       chooseAnotherImage: "選擇另一張圖片",
       resetPosition: "重設位置",

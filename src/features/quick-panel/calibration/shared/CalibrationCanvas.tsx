@@ -10,6 +10,7 @@ import { View } from "react-native";
 import type { PanelRect, PickedImage } from "../../model/types";
 
 const exampleImageAspectRatio = 9 / 19.5;
+const canvasPadding = 12;
 
 interface CalibrationCanvasProps {
   controls?: ReactNode;
@@ -38,19 +39,39 @@ export function CalibrationCanvas({
   onImport,
   showControls = true,
 }: CalibrationCanvasProps) {
-  const [viewWidth, setViewWidth] = useState(0);
-  const scale = screenshot && viewWidth ? viewWidth / screenshot.width : 1;
+  const [viewport, setViewport] = useState({ height: 0, width: 0 });
 
   if (!screenshot || !rect) {
-    return <ImportScreenshotCard onImport={onImport} />;
+    return (
+      <View className="flex-1 justify-center">
+        <ImportScreenshotCard onImport={onImport} />
+      </View>
+    );
   }
 
+  const maxWidth = Math.max(viewport.width - canvasPadding * 2, 0);
+  const maxHeight = Math.max(viewport.height - canvasPadding * 2, 0);
+  const widthScale = maxWidth / screenshot.width;
+  const heightScale = maxHeight / screenshot.height;
+  const scale = Math.min(widthScale, heightScale);
+  const canvasWidth = Number.isFinite(scale) ? screenshot.width * scale : 0;
+  const canvasHeight = Number.isFinite(scale) ? screenshot.height * scale : 0;
+
   return (
-    <View className="gap-4">
+    <View
+      className="flex-1 justify-center"
+      onLayout={(event) =>
+        setViewport({
+          height: event.nativeEvent.layout.height,
+          width: event.nativeEvent.layout.width,
+        })}
+    >
       <View
-        className="overflow-hidden rounded-[28px] border border-zinc-800 bg-black"
-        onLayout={(event) => setViewWidth(event.nativeEvent.layout.width)}
-        style={{ aspectRatio: screenshot.width / screenshot.height }}
+        className="self-center overflow-hidden rounded-[28px] border border-zinc-800 bg-black"
+        style={{
+          height: canvasHeight,
+          width: canvasWidth,
+        }}
       >
         <Image
           source={{ uri: screenshot.uri }}
@@ -60,7 +81,7 @@ export function CalibrationCanvas({
         {renderOverlay(scale)}
       </View>
 
-      {showControls ? controls : null}
+      {showControls ? <View className="mt-4">{controls}</View> : null}
     </View>
   );
 }

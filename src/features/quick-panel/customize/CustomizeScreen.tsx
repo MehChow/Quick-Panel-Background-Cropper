@@ -31,6 +31,7 @@ export function CustomizeScreen() {
     exportLoadToken,
     pickImage,
     resetFit,
+    canReset,
     setIsExportSurfaceReady,
     shouldRenderExportSurfaces,
     goToCalibration,
@@ -107,6 +108,7 @@ export function CustomizeScreen() {
             onExport={exportImages}
             onPick={pickImage}
             onReset={resetFit}
+            canReset={canReset}
           />
         </View>
       ) : null}

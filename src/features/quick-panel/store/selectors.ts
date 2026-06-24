@@ -5,6 +5,7 @@ export const quickPanelSelectors = {
     goToModeSelection: state.goToModeSelection,
   }),
   modeSelectionScreen: (state: QuickPanelState) => ({
+    lastExportedMode: state.lastExportedMode,
     selectMode: state.selectMode,
   }),
   calibrationScreen: (state: QuickPanelState) => ({

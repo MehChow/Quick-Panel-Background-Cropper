@@ -2,6 +2,7 @@ import { createMMKV } from "react-native-mmkv";
 import type {
   AdvancedCalibration,
   AdvancedSnapGrid,
+  CustomizationMode,
   DefaultCalibration,
   PanelId,
   PanelRect,
@@ -12,6 +13,7 @@ import { panelIds } from "../model/panel-ids";
 const calibrationFlagKey = "quick-panel.is-calibrated";
 const calibrationRectKey = "quick-panel.calibration-rect";
 const calibrationsV2Key = "quick-panel.calibrations-v2";
+const lastExportedModeKey = "quick-panel.last-exported-mode";
 
 export const supportedLanguages = ["en", "zh"] as const;
 export type SupportedLanguage = (typeof supportedLanguages)[number];
@@ -58,6 +60,15 @@ export function loadCalibration(): SavedCalibration {
 export function saveCalibration(rect: PanelRect) {
   storage.set(calibrationFlagKey, true);
   storage.set(calibrationRectKey, JSON.stringify(rect));
+}
+
+export function loadLastExportedMode(): CustomizationMode | null {
+  const savedMode = storage.getString(lastExportedModeKey);
+  return isCustomizationMode(savedMode) ? savedMode : null;
+}
+
+export function saveLastExportedMode(mode: CustomizationMode) {
+  storage.set(lastExportedModeKey, mode);
 }
 
 export function isSupportedLanguage(
@@ -176,4 +187,8 @@ function parseRectValue(value: unknown): PanelRect | null {
 
 function isGridValue(value: unknown): value is number {
   return typeof value === "number" && Number.isInteger(value) && value >= 1 && value <= 8;
+}
+
+function isCustomizationMode(value: unknown): value is CustomizationMode {
+  return value === "default" || value === "advanced";
 }
