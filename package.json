@@ -54,6 +54,7 @@
     "@testing-library/react-native": "^13.3.3",
     "@types/jest": "29.5.14",
     "@types/react": "~19.2.2",
+    "cross-env": "^10.1.0",
     "eslint": "^9.0.0",
     "eslint-config-expo": "~56.0.4",
     "glob": "^13.0.6",
@@ -66,17 +67,13 @@
   "scripts": {
     "start": "expo start",
     "reset-project": "node ./scripts/reset-project.js",
-    "android": "APP_VARIANT=dev expo run:android",
     "test": "jest",
     "test:watch": "jest --watch",
     "lint": "expo lint",
     "convert-assets": "node ./convert-to-webp.js",
-    "build-apk-win": "set APP_VARIANT=apk && node .\\scripts\\prepare-android-build.cjs apk false && set APP_VARIANT=apk && npx expo prebuild --platform android && cd android && gradlew app:assembleRelease",
-    "build-internal-win": "node .\\scripts\\prepare-android-build.cjs internal false && cd android && gradlew app:bundleRelease",
-    "build-closed-win": "node .\\scripts\\prepare-android-build.cjs closed true && cd android && gradlew app:bundleRelease",
-    "build-apk-mac": "APP_VARIANT=apk node ./scripts/prepare-android-build.cjs apk false && APP_VARIANT=apk npx expo prebuild --platform android && cd android && APP_VARIANT=apk ./gradlew app:assembleRelease",
-    "build-internal-mac": "node ./scripts/prepare-android-build.cjs internal false && cd android && ./gradlew app:bundleRelease",
-    "build-closed-mac": "node ./scripts/prepare-android-build.cjs closed true && cd android && ./gradlew app:bundleRelease"
+    "android": "node ./scripts/run-android-task.cjs dev",
+    "build-apk": "node ./scripts/run-android-task.cjs apk",
+    "build-closed": "node ./scripts/run-android-task.cjs closed"
   },
   "jest": {
     "preset": "jest-expo",
