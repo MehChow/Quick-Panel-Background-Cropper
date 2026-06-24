@@ -1,9 +1,10 @@
 import { Text } from "@/components/ani-ui/text";
 import { images } from "@/data/images";
-import BottomSheet, { BottomSheetBackdrop, BottomSheetView } from "@gorhom/bottom-sheet";
+import BottomSheet, { BottomSheetBackdrop, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { useTranslation } from "react-i18next";
-import { View } from "react-native";
+import { useWindowDimensions, View } from "react-native";
 import { HelpSheetZoomImage } from "@/features/quick-panel/shared/HelpSheetZoomImage";
+import { getHelpSheetLayout } from "@/features/quick-panel/shared/help-sheet-layout";
 
 interface Props {
   onClose: () => void;
@@ -11,6 +12,8 @@ interface Props {
 
 export function AdvancedGridSheet({ onClose }: Props) {
   const { i18n, t } = useTranslation();
+  const { height, width } = useWindowDimensions();
+  const layout = getHelpSheetLayout(width, height);
   const isEnglish = i18n.resolvedLanguage === "en";
   const columnUnit = isEnglish ? "col" : t("advancedCalibration.columns");
   const rowUnit = isEnglish ? "row" : t("advancedCalibration.rows");
@@ -40,12 +43,13 @@ export function AdvancedGridSheet({ onClose }: Props) {
       )}
       backgroundStyle={{ backgroundColor: "#18181b", borderColor: "#27272a", borderRadius: 32, borderWidth: 1 }}
       enableDynamicSizing
+      maxDynamicContentSize={layout.maxHeight}
       enablePanDownToClose
       handleIndicatorStyle={{ backgroundColor: "#52525b", height: 6, width: 48 }}
       index={0}
       onClose={onClose}
     >
-      <BottomSheetView style={{ paddingBottom: 32, paddingHorizontal: 20, paddingTop: 8 }}>
+      <BottomSheetScrollView contentContainerStyle={{ paddingBottom: 32, paddingHorizontal: 20, paddingTop: 8 }}>
         <View className="gap-6">
           <View className="gap-2">
             <Text className="text-lg font-semibold text-white">
@@ -66,9 +70,10 @@ export function AdvancedGridSheet({ onClose }: Props) {
                 {firstExampleLabels}
                 <HelpSheetZoomImage
                   contentFit="contain"
+                  previewMaxWidth={layout.gridExampleWidth}
                   source={images.calibrateGridCountExample1}
-                  thumbnailClassName="mt-3 h-56 w-full border-0 bg-zinc-900"
-                  thumbnailStyle={{ aspectRatio: undefined }}
+                  thumbnailClassName="mt-3 border-0 bg-zinc-900"
+                  thumbnailStyle={{ width: layout.gridExampleWidth }}
                 />
               </View>
 
@@ -76,15 +81,16 @@ export function AdvancedGridSheet({ onClose }: Props) {
                 {secondExampleLabels}
                 <HelpSheetZoomImage
                   contentFit="contain"
+                  previewMaxWidth={layout.gridExampleWidth}
                   source={images.calibrateGridCountExample2}
-                  thumbnailClassName="mt-3 h-56 w-full border-0 bg-zinc-900"
-                  thumbnailStyle={{ aspectRatio: undefined }}
+                  thumbnailClassName="mt-3 border-0 bg-zinc-900"
+                  thumbnailStyle={{ width: layout.gridExampleWidth }}
                 />
               </View>
             </View>
           </View>
         </View>
-      </BottomSheetView>
+      </BottomSheetScrollView>
     </BottomSheet>
   );
 }

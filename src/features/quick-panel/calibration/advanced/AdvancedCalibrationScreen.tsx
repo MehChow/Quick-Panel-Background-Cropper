@@ -1,11 +1,14 @@
 import { useState } from "react";
+import { Button } from "@/components/ani-ui/button";
 import { Text } from "@/components/ani-ui/text";
 import { CalibrationHelpSheet } from "@/features/quick-panel/shared/CalibrationHelpSheet";
 import { PanelAlignmentHelpSheet } from "@/features/quick-panel/shared/PanelAlignmentHelpSheet";
 import { PanelReviewHelpSheet } from "@/features/quick-panel/shared/PanelReviewHelpSheet";
+import { QuickPanelScreenShell } from "@/features/quick-panel/shared/QuickPanelScreenShell";
 import { SubPageHeader } from "@/features/quick-panel/shared/SubPageHeader";
+import { getWideScreenLayout } from "@/features/quick-panel/shared/wide-screen-layout";
 import { useTranslation } from "react-i18next";
-import { View } from "react-native";
+import { useWindowDimensions, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { CalibrationCanvas } from "../shared/CalibrationCanvas";
 import { AdvancedGridSheet } from "./AdvancedGridSheet";
@@ -18,6 +21,8 @@ import { useAdvancedCalibrationScreen } from "./hooks/useAdvancedCalibrationScre
 
 export function AdvancedCalibrationScreen() {
   const { t } = useTranslation();
+  const { height, width } = useWindowDimensions();
+  const layout = getWideScreenLayout(width, height);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
   const [isGridHelpOpen, setIsGridHelpOpen] = useState(false);
   const {
@@ -66,16 +71,46 @@ export function AdvancedCalibrationScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <View className="px-5 pt-8">
-        <SubPageHeader
-          actionAccessibilityLabel={actionAccessibilityLabel}
-          actionVariant={showHelpButton ? "helper-balanced" : undefined}
-          onActionPress={showHelpButton ? openActiveHelp : undefined}
-          title={t("advancedCalibration.title")}
-          subtitle={getSubtitle(phase, t)}
-        />
-      </View>
-      <View className="flex-1 px-5 pb-4">
+      <QuickPanelScreenShell
+        contentMaxWidth={layout.contentMaxWidth}
+        footer={isEditing ? (
+          <AdvancedCalibrationControls
+            canGoBack={canGoBack}
+            columns={grid.columns}
+            isConfirmPhase={isConfirmPhase}
+            isGridPhase={isGridPhase}
+            isNextDisabled={isNextDisabled}
+            isOuterPhase={isOuterPhase}
+            onBack={handleBack}
+            onColumnsChange={setColumns}
+            onGridHelpPress={() => setIsGridHelpOpen(true)}
+            onImport={importScreenshot}
+            onNext={handleNext}
+            onRowsChange={setRows}
+            onSave={handleSave}
+            rows={grid.rows}
+          />
+        ) : (
+          <Button
+            className="my-4 w-full"
+            onPress={importScreenshot}
+            textClassName="font-semibold"
+          >
+            {t("calibration.chooseFromAlbum")}
+          </Button>
+        )}
+        footerMaxWidth={layout.footerMaxWidth}
+        footerTestID="advanced-calibration-footer"
+        header={(
+          <SubPageHeader
+            actionAccessibilityLabel={actionAccessibilityLabel}
+            actionVariant={showHelpButton ? "helper-balanced" : undefined}
+            onActionPress={showHelpButton ? openActiveHelp : undefined}
+            title={t("advancedCalibration.title")}
+            subtitle={getSubtitle(phase, t)}
+          />
+        )}
+      >
         {isPanelSelectionPhase && screenshot && outerRect ? (
           <View className="flex-1 justify-center">
             <AdvancedPanelSelection
@@ -95,6 +130,8 @@ export function AdvancedCalibrationScreen() {
           />
         ) : (
           <CalibrationCanvas
+            emptyCardMaxWidth={layout.importCardMaxWidth}
+            emptyExampleRowMaxWidth={layout.importExampleRowMaxWidth}
             screenshot={screenshot}
             rect={outerRect}
             onImport={importScreenshot}
@@ -111,6 +148,7 @@ export function AdvancedCalibrationScreen() {
                 : null
             )}
             showControls={false}
+            showImportButton={false}
           />
         )}
         {error ? (
@@ -118,27 +156,7 @@ export function AdvancedCalibrationScreen() {
             {error}
           </Text>
         ) : null}
-      </View>
-      {isEditing ? (
-        <View className="border-t border-white/10 px-5">
-          <AdvancedCalibrationControls
-            canGoBack={canGoBack}
-            columns={grid.columns}
-            isConfirmPhase={isConfirmPhase}
-            isGridPhase={isGridPhase}
-            isNextDisabled={isNextDisabled}
-            isOuterPhase={isOuterPhase}
-            onBack={handleBack}
-            onColumnsChange={setColumns}
-            onGridHelpPress={() => setIsGridHelpOpen(true)}
-            onImport={importScreenshot}
-            onNext={handleNext}
-            onRowsChange={setRows}
-            onSave={handleSave}
-            rows={grid.rows}
-          />
-        </View>
-      ) : null}
+      </QuickPanelScreenShell>
       {isHelpOpen && isOuterPhase ? <CalibrationHelpSheet onClose={() => setIsHelpOpen(false)} /> : null}
       {isHelpOpen && isPanelStep ? <PanelAlignmentHelpSheet onClose={() => setIsHelpOpen(false)} /> : null}
       {isHelpOpen && isConfirmPhase ? <PanelReviewHelpSheet onClose={() => setIsHelpOpen(false)} /> : null}

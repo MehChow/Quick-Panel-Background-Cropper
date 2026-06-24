@@ -14,15 +14,20 @@ const canvasPadding = 12;
 
 interface CalibrationCanvasProps {
   controls?: ReactNode;
+  emptyCardMaxWidth?: number;
+  emptyExampleRowMaxWidth?: number;
   rect: PanelRect | null;
   renderOverlay: (scale: number) => ReactNode;
   screenshot: PickedImage | null;
   onImport: () => void;
   showControls?: boolean;
+  showImportButton?: boolean;
 }
 
 interface ImportScreenshotCardProps {
-  onImport: () => void;
+  exampleRowMaxWidth?: number;
+  maxWidth?: number;
+  onImport?: () => void;
 }
 
 interface ExamplePanelImageProps {
@@ -33,18 +38,25 @@ interface ExamplePanelImageProps {
 
 export function CalibrationCanvas({
   controls,
+  emptyCardMaxWidth,
+  emptyExampleRowMaxWidth,
   rect,
   renderOverlay,
   screenshot,
   onImport,
   showControls = true,
+  showImportButton = true,
 }: CalibrationCanvasProps) {
   const [viewport, setViewport] = useState({ height: 0, width: 0 });
 
   if (!screenshot || !rect) {
     return (
       <View className="flex-1 justify-center">
-        <ImportScreenshotCard onImport={onImport} />
+        <ImportScreenshotCard
+          exampleRowMaxWidth={emptyExampleRowMaxWidth}
+          maxWidth={emptyCardMaxWidth}
+          onImport={showImportButton ? onImport : undefined}
+        />
       </View>
     );
   }
@@ -86,11 +98,18 @@ export function CalibrationCanvas({
   );
 }
 
-function ImportScreenshotCard({ onImport }: ImportScreenshotCardProps) {
+function ImportScreenshotCard({
+  exampleRowMaxWidth,
+  maxWidth,
+  onImport,
+}: ImportScreenshotCardProps) {
   const { t } = useTranslation();
 
   return (
-    <Card className="w-full gap-4 rounded-2xl border-zinc-800 bg-zinc-900">
+    <Card
+      className="w-full gap-4 self-center rounded-2xl border-zinc-800 bg-zinc-900"
+      style={maxWidth ? { maxWidth, width: "100%" } : undefined}
+    >
       <View>
         <Text className="text-center text-lg font-semibold text-white">
           {t("calibration.importTitle")}
@@ -105,27 +124,34 @@ function ImportScreenshotCard({ onImport }: ImportScreenshotCardProps) {
           {t("landing.example")}
         </Text>
 
-        <View className="flex-row gap-4">
-          <ExamplePanelImage
-            icon="check"
-            iconColor="green"
-            source={images.tutorialCorrect}
-          />
-          <ExamplePanelImage
-            icon="x"
-            iconColor="red"
-            source={images.tutorialIncorrect}
-          />
+        <View
+          className="self-center"
+          style={exampleRowMaxWidth ? { maxWidth: exampleRowMaxWidth, width: "100%" } : undefined}
+        >
+          <View className="flex-row gap-4">
+            <ExamplePanelImage
+              icon="check"
+              iconColor="green"
+              source={images.tutorialCorrect}
+            />
+            <ExamplePanelImage
+              icon="x"
+              iconColor="red"
+              source={images.tutorialIncorrect}
+            />
+          </View>
         </View>
       </View>
 
-      <Button
-        className="w-full"
-        onPress={onImport}
-        textClassName="font-semibold"
-      >
-        {t("calibration.chooseFromAlbum")}
-      </Button>
+      {onImport ? (
+        <Button
+          className="w-full"
+          onPress={onImport}
+          textClassName="font-semibold"
+        >
+          {t("calibration.chooseFromAlbum")}
+        </Button>
+      ) : null}
     </Card>
   );
 }

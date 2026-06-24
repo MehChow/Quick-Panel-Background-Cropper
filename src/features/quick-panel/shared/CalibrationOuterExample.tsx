@@ -1,34 +1,43 @@
 import { Text } from "@/components/ani-ui/text";
 import { images } from "@/data/images";
 import { useTranslation } from "react-i18next";
-import { View } from "react-native";
+import { useWindowDimensions, View } from "react-native";
 import { HelpSheetZoomImage } from "./HelpSheetZoomImage";
+import { getHelpSheetLayout } from "./help-sheet-layout";
 
 const calibrationExampleAspectRatio = 1080 / 2340;
 
 export function CalibrationOuterExample() {
   const { t } = useTranslation();
+  const { height, width } = useWindowDimensions();
+  const layout = getHelpSheetLayout(width, height);
 
   return (
-    <View className="items-center h-100">
+    <View className="items-center">
       <Text className="text-center font-semibold text-orange-400">
         {t("landing.example")}
       </Text>
 
-      <View className="flex-row items-center gap-4">
+      <View className="mt-4 flex-row items-start gap-4">
         <HelpSheetZoomImage
           contentFit="contain"
           previewAspectRatio={calibrationExampleAspectRatio}
+          previewMaxWidth={layout.tallExampleWidth}
           source={images.calibrateOuterExample1}
-          thumbnailClassName="mt-4 w-[45%]"
-          thumbnailStyle={{ aspectRatio: calibrationExampleAspectRatio }}
+          thumbnailStyle={{
+            aspectRatio: calibrationExampleAspectRatio,
+            width: layout.tallExampleWidth,
+          }}
         />
         <HelpSheetZoomImage
           contentFit="contain"
           previewAspectRatio={calibrationExampleAspectRatio}
+          previewMaxWidth={layout.tallExampleWidth}
           source={images.calibrateOuterExample2}
-          thumbnailClassName="mt-4 w-[45%]"
-          thumbnailStyle={{ aspectRatio: calibrationExampleAspectRatio }}
+          thumbnailStyle={{
+            aspectRatio: calibrationExampleAspectRatio,
+            width: layout.tallExampleWidth,
+          }}
         />
       </View>
     </View>

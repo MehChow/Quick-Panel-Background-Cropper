@@ -1,8 +1,11 @@
+import { Button } from "@/components/ani-ui/button";
 import { Text } from "@/components/ani-ui/text";
 import { CalibrationHelpSheet } from "@/features/quick-panel/shared/CalibrationHelpSheet";
+import { QuickPanelScreenShell } from "@/features/quick-panel/shared/QuickPanelScreenShell";
 import { SubPageHeader } from "@/features/quick-panel/shared/SubPageHeader";
+import { getWideScreenLayout } from "@/features/quick-panel/shared/wide-screen-layout";
 import { useTranslation } from "react-i18next";
-import { View } from "react-native";
+import { useWindowDimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { CalibrationCanvas } from "../shared/CalibrationCanvas";
 import { CalibrationControls } from "./CalibrationControls";
@@ -11,6 +14,8 @@ import { useCalibrationScreen } from "./hooks/useCalibrationScreen";
 
 export function CalibrationScreen() {
   const { t } = useTranslation();
+  const { height, width } = useWindowDimensions();
+  const layout = getWideScreenLayout(width, height);
   const {
     error,
     isHelpOpen,
@@ -26,17 +31,37 @@ export function CalibrationScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <View className="px-5 pt-8">
-        <SubPageHeader
-          actionAccessibilityLabel={t("calibration.helpButton")}
-          actionVariant="helper-balanced"
-          onActionPress={isCalibrating ? openHelp : undefined}
-          title={t("calibration.title")}
-          subtitle={t("calibration.subtitle")}
-        />
-      </View>
-      <View className="flex-1 px-5 pb-4">
+      <QuickPanelScreenShell
+        contentMaxWidth={layout.contentMaxWidth}
+        footer={isCalibrating ? (
+          <CalibrationControls
+            onContinue={saveCalibration}
+            onImport={importScreenshot}
+          />
+        ) : (
+          <Button
+            className="my-4 w-full"
+            onPress={importScreenshot}
+            textClassName="font-semibold"
+          >
+            {t("calibration.chooseFromAlbum")}
+          </Button>
+        )}
+        footerMaxWidth={layout.footerMaxWidth}
+        footerTestID="calibration-footer"
+        header={(
+          <SubPageHeader
+            actionAccessibilityLabel={t("calibration.helpButton")}
+            actionVariant="helper-balanced"
+            onActionPress={isCalibrating ? openHelp : undefined}
+            title={t("calibration.title")}
+            subtitle={t("calibration.subtitle")}
+          />
+        )}
+      >
         <CalibrationCanvas
+          emptyCardMaxWidth={layout.importCardMaxWidth}
+          emptyExampleRowMaxWidth={layout.importExampleRowMaxWidth}
           screenshot={displayedScreenshot}
           rect={displayedRect}
           onImport={importScreenshot}
@@ -53,21 +78,14 @@ export function CalibrationScreen() {
               : null
           )}
           showControls={false}
+          showImportButton={false}
         />
         {error ? (
           <Text className="mt-4 rounded-md bg-red-500/15 p-3 text-sm text-red-100">
             {error}
           </Text>
         ) : null}
-      </View>
-      {isCalibrating ? (
-        <View className="border-t border-white/10 px-5">
-          <CalibrationControls
-            onContinue={saveCalibration}
-            onImport={importScreenshot}
-          />
-        </View>
-      ) : null}
+      </QuickPanelScreenShell>
       {isHelpOpen ? <CalibrationHelpSheet onClose={closeHelp} /> : null}
     </SafeAreaView>
   );
