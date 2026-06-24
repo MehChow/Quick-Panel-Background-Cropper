@@ -2,11 +2,12 @@ import { Text } from "@/components/ani-ui/text";
 import { images } from "@/data/images";
 import BottomSheet, {
   BottomSheetBackdrop,
-  BottomSheetView,
+  BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
 import { useTranslation } from "react-i18next";
-import { View } from "react-native";
+import { useWindowDimensions, View } from "react-native";
 import { HelpSheetZoomImage } from "./HelpSheetZoomImage";
+import { getHelpSheetMediaLayout } from "./help-sheet-media-layout";
 
 interface PanelReviewHelpSheetProps {
   onClose: () => void;
@@ -14,6 +15,9 @@ interface PanelReviewHelpSheetProps {
 
 export function PanelReviewHelpSheet({ onClose }: PanelReviewHelpSheetProps) {
   const { t } = useTranslation();
+  const { height, width } = useWindowDimensions();
+  const layout = getHelpSheetMediaLayout(width, height);
+  const panelReviewAspectRatio = 1080 / 1346;
 
   return (
     <BottomSheet
@@ -32,6 +36,7 @@ export function PanelReviewHelpSheet({ onClose }: PanelReviewHelpSheetProps) {
         borderRadius: 32,
         borderWidth: 1,
       }}
+      enableDynamicSizing
       enableOverDrag={false}
       enablePanDownToClose
       handleIndicatorStyle={{
@@ -40,9 +45,10 @@ export function PanelReviewHelpSheet({ onClose }: PanelReviewHelpSheetProps) {
         width: 48,
       }}
       index={0}
+      maxDynamicContentSize={layout.maxHeight}
       onClose={onClose}
     >
-      <BottomSheetView className="pt-2">
+      <BottomSheetScrollView contentContainerStyle={{ paddingBottom: 32, paddingTop: 8 }}>
         <View className="gap-4 px-5">
           <Text className="text-lg font-semibold text-white">
             {t("advancedCalibration.reviewHelpTitle")}
@@ -59,11 +65,18 @@ export function PanelReviewHelpSheet({ onClose }: PanelReviewHelpSheetProps) {
 
           <HelpSheetZoomImage
             contentFit="contain"
+            previewAspectRatio={panelReviewAspectRatio}
+            previewMaxWidth={layout.reviewExampleWidth}
             source={images.calibratePanelBoxReview}
-            thumbnailClassName="mt-4 mb-8 w-3/4 border-0 bg-zinc-900"
+            thumbnailClassName="mt-4 border-0 bg-zinc-900"
+            thumbnailStyle={{
+              aspectRatio: panelReviewAspectRatio,
+              marginBottom: 8,
+              width: layout.reviewExampleWidth,
+            }}
           />
         </View>
-      </BottomSheetView>
+      </BottomSheetScrollView>
     </BottomSheet>
   );
 }

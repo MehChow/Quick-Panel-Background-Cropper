@@ -19,10 +19,11 @@ interface CalibrationCanvasProps {
   screenshot: PickedImage | null;
   onImport: () => void;
   showControls?: boolean;
+  showImportButton?: boolean;
 }
 
 interface ImportScreenshotCardProps {
-  onImport: () => void;
+  onImport?: () => void;
 }
 
 interface ExamplePanelImageProps {
@@ -38,13 +39,16 @@ export function CalibrationCanvas({
   screenshot,
   onImport,
   showControls = true,
+  showImportButton = true,
 }: CalibrationCanvasProps) {
   const [viewport, setViewport] = useState({ height: 0, width: 0 });
 
   if (!screenshot || !rect) {
     return (
       <View className="flex-1 justify-center">
-        <ImportScreenshotCard onImport={onImport} />
+        <ImportScreenshotCard
+          onImport={showImportButton ? onImport : undefined}
+        />
       </View>
     );
   }
@@ -64,7 +68,8 @@ export function CalibrationCanvas({
         setViewport({
           height: event.nativeEvent.layout.height,
           width: event.nativeEvent.layout.width,
-        })}
+        })
+      }
     >
       <View
         className="self-center overflow-hidden rounded-[28px] border border-zinc-800 bg-black"
@@ -86,11 +91,15 @@ export function CalibrationCanvas({
   );
 }
 
-function ImportScreenshotCard({ onImport }: ImportScreenshotCardProps) {
+function ImportScreenshotCard({
+  onImport,
+}: ImportScreenshotCardProps) {
   const { t } = useTranslation();
 
   return (
-    <Card className="w-full gap-4 rounded-2xl border-zinc-800 bg-zinc-900">
+    <Card
+      className="w-full max-w-[430px] gap-4 self-center rounded-2xl border-zinc-800 bg-zinc-900 min-[480px]:max-w-[460px] min-[600px]:max-w-[520px]"
+    >
       <View>
         <Text className="text-center text-lg font-semibold text-white">
           {t("calibration.importTitle")}
@@ -105,27 +114,33 @@ function ImportScreenshotCard({ onImport }: ImportScreenshotCardProps) {
           {t("landing.example")}
         </Text>
 
-        <View className="flex-row gap-4">
-          <ExamplePanelImage
-            icon="check"
-            iconColor="green"
-            source={images.tutorialCorrect}
-          />
-          <ExamplePanelImage
-            icon="x"
-            iconColor="red"
-            source={images.tutorialIncorrect}
-          />
+        <View
+          className="w-full max-w-[380px] self-center"
+        >
+          <View className="flex-row gap-4">
+            <ExamplePanelImage
+              icon="check"
+              iconColor="green"
+              source={images.tutorialCorrect}
+            />
+            <ExamplePanelImage
+              icon="x"
+              iconColor="red"
+              source={images.tutorialIncorrect}
+            />
+          </View>
         </View>
       </View>
 
-      <Button
-        className="w-full"
-        onPress={onImport}
-        textClassName="font-semibold"
-      >
-        {t("calibration.chooseFromAlbum")}
-      </Button>
+      {onImport ? (
+        <Button
+          className="w-full"
+          onPress={onImport}
+          textClassName="font-semibold"
+        >
+          {t("calibration.chooseFromAlbum")}
+        </Button>
+      ) : null}
     </Card>
   );
 }

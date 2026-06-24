@@ -1,4 +1,3 @@
-import { Button } from "@/components/ani-ui/button";
 import { Text } from "@/components/ani-ui/text";
 import { images } from "@/data/images";
 import { Image } from "expo-image";
@@ -8,15 +7,11 @@ import type { CustomizationMode } from "../../model/types";
 
 interface ImagePickerCardProps {
   mode: CustomizationMode;
-  isProcessing: boolean;
-  onPick: () => void;
   onRecalibrate: () => void;
 }
 
 export function ImagePickerCard({
   mode,
-  isProcessing,
-  onPick,
   onRecalibrate,
 }: ImagePickerCardProps) {
   const { t } = useTranslation();
@@ -41,17 +36,6 @@ export function ImagePickerCard({
               style={{ height: "100%", width: "100%" }}
             />
           </View>
-          <Button
-            className="mt-6 w-full bg-white"
-            disabled={isProcessing}
-            loading={isProcessing}
-            onPress={onPick}
-            textClassName="font-semibold text-zinc-900"
-          >
-            {isProcessing
-              ? t("customize.optimizingImage")
-              : t("calibration.chooseFromAlbum")}
-          </Button>
         </View>
       </View>
       <Text className="text-center text-sm leading-5 text-zinc-400">

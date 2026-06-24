@@ -1,4 +1,5 @@
 import { Button } from "@/components/ani-ui/button";
+import { QuickPanelScreenShell } from "@/features/quick-panel/shared/QuickPanelScreenShell";
 import { SubPageHeader } from "@/features/quick-panel/shared/SubPageHeader";
 import { useQuickPanelStore } from "@/features/quick-panel/store/quick-panel-store";
 import { quickPanelSelectors } from "@/features/quick-panel/store/selectors";
@@ -41,39 +42,44 @@ export function SelectModeScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <View className="px-5 pb-6 pt-8">
-        <SubPageHeader
-          actionVariant="helper-balanced"
-          onActionPress={() => setIsHelpOpen(true)}
-          title={t("mode.title")}
-          subtitle={t("mode.subtitle")}
-        />
-      </View>
-      <View className="flex-1 justify-center px-5">
-        <View className="flex-row items-start gap-4">
-          <ModeCard
-            isSelected={selectedMode === "default"}
-            label={t("mode.default")}
-            mode="default"
-            onPress={() => setSelectedMode("default")}
+      <QuickPanelScreenShell
+        footer={
+          <Button
+            className="my-4 p-0 bg-white"
+            disabled={!selectedMode}
+            onPress={confirmMode}
+            textClassName="font-semibold w-full text-black"
+          >
+            {t("common.confirm")}
+          </Button>
+        }
+        footerTestID="select-mode-footer"
+        header={
+          <SubPageHeader
+            actionVariant="helper-balanced"
+            onActionPress={() => setIsHelpOpen(true)}
+            title={t("mode.title")}
+            subtitle={t("mode.subtitle")}
           />
-          <ModeCard
-            isSelected={selectedMode === "advanced"}
-            label={t("mode.advanced")}
-            mode="advanced"
-            onPress={() => setSelectedMode("advanced")}
-          />
-        </View>
-        <Button
-          className="mt-10 p-0"
-          disabled={!selectedMode}
-          onPress={confirmMode}
-          // Somehow it needs w-full on text to make the whole button pressable
-          textClassName="font-semibold w-full"
+        }
         >
-          {t("common.confirm")}
-        </Button>
-      </View>
+        <View className="flex-1 justify-center py-2">
+          <View className="flex-row items-start justify-center gap-4">
+            <ModeCard
+              isSelected={selectedMode === "default"}
+              label={t("mode.default")}
+              mode="default"
+              onPress={() => setSelectedMode("default")}
+            />
+            <ModeCard
+              isSelected={selectedMode === "advanced"}
+              label={t("mode.advanced")}
+              mode="advanced"
+              onPress={() => setSelectedMode("advanced")}
+            />
+          </View>
+        </View>
+      </QuickPanelScreenShell>
       {isHelpOpen ? (
         <ModeHelpSheet
           defaultDescription={t("mode.defaultDescription")}
@@ -96,13 +102,20 @@ interface ModeCardProps {
   onPress: () => void;
 }
 
-function ModeCard({ isSelected, label, mode, onPress }: ModeCardProps) {
+function ModeCard({
+  isSelected,
+  label,
+  mode,
+  onPress,
+}: ModeCardProps) {
   return (
-    <ModeOptionCard
-      isSelected={isSelected}
-      label={label}
-      mode={mode}
-      onPress={onPress}
-    />
+    <View className="basis-0 flex-1">
+      <ModeOptionCard
+        isSelected={isSelected}
+        label={label}
+        mode={mode}
+        onPress={onPress}
+      />
+    </View>
   );
 }
