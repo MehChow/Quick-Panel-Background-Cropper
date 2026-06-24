@@ -1,4 +1,5 @@
 import { Text } from "@/components/ani-ui/text";
+import { Button } from "@/components/ani-ui/button";
 import { QuickPanelScreenShell } from "@/features/quick-panel/shared/QuickPanelScreenShell";
 import { SubPageHeader } from "@/features/quick-panel/shared/SubPageHeader";
 import { useTranslation } from "react-i18next";
@@ -52,16 +53,30 @@ export function CustomizeScreen() {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <QuickPanelScreenShell
-        footer={image ? (
-          <CustomizeActions
-            isExporting={isExporting}
-            isProcessingImage={isProcessingImage}
-            onExport={exportImages}
-            onPick={pickImage}
-            onReset={resetFit}
-            canReset={canReset}
-          />
-        ) : null}
+        footer={
+          image ? (
+            <CustomizeActions
+              isExporting={isExporting}
+              isProcessingImage={isProcessingImage}
+              onExport={exportImages}
+              onPick={pickImage}
+              onReset={resetFit}
+              canReset={canReset}
+            />
+          ) : (
+            <Button
+              className="my-4 w-full bg-white"
+              disabled={isProcessingImage}
+              loading={isProcessingImage}
+              onPress={pickImage}
+              textClassName="font-semibold text-zinc-900"
+            >
+              {isProcessingImage
+                ? t("customize.optimizingImage")
+                : t("calibration.chooseFromAlbum")}
+            </Button>
+          )
+        }
         header={
           <SubPageHeader
             title={t("customize.title")}
@@ -89,9 +104,7 @@ export function CustomizeScreen() {
           ) : (
             <ImagePickerCard
               mode={selectedMode ?? "default"}
-              onPick={pickImage}
               onRecalibrate={recalibrate}
-              isProcessing={isProcessingImage}
             />
           )}
           {noticeKey ? (
