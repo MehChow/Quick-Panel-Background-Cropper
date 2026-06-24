@@ -28,22 +28,24 @@ export function CalibrationScreen() {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <QuickPanelScreenShell
-        footer={isCalibrating ? (
-          <CalibrationControls
-            onContinue={saveCalibration}
-            onImport={importScreenshot}
-          />
-        ) : (
-          <Button
-            className="my-4 w-full"
-            onPress={importScreenshot}
-            textClassName="font-semibold"
-          >
-            {t("calibration.chooseFromAlbum")}
-          </Button>
-        )}
+        footer={
+          isCalibrating ? (
+            <CalibrationControls
+              onContinue={saveCalibration}
+              onImport={importScreenshot}
+            />
+          ) : (
+            <Button
+              className="my-4 w-full bg-white"
+              onPress={importScreenshot}
+              textClassName="font-semibold text-black"
+            >
+              {t("calibration.chooseFromAlbum")}
+            </Button>
+          )
+        }
         footerTestID="calibration-footer"
-        header={(
+        header={
           <SubPageHeader
             actionAccessibilityLabel={t("calibration.helpButton")}
             actionVariant="helper-balanced"
@@ -51,24 +53,22 @@ export function CalibrationScreen() {
             title={t("calibration.title")}
             subtitle={t("calibration.subtitle")}
           />
-        )}
+        }
       >
         <CalibrationCanvas
           screenshot={displayedScreenshot}
           rect={displayedRect}
           onImport={importScreenshot}
-          renderOverlay={(scale) => (
-            displayedRect && displayedScreenshot
-              ? (
-                <DefaultCalibrationOverlay
-                  rect={displayedRect}
-                  scale={scale}
-                  screenshot={displayedScreenshot}
-                  onRectChange={setCalibrationRect}
-                />
-              )
-              : null
-          )}
+          renderOverlay={(scale) =>
+            displayedRect && displayedScreenshot ? (
+              <DefaultCalibrationOverlay
+                rect={displayedRect}
+                scale={scale}
+                screenshot={displayedScreenshot}
+                onRectChange={setCalibrationRect}
+              />
+            ) : null
+          }
           showControls={false}
           showImportButton={false}
         />

@@ -91,15 +91,11 @@ export function CalibrationCanvas({
   );
 }
 
-function ImportScreenshotCard({
-  onImport,
-}: ImportScreenshotCardProps) {
+function ImportScreenshotCard({ onImport }: ImportScreenshotCardProps) {
   const { t } = useTranslation();
 
   return (
-    <Card
-      className="w-full max-w-[430px] gap-4 self-center rounded-2xl border-zinc-800 bg-zinc-900 min-[480px]:max-w-[460px] min-[600px]:max-w-[520px]"
-    >
+    <Card className="w-full max-w-107.5 gap-4 self-center rounded-2xl border-zinc-800 bg-zinc-900 min-[480px]:max-w-115 min-[600px]:max-w-130">
       <View>
         <Text className="text-center text-lg font-semibold text-white">
           {t("calibration.importTitle")}
@@ -114,9 +110,7 @@ function ImportScreenshotCard({
           {t("landing.example")}
         </Text>
 
-        <View
-          className="w-full max-w-[380px] self-center"
-        >
+        <View className="w-full max-w-95 self-center">
           <View className="flex-row gap-4">
             <ExamplePanelImage
               icon="check"
