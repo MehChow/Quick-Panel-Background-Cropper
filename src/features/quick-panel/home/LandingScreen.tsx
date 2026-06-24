@@ -39,9 +39,9 @@ export function LandingScreen() {
           <View className="mt-4" onLayout={handleActionsLayout}>
             {shouldShowVersion && <BuildVersion />}
             <Button
-              className="w-full"
+              className="w-full bg-white"
               onPress={openCustomize}
-              textClassName="font-semibold"
+              textClassName="font-semibold text-black"
             >
               {t("landing.startCustomizing")}
             </Button>

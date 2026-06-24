@@ -82,9 +82,9 @@ export function AdvancedCalibrationControls({
       {isOuterPhase ? (
         <View className="flex-row gap-3">
           <Button
-            className="flex-1"
+            className="flex-1 bg-white"
             onPress={onImport}
-            textClassName="font-semibold"
+            textClassName="font-semibold text-black"
           >
             {t("calibration.reImport")}
           </Button>
@@ -99,10 +99,10 @@ export function AdvancedCalibrationControls({
       ) : (
         <View className="flex-row gap-3">
           <Button
-            className="flex-1"
+            className="flex-1 bg-white"
             disabled={!canGoBack}
             onPress={onBack}
-            textClassName="font-semibold"
+            textClassName="font-semibold text-black"
           >
             {t("advancedCalibration.back")}
           </Button>

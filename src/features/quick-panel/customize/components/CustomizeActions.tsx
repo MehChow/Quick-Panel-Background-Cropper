@@ -26,10 +26,10 @@ export function CustomizeActions({
   return (
     <View className="mt-5 gap-3">
       <Button
-        className="px-0"
+        className="px-0 bg-white"
         disabled={isBusy}
         onPress={onPick}
-        textClassName="font-semibold w-full"
+        textClassName="font-semibold w-full text-black"
       >
         {isProcessingImage
           ? t("customize.optimizingImage")

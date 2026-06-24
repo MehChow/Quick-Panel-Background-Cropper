@@ -1,10 +1,10 @@
 import { Button } from "@/components/ani-ui/button";
-import { cn } from "@/lib/utils";
 import { QuickPanelScreenShell } from "@/features/quick-panel/shared/QuickPanelScreenShell";
 import { SubPageHeader } from "@/features/quick-panel/shared/SubPageHeader";
 import { getWideScreenLayout } from "@/features/quick-panel/shared/wide-screen-layout";
 import { useQuickPanelStore } from "@/features/quick-panel/store/quick-panel-store";
 import { quickPanelSelectors } from "@/features/quick-panel/store/selectors";
+import { cn } from "@/lib/utils";
 import { type Href, useRouter } from "expo-router";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -48,26 +48,26 @@ export function SelectModeScreen() {
     <SafeAreaView style={{ flex: 1 }}>
       <QuickPanelScreenShell
         contentMaxWidth={layout.selectContentMaxWidth}
-        footer={(
+        footer={
           <Button
-            className="my-4 p-0"
+            className="my-4 p-0 bg-white"
             disabled={!selectedMode}
             onPress={confirmMode}
-            textClassName="font-semibold w-full"
+            textClassName="font-semibold w-full text-black"
           >
             {t("common.confirm")}
           </Button>
-        )}
+        }
         footerMaxWidth={layout.footerMaxWidth}
         footerTestID="select-mode-footer"
-        header={(
+        header={
           <SubPageHeader
             actionVariant="helper-balanced"
             onActionPress={() => setIsHelpOpen(true)}
             title={t("mode.title")}
             subtitle={t("mode.subtitle")}
           />
-        )}
+        }
       >
         <View className="flex-1 justify-center">
           <View

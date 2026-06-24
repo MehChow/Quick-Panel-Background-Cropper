@@ -76,7 +76,8 @@ export function CalibrationCanvas({
         setViewport({
           height: event.nativeEvent.layout.height,
           width: event.nativeEvent.layout.width,
-        })}
+        })
+      }
     >
       <View
         className="self-center overflow-hidden rounded-[28px] border border-zinc-800 bg-black"
@@ -126,7 +127,11 @@ function ImportScreenshotCard({
 
         <View
           className="self-center"
-          style={exampleRowMaxWidth ? { maxWidth: exampleRowMaxWidth, width: "100%" } : undefined}
+          style={
+            exampleRowMaxWidth
+              ? { maxWidth: exampleRowMaxWidth, width: "100%" }
+              : undefined
+          }
         >
           <View className="flex-row gap-4">
             <ExamplePanelImage

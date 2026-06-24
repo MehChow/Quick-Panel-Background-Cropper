@@ -42,13 +42,13 @@ export function ResultScreen() {
     <SafeAreaView style={{ flex: 1 }}>
       <QuickPanelScreenShell
         contentMaxWidth={layout.heroMaxWidth}
-        footer={(
+        footer={
           <>
             <Button
-              className="mb-3 mt-4 w-full"
+              className="mb-3 mt-4 w-full bg-white"
               loading={isOpeningGoodLock}
               onPress={openGoodLockApp}
-              textClassName="font-semibold"
+              textClassName="font-semibold text-black"
             >
               {isOpeningGoodLock
                 ? t("export.openingGoodLock")
@@ -62,13 +62,17 @@ export function ResultScreen() {
               {t("export.backHome")}
             </Button>
           </>
-        )}
+        }
         footerMaxWidth={layout.footerMaxWidth}
         footerTestID="result-footer"
         header={null}
       >
         <View
-          className={layout.isWideScreen ? "flex-1 items-center pt-4" : "flex-1 justify-center"}
+          className={
+            layout.isWideScreen
+              ? "flex-1 items-center pt-4"
+              : "flex-1 justify-center"
+          }
         >
           <ExportSuccessPanel
             exports={exports}
