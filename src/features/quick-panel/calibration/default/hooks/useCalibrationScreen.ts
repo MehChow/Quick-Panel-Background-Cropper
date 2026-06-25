@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import type { PanelRect, PickedImage } from "../../../model/types";
 import { pickImageFromLibrary } from "../../../shared/pick-image-from-library";
+import { markHelpSeen } from "../../../store/storage";
 import { useQuickPanelStore } from "../../../store/quick-panel-store";
 import { quickPanelSelectors } from "../../../store/selectors";
 import { getSuggestedCalibrationRect } from "../../shared/calibration-preset";
@@ -73,7 +74,10 @@ export function useCalibrationScreen() {
     setCalibrationRect,
     importScreenshot,
     saveCalibration,
-    openHelp: () => setIsHelpOpen(true),
+    openHelp: () => {
+      markHelpSeen("default-calibration");
+      setIsHelpOpen(true);
+    },
     closeHelp: () => setIsHelpOpen(false),
   };
 }

@@ -1,4 +1,5 @@
 import { Text } from "@/components/ani-ui/text";
+import type { HelpEntryId } from "@/features/quick-panel/store/storage";
 import { Lucide } from "@react-native-vector-icons/lucide";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
@@ -10,6 +11,7 @@ import {
 
 interface SubPageHeaderProps {
   actionAccessibilityLabel?: string;
+  actionHelpId?: HelpEntryId;
   actionIcon?: React.ComponentProps<typeof Lucide>["name"];
   actionVariant?: HeaderActionVariant;
   onActionPress?: () => void;
@@ -19,6 +21,7 @@ interface SubPageHeaderProps {
 
 export function SubPageHeader({
   actionAccessibilityLabel,
+  actionHelpId,
   actionIcon,
   actionVariant,
   onActionPress,
@@ -41,6 +44,7 @@ export function SubPageHeader({
           accessibilityLabel={
             actionAccessibilityLabel ?? t("calibration.helpButton")
           }
+          helpId={actionHelpId}
           icon={actionIcon}
           onPress={onActionPress}
           variant={actionVariant}

@@ -1,6 +1,7 @@
 import { Button } from "@/components/ani-ui/button";
 import { QuickPanelScreenShell } from "@/features/quick-panel/shared/QuickPanelScreenShell";
 import { SubPageHeader } from "@/features/quick-panel/shared/SubPageHeader";
+import { markHelpSeen } from "@/features/quick-panel/store/storage";
 import { useQuickPanelStore } from "@/features/quick-panel/store/quick-panel-store";
 import { quickPanelSelectors } from "@/features/quick-panel/store/selectors";
 import { type Href, useRouter } from "expo-router";
@@ -23,6 +24,10 @@ export function SelectModeScreen() {
   const [selectedMode, setSelectedMode] = useState<CustomizationMode | null>(
     lastExportedMode,
   );
+  const openHelp = () => {
+    markHelpSeen("select-mode");
+    setIsHelpOpen(true);
+  };
 
   const confirmMode = () => {
     if (!selectedMode) {
@@ -56,8 +61,9 @@ export function SelectModeScreen() {
         footerTestID="select-mode-footer"
         header={
           <SubPageHeader
+            actionHelpId="select-mode"
             actionVariant="helper-balanced"
-            onActionPress={() => setIsHelpOpen(true)}
+            onActionPress={openHelp}
             title={t("mode.title")}
             subtitle={t("mode.subtitle")}
           />

@@ -49,6 +49,7 @@ export function CalibrationScreen() {
         header={
           <SubPageHeader
             actionAccessibilityLabel={t("calibration.helpButton")}
+            actionHelpId="default-calibration"
             actionVariant="helper-balanced"
             onActionPress={isCalibrating ? openHelp : undefined}
             title={t("calibration.title")}

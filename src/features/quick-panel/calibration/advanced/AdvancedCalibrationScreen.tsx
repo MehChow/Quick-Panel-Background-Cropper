@@ -5,6 +5,10 @@ import { PanelAlignmentHelpSheet } from "@/features/quick-panel/shared/PanelAlig
 import { PanelReviewHelpSheet } from "@/features/quick-panel/shared/PanelReviewHelpSheet";
 import { QuickPanelScreenShell } from "@/features/quick-panel/shared/QuickPanelScreenShell";
 import { SubPageHeader } from "@/features/quick-panel/shared/SubPageHeader";
+import {
+  markHelpSeen,
+  type HelpEntryId,
+} from "@/features/quick-panel/store/storage";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
@@ -52,10 +56,14 @@ export function AdvancedCalibrationScreen() {
   const isNextDisabled = isPanelSelectionPhase && enabledPanels.length === 0;
   const showHelpButton =
     isEditing && (isOuterPhase || isPanelStep || isConfirmPhase);
+  const activeHelpId = getActiveHelpId(phase);
   const actionAccessibilityLabel = showHelpButton
     ? t("calibration.helpButton")
     : undefined;
   const openActiveHelp = () => {
+    if (activeHelpId) {
+      markHelpSeen(activeHelpId);
+    }
     if (isGridPhase) {
       setIsGridHelpOpen(true);
       return;
@@ -108,6 +116,7 @@ export function AdvancedCalibrationScreen() {
         header={
           <SubPageHeader
             actionAccessibilityLabel={actionAccessibilityLabel}
+            actionHelpId={activeHelpId ?? undefined}
             actionVariant={showHelpButton ? "helper-balanced" : undefined}
             onActionPress={showHelpButton ? openActiveHelp : undefined}
             title={t("advancedCalibration.title")}
@@ -197,4 +206,19 @@ function getSubtitle(
   return t("advancedCalibration.panelSubtitle", {
     panel: t(`panels.${phase}`),
   });
+}
+
+function getActiveHelpId(
+  phase: AdvancedCalibrationPhase,
+): HelpEntryId | null {
+  if (phase === "outer") {
+    return "advanced-calibration-outer";
+  }
+  if (isPanelPhase(phase)) {
+    return "advanced-calibration-panel-alignment";
+  }
+  if (phase === "confirm") {
+    return "advanced-calibration-panel-review";
+  }
+  return null;
 }

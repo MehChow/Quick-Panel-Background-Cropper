@@ -1,4 +1,4 @@
-import { createMMKV } from "react-native-mmkv";
+import { createMMKV, useMMKVString } from "react-native-mmkv";
 import type {
   AdvancedCalibration,
   AdvancedSnapGrid,
@@ -14,9 +14,18 @@ const calibrationFlagKey = "quick-panel.is-calibrated";
 const calibrationRectKey = "quick-panel.calibration-rect";
 const calibrationsV2Key = "quick-panel.calibrations-v2";
 const lastExportedModeKey = "quick-panel.last-exported-mode";
+const seenHelpKey = "quick-panel.seen-help";
 
 export const supportedLanguages = ["en", "zh"] as const;
 export type SupportedLanguage = (typeof supportedLanguages)[number];
+export const helpEntryIds = [
+  "select-mode",
+  "default-calibration",
+  "advanced-calibration-outer",
+  "advanced-calibration-panel-alignment",
+  "advanced-calibration-panel-review",
+] as const;
+export type HelpEntryId = (typeof helpEntryIds)[number];
 
 const storage = createMMKV({ id: "quick-panel" });
 
@@ -30,6 +39,8 @@ export interface SavedCalibration {
   isCalibrated: boolean;
   rect: PanelRect | null;
 }
+
+type SavedSeenHelp = Partial<Record<HelpEntryId, true>>;
 
 export function loadCalibrations(): SavedCalibrations {
   const saved = parseCalibrations(storage.getString(calibrationsV2Key));
@@ -71,6 +82,32 @@ export function saveLastExportedMode(mode: CustomizationMode) {
   storage.set(lastExportedModeKey, mode);
 }
 
+export function loadSeenHelp(): SavedSeenHelp {
+  return parseSeenHelp(storage.getString(seenHelpKey));
+}
+
+export function hasSeenHelp(helpId: HelpEntryId): boolean {
+  return loadSeenHelp()[helpId] === true;
+}
+
+export function useHasSeenHelp(helpId: HelpEntryId | null | undefined): boolean {
+  const [seenHelpValue] = useMMKVString(seenHelpKey, storage);
+  if (!helpId) {
+    return false;
+  }
+  return parseSeenHelp(seenHelpValue)[helpId] === true;
+}
+
+export function markHelpSeen(helpId: HelpEntryId) {
+  storage.set(
+    seenHelpKey,
+    JSON.stringify({
+      ...loadSeenHelp(),
+      [helpId]: true,
+    }),
+  );
+}
+
 export function isSupportedLanguage(
   language: string | undefined,
 ): language is SupportedLanguage {
@@ -91,6 +128,20 @@ function parseCalibrations(value: string | undefined): SavedCalibrations | null 
     };
   } catch {
     return null;
+  }
+}
+
+function parseSeenHelp(value: string | undefined): SavedSeenHelp {
+  try {
+    const parsed = value ? JSON.parse(value) as Record<string, unknown> : {};
+    return helpEntryIds.reduce<SavedSeenHelp>((result, helpId) => {
+      if (parsed[helpId] === true) {
+        result[helpId] = true;
+      }
+      return result;
+    }, {});
+  } catch {
+    return {};
   }
 }
 
