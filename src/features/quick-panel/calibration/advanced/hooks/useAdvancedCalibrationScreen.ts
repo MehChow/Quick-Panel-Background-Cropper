@@ -1,4 +1,3 @@
-import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { useShallow } from "zustand/react/shallow";
@@ -16,6 +15,7 @@ import type {
   AdvancedSnapGrid,
   PanelId,
 } from "../../../model/types";
+import { pickImageFromLibrary } from "../../../shared/pick-image-from-library";
 import { useQuickPanelStore } from "../../../store/quick-panel-store";
 import { quickPanelSelectors } from "../../../store/selectors";
 import { getSuggestedCalibrationRect } from "../../shared/calibration-preset";
@@ -25,6 +25,7 @@ export function useAdvancedCalibrationScreen() {
   const {
     advancedCalibration,
     advancedDraft,
+    errorKey,
     error,
     setAdvancedScreenshot,
     setAdvancedOuterRect,
@@ -32,6 +33,7 @@ export function useAdvancedCalibrationScreen() {
     setAdvancedEnabledPanels,
     setAdvancedPanels,
     acceptAdvancedCalibration,
+    failImageProcessing,
   } = useQuickPanelStore(useShallow(quickPanelSelectors.advancedCalibrationScreen));
   const [phase, setPhase] = useState<AdvancedCalibrationPhase>("outer");
   const [grid, setGrid] = useState<AdvancedSnapGrid>(() =>
@@ -42,19 +44,12 @@ export function useAdvancedCalibrationScreen() {
   const [resumePhase, setResumePhase] = useState<AdvancedCalibrationPhase | null>(null);
 
   const importScreenshot = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      allowsEditing: false,
-      mediaTypes: ["images"],
-      quality: 1,
-    });
-    if (!result.canceled && result.assets[0]) {
-      const asset = result.assets[0];
-      const screenshot = {
-        fileName: asset.fileName,
-        height: asset.height,
-        uri: asset.uri,
-        width: asset.width,
-      };
+    try {
+      const screenshot = await pickImageFromLibrary();
+      if (!screenshot) {
+        return;
+      }
+
       const suggestedRect = getSuggestedCalibrationRect(screenshot);
       setAdvancedScreenshot(screenshot, suggestedRect);
       setGrid(advancedCalibration?.grid ?? getDefaultAdvancedSnapGrid(suggestedRect));
@@ -62,6 +57,13 @@ export function useAdvancedCalibrationScreen() {
       setLeavingPhase(null);
       setPhase("outer");
       setResumePhase(null);
+    } catch (error) {
+      failImageProcessing(
+        null,
+        error instanceof Error
+          ? error.message
+          : "errors.unableToOpenImagePicker",
+      );
     }
   };
 
@@ -129,6 +131,7 @@ export function useAdvancedCalibrationScreen() {
   return {
     advancedDraft: displayedDraft,
     enabledPanels,
+    errorKey,
     error,
     grid,
     phase: displayedPhase,

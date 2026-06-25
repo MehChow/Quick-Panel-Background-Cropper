@@ -131,6 +131,9 @@ const en = {
       exportSurfaceMissing: "The export preview for {{panel}} is unavailable.",
       imageTooLarge:
         "This image is too large to process smoothly. Please choose a smaller image.",
+      unableToOpenImagePicker: "Unable to open the image picker.",
+      imagePickerRestartRequired:
+        "Android detected system setting changes. Please restart the app and retry.",
       unableToProcessImage: "Unable to process this image.",
       unableToExport: "Unable to export images.",
       confirmOuterFirst: "Confirm the outer customization area first.",

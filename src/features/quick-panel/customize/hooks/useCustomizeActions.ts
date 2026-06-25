@@ -1,9 +1,9 @@
 import { Image as ExpoImage } from "expo-image";
-import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
 import { useShallow } from "zustand/react/shallow";
 import { translate } from "../../model/i18n";
 import type { ExportRefs } from "../../model/types";
+import { pickImageFromLibrary } from "../../shared/pick-image-from-library";
 import { quickPanelSelectors } from "../../store/selectors";
 import { useQuickPanelStore } from "../../store/quick-panel-store";
 import { captureAndSaveExports } from "../services/export-files";
@@ -29,17 +29,16 @@ export function useCustomizeActions(refs: ExportRefs) {
       return;
     }
 
-    const result = await ImagePicker.launchImageLibraryAsync({
-      allowsEditing: false,
-      mediaTypes: ["images"],
-      quality: 1,
-    });
+    try {
+      const pickedImage = await pickImageFromLibrary();
+      if (!pickedImage) {
+        return;
+      }
 
-    if (!result.canceled && result.assets[0]) {
       startImageProcessing();
 
       try {
-        const normalized = await normalizeCustomizeImage(result.assets[0]);
+        const normalized = await normalizeCustomizeImage(pickedImage);
         finishImageProcessing(normalized.image, normalized.noticeKey);
       } catch (error) {
         failImageProcessing(
@@ -49,6 +48,13 @@ export function useCustomizeActions(refs: ExportRefs) {
             : "errors.unableToProcessImage",
         );
       }
+    } catch (error) {
+      failImageProcessing(
+        null,
+        error instanceof Error
+          ? error.message
+          : "errors.unableToOpenImagePicker",
+      );
     }
   };
 

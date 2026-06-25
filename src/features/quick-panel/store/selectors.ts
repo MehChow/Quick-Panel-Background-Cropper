@@ -11,14 +11,17 @@ export const quickPanelSelectors = {
   calibrationScreen: (state: QuickPanelState) => ({
     screenshot: state.screenshot,
     calibrationRect: state.calibrationRect,
+    errorKey: state.errorKey,
     error: state.error,
     setScreenshot: state.setScreenshot,
     setCalibrationRect: state.setCalibrationRect,
     acceptCalibration: state.acceptCalibration,
+    failImageProcessing: state.failImageProcessing,
   }),
   advancedCalibrationScreen: (state: QuickPanelState) => ({
     advancedCalibration: state.advancedCalibration,
     advancedDraft: state.advancedDraft,
+    errorKey: state.errorKey,
     error: state.error,
     setAdvancedScreenshot: state.setAdvancedScreenshot,
     setAdvancedOuterRect: state.setAdvancedOuterRect,
@@ -26,6 +29,7 @@ export const quickPanelSelectors = {
     setAdvancedEnabledPanels: state.setAdvancedEnabledPanels,
     setAdvancedPanels: state.setAdvancedPanels,
     acceptAdvancedCalibration: state.acceptAdvancedCalibration,
+    failImageProcessing: state.failImageProcessing,
   }),
   customizeScreen: (state: QuickPanelState) => ({
     selectedMode: state.selectedMode,

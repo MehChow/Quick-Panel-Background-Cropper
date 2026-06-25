@@ -1,8 +1,8 @@
-import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import type { PanelRect, PickedImage } from "../../../model/types";
+import { pickImageFromLibrary } from "../../../shared/pick-image-from-library";
 import { useQuickPanelStore } from "../../../store/quick-panel-store";
 import { quickPanelSelectors } from "../../../store/selectors";
 import { getSuggestedCalibrationRect } from "../../shared/calibration-preset";
@@ -20,32 +20,33 @@ export function useCalibrationScreen() {
   const {
     screenshot,
     calibrationRect,
+    errorKey,
     error,
     setScreenshot,
     setCalibrationRect,
     acceptCalibration,
+    failImageProcessing,
   } = useQuickPanelStore(useShallow(quickPanelSelectors.calibrationScreen));
 
   const importScreenshot = async () => {
     setIsHelpOpen(false);
 
-    const result = await ImagePicker.launchImageLibraryAsync({
-      allowsEditing: false,
-      mediaTypes: ["images"],
-      quality: 1,
-    });
+    try {
+      const nextScreenshot = await pickImageFromLibrary();
+      if (!nextScreenshot) {
+        return;
+      }
 
-    if (!result.canceled && result.assets[0]) {
-      const asset = result.assets[0];
-      const nextScreenshot = {
-        fileName: asset.fileName,
-        height: asset.height,
-        uri: asset.uri,
-        width: asset.width,
-      };
       setScreenshot(
         nextScreenshot,
         getSuggestedCalibrationRect(nextScreenshot),
+      );
+    } catch (error) {
+      failImageProcessing(
+        null,
+        error instanceof Error
+          ? error.message
+          : "errors.unableToOpenImagePicker",
       );
     }
   };
@@ -64,6 +65,7 @@ export function useCalibrationScreen() {
 
   return {
     error,
+    errorKey,
     isHelpOpen,
     displayedScreenshot,
     displayedRect,

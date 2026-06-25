@@ -118,6 +118,9 @@ const zh = {
     },
     errors: {
       imageTooLarge: "這張圖片太大，無法順暢處理，請改選較小的圖片。",
+      unableToOpenImagePicker: "無法開啟圖片選擇器。",
+      imagePickerRestartRequired:
+        "Android 偵測到系統設定已變更，請重新啟動 App 後再試一次。",
       unableToProcessImage: "無法處理這張圖片。",
       mustCalibrate: "請先校正 Quick Panel 區域，再開始自訂。",
       importScreenshotFirst: "請先匯入 Quick Panel 截圖。",

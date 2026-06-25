@@ -12,6 +12,34 @@ This file is a running project note log for implementation details that are easy
 
 ## Entries
 
+### 2026-06-25: Android image picker after system changes
+
+#### Original concern
+
+Importing an image through `expo-image-picker` could fail on Android after the app returned from certain system-level changes. A reliable repro was switching the navigation bar style in device settings, then pressing "Choose from album" again in calibration or customize.
+
+#### Root cause
+
+- This was not specific to the navigation bar UI itself.
+- The broader issue is Android activity recreation after a system configuration or window-state change.
+- In that state, `expo-image-picker` can try to launch through an `ActivityResultLauncher` that is no longer registered.
+- Expo SDK 56 documents the same family of Android `MainActivity` destruction behavior for ImagePicker and exposes `getPendingResultAsync()` as its recovery API.
+
+#### App behavior we kept
+
+- All image-library entry points now go through `src/features/quick-panel/shared/pick-image-from-library.ts`.
+- When Android returns the unregistered launcher failure, the app shows a short restart message instead of surfacing an uncaught error.
+- Picker failures now flow through translation keys instead of pre-translated strings so the dev language switcher updates the message live.
+
+#### Practical guidance
+
+- Describe this as an Android system-change or system-configuration issue, not a navigation-bar-only bug.
+- Common triggers can include:
+  - switching gesture navigation and button navigation
+  - changing display or window mode on foldables
+  - other system UI changes that cause the host activity to refresh
+- If the restart message appears, the expected recovery is to close and reopen the app, then retry image selection.
+
 ### 2026-06-24: Whole-app responsive reset
 
 #### Original concern

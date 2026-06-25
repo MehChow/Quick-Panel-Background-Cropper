@@ -26,6 +26,7 @@ export function AdvancedCalibrationScreen() {
     advancedDraft,
     canGoBack,
     enabledPanels,
+    errorKey,
     error,
     goBack,
     goForward,
@@ -153,6 +154,11 @@ export function AdvancedCalibrationScreen() {
         {error ? (
           <Text className="mt-4 rounded-md bg-red-500/15 p-3 text-sm text-red-100">
             {error}
+          </Text>
+        ) : null}
+        {errorKey ? (
+          <Text className="mt-4 rounded-md bg-red-500/15 p-3 text-sm text-red-100">
+            {t(errorKey)}
           </Text>
         ) : null}
       </QuickPanelScreenShell>

@@ -45,6 +45,7 @@ export interface QuickPanelState extends QuickPanelStateData {
   selectMode: (mode: CustomizationMode) => boolean;
   goToCalibration: () => void;
   goToAdvancedCalibration: () => void;
+  setError: (error: string | null) => void;
   setScreenshot: (screenshot: PickedImage, rect: PanelRect) => void;
   setCalibrationRect: (rect: PanelRect) => void;
   acceptCalibration: () => boolean;
@@ -81,6 +82,7 @@ export const useQuickPanelStore = create<QuickPanelState>((set, get) => ({
   },
   goToCalibration: () => set(getDefaultCalibrationState(get().defaultCalibration)),
   goToAdvancedCalibration: () => set(getAdvancedCalibrationState(get().advancedCalibration)),
+  setError: (error) => set({ error }),
   setScreenshot: (screenshot, rect) => set({ screenshot, calibrationRect: rect, error: null }),
   setCalibrationRect: (rect) => set({ calibrationRect: rect, error: null }),
   acceptCalibration: () => {

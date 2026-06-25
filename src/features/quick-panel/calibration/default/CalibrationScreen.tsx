@@ -13,6 +13,7 @@ import { useCalibrationScreen } from "./hooks/useCalibrationScreen";
 export function CalibrationScreen() {
   const { t } = useTranslation();
   const {
+    errorKey,
     error,
     isHelpOpen,
     displayedScreenshot,
@@ -75,6 +76,11 @@ export function CalibrationScreen() {
         {error ? (
           <Text className="mt-4 rounded-md bg-red-500/15 p-3 text-sm text-red-100">
             {error}
+          </Text>
+        ) : null}
+        {errorKey ? (
+          <Text className="mt-4 rounded-md bg-red-500/15 p-3 text-sm text-red-100">
+            {t(errorKey)}
           </Text>
         ) : null}
       </QuickPanelScreenShell>
