@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { useWindowDimensions, View } from "react-native";
 import { HelpSheetZoomImage } from "@/features/quick-panel/shared/HelpSheetZoomImage";
 import { getHelpSheetMediaLayout } from "@/features/quick-panel/shared/help-sheet-media-layout";
+import { useBottomSheetInsets } from "@/features/quick-panel/shared/useBottomSheetInsets";
 
 interface Props {
   onClose: () => void;
@@ -14,6 +15,7 @@ export function AdvancedGridSheet({ onClose }: Props) {
   const { i18n, t } = useTranslation();
   const { height, width } = useWindowDimensions();
   const layout = getHelpSheetMediaLayout(width, height);
+  const { bottomInset, contentPaddingBottom } = useBottomSheetInsets();
   const isEnglish = i18n.resolvedLanguage === "en";
   const columnUnit = isEnglish ? "col" : t("advancedCalibration.columns");
   const rowUnit = isEnglish ? "row" : t("advancedCalibration.rows");
@@ -47,9 +49,16 @@ export function AdvancedGridSheet({ onClose }: Props) {
       enablePanDownToClose
       handleIndicatorStyle={{ backgroundColor: "#52525b", height: 6, width: 48 }}
       index={0}
+      bottomInset={bottomInset}
       onClose={onClose}
     >
-      <BottomSheetScrollView contentContainerStyle={{ paddingBottom: 32, paddingHorizontal: 20, paddingTop: 8 }}>
+      <BottomSheetScrollView
+        contentContainerStyle={{
+          paddingBottom: contentPaddingBottom,
+          paddingHorizontal: 20,
+          paddingTop: 8,
+        }}
+      >
         <View className="gap-6">
           <View className="gap-2">
             <Text className="text-lg font-semibold text-white">

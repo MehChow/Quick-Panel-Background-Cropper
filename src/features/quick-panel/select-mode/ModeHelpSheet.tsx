@@ -4,6 +4,7 @@ import BottomSheet, {
   BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
 import { useWindowDimensions, View } from "react-native";
+import { useBottomSheetInsets } from "../shared/useBottomSheetInsets";
 
 interface ModeHelpSheetProps {
   advancedDescription: string;
@@ -25,6 +26,7 @@ export function ModeHelpSheet({
   title,
 }: ModeHelpSheetProps) {
   const { height } = useWindowDimensions();
+  const { bottomInset, contentPaddingBottom } = useBottomSheetInsets();
 
   return (
     <BottomSheet
@@ -51,12 +53,13 @@ export function ModeHelpSheet({
         width: 48,
       }}
       index={0}
+      bottomInset={bottomInset}
       maxDynamicContentSize={height * 0.85}
       onClose={onClose}
     >
       <BottomSheetScrollView
         contentContainerStyle={{
-          paddingBottom: 32,
+          paddingBottom: contentPaddingBottom,
           paddingHorizontal: 20,
           paddingTop: 8,
         }}

@@ -8,6 +8,7 @@ import { useWindowDimensions, View } from "react-native";
 import { CalibrationOuterExample } from "./CalibrationOuterExample";
 import { CalibrationOuterTips } from "./CalibrationOuterTips";
 import { getHelpSheetMediaLayout } from "./help-sheet-media-layout";
+import { useBottomSheetInsets } from "./useBottomSheetInsets";
 
 interface CalibrationHelpSheetProps {
   onClose: () => void;
@@ -17,6 +18,7 @@ export function CalibrationHelpSheet({ onClose }: CalibrationHelpSheetProps) {
   const { t } = useTranslation();
   const { height, width } = useWindowDimensions();
   const layout = getHelpSheetMediaLayout(width, height);
+  const { bottomInset, contentPaddingBottom } = useBottomSheetInsets();
 
   return (
     <BottomSheet
@@ -45,9 +47,15 @@ export function CalibrationHelpSheet({ onClose }: CalibrationHelpSheetProps) {
         width: 48,
       }}
       index={0}
+      bottomInset={bottomInset}
       onClose={onClose}
     >
-      <BottomSheetScrollView contentContainerStyle={{ paddingBottom: 32, paddingTop: 8 }}>
+      <BottomSheetScrollView
+        contentContainerStyle={{
+          paddingBottom: contentPaddingBottom,
+          paddingTop: 8,
+        }}
+      >
         <View className="flex-row items-start gap-4">
           <View className="flex-1 gap-4 px-5">
             <Text className="text-lg font-semibold text-white">

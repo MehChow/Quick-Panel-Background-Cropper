@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import { useWindowDimensions, View } from "react-native";
 import { PanelAlignmentTips } from "./PanelAlignmentTips";
 import { getHelpSheetMediaLayout } from "./help-sheet-media-layout";
+import { useBottomSheetInsets } from "./useBottomSheetInsets";
 
 interface PanelAlignmentHelpSheetProps {
   onClose: () => void;
@@ -18,6 +19,7 @@ export function PanelAlignmentHelpSheet({
   const { t } = useTranslation();
   const { height, width } = useWindowDimensions();
   const layout = getHelpSheetMediaLayout(width, height);
+  const { bottomInset, contentPaddingBottom } = useBottomSheetInsets();
 
   return (
     <BottomSheet
@@ -45,10 +47,16 @@ export function PanelAlignmentHelpSheet({
         width: 48,
       }}
       index={0}
+      bottomInset={bottomInset}
       maxDynamicContentSize={layout.maxHeight}
       onClose={onClose}
     >
-      <BottomSheetScrollView contentContainerStyle={{ paddingBottom: 32, paddingTop: 8 }}>
+      <BottomSheetScrollView
+        contentContainerStyle={{
+          paddingBottom: contentPaddingBottom,
+          paddingTop: 8,
+        }}
+      >
         <View className="mb-5 flex-row items-start gap-4">
           <View className="flex-1 gap-4 px-5">
             <Text className="text-lg font-semibold text-white">
