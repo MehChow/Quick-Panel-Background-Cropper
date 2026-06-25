@@ -20,8 +20,7 @@ export const supportedLanguages = ["en", "zh"] as const;
 export type SupportedLanguage = (typeof supportedLanguages)[number];
 export const helpEntryIds = [
   "select-mode",
-  "default-calibration",
-  "advanced-calibration-outer",
+  "calibration-outer",
   "advanced-calibration-panel-alignment",
   "advanced-calibration-panel-review",
 ] as const;

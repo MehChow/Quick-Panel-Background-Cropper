@@ -1,6 +1,5 @@
 import { Button } from "@/components/ani-ui/button";
 import { Text } from "@/components/ani-ui/text";
-import { CalibrationHelpSheet } from "@/features/quick-panel/shared/CalibrationHelpSheet";
 import { PanelAlignmentHelpSheet } from "@/features/quick-panel/shared/PanelAlignmentHelpSheet";
 import { PanelReviewHelpSheet } from "@/features/quick-panel/shared/PanelReviewHelpSheet";
 import { QuickPanelScreenShell } from "@/features/quick-panel/shared/QuickPanelScreenShell";
@@ -13,11 +12,10 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { CalibrationCanvas } from "../shared/CalibrationCanvas";
+import { OuterCalibrationStep } from "../shared/OuterCalibrationStep";
 import { isPanelPhase, type AdvancedCalibrationPhase } from "./advanced-steps";
 import { AdvancedCalibrationControls } from "./AdvancedCalibrationControls";
 import { AdvancedGridSheet } from "./AdvancedGridSheet";
-import { AdvancedOuterOverlay } from "./components/AdvancedOuterOverlay";
 import { AdvancedPanelCanvas } from "./components/AdvancedPanelCanvas";
 import { AdvancedPanelSelection } from "./components/AdvancedPanelSelection";
 import { useAdvancedCalibrationScreen } from "./hooks/useAdvancedCalibrationScreen";
@@ -54,8 +52,7 @@ export function AdvancedCalibrationScreen() {
   const isEditing = Boolean(screenshot && outerRect);
   const isPanelStep = isPanelPhase(phase);
   const isNextDisabled = isPanelSelectionPhase && enabledPanels.length === 0;
-  const showHelpButton =
-    isEditing && (isOuterPhase || isPanelStep || isConfirmPhase);
+  const showHelpButton = isEditing && (isPanelStep || isConfirmPhase);
   const activeHelpId = getActiveHelpId(phase);
   const actionAccessibilityLabel = showHelpButton
     ? t("calibration.helpButton")
@@ -80,6 +77,27 @@ export function AdvancedCalibrationScreen() {
   const handleSave = () => {
     saveCalibration();
   };
+
+  if (isOuterPhase) {
+    return (
+      <SafeAreaView style={{ flex: 1 }}>
+        <OuterCalibrationStep
+          error={error}
+          errorKey={errorKey}
+          footerTestID="advanced-calibration-footer"
+          helpId="calibration-outer"
+          primaryLabel={t("advancedCalibration.next")}
+          rect={outerRect}
+          screenshot={screenshot}
+          subtitle={t("advancedCalibration.outerSubtitle")}
+          title={t("advancedCalibration.title")}
+          onImport={importScreenshot}
+          onPrimaryPress={handleNext}
+          onRectChange={setAdvancedOuterRect}
+        />
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -131,7 +149,7 @@ export function AdvancedCalibrationScreen() {
               onEnabledPanelsChange={setAdvancedEnabledPanels}
             />
           </View>
-        ) : !isOuterPhase && screenshot && outerRect && panels ? (
+        ) : screenshot && outerRect && panels ? (
           <AdvancedPanelCanvas
             grid={grid}
             enabledPanels={enabledPanels}
@@ -142,23 +160,7 @@ export function AdvancedCalibrationScreen() {
             onPanelsChange={setAdvancedPanels}
           />
         ) : (
-          <CalibrationCanvas
-            screenshot={screenshot}
-            rect={outerRect}
-            onImport={importScreenshot}
-            renderOverlay={(scale) =>
-              outerRect && screenshot ? (
-                <AdvancedOuterOverlay
-                  rect={outerRect}
-                  scale={scale}
-                  screenshot={screenshot}
-                  onRectChange={setAdvancedOuterRect}
-                />
-              ) : null
-            }
-            showControls={false}
-            showImportButton={false}
-          />
+          <View />
         )}
         {error ? (
           <Text className="mt-4 rounded-md bg-red-500/15 p-3 text-sm text-red-100">
@@ -171,9 +173,6 @@ export function AdvancedCalibrationScreen() {
           </Text>
         ) : null}
       </QuickPanelScreenShell>
-      {isHelpOpen && isOuterPhase ? (
-        <CalibrationHelpSheet onClose={() => setIsHelpOpen(false)} />
-      ) : null}
       {isHelpOpen && isPanelStep ? (
         <PanelAlignmentHelpSheet onClose={() => setIsHelpOpen(false)} />
       ) : null}
@@ -211,9 +210,6 @@ function getSubtitle(
 function getActiveHelpId(
   phase: AdvancedCalibrationPhase,
 ): HelpEntryId | null {
-  if (phase === "outer") {
-    return "advanced-calibration-outer";
-  }
   if (isPanelPhase(phase)) {
     return "advanced-calibration-panel-alignment";
   }

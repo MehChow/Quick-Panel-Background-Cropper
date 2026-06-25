@@ -1,12 +1,17 @@
 import React from "react";
 import { render, screen } from "@testing-library/react-native";
 import * as ReactNative from "react-native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { CalibrationHelpSheet } from "@/features/quick-panel/shared/CalibrationHelpSheet";
 import { AdvancedGridSheet } from "@/features/quick-panel/calibration/advanced/AdvancedGridSheet";
 
 const mockBottomSheet = jest.fn();
 const mockBottomSheetScrollView = jest.fn();
 const mockBottomSheetView = jest.fn();
+const safeAreaMetrics = {
+  frame: { height: 915, width: 412, x: 0, y: 0 },
+  insets: { bottom: 24, left: 0, right: 0, top: 0 },
+};
 
 jest.mock("react-i18next", () => ({
   useTranslation: () => ({
@@ -85,7 +90,7 @@ describe("help sheet sizing", () => {
   });
 
   it("uses content-fit sizing for the advanced calibration help sheet", () => {
-    render(<CalibrationHelpSheet onClose={jest.fn()} />);
+    renderWithSafeArea(<CalibrationHelpSheet onClose={jest.fn()} />);
 
     expect(mockBottomSheet).toHaveBeenCalledTimes(1);
     const props = mockBottomSheet.mock.calls[0]?.[0];
@@ -100,7 +105,7 @@ describe("help sheet sizing", () => {
   });
 
   it("uses content-fit sizing for the row and column help sheet", () => {
-    render(<AdvancedGridSheet onClose={jest.fn()} />);
+    renderWithSafeArea(<AdvancedGridSheet onClose={jest.fn()} />);
 
     expect(mockBottomSheet).toHaveBeenCalledTimes(1);
     const props = mockBottomSheet.mock.calls[0]?.[0];
@@ -110,3 +115,11 @@ describe("help sheet sizing", () => {
     expect(props?.snapPoints).toBeUndefined();
   });
 });
+
+function renderWithSafeArea(children: React.ReactElement) {
+  return render(
+    <SafeAreaProvider initialMetrics={safeAreaMetrics}>
+      {children}
+    </SafeAreaProvider>,
+  );
+}

@@ -24,22 +24,19 @@ jest.mock("@/features/quick-panel/calibration/shared/CalibrationCanvas", () => (
   CalibrationCanvas: () => null,
 }));
 
-jest.mock("@/features/quick-panel/calibration/default/components/DefaultCalibrationOverlay", () => ({
-  DefaultCalibrationOverlay: () => null,
+jest.mock("@/features/quick-panel/calibration/default/default-display-rect", () => ({
+  getDefaultDisplayRect: jest.fn(),
 }));
 
 jest.mock("@/features/quick-panel/calibration/default/hooks/useCalibrationScreen", () => ({
   useCalibrationScreen: () => ({
     error: null,
-    isHelpOpen: false,
+    errorKey: null,
     displayedScreenshot: null,
     displayedRect: null,
-    isCalibrating: false,
     setCalibrationRect: jest.fn(),
     importScreenshot: jest.fn(),
     saveCalibration: jest.fn(),
-    openHelp: jest.fn(),
-    closeHelp: jest.fn(),
   }),
 }));
 

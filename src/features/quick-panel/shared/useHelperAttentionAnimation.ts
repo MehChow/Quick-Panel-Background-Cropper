@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import Animated, {
+import {
   cancelAnimation,
   useAnimatedStyle,
   useSharedValue,

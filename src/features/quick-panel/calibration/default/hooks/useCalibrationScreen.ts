@@ -3,7 +3,6 @@ import { useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import type { PanelRect, PickedImage } from "../../../model/types";
 import { pickImageFromLibrary } from "../../../shared/pick-image-from-library";
-import { markHelpSeen } from "../../../store/storage";
 import { useQuickPanelStore } from "../../../store/quick-panel-store";
 import { quickPanelSelectors } from "../../../store/selectors";
 import { getSuggestedCalibrationRect } from "../../shared/calibration-preset";
@@ -15,7 +14,6 @@ interface CalibrationPresentation {
 
 export function useCalibrationScreen() {
   const router = useRouter();
-  const [isHelpOpen, setIsHelpOpen] = useState(false);
   const [leavingCalibration, setLeavingCalibration] =
     useState<CalibrationPresentation | null>(null);
   const {
@@ -30,8 +28,6 @@ export function useCalibrationScreen() {
   } = useQuickPanelStore(useShallow(quickPanelSelectors.calibrationScreen));
 
   const importScreenshot = async () => {
-    setIsHelpOpen(false);
-
     try {
       const nextScreenshot = await pickImageFromLibrary();
       if (!nextScreenshot) {
@@ -67,17 +63,10 @@ export function useCalibrationScreen() {
   return {
     error,
     errorKey,
-    isHelpOpen,
     displayedScreenshot,
     displayedRect,
-    isCalibrating: Boolean(displayedScreenshot && displayedRect),
     setCalibrationRect,
     importScreenshot,
     saveCalibration,
-    openHelp: () => {
-      markHelpSeen("default-calibration");
-      setIsHelpOpen(true);
-    },
-    closeHelp: () => setIsHelpOpen(false),
   };
 }

@@ -32,10 +32,6 @@ jest.mock("@/features/quick-panel/calibration/advanced/AdvancedGridSheet", () =>
   AdvancedGridSheet: () => null,
 }));
 
-jest.mock("@/features/quick-panel/calibration/advanced/components/AdvancedOuterOverlay", () => ({
-  AdvancedOuterOverlay: () => null,
-}));
-
 jest.mock("@/features/quick-panel/calibration/advanced/components/AdvancedPanelCanvas", () => ({
   AdvancedPanelCanvas: () => null,
 }));
@@ -70,6 +66,7 @@ jest.mock("@/features/quick-panel/calibration/advanced/hooks/useAdvancedCalibrat
     canGoBack: false,
     enabledPanels: [],
     error: null,
+    errorKey: null,
     goBack: jest.fn(),
     goForward: jest.fn(),
     grid: { columns: 4, rows: 5 },
