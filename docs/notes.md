@@ -12,6 +12,48 @@ This file is a running project note log for implementation details that are easy
 
 ## Entries
 
+### 2026-06-25: First-time helper button attention cue
+
+#### Original concern
+
+Some users were missing the top-right helper button and not reading the
+existing help sheets, especially on first use. The goal was to make the helper
+entry point more noticeable without forcing modal onboarding on every screen.
+
+#### What changed
+
+- Added a first-time-only helper attention cue for header help buttons on:
+  - select mode
+  - default calibration
+  - advanced calibration outer help
+  - advanced calibration panel-alignment help
+  - advanced calibration review help
+- Seen state is persisted in MMKV under `quick-panel.seen-help`.
+- Opening a help sheet marks that specific help context as seen immediately, so
+  the animation stops and stays off on later visits.
+- The shared helper button now subscribes reactively to MMKV changes instead of
+  reading storage once during render.
+- The pulse animation was tuned to a two-ring outward-only sequence with a
+  short idle gap, instead of a breathing inward/outward loop.
+
+#### Root cause worth remembering
+
+- The first implementation wrote the MMKV seen flag correctly, but the helper
+  button read that state through a plain function call.
+- That meant storage changed, but the UI did not re-render right away, so the
+  helper kept animating until some unrelated render happened.
+- The durable fix was a reactive MMKV-backed hook in
+  `src/features/quick-panel/store/storage.ts`, used by the shared
+  `HeaderActionButton`.
+
+#### Reuse guidance
+
+- If a future UI element depends on MMKV-backed "seen" state, subscribe to the
+  storage key reactively. Do not rely on one-off reads during render.
+- Keep helper attention scoped per help context, not globally, so later unseen
+  steps can still surface guidance.
+- Keep reduced-motion fallback static even when the animated version changes.
+
 ### 2026-06-25: Android image picker after system changes
 
 #### Original concern
