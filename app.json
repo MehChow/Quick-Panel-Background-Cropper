@@ -8,7 +8,7 @@
     "scheme": "quickpanelbackgroundcropper",
     "userInterfaceStyle": "automatic",
     "android": {
-      "versionCode": 30000010,
+      "versionCode": 30000012,
       "blockedPermissions": [
         "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.WRITE_EXTERNAL_STORAGE",
