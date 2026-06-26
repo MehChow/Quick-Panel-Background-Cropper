@@ -9,6 +9,11 @@
     "userInterfaceStyle": "automatic",
     "android": {
       "versionCode": 30000012,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/appicon.png",
+        "backgroundColor": "#FFFFFF",
+        "monochromeImage": "./assets/images/appicon_themed.png"
+      },
       "blockedPermissions": [
         "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.WRITE_EXTERNAL_STORAGE",

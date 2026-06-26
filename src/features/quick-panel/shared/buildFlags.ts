@@ -1,1 +1,1 @@
-export const shouldShowBuildVersion = true;
+export const shouldShowBuildVersion = false;
