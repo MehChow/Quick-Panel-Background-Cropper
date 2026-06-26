@@ -55,6 +55,7 @@ const zh = {
       subtitle: "選擇圖片後，再調整位置",
       pickerTitle: "選擇背景圖片",
       pickerSubtitle: "支援 PNG、JPG 和 WEBP。",
+      layoutPreview: "目前版面預覽",
       chooseAnotherImage: "選擇另一張圖片",
       resetPosition: "重設位置",
       exportPngs: "匯出 PNG",

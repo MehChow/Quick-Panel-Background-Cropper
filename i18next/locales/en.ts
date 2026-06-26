@@ -59,6 +59,7 @@ const en = {
       imageOptimized: "Selected image was optimized for smoother adjustment.",
       pickerTitle: "Choose background image",
       pickerSubtitle: "PNG, JPG, and WEBP are supported.",
+      layoutPreview: "Current layout preview",
       chooseAnotherImage: "Choose another image",
       resetPosition: "Reset position",
       exportPngs: "Export PNGs",

@@ -1,18 +1,19 @@
 import { Text } from "@/components/ani-ui/text";
-import { images } from "@/data/images";
-import { Image } from "expo-image";
 import { View } from "react-native";
 import { useTranslation } from "react-i18next";
-import type { CustomizationMode } from "../../model/types";
+import type { CustomizationMode, QuickPanelPreset } from "../../model/types";
+import { BackgroundLayoutPreview } from "./BackgroundLayoutPreview";
 
 interface ImagePickerCardProps {
   mode: CustomizationMode;
   onRecalibrate: () => void;
+  preset: QuickPanelPreset;
 }
 
 export function ImagePickerCard({
   mode,
   onRecalibrate,
+  preset,
 }: ImagePickerCardProps) {
   const { t } = useTranslation();
 
@@ -27,15 +28,9 @@ export function ImagePickerCard({
             {t("customize.pickerSubtitle")}
           </Text>
           <Text className="mt-4 text-center font-semibold text-orange-400">
-            {t("landing.example")}
+            {t("customize.layoutPreview")}
           </Text>
-          <View className="mt-4 h-64 w-full overflow-hidden rounded-2xl border border-white/10 bg-zinc-950">
-            <Image
-              contentFit="cover"
-              source={images.exampleSrc}
-              style={{ height: "100%", width: "100%" }}
-            />
-          </View>
+          <BackgroundLayoutPreview preset={preset} />
         </View>
       </View>
       <Text className="text-center text-sm leading-5 text-zinc-400">

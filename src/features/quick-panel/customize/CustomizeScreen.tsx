@@ -105,6 +105,7 @@ export function CustomizeScreen() {
             <ImagePickerCard
               mode={selectedMode ?? "default"}
               onRecalibrate={recalibrate}
+              preset={activePreset}
             />
           )}
           {noticeKey ? (
