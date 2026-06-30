@@ -1,5 +1,6 @@
 import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { BackHandler } from "react-native";
 import { useShallow } from "zustand/react/shallow";
 import {
   getDefaultAdvancedSnapGrid,
@@ -85,9 +86,38 @@ export function useAdvancedCalibrationScreen() {
 
   const displayedDraft = advancedDraft ?? leavingDraft;
   const displayedPhase = advancedDraft ? phase : leavingPhase ?? phase;
+  const [isLeaveDialogOpen, setIsLeaveDialogOpen] = useState(false);
+  const shouldConfirmLeave = displayedPhase !== "outer";
   const enabledPanels = displayedDraft?.enabledPanels ?? [];
   const previousPhase = getPreviousPhase(displayedPhase, enabledPanels);
   const nextPhase = getNextPhase(displayedPhase, enabledPanels);
+
+  const leaveCalibration = () => {
+    router.back();
+  };
+
+  const closeLeaveDialog = () => {
+    setIsLeaveDialogOpen(false);
+  };
+
+  const requestLeaveCalibration = () => {
+    if (!shouldConfirmLeave) {
+      leaveCalibration();
+      return true;
+    }
+
+    setIsLeaveDialogOpen(true);
+    return true;
+  };
+
+  useEffect(() => {
+    const subscription = BackHandler.addEventListener(
+      "hardwareBackPress",
+      requestLeaveCalibration,
+    );
+
+    return () => subscription.remove();
+  });
 
   const goBack = () => {
     if (!previousPhase) {
@@ -136,6 +166,7 @@ export function useAdvancedCalibrationScreen() {
     grid,
     phase: displayedPhase,
     canGoBack: previousPhase !== null,
+    closeLeaveDialog,
     importScreenshot,
     decrementColumns: () => setGrid((current) => ({ ...current, columns: Math.max(1, current.columns - 1) })),
     decrementRows: () => setGrid((current) => ({ ...current, rows: Math.max(1, current.rows - 1) })),
@@ -145,8 +176,11 @@ export function useAdvancedCalibrationScreen() {
     incrementRows: () => setGrid((current) => ({ ...current, rows: Math.min(8, current.rows + 1) })),
     isConfirmPhase: displayedPhase === "confirm",
     isGridPhase: displayedPhase === "grid",
+    isLeaveDialogOpen,
     isOuterPhase: displayedPhase === "outer",
     isPanelSelectionPhase: displayedPhase === "panelSelection",
+    leaveCalibration,
+    requestLeaveCalibration,
     returnToOuter,
     saveCalibration,
     setColumns: (columns: number) => setGrid((current) => ({ ...current, columns })),

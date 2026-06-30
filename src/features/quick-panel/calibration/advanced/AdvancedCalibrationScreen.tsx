@@ -16,6 +16,7 @@ import { OuterCalibrationStep } from "../shared/OuterCalibrationStep";
 import { isPanelPhase, type AdvancedCalibrationPhase } from "./advanced-steps";
 import { AdvancedCalibrationControls } from "./AdvancedCalibrationControls";
 import { AdvancedGridSheet } from "./AdvancedGridSheet";
+import { AdvancedCalibrationLeaveDialog } from "./components/AdvancedCalibrationLeaveDialog";
 import { AdvancedPanelCanvas } from "./components/AdvancedPanelCanvas";
 import { AdvancedPanelSelection } from "./components/AdvancedPanelSelection";
 import { useAdvancedCalibrationScreen } from "./hooks/useAdvancedCalibrationScreen";
@@ -27,6 +28,7 @@ export function AdvancedCalibrationScreen() {
   const {
     advancedDraft,
     canGoBack,
+    closeLeaveDialog,
     enabledPanels,
     errorKey,
     error,
@@ -35,10 +37,13 @@ export function AdvancedCalibrationScreen() {
     grid,
     isConfirmPhase,
     isGridPhase,
+    isLeaveDialogOpen,
     isOuterPhase,
     isPanelSelectionPhase,
+    leaveCalibration,
     phase,
     importScreenshot,
+    requestLeaveCalibration,
     saveCalibration,
     setColumns,
     setRows,
@@ -137,6 +142,7 @@ export function AdvancedCalibrationScreen() {
             actionHelpId={activeHelpId ?? undefined}
             actionVariant={showHelpButton ? "helper-balanced" : undefined}
             onActionPress={showHelpButton ? openActiveHelp : undefined}
+            onBackPress={requestLeaveCalibration}
             title={t("advancedCalibration.title")}
             subtitle={getSubtitle(phase, t)}
           />
@@ -182,6 +188,11 @@ export function AdvancedCalibrationScreen() {
       {isGridHelpOpen && isGridPhase ? (
         <AdvancedGridSheet onClose={() => setIsGridHelpOpen(false)} />
       ) : null}
+      <AdvancedCalibrationLeaveDialog
+        onClose={closeLeaveDialog}
+        onLeave={leaveCalibration}
+        open={isLeaveDialogOpen}
+      />
     </SafeAreaView>
   );
 }

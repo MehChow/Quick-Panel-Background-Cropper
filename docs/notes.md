@@ -12,6 +12,45 @@ This file is a running project note log for implementation details that are easy
 
 ## Entries
 
+### 2026-06-30: Advanced calibration leave guard
+
+#### Original concern
+
+Users could leave advanced calibration through the shared top-left header back
+button or Android hardware back after confirming the green outer rectangle,
+losing their in-progress panel alignment work without warning.
+
+#### What changed
+
+- Advanced calibration now warns before leaving once the flow has moved past the
+  outer step.
+- The leave guard is local to advanced calibration and is based on phase, not a
+  persisted dirty flag.
+- The shared header back button now accepts an optional override handler so
+  advanced calibration can intercept the top-left back press without changing
+  other screens.
+- Android hardware back uses the same leave request path as the header back.
+- The footer `Back` button inside advanced calibration still moves between
+  calibration phases and does not show the leave dialog.
+
+#### Root cause worth remembering
+
+- The screen already had a natural boundary for "work that can be lost":
+  `confirmAdvancedOuterRect()` transitions the flow away from `outer` and
+  initializes advanced panel draft work.
+- The missing piece was not more persisted state. It was that shared route-leave
+  paths were bypassing the advanced calibration flow state entirely.
+- The durable fix was to treat `phase !== "outer"` as the leave-confirm signal
+  and route both header back and hardware back through one local dialog handler.
+
+#### Reuse guidance
+
+- When a screen has a clear workflow phase boundary, prefer deriving unsaved
+  work from that phase instead of adding another dirty flag.
+- Keep destructive-leave guards local when only one flow needs them.
+- If a future route needs the same pattern, share only the back-button override
+  hook point, not the advanced calibration guard logic itself.
+
 ### 2026-06-25: First-time helper button attention cue
 
 #### Original concern

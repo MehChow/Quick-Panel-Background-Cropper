@@ -85,6 +85,9 @@ const en = {
       reviewHelpTitle: "How to review your calibration",
       reviewHelpBody:
         "Before saving, check that every orange box sits cleanly on its panel edges and that the gaps between panels look even. A precise review here helps ensure your exported crops line up correctly in Good Lock.",
+      leaveTitle: "Leave advanced calibration?",
+      leaveBody: "Your current advanced calibration changes will not be saved.",
+      leaveConfirm: "Leave",
       columns: "Columns",
       rows: "Rows",
       back: "Back",

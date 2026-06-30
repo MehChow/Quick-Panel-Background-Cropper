@@ -78,6 +78,9 @@ const zh = {
       reviewHelpTitle: "如何檢查校正結果",
       reviewHelpBody:
         "儲存前，請確認每個橘色方框都準確貼齊對應版面的邊緣，版面之間的間距看起來也平均一致。這一步檢查得越精準，匯出的裁切圖片在 Good Lock 裡就越容易對齊。",
+      leaveTitle: "離開進階校正？",
+      leaveBody: "目前的進階校正變更不會被保留。",
+      leaveConfirm: "離開",
       columns: "欄",
       rows: "列",
       back: "返回",

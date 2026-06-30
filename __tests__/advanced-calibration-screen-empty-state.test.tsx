@@ -40,6 +40,10 @@ jest.mock("@/features/quick-panel/calibration/advanced/components/AdvancedPanelS
   AdvancedPanelSelection: () => null,
 }));
 
+jest.mock("@/features/quick-panel/calibration/advanced/components/AdvancedCalibrationLeaveDialog", () => ({
+  AdvancedCalibrationLeaveDialog: () => null,
+}));
+
 jest.mock("@/features/quick-panel/calibration/advanced/AdvancedCalibrationControls", () => ({
   AdvancedCalibrationControls: () => null,
 }));
@@ -64,6 +68,7 @@ jest.mock("@/features/quick-panel/calibration/advanced/hooks/useAdvancedCalibrat
   useAdvancedCalibrationScreen: () => ({
     advancedDraft: null,
     canGoBack: false,
+    closeLeaveDialog: jest.fn(),
     enabledPanels: [],
     error: null,
     errorKey: null,
@@ -73,9 +78,12 @@ jest.mock("@/features/quick-panel/calibration/advanced/hooks/useAdvancedCalibrat
     importScreenshot: jest.fn(),
     isConfirmPhase: false,
     isGridPhase: false,
+    isLeaveDialogOpen: false,
     isOuterPhase: true,
     isPanelSelectionPhase: false,
+    leaveCalibration: jest.fn(),
     phase: "outer",
+    requestLeaveCalibration: jest.fn(),
     saveCalibration: jest.fn(),
     setAdvancedEnabledPanels: jest.fn(),
     setAdvancedOuterRect: jest.fn(),

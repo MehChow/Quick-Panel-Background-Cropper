@@ -15,6 +15,7 @@ interface SubPageHeaderProps {
   actionIcon?: React.ComponentProps<typeof Lucide>["name"];
   actionVariant?: HeaderActionVariant;
   onActionPress?: () => void;
+  onBackPress?: () => void;
   title: string;
   subtitle: string;
 }
@@ -25,6 +26,7 @@ export function SubPageHeader({
   actionIcon,
   actionVariant,
   onActionPress,
+  onBackPress,
   title,
   subtitle,
 }: SubPageHeaderProps) {
@@ -32,7 +34,7 @@ export function SubPageHeader({
 
   return (
     <View className="mb-5 flex-row items-center gap-3">
-      <BackButton className="" />
+      <BackButton className="" onPress={onBackPress} />
       <View className="flex-1">
         <Text className="text-2xl font-semibold leading-7 text-white">
           {title}
