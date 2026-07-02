@@ -11,6 +11,19 @@ import type { PanelRect, PickedImage } from "../../model/types";
 
 const exampleImageAspectRatio = 9 / 19.5;
 const canvasPadding = 12;
+const screenshotFrameStyle = {
+  borderColor: "rgba(255, 255, 255, 0.92)",
+  borderWidth: 1.5,
+  elevation: 8,
+  shadowColor: "#000",
+  shadowOffset: { width: 0, height: 8 },
+  shadowOpacity: 0.24,
+  shadowRadius: 18,
+} as const;
+const screenshotInnerFrameStyle = {
+  borderColor: "rgba(0, 0, 0, 0.22)",
+  borderWidth: 1,
+} as const;
 
 interface CalibrationCanvasProps {
   controls?: ReactNode;
@@ -72,9 +85,10 @@ export function CalibrationCanvas({
       }
     >
       <View
-        className="self-center overflow-hidden rounded-[28px] border border-zinc-800 bg-black"
+        className="self-center overflow-hidden rounded-[28px] bg-black"
         style={{
           height: canvasHeight,
+          ...screenshotFrameStyle,
           width: canvasWidth,
         }}
       >
@@ -82,6 +96,11 @@ export function CalibrationCanvas({
           source={{ uri: screenshot.uri }}
           contentFit="fill"
           style={{ height: "100%", width: "100%" }}
+        />
+        <View
+          pointerEvents="none"
+          className="absolute inset-0 rounded-[28px]"
+          style={screenshotInnerFrameStyle}
         />
         {renderOverlay(scale)}
       </View>
