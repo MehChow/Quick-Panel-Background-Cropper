@@ -131,6 +131,11 @@ Here are the calibration bottom sheet helpers:
   <img src="./flow/bottom-sheet-tutorial/panelbox-confirm.webp" width="200">
 </div><br>
 
+First-time users also get an animated helper icon on the mode-selection,
+outer-calibration, advanced panel-alignment, and advanced review screens until
+that specific help sheet is opened. The icon uses two soft pulse rings plus a
+small wave motion to draw attention, then stays still after that helper has been seen. The animation is disabled when reduced motion is enabled.
+
 The full calibration logic and assumptions are documented in [CALIBRATION_PLAN.md](CALIBRATION_PLAN.md).
 
 ## Notes
