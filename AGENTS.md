@@ -40,6 +40,7 @@ For the exact v2 UI flow, refer to the screenshots under `flow/`.
 - Consistent padding, responsive design
 - Use `expo-image` for images
 - Preferrably use / install components from AniUi under src/components/ani-ui for base components
+- Read `docs/styling.md` for detailed guideline on ui designs
 
 ## Best Practices
 

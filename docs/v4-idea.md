@@ -1,6 +1,6 @@
-# v3 Idea: Buttons-Only Support
+# v4 Idea: Controls + Buttons Support
 
-This document captures the v3 brainstorming result for future implementation.
+This document captures the v4 brainstorming result for future implementation.
 It is product and workflow context only. It is not an implementation plan.
 
 ## Current v2 baseline
@@ -45,39 +45,32 @@ panel boxes in this order:
 
 The current v2 Advanced flow is Controls-only.
 
-## v3 goal
+## v4 goal
 
-v3 should add Buttons-only customization before the mixed Controls + Buttons
-workflow.
+v4 should add the combined Controls + Buttons workflow after Buttons-only
+support exists.
 
-The main v3 use case is applying one selected image across one or more selected
-Quick Panel Buttons panels, without involving the existing Controls panels.
-
-This is a lower-risk first step because Buttons behavior does not exist yet,
-while Controls-only behavior already works in v2. Building Buttons-only first
-lets the app validate dynamic Button selection, resizable Button geometry,
-labeling, export naming, and Button readability before v4 combines Buttons with
-Controls.
+The main v4 use case is applying one selected image seamlessly across both
+Controls panels and selected Buttons panels. For example, a user may want one
+image to flow continuously across Wi-Fi, Bluetooth, and Button box.
 
 The important product promise is:
 
 - One imported Quick Panel screenshot
-- One Buttons outer calibration area
-- One shared row/column snapping grid for Buttons
+- One combined outer calibration area
+- One shared row/column snapping grid
 - One image transform
-- One coordinate system for the selected Buttons panels
-- Multiple Button export surfaces derived from that shared setup
+- One coordinate system
+- Multiple Controls and Buttons export surfaces derived from that shared setup
 
-## Non-goals for v3
+## Non-goals for v4
 
 - Do not change Default mode behavior.
 - Do not turn Default into a Buttons-capable flow.
-- Do not change the existing Controls-only Advanced flow beyond adding the
-  Advanced target choice.
-- Do not implement mixed Controls + Buttons in v3.
+- Do not replace the Buttons-only flow.
 - Do not depend on automatic device tile enumeration.
 - Do not rely on private Samsung APIs or unsupported Android behavior.
-- Do not make Buttons sizes fixed presets.
+- Do not add a top-level third mode unless later product evidence requires it.
 
 ## Mode structure decision
 
@@ -87,6 +80,7 @@ Advanced should branch into target choices:
 
 - Controls only
 - Buttons only
+- Controls + Buttons
 
 Recommended select-mode structure:
 
@@ -97,70 +91,76 @@ Recommended select-mode structure:
    - Ask the user to choose the target:
      - Controls only
      - Buttons only
+     - Controls + Buttons
 
-This keeps the top-level mode screen simple and avoids adding a third top-level
-mode card. It also leaves room for v4 to add a third Advanced target:
+This keeps the top-level mode screen simple and avoids mixing "difficulty" with
+"customization target".
 
-- Controls + Buttons
+Buttons-only customization should remain a separate Advanced target or mode.
+Controls + Buttons should only handle the mixed use case.
 
-## Buttons-only rule
+## Controls + Buttons rule
 
-Buttons-only must require at least one included Buttons panel.
+Controls + Buttons must require:
 
-It should not require any Controls panel, and it should not expose Controls
-panel setup inside the Buttons-only flow.
+- At least one enabled Controls panel
+- At least one included Buttons panel
 
 Reason:
 
-v3 exists to prove the Buttons system independently. Controls + Buttons is a
-future v4 workflow that should reuse this system once it is stable.
+Controls + Buttons exists for users who want one image to span both panel
+families. If a user only wants Buttons, that is a different product goal and
+should be handled by a future Buttons-only flow.
 
-## Buttons-only calibration flow
+## Controls + Buttons calibration flow
 
-The proposed v3 Buttons-only flow:
+The agreed flow for Controls + Buttons:
 
 1. Import a fully expanded Quick Panel screenshot.
-2. Draw one outer area around the Buttons region the user wants to customize.
-   - Example: Wi-Fi + Bluetooth.
-   - Example: a resized app-specific Button.
-   - Example: several custom-sized Buttons inside the Quick Panel area.
-3. Choose included Buttons panels.
-4. Set the row/column count for the Buttons outer area.
-5. Adjust the blue boxes for Buttons panels.
-6. Review all Button boxes together.
-7. Confirm the overall adjustment and save.
-8. Choose a background image.
-9. Pan/zoom the image against the Buttons preview.
-10. Export the selected Button PNGs.
+2. Draw one outer area around all regions the user wants to customize.
+   - Example: Wi-Fi + Bluetooth + Button box.
+   - Example: Wi-Fi + Button box.
+   - The outer area is not Controls-only. It covers both selected Controls and
+     selected Buttons.
+3. Choose enabled Controls panels.
+4. Choose included Buttons panels.
+5. Set the row/column count for the whole combined outer area.
+6. Adjust the purple boxes for Controls panels.
+7. Adjust the blue boxes for Buttons panels.
+8. Review all boxes together.
+9. Confirm the overall adjustment and save.
 
-The row/column count should stay after Buttons selection and before box
-adjustment, matching the v2 Advanced flow pattern.
+The row/column count intentionally stays after Controls and Buttons selection
+and before box adjustment. This matches the current v2 Advanced flow order and
+still works because snapping is configured before any purple or blue box
+adjustment begins.
 
-## Relationship to v4
+## Difference from v2 Advanced
 
-v4 should add Controls + Buttons after Buttons-only is proven.
+Controls-only Advanced can mostly keep the current v2 Advanced flow.
 
-The v4 mixed flow should reuse the v3 Buttons system for:
+Controls + Buttons should not be implemented as "finish Controls setup, then
+start a separate Buttons setup". That would break the seamless-image promise.
 
-- Button selection
-- Custom labels
-- Resizable Button boxes
-- Button export naming
-- Button readability treatment
+Controls + Buttons is a new combined-area calibration flow:
 
-v4 should then combine that system with the existing Controls Advanced system
-using one shared outer area, one shared row/column grid, and one shared image
-transform across both panel families.
+- The green outer area covers every selected Controls and Buttons panel.
+- Controls and Buttons share one snapping grid.
+- Controls and Buttons share one coordinate space.
+- The user adjusts both panel families before saving the calibration.
+
+This is intentionally different from the current v2 Advanced sequence.
 
 ## Visual box colors
 
 Use separate visual colors for editable boxes:
 
-- Green: Buttons outer area
+- Green: combined outer area
+- Purple: Controls panel boxes
 - Blue: Buttons panel boxes
 
-Purple should remain reserved for Controls panel boxes in Controls-only and
-future Controls + Buttons flows.
+The exact shades can be decided during UI design, but future implementation
+should keep the panel families visually distinct during adjustment and review.
 
 ## Buttons panel selection
 
@@ -171,7 +171,7 @@ Android public Quick Settings APIs are mainly for an app exposing or requesting
 its own tile. They do not provide a normal app-level API for reading the user's
 complete active Samsung Quick Settings tile list.
 
-Therefore, v3 should use manual/screenshot-based Buttons selection.
+Therefore, v4 should keep using manual/screenshot-based Buttons selection.
 
 Recommended selection model:
 
@@ -203,15 +203,16 @@ In One UI 8.5, users can freely resize Buttons panels inside the available
 Quick Panel area. A Button can be small, large, tall, wide, or any supported
 grid-sized shape such as 1x1 or 4x5.
 
-Therefore, v3 should treat Buttons as user-defined export boxes:
+Therefore, v4 should treat Buttons like Controls panels from a geometry
+perspective:
 
 - The user decides which Buttons panels are included.
 - The user decides each Button box size and position from the screenshot.
-- Buttons are editable export boxes inside the calibrated Buttons outer area.
+- Buttons are editable export boxes inside the calibrated area.
 - Buttons should not be modeled as "large pill" vs "small grid" fixed types.
 
-Built-in labels help users name exports, but screenshot geometry should drive
-the real positions and dimensions.
+Built-in labels from the Buttons-only system help users name exports, but
+screenshot geometry should drive the real positions and dimensions.
 
 ## Button export readability concern
 
@@ -225,8 +226,8 @@ Observed behavior:
 - Solid Buttons images can hide the original icon and make the button hard to
   read.
 
-This means Buttons exports probably need their own image treatment, even though
-the crop method is still square cropping.
+This means Buttons exports probably need a different image treatment from
+Controls exports, even though the crop method is still square cropping.
 
 Potential Buttons export treatment:
 
@@ -243,20 +244,24 @@ icon readability.
 
 ## Export behavior
 
-Advanced Buttons-only exports:
+Controls exports should continue to follow Good Lock application order.
 
-- Export only included Buttons panels.
-- Export Buttons in the user's selected/reviewed order.
-- Use clear filenames based on label plus sequence number when labels repeat.
-- Derive all exports from the same image placement and Buttons calibration.
+Advanced Controls-only exports:
+
+- Export only enabled Controls panels.
+
+Advanced Controls + Buttons exports:
+
+- Export enabled Controls panels.
+- Export included Buttons panels.
+- All exports derive from the same image placement and combined calibration.
 
 Future implementation needs a naming/order decision for Buttons exports. A
 reasonable starting point is:
 
-- `01-wifi.png`
-- `02-bluetooth.png`
-- `03-custom-label.png`
-- Add a numeric suffix when labels repeat.
+- Keep Controls in existing Good Lock order.
+- Export Buttons in the user's selected/reviewed order.
+- Use clear filenames based on label plus sequence number when labels repeat.
 
 ## Data model implications
 
@@ -269,7 +274,7 @@ The current v2 model is narrow:
 Future implementation will likely need to separate:
 
 - Mode: Default vs Advanced
-- Advanced target: Controls only vs Buttons only
+- Advanced target: Controls only vs Buttons only vs Controls + Buttons
 - Panel family: Controls vs Buttons
 - Panel IDs for fixed Controls panels
 - User-defined IDs or instances for Buttons panels
@@ -286,36 +291,39 @@ Potential user-facing terms:
 - Advanced
 - Controls only
 - Buttons only
+- Controls + Buttons
 - Outer area
 - Row count
 - Column count
+- Controls boxes
 - Buttons boxes
 - Review
 
-Avoid naming the v3 target "Controls + Buttons" because v3 should not include
-Controls panel setup.
+Avoid naming the combined flow "Buttons mode" because it still requires at
+least one Control and one Button.
 
-## UX principles for v3
+## UX principles for v4
 
 - Preserve the v2 Controls-only experience for existing users.
 - Keep Default mode fast and unchanged.
-- Add Buttons only where users explicitly opt into Buttons-only Advanced setup.
-- Make the Buttons-only scope obvious before calibration starts.
-- Use one screenshot and one outer area for Buttons-only.
+- Add Buttons only where users explicitly opt into the combined Advanced flow.
+- Make the shared-image concept obvious in the combined flow.
+- Use one screenshot and one outer area for Controls + Buttons.
 - Do not ask users to manually enter more labels than needed.
 - Let geometry come from the screenshot, not from guessed device inventories.
-- Keep the final review step visual, showing all blue Button boxes together.
+- Keep the final review step visual, showing all purple and blue boxes together.
 
 ## Future planning notes
 
 When implementation planning starts, first decide:
 
-1. How users add/select Buttons panels in the screenshot.
-2. How custom Button labels are entered and edited.
-3. How Buttons labels map to export filenames.
-4. What default readability treatment Buttons exports should use.
-5. Whether Buttons-only should share the current Advanced calibration screen
-   shell or use a separate screen/module.
+1. How the combined flow reuses the Buttons-only selection, label, export, and
+   readability systems.
+2. How Controls and Buttons share one outer area and snapping grid without
+   regressing the existing Controls-only Advanced flow.
+3. How mixed Controls and Buttons exports should be ordered in the result UI.
+4. Whether the current Advanced calibration screen should branch internally or
+   whether Controls + Buttons deserves a separate screen/module.
 
 Keep tests secondary and lightweight unless explicitly requested. Product-risk
 areas worth testing later are store/state transitions, calibration persistence,
