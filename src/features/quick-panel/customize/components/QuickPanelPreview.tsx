@@ -11,6 +11,7 @@ import { useQuickPanelPreviewGestures } from "../hooks/useQuickPanelPreviewGestu
 import { PanelSlice } from "./PanelSlice";
 
 interface QuickPanelPreviewProps {
+  buttonPanelOpacity: number;
   image: PickedImage;
   preset: QuickPanelPreset;
   transform: ImageTransform;
@@ -19,6 +20,7 @@ interface QuickPanelPreviewProps {
 }
 
 export function QuickPanelPreview({
+  buttonPanelOpacity,
   image,
   onAdjustingChange,
   transform,
@@ -68,6 +70,7 @@ export function QuickPanelPreview({
           {layoutScale
             ? preset.visualOrder.map((id) => (
                 <PanelSlice
+                  buttonPanelOpacity={buttonPanelOpacity}
                   key={id}
                   showOverlay
                   mode={preset.mode}

@@ -1,7 +1,7 @@
 import { Image } from "expo-image";
 import { useState } from "react";
 import { View } from "react-native";
-import type { PanelId, PanelRect, PanelRects, PickedImage } from "../../../model/types";
+import type { EditablePanelItem, PanelId, PanelRect, PanelRects, PickedImage } from "../../../model/types";
 import type { AdvancedSnapGrid } from "../advanced-grid";
 import {
   getVisiblePanelIds,
@@ -15,7 +15,7 @@ const canvasPadding = 12;
 
 interface Props {
   grid: AdvancedSnapGrid;
-  enabledPanels: PanelId[];
+  panelItems: EditablePanelItem[];
   outerRect: PanelRect;
   phase: AdvancedCalibrationPhase;
   panels: PanelRects;
@@ -25,7 +25,7 @@ interface Props {
 
 export function AdvancedPanelCanvas({
   grid,
-  enabledPanels,
+  panelItems,
   outerRect,
   phase,
   panels,
@@ -42,10 +42,12 @@ export function AdvancedPanelCanvas({
   const canvasWidth = Number.isFinite(scale) ? viewportRect.width * scale : 0;
   const canvasHeight = Number.isFinite(scale) ? viewportRect.height * scale : 0;
   const activeId = isPanelPhase(phase) ? phase : null;
-  const visibleIds = getVisiblePanelIds(phase, enabledPanels);
+  const panelIds = panelItems.map((item) => item.id);
+  const visibleIds = getVisiblePanelIds(phase, panelIds);
   const localOuterRect = toLocalRect(outerRect, viewportRect);
+  const labels = Object.fromEntries(panelItems.map((item) => [item.id, item]));
 
-  const changePanel = (id: keyof PanelRects, rect: PanelRect) => {
+  const changePanel = (id: PanelId, rect: PanelRect) => {
     onPanelsChange({ ...panels, [id]: fromLocalRect(rect, viewportRect) });
   };
 
@@ -90,8 +92,10 @@ export function AdvancedPanelCanvas({
         {visibleIds.map((id) => (
           <AdvancedPanelBox
             key={id}
+            family={labels[id]?.family ?? "control"}
             grid={grid}
             isActive={activeId === id}
+            labelText={labels[id]?.label ?? id}
             outerRect={localOuterRect}
             rect={toLocalRect(panels[id], viewportRect)}
             scale={scale}

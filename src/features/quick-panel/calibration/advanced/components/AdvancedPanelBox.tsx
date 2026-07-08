@@ -1,18 +1,20 @@
 import { Text } from "@/components/ani-ui/text";
-import { useTranslation } from "react-i18next";
 import { View } from "react-native";
-import type { PanelId, PanelRect } from "../../../model/types";
+import type { PanelFamily, PanelId, PanelRect } from "../../../model/types";
 import type { AdvancedSnapGrid } from "../advanced-grid";
 import { useAdvancedPanelMoveResponder } from "../hooks/useAdvancedPanelMoveResponder";
 import { AdvancedPanelResizeHandle } from "./AdvancedPanelResizeHandle";
 
 const activeColor = "#c084fc";
 const completedColor = "#f97316";
+const buttonColor = "#38bdf8";
 
 interface Props {
   grid: AdvancedSnapGrid;
+  family: PanelFamily;
   isActive: boolean;
   label: PanelId;
+  labelText: string;
   outerRect: PanelRect;
   rect: PanelRect;
   scale: number;
@@ -20,9 +22,8 @@ interface Props {
 }
 
 export function AdvancedPanelBox(props: Props) {
-  const { t } = useTranslation();
   const responder = useAdvancedPanelMoveResponder(props);
-  const color = props.isActive ? activeColor : completedColor;
+  const color = props.family === "button" ? buttonColor : props.isActive ? activeColor : completedColor;
   const handleColor = darkenColor(color, 0.18);
 
   return (
@@ -47,7 +48,7 @@ export function AdvancedPanelBox(props: Props) {
           className="rounded-md px-2 py-1 text-xs font-semibold text-black"
           style={{ backgroundColor: color }}
         >
-          {t(`panels.${props.label}`)}
+          {props.labelText}
         </Text>
       </View>
       {props.isActive ? (

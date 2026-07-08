@@ -1,14 +1,17 @@
-import { getCalibrationFromDraft } from "@/features/quick-panel/store/advanced-calibration-state";
+import {
+  getButtonsCalibrationFromDraft,
+  getCalibrationFromDraft,
+} from "@/features/quick-panel/store/advanced-calibration-state";
 import type {
   AdvancedCalibrationDraft,
   AdvancedSnapGrid,
-  PanelRects,
+  ControlPanelRects,
 } from "@/features/quick-panel/model/types";
 import { visualOrder } from "@/features/quick-panel/model/preset";
 
 const grid: AdvancedSnapGrid = { columns: 4, rows: 5 };
 
-function createPanels(): PanelRects {
+function createPanels(): ControlPanelRects {
   return {
     mediaPlayer: {
       x: 0,
@@ -41,7 +44,7 @@ function createPanels(): PanelRects {
   };
 }
 
-function createDraft(panels: PanelRects): AdvancedCalibrationDraft {
+function createDraft(panels: ControlPanelRects): AdvancedCalibrationDraft {
   return {
     screenshot: {
       uri: "file:///screenshot.png",
@@ -69,5 +72,23 @@ describe("getCalibrationFromDraft", () => {
     const result = getCalibrationFromDraft(createDraft(panels), grid);
 
     expect(result).not.toBeNull();
+  });
+
+  it("requires at least one valid button", () => {
+    const empty = getButtonsCalibrationFromDraft({
+      screenshot: { uri: "file:///screenshot.png", width: 100, height: 100 },
+      outerRect: { x: 0, y: 0, width: 100, height: 100, radius: 0 },
+      buttons: [],
+    }, grid);
+    const valid = getButtonsCalibrationFromDraft({
+      screenshot: { uri: "file:///screenshot.png", width: 100, height: 100 },
+      outerRect: { x: 0, y: 0, width: 100, height: 100, radius: 0 },
+      buttons: [
+        { id: "button-1", label: "Wi-Fi", rect: { x: 0, y: 0, width: 40, height: 40, radius: 0 } },
+      ],
+    }, grid);
+
+    expect(empty).toBeNull();
+    expect(valid?.buttons).toHaveLength(1);
   });
 });

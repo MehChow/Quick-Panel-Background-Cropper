@@ -19,6 +19,7 @@ import { AdvancedGridSheet } from "./AdvancedGridSheet";
 import { AdvancedCalibrationLeaveDialog } from "./components/AdvancedCalibrationLeaveDialog";
 import { AdvancedPanelCanvas } from "./components/AdvancedPanelCanvas";
 import { AdvancedPanelSelection } from "./components/AdvancedPanelSelection";
+import { ButtonPanelSelection } from "./components/ButtonPanelSelection";
 import { useAdvancedCalibrationScreen } from "./hooks/useAdvancedCalibrationScreen";
 
 export function AdvancedCalibrationScreen() {
@@ -27,6 +28,11 @@ export function AdvancedCalibrationScreen() {
   const [isGridHelpOpen, setIsGridHelpOpen] = useState(false);
   const {
     advancedDraft,
+    buttons,
+    controlEnabledPanels,
+    panelItems,
+    panels,
+    selectedAdvancedTarget,
     canGoBack,
     closeLeaveDialog,
     enabledPanels,
@@ -48,12 +54,12 @@ export function AdvancedCalibrationScreen() {
     setColumns,
     setRows,
     setAdvancedEnabledPanels,
+    setAdvancedButtons,
     setAdvancedOuterRect,
     setAdvancedPanels,
   } = useAdvancedCalibrationScreen();
   const screenshot = advancedDraft?.screenshot ?? null;
   const outerRect = advancedDraft?.outerRect ?? null;
-  const panels = advancedDraft?.panels ?? null;
   const isEditing = Boolean(screenshot && outerRect);
   const isPanelStep = isPanelPhase(phase);
   const isNextDisabled = isPanelSelectionPhase && enabledPanels.length === 0;
@@ -148,17 +154,25 @@ export function AdvancedCalibrationScreen() {
           />
         }
       >
-        {isPanelSelectionPhase && screenshot && outerRect ? (
+        {isPanelSelectionPhase && screenshot && outerRect && selectedAdvancedTarget === "buttons" ? (
+          <View className="flex-1 justify-center">
+            <ButtonPanelSelection
+              buttons={buttons}
+              outerRect={outerRect}
+              onButtonsChange={setAdvancedButtons}
+            />
+          </View>
+        ) : isPanelSelectionPhase && screenshot && outerRect ? (
           <View className="flex-1 justify-center">
             <AdvancedPanelSelection
-              enabledPanels={enabledPanels}
+              enabledPanels={controlEnabledPanels}
               onEnabledPanelsChange={setAdvancedEnabledPanels}
             />
           </View>
         ) : screenshot && outerRect && panels ? (
           <AdvancedPanelCanvas
             grid={grid}
-            enabledPanels={enabledPanels}
+            panelItems={panelItems}
             screenshot={screenshot}
             outerRect={outerRect}
             phase={phase}

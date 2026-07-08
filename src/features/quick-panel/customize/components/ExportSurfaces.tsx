@@ -11,6 +11,7 @@ import type {
 import { ExportSurface } from "./ExportSurface";
 
 interface ExportSurfacesProps {
+  buttonPanelOpacity: number;
   image: PickedImage;
   transform: ImageTransform;
   preset: QuickPanelPreset;
@@ -20,6 +21,7 @@ interface ExportSurfacesProps {
 }
 
 export function ExportSurfaces({
+  buttonPanelOpacity,
   image,
   transform,
   preset,
@@ -55,6 +57,7 @@ export function ExportSurfaces({
     >
       {preset.goodLockOrder.map((id) => (
         <ExportSurface
+          buttonPanelOpacity={buttonPanelOpacity}
           key={id}
           ref={refs[id]}
           panel={preset.panels[id]}

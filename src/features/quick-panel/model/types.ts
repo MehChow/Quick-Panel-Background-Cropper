@@ -1,8 +1,12 @@
 import type { RefObject } from "react";
 import type { View } from "react-native";
 
-export type PanelId = "buttonBox" | "brightness" | "volume" | "mediaPlayer";
+export type ControlPanelId = "buttonBox" | "brightness" | "volume" | "mediaPlayer";
+export type ButtonPanelId = `button-${number}`;
+export type PanelId = ControlPanelId | ButtonPanelId;
+export type PanelFamily = "control" | "button";
 export type CustomizationMode = "default" | "advanced";
+export type AdvancedTarget = "controls" | "buttons";
 
 export interface PanelRect {
   x: number;
@@ -16,6 +20,7 @@ export interface PanelDefinition {
   id: PanelId;
   label: string;
   fileName: string;
+  family: PanelFamily;
   rect: PanelRect;
 }
 
@@ -26,12 +31,13 @@ export interface QuickPanelPreset {
   width: number;
   height: number;
   customizationArea: PanelRect;
-  panels: Record<PanelId, PanelDefinition>;
+  panels: Record<string, PanelDefinition>;
   visualOrder: PanelId[];
   goodLockOrder: PanelId[];
 }
 
-export type PanelRects = Record<PanelId, PanelRect>;
+export type ControlPanelRects = Record<ControlPanelId, PanelRect>;
+export type PanelRects = Record<string, PanelRect>;
 
 export interface DefaultCalibration {
   rect: PanelRect;
@@ -47,15 +53,41 @@ export interface AdvancedCalibration {
   screenshotHeight: number;
   grid: AdvancedSnapGrid;
   outerRect: PanelRect;
-  enabledPanels: PanelId[];
-  panels: PanelRects;
+  enabledPanels: ControlPanelId[];
+  panels: ControlPanelRects;
 }
 
 export interface AdvancedCalibrationDraft {
   screenshot: PickedImage | null;
   outerRect: PanelRect | null;
-  enabledPanels: PanelId[];
-  panels: PanelRects | null;
+  enabledPanels: ControlPanelId[];
+  panels: ControlPanelRects | null;
+}
+
+export interface ButtonCalibrationItem {
+  id: ButtonPanelId;
+  label: string;
+  rect: PanelRect;
+}
+
+export interface EditablePanelItem {
+  id: PanelId;
+  label: string;
+  family: PanelFamily;
+}
+
+export interface AdvancedButtonsCalibration {
+  screenshotWidth: number;
+  screenshotHeight: number;
+  grid: AdvancedSnapGrid;
+  outerRect: PanelRect;
+  buttons: ButtonCalibrationItem[];
+}
+
+export interface AdvancedButtonsDraft {
+  screenshot: PickedImage | null;
+  outerRect: PanelRect | null;
+  buttons: ButtonCalibrationItem[];
 }
 
 export interface PickedImage {
@@ -82,11 +114,12 @@ export interface GeneratedExport {
   uri: string;
 }
 
-export type ExportRefs = Record<PanelId, RefObject<View | null>>;
+export type ExportRefs = Partial<Record<PanelId, RefObject<View | null>>>;
 
 export type QuickPanelStep =
   | "landing"
   | "selectMode"
+  | "advancedTargetSelection"
   | "calibration"
   | "advancedCalibration"
   | "imageSelection"

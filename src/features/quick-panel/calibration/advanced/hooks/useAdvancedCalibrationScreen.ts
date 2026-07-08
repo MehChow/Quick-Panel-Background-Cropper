@@ -5,6 +5,7 @@ import { useShallow } from "zustand/react/shallow";
 import {
   getDefaultAdvancedSnapGrid,
 } from "../advanced-grid";
+import { getButtonPanelItems, getButtonPanelRects } from "../buttons-geometry";
 import {
   getNextPhase,
   getPreviousPhase,
@@ -14,9 +15,14 @@ import {
 import type {
   AdvancedCalibrationDraft,
   AdvancedSnapGrid,
-  PanelId,
+  ButtonCalibrationItem,
+  ControlPanelId,
+  ControlPanelRects,
+  EditablePanelItem,
+  PanelRects,
 } from "../../../model/types";
 import { pickImageFromLibrary } from "../../../shared/pick-image-from-library";
+import { getPanelLabel } from "../../../model/i18n";
 import { useQuickPanelStore } from "../../../store/quick-panel-store";
 import { quickPanelSelectors } from "../../../store/selectors";
 import { getSuggestedCalibrationRect } from "../../shared/calibration-preset";
@@ -25,7 +31,10 @@ export function useAdvancedCalibrationScreen() {
   const router = useRouter();
   const {
     advancedCalibration,
+    advancedButtonsCalibration,
     advancedDraft,
+    advancedButtonsDraft,
+    selectedAdvancedTarget,
     errorKey,
     error,
     setAdvancedScreenshot,
@@ -33,12 +42,14 @@ export function useAdvancedCalibrationScreen() {
     confirmAdvancedOuterRect,
     setAdvancedEnabledPanels,
     setAdvancedPanels,
+    setAdvancedButtons,
+    setAdvancedButtonPanels,
     acceptAdvancedCalibration,
     failImageProcessing,
   } = useQuickPanelStore(useShallow(quickPanelSelectors.advancedCalibrationScreen));
   const [phase, setPhase] = useState<AdvancedCalibrationPhase>("outer");
   const [grid, setGrid] = useState<AdvancedSnapGrid>(() =>
-    advancedCalibration?.grid ?? { columns: 4, rows: 5 }
+    (selectedAdvancedTarget === "buttons" ? advancedButtonsCalibration?.grid : advancedCalibration?.grid) ?? { columns: 4, rows: 5 }
   );
   const [leavingDraft, setLeavingDraft] = useState<AdvancedCalibrationDraft | null>(null);
   const [leavingPhase, setLeavingPhase] = useState<AdvancedCalibrationPhase | null>(null);
@@ -53,7 +64,7 @@ export function useAdvancedCalibrationScreen() {
 
       const suggestedRect = getSuggestedCalibrationRect(screenshot);
       setAdvancedScreenshot(screenshot, suggestedRect);
-      setGrid(advancedCalibration?.grid ?? getDefaultAdvancedSnapGrid(suggestedRect));
+      setGrid((selectedAdvancedTarget === "buttons" ? advancedButtonsCalibration?.grid : advancedCalibration?.grid) ?? getDefaultAdvancedSnapGrid(suggestedRect));
       setLeavingDraft(null);
       setLeavingPhase(null);
       setPhase("outer");
@@ -75,20 +86,33 @@ export function useAdvancedCalibrationScreen() {
   };
 
   const saveCalibration = () => {
-    if (advancedDraft?.screenshot && advancedDraft.outerRect) {
+    const draftForSave = selectedAdvancedTarget === "buttons" ? advancedButtonsDraft : advancedDraft;
+    if (selectedAdvancedTarget !== "buttons" && advancedDraft?.screenshot && advancedDraft.outerRect) {
       setLeavingDraft(advancedDraft);
       setLeavingPhase(phase);
     }
-    if (acceptAdvancedCalibration(grid)) {
+    if (draftForSave?.screenshot && draftForSave.outerRect && acceptAdvancedCalibration(grid)) {
       router.dismissTo("/customize");
     }
   };
 
-  const displayedDraft = advancedDraft ?? leavingDraft;
-  const displayedPhase = advancedDraft ? phase : leavingPhase ?? phase;
+  const displayedDraft = selectedAdvancedTarget === "buttons" ? advancedButtonsDraft : advancedDraft ?? leavingDraft;
+  const displayedPhase = selectedAdvancedTarget === "buttons" || advancedDraft ? phase : leavingPhase ?? phase;
   const [isLeaveDialogOpen, setIsLeaveDialogOpen] = useState(false);
   const shouldConfirmLeave = displayedPhase !== "outer";
-  const enabledPanels = displayedDraft?.enabledPanels ?? [];
+  const enabledPanels = selectedAdvancedTarget === "buttons"
+    ? advancedButtonsDraft?.buttons.map((button) => button.id) ?? []
+    : advancedDraft?.enabledPanels ?? [];
+  const panelItems: EditablePanelItem[] = selectedAdvancedTarget === "buttons"
+    ? getButtonPanelItems(advancedButtonsDraft?.buttons ?? [])
+    : (advancedDraft?.enabledPanels ?? []).map((id) => ({
+        id,
+        label: getPanelLabel(id),
+        family: "control",
+      }));
+  const panels: PanelRects | null = selectedAdvancedTarget === "buttons"
+    ? getButtonPanelRects(advancedButtonsDraft?.buttons ?? [])
+    : advancedDraft?.panels ?? null;
   const previousPhase = getPreviousPhase(displayedPhase, enabledPanels);
   const nextPhase = getNextPhase(displayedPhase, enabledPanels);
 
@@ -151,15 +175,35 @@ export function useAdvancedCalibrationScreen() {
     setPhase("outer");
   };
 
-  const updateEnabledPanels = (nextPanels: PanelId[]) => {
+  const updateEnabledPanels = (nextPanels: ControlPanelId[]) => {
     setAdvancedEnabledPanels(nextPanels);
-    if (isPanelPhase(displayedPhase) && !nextPanels.includes(displayedPhase)) {
+    if (isPanelPhase(displayedPhase) && !nextPanels.some((id) => id === displayedPhase)) {
       setPhase("panelSelection");
     }
   };
 
+  const updateButtons = (buttons: ButtonCalibrationItem[]) => {
+    setAdvancedButtons(buttons);
+    if (isPanelPhase(displayedPhase) && !buttons.some((button) => button.id === displayedPhase)) {
+      setPhase("panelSelection");
+    }
+  };
+
+  const updatePanels = (nextPanels: PanelRects) => {
+    if (selectedAdvancedTarget === "buttons") {
+      setAdvancedButtonPanels(nextPanels);
+      return;
+    }
+    setAdvancedPanels(nextPanels as ControlPanelRects);
+  };
+
   return {
     advancedDraft: displayedDraft,
+    buttons: advancedButtonsDraft?.buttons ?? [],
+    controlEnabledPanels: advancedDraft?.enabledPanels ?? [],
+    panelItems,
+    panels,
+    selectedAdvancedTarget,
     enabledPanels,
     errorKey,
     error,
@@ -186,7 +230,8 @@ export function useAdvancedCalibrationScreen() {
     setColumns: (columns: number) => setGrid((current) => ({ ...current, columns })),
     setRows: (rows: number) => setGrid((current) => ({ ...current, rows })),
     setAdvancedEnabledPanels: updateEnabledPanels,
+    setAdvancedButtons: updateButtons,
     setAdvancedOuterRect,
-    setAdvancedPanels,
+    setAdvancedPanels: updatePanels,
   };
 }

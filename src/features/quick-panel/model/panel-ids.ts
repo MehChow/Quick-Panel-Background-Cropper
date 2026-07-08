@@ -1,8 +1,8 @@
-import type { PanelId } from "./types";
+import type { ControlPanelId } from "./types";
 
 export const panelIds = [
   "buttonBox",
   "brightness",
   "volume",
   "mediaPlayer",
-] satisfies PanelId[];
+] satisfies ControlPanelId[];

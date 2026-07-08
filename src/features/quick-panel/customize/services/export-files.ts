@@ -2,7 +2,7 @@ import { File, Paths } from "expo-file-system";
 import { Album, Asset, requestPermissionsAsync } from "expo-media-library";
 import { Platform } from "react-native";
 import { captureRef, releaseCapture } from "react-native-view-shot";
-import { getPanelLabel, translate } from "../../model/i18n";
+import { translate } from "../../model/i18n";
 import { exportSidePixels } from "../../model/panel-geometry";
 import type {
   ExportRefs,
@@ -31,12 +31,12 @@ async function captureNamedFiles(refs: ExportRefs, preset: QuickPanelPreset) {
 
   for (const id of preset.goodLockOrder) {
     const panel = preset.panels[id];
-    const ref = refs[id].current;
+    const ref = refs[id]?.current;
 
     if (!ref) {
       throw new Error(
         translate("errors.exportSurfaceMissing", {
-          panel: getPanelLabel(panel.id),
+          panel: panel.label,
         }),
       );
     }
@@ -57,7 +57,7 @@ async function captureNamedFiles(refs: ExportRefs, preset: QuickPanelPreset) {
       files.push({
         fileName: panel.fileName,
         id,
-        label: getPanelLabel(panel.id),
+        label: panel.label,
         previewUri: target.uri,
         uri: target.uri,
       });

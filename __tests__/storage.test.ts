@@ -74,7 +74,7 @@ describe("storage", () => {
     );
   });
 
-  it("restores advanced calibration grid settings", () => {
+  it("migrates v2 advanced calibration into v3 advancedControls", () => {
     const mmkvStore = globalThis as typeof globalThis & {
       __mmkvStore?: Map<string, boolean | string>;
     };
@@ -106,22 +106,25 @@ describe("storage", () => {
 
     const { loadCalibrations } = require("@/features/quick-panel/store/storage");
 
-    expect(loadCalibrations().advanced?.grid).toEqual({
+    const saved = loadCalibrations();
+    expect(saved.version).toBe(3);
+    expect(saved.advancedControls?.grid).toEqual({
       columns: 6,
       rows: 7,
     });
+    expect(saved.advancedButtons).toBeNull();
   });
 
-  it("persists advanced calibration grid settings", () => {
+  it("persists v3 calibrations under the v3 key", () => {
     const mmkvStore = globalThis as typeof globalThis & {
       __mmkvStore?: Map<string, boolean | string>;
     };
     const { saveCalibrations } = require("@/features/quick-panel/store/storage");
 
     saveCalibrations({
-      version: 2,
+      version: 3,
       default: null,
-      advanced: {
+      advancedControls: {
         screenshotWidth: 1080,
         screenshotHeight: 2340,
         grid: { columns: 5, rows: 6 },
@@ -138,14 +141,16 @@ describe("storage", () => {
           volume: { x: 240, y: 40, width: 60, height: 220, radius: 0 },
           mediaPlayer: { x: 20, y: 280, width: 280, height: 160, radius: 0 },
         },
+        enabledPanels: ["buttonBox", "brightness", "volume", "mediaPlayer"],
       },
+      advancedButtons: null,
     });
 
-    expect(mmkvStore.__mmkvStore?.get("quick-panel.calibrations-v2")).toBe(
+    expect(mmkvStore.__mmkvStore?.get("quick-panel.calibrations-v3")).toBe(
       JSON.stringify({
-        version: 2,
+        version: 3,
         default: null,
-        advanced: {
+        advancedControls: {
           screenshotWidth: 1080,
           screenshotHeight: 2340,
           grid: { columns: 5, rows: 6 },
@@ -162,8 +167,35 @@ describe("storage", () => {
             volume: { x: 240, y: 40, width: 60, height: 220, radius: 0 },
             mediaPlayer: { x: 20, y: 280, width: 280, height: 160, radius: 0 },
           },
+          enabledPanels: ["buttonBox", "brightness", "volume", "mediaPlayer"],
+        },
+        advancedButtons: null,
+      }),
+    );
+  });
+
+  it("falls back from invalid buttons calibration payloads", () => {
+    const mmkvStore = globalThis as typeof globalThis & {
+      __mmkvStore?: Map<string, boolean | string>;
+    };
+    mmkvStore.__mmkvStore?.set(
+      "quick-panel.calibrations-v3",
+      JSON.stringify({
+        version: 3,
+        default: null,
+        advancedControls: null,
+        advancedButtons: {
+          screenshotWidth: 1080,
+          screenshotHeight: 2340,
+          grid: { columns: 2, rows: 2 },
+          outerRect: { x: 0, y: 0, width: 100, height: 100, radius: 0 },
+          buttons: [],
         },
       }),
     );
+
+    const { loadCalibrations } = require("@/features/quick-panel/store/storage");
+
+    expect(loadCalibrations().advancedButtons).toBeNull();
   });
 });

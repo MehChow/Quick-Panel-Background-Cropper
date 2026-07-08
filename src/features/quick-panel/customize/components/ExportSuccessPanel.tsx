@@ -77,7 +77,7 @@ export function ExportSuccessPanel({
                     : "mt-2 text-center text-sm font-medium text-emerald-100"
                 }
               >
-                {t(`panels.${item.id}`)}
+                {item.label}
               </Text>
             </View>
           ))}

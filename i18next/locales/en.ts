@@ -28,6 +28,14 @@ const en = {
       advanced: "Advanced",
       advancedDescription:
         "For customized layouts with rearranged, resized, removed, vertical, or other adjusted Controls panels.",
+      advancedTargetTitle: "Advanced target",
+      advancedTargetSubtitle: "Choose one target for this Advanced export.",
+      advancedControlsOnly: "Controls only",
+      advancedControlsOnlyDescription:
+        "Button box, brightness, volume, and media player.",
+      advancedButtonsOnly: "Buttons only",
+      advancedButtonsOnlyDescription:
+        "Selected Quick Panel Buttons from your screenshot.",
       helpTitle: "Which mode should I choose?",
       helpSubtitle:
         "Pick the one that matches how your Quick Panel is arranged.",
@@ -60,6 +68,7 @@ const en = {
       pickerTitle: "Choose background image",
       pickerSubtitle: "PNG, JPG, and WEBP are supported.",
       layoutPreview: "Current layout preview",
+      buttonPanelOpacity: "Button panel opacity",
       chooseAnotherImage: "Choose another image",
       resetPosition: "Reset position",
       exportPngs: "Export PNGs",
@@ -102,6 +111,13 @@ const en = {
       gridSheetTitle: "How to set the grid",
       gridSheetSubtitle:
         "Choose the row and column counts that make the grid dots fall into the gaps between your controls. Use the examples below to decide which grid matches your screenshot more closely.",
+      buttonSearchPlaceholder: "Search or custom label",
+      selectedButtons: "Selected {{count}}",
+      noButtonsSelected: "Tap labels below to add them.",
+      addCustomButtonLabel: "Add \"{{label}}\"",
+      moveUp: "Up",
+      moveDown: "Down",
+      remove: "Remove",
     },
     export: {
       successTitle: "Exported successfully",

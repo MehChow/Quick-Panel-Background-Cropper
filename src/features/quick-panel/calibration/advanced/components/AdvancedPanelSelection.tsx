@@ -1,12 +1,12 @@
 import { Text } from "@/components/ani-ui/text";
 import { useTranslation } from "react-i18next";
 import { Pressable, View } from "react-native";
-import type { PanelId } from "../../../model/types";
+import type { ControlPanelId } from "../../../model/types";
 import { advancedPanelPhases } from "../advanced-steps";
 
 interface Props {
-  enabledPanels: PanelId[];
-  onEnabledPanelsChange: (enabledPanels: PanelId[]) => void;
+  enabledPanels: ControlPanelId[];
+  onEnabledPanelsChange: (enabledPanels: ControlPanelId[]) => void;
 }
 
 export function AdvancedPanelSelection({
@@ -15,7 +15,7 @@ export function AdvancedPanelSelection({
 }: Props) {
   const { t } = useTranslation();
 
-  const togglePanel = (panelId: PanelId) => {
+  const togglePanel = (panelId: ControlPanelId) => {
     const isEnabled = enabledPanels.includes(panelId);
     const nextPanels = isEnabled
       ? enabledPanels.filter((id) => id !== panelId)

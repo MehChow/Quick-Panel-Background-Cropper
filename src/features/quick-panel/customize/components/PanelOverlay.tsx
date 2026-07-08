@@ -15,6 +15,10 @@ export function PanelOverlay({
   panelId,
   width,
 }: PanelOverlayProps) {
+  if (panelId.startsWith("button-")) {
+    return null;
+  }
+
   if (panelId === "buttonBox") {
     if (mode !== "default") {
       return null;

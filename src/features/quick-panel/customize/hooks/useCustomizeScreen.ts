@@ -1,29 +1,22 @@
-import { useEffect, useRef, useState } from "react";
+import { createRef, useEffect, useRef, useState } from "react";
 import type { View } from "react-native";
 import { useShallow } from "zustand/react/shallow";
-import type { ExportRefs } from "../../model/types";
+import type { ExportRefs, PanelId } from "../../model/types";
 import { isTransformAtFit } from "../../model/image-placement";
 import { useQuickPanelStore } from "../../store/quick-panel-store";
 import { quickPanelSelectors } from "../../store/selectors";
 import { scheduleExportWork } from "../schedule-export-work";
 import { useCustomizeActions } from "./useCustomizeActions";
 
-function useExportRefs(): ExportRefs {
-  const buttonBoxRef = useRef<View>(null);
-  const mediaPlayerRef = useRef<View>(null);
-  const brightnessRef = useRef<View>(null);
-  const volumeRef = useRef<View>(null);
-
-  return {
-    brightness: brightnessRef,
-    buttonBox: buttonBoxRef,
-    mediaPlayer: mediaPlayerRef,
-    volume: volumeRef,
-  };
+function useExportRefs(panelIds: PanelId[]): ExportRefs {
+  const [refs] = useState<ExportRefs>({});
+  for (const id of panelIds) {
+    refs[id] ??= createRef<View>();
+  }
+  return refs;
 }
 
 export function useCustomizeScreen() {
-  const refs = useExportRefs();
   const isRunningExportRef = useRef(false);
   const [exportLoadToken, setExportLoadToken] = useState(0);
   const [readyExportLoadToken, setReadyExportLoadToken] = useState(0);
@@ -44,6 +37,7 @@ export function useCustomizeScreen() {
     goToAdvancedCalibration,
   } =
     useQuickPanelStore(useShallow(quickPanelSelectors.customizeScreen));
+  const refs = useExportRefs(activePreset.goodLockOrder);
   const { beginExport, exportImages, pickImage, resetFit } = useCustomizeActions(refs);
   const canReset = image
     ? !isTransformAtFit(transform, image, activePreset)

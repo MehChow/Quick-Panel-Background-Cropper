@@ -12,6 +12,58 @@ This file is a running project note log for implementation details that are easy
 
 ## Entries
 
+### 2026-07-08: v3 Advanced Buttons-only flow
+
+#### What shipped
+
+- Advanced mode now supports a separate Buttons-only branch in addition to the
+  existing Controls flow.
+- The Select Mode screen remembers the last successful export choice for both:
+  - main mode (`Default` or `Advanced`)
+  - advanced target (`Controls only` or `Buttons only`)
+- The restore behavior is intentionally split across both visible steps:
+  - step 1 preselects the last mode
+  - step 2 preselects the last advanced target
+  - the UI does not auto-skip directly into the target step
+- Buttons label selection uses a toggle list with a compact selected-chip
+  summary instead of reorder controls.
+- The Customize screen exposes a local Button panel opacity slider that affects
+  both live preview and exported Button PNGs. It is not persisted and resets on
+  a fresh screen visit.
+- The export result card shows `GeneratedExport.label` directly, so dynamic
+  Button exports display their real label text instead of raw translation keys
+  like `panels.button-1`.
+
+#### Root causes worth remembering
+
+- The old v2 last-used behavior only persisted `lastExportedMode`. After v3
+  split Advanced into Controls and Buttons, the branch choice disappeared
+  because there was no companion persisted field for the advanced target.
+- Result-screen translation for Buttons failed because those exports have
+  dynamic ids (`button-1`, `button-2`, ...), but the success card tried to
+  translate them through static keys under `panels.*`.
+- The visible center block regression came from a segmented Button-only image
+  renderer that intentionally left the center empty. The durable fix was to go
+  back to full-fill rendering and control perceived intensity with opacity
+  instead of cutout geometry.
+- The Button selection UX problem was not a data problem. The screen already
+  knew which labels were selected; the issue was that selected state lived in a
+  separate list below the main results, forcing users to scroll to confirm it.
+
+#### Reuse guidance
+
+- If Advanced gains more export branches later, extend the same last-export
+  persistence pattern instead of inventing screen-local restore logic.
+- For dynamic panel ids, do not reconstruct result labels from translation keys
+  unless the ids are guaranteed to map to static locale entries. Prefer the
+  display label already captured in the preset/export pipeline.
+- Keep Button opacity as a screen-level control unless there is a proven need
+  for persistence. The local-state version is enough for v3 and keeps storage
+  schema simpler.
+- If the user wants selection state to feel obvious, put that state directly on
+  the main interactive rows first. Separate "selected items" sections are easy
+  to implement but usually worse to scan.
+
 ### 2026-06-30: Advanced calibration leave guard
 
 #### Original concern

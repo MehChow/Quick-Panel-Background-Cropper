@@ -10,7 +10,8 @@ import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useShallow } from "zustand/react/shallow";
-import type { CustomizationMode } from "../model/types";
+import type { AdvancedTarget, CustomizationMode } from "../model/types";
+import { AdvancedTargetSelection } from "./AdvancedTargetSelection";
 import { ModeHelpSheet } from "./ModeHelpSheet";
 import { ModeOptionCard } from "./ModeOptionCard";
 
@@ -18,11 +19,20 @@ export function SelectModeScreen() {
   const { t } = useTranslation();
   const router = useRouter();
   const [isHelpOpen, setIsHelpOpen] = useState(false);
-  const { lastExportedMode, selectMode } = useQuickPanelStore(
+  const {
+    lastExportedAdvancedTarget,
+    lastExportedMode,
+    selectMode,
+    selectAdvancedTarget,
+  } = useQuickPanelStore(
     useShallow(quickPanelSelectors.modeSelectionScreen),
   );
   const [selectedMode, setSelectedMode] = useState<CustomizationMode | null>(
     lastExportedMode,
+  );
+  const [isChoosingTarget, setIsChoosingTarget] = useState(false);
+  const [selectedTarget, setSelectedTarget] = useState<AdvancedTarget | null>(
+    lastExportedMode === "advanced" ? lastExportedAdvancedTarget : null,
   );
   const openHelp = () => {
     markHelpSeen("select-mode");
@@ -35,6 +45,16 @@ export function SelectModeScreen() {
     }
 
     const mode = selectedMode;
+    if (mode === "advanced" && !isChoosingTarget) {
+      selectMode(mode);
+      setIsChoosingTarget(true);
+      return;
+    }
+    if (mode === "advanced" && selectedTarget) {
+      const hasCalibration = selectAdvancedTarget(selectedTarget);
+      router.push(hasCalibration ? "/customize" : "/advanced-calibration");
+      return;
+    }
     const hasCalibration = selectMode(mode);
     if (hasCalibration) {
       router.push("/customize");
@@ -51,7 +71,7 @@ export function SelectModeScreen() {
         footer={
           <Button
             className="my-4 p-0 bg-white"
-            disabled={!selectedMode}
+            disabled={!selectedMode || (isChoosingTarget && !selectedTarget)}
             onPress={confirmMode}
             textClassName="font-semibold w-full text-black"
           >
@@ -64,18 +84,27 @@ export function SelectModeScreen() {
             actionHelpId="select-mode"
             actionVariant="helper-balanced"
             onActionPress={openHelp}
-            title={t("mode.title")}
-            subtitle={t("mode.subtitle")}
+            title={isChoosingTarget ? t("mode.advancedTargetTitle") : t("mode.title")}
+            subtitle={isChoosingTarget ? t("mode.advancedTargetSubtitle") : t("mode.subtitle")}
           />
         }
         >
         <View className="flex-1 justify-center py-2">
+          {isChoosingTarget ? (
+            <AdvancedTargetSelection
+              selectedTarget={selectedTarget}
+              onSelectTarget={setSelectedTarget}
+            />
+          ) : (
           <View className="flex-row items-start justify-center gap-4">
             <ModeCard
               isSelected={selectedMode === "default"}
               label={t("mode.default")}
               mode="default"
-              onPress={() => setSelectedMode("default")}
+              onPress={() => {
+                setSelectedMode("default");
+                setIsChoosingTarget(false);
+              }}
             />
             <ModeCard
               isSelected={selectedMode === "advanced"}
@@ -84,6 +113,7 @@ export function SelectModeScreen() {
               onPress={() => setSelectedMode("advanced")}
             />
           </View>
+          )}
         </View>
       </QuickPanelScreenShell>
       {isHelpOpen ? (

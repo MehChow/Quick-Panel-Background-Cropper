@@ -15,6 +15,7 @@ import { PanelOverlay } from "./PanelOverlay";
 const AnimatedImage = Animated.createAnimatedComponent(Image);
 
 interface PanelSliceProps {
+  buttonPanelOpacity: number;
   showOverlay: boolean;
   mode: CustomizationMode;
   panel: PanelDefinition;
@@ -27,6 +28,7 @@ interface PanelSliceProps {
 }
 
 export function PanelSlice({
+  buttonPanelOpacity,
   showOverlay,
   mode,
   panel,
@@ -60,9 +62,13 @@ export function PanelSlice({
       <AnimatedImage
         source={{ uri: image.uri }}
         contentFit="fill"
-        style={[StyleSheet.absoluteFill, imageStyle]}
+        style={[
+          StyleSheet.absoluteFill,
+          imageStyle,
+          panel.family === "button" ? { opacity: buttonPanelOpacity } : null,
+        ]}
       />
-      <View className="absolute inset-0 bg-black/10" />
+      {panel.family === "button" ? null : <View className="absolute inset-0 bg-black/10" />}
       {showOverlay ? (
         <PanelOverlay
           height={panel.rect.height * layoutScale}

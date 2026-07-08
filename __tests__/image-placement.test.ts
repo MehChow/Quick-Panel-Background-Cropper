@@ -18,24 +18,28 @@ const advancedFiveByFourPreset: QuickPanelPreset = {
   panels: {
     buttonBox: {
       id: "buttonBox",
+      family: "control",
       label: "Button box",
       fileName: "01-button-box.png",
       rect: { x: 50, y: 100, width: 850, height: 190, radius: 0 },
     },
     brightness: {
       id: "brightness",
+      family: "control",
       label: "Brightness",
       fileName: "03-brightness.png",
       rect: { x: 50, y: 310, width: 620, height: 560, radius: 0 },
     },
     volume: {
       id: "volume",
+      family: "control",
       label: "Volume",
       fileName: "04-volume.png",
       rect: { x: 690, y: 310, width: 210, height: 560, radius: 0 },
     },
     mediaPlayer: {
       id: "mediaPlayer",
+      family: "control",
       label: "Media player",
       fileName: "02-media-player.png",
       rect: { x: 50, y: 890, width: 850, height: 180, radius: 0 },

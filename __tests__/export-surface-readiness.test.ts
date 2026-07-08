@@ -25,4 +25,11 @@ describe("createExportSurfaceReadiness", () => {
     expect(readiness.markLoaded("buttonBox")).toBe(false);
     expect(readiness.markLoaded("mediaPlayer")).toBe(true);
   });
+
+  it("accepts dynamic button ids", () => {
+    const readiness = createExportSurfaceReadiness(["button-1", "button-2"]);
+
+    expect(readiness.markLoaded("button-2")).toBe(false);
+    expect(readiness.markLoaded("button-1")).toBe(true);
+  });
 });
