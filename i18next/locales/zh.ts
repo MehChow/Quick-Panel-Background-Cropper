@@ -22,10 +22,10 @@ const zh = {
       subtitle: "選擇最符合你的 Quick Panel 版面",
       default: "預設",
       defaultDescription:
-        "適合標準版面：\n按鈕區 > 亮度條 > 音量條 > 媒體播放器",
+        "適合標準控制版面：\n按鈕區 > 亮度條 > 音量條 > 媒體播放器",
       advanced: "進階",
       advancedDescription:
-        "適合已重新排列、調整大小、移除、垂直排列，或其他自訂過的控制版面。",
+        "適合自訂過的控制版面，或只想匯出所選 Quick Panel 按鈕時使用。選擇進階後，再選擇「僅控制版面」或「僅按鈕」。",
       advancedTargetTitle: "進階目標",
       advancedTargetSubtitle: "為這次進階匯出選擇一個目標。",
       advancedControlsOnly: "僅控制版面",
@@ -33,7 +33,7 @@ const zh = {
       advancedButtonsOnly: "僅按鈕",
       advancedButtonsOnlyDescription: "從截圖中選擇的 Quick Panel 按鈕。",
       helpTitle: "該選哪個模式？",
-      helpSubtitle: "選擇最符合你目前 Quick Panel 版面的模式。",
+      helpSubtitle: "選擇最符合你的 Quick Panel 版面與匯出目標的模式。",
     },
     calibration: {
       title: "校正",

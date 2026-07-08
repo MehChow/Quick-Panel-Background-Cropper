@@ -23,7 +23,9 @@ interface Props {
 
 export function AdvancedPanelBox(props: Props) {
   const responder = useAdvancedPanelMoveResponder(props);
-  const color = props.family === "button" ? buttonColor : props.isActive ? activeColor : completedColor;
+  const color = props.isActive
+    ? props.family === "button" ? buttonColor : activeColor
+    : completedColor;
   const handleColor = darkenColor(color, 0.18);
 
   return (

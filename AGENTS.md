@@ -4,13 +4,19 @@ Read the exact versioned docs at https://docs.expo.dev/versions/v56.0.0/ before 
 
 ## App brief
 
-Quick Panel Background Cropper is an Expo app for creating Samsung Good Lock Quick Panel background PNGs from one user-selected image. In v2, the app only supports the Quick Panel **Controls** tab, not the **Buttons** tab. The supported panels are Button box, Media player, Brightness, and Volume.
+Quick Panel Background Cropper is an Expo app for creating Samsung Good Lock Quick Panel background PNGs from one user-selected image. In v3, the app supports both Quick Panel **Controls** customization and an Advanced **Buttons-only** branch. The supported Controls panels are Button box, Media player, Brightness, and Volume. The Buttons-only branch supports one or more manually selected Quick Panel Buttons exported as separate square PNGs.
 
-The user flow is: landing -> mode selection -> calibration -> image selection -> preview adjustment -> export result. Default mode asks the user to import a fully expanded Quick Panel screenshot, adjust one green rectangle around the full Controls area, and save it as the layout basis. Advanced mode adds a guided second stage where the user confirms the outer area first, turns off any supported panel missing from that region, sets the snapping grid, then goes through the enabled panel-box steps in this order: Button box, Brightness, Volume, and Media player. Advanced mode includes an editable snapping grid inside the confirmed outer area so users can fine-tune row and column counts while matching customized layouts.
+The user flow is: landing -> mode selection -> calibration -> image selection -> preview adjustment -> export result. Default mode asks the user to import a fully expanded Quick Panel screenshot, adjust one green rectangle around the full Controls area, and save it as the layout basis. Advanced mode now has two visible steps: first choose `Advanced`, then choose either `Controls only` or `Buttons only`.
 
-After calibration, the app lets users choose a background image, pan/zoom it against a live preview of the supported Controls panels, and export square PNGs in Good Lock application order. Advanced mode exports only enabled panels. The S25+ One UI 8.5 preset remains the base template. Default mode scales that preset into the calibrated outer union, while Advanced mode starts from preset-based boxes and then lets the user fine-tune each panel.
+Advanced Controls keeps the existing guided calibration flow: confirm the outer area first, turn off any supported panel missing from that region, set the snapping grid, then go through the enabled panel-box steps in this order: Button box, Brightness, Volume, and Media player. Advanced Controls includes an editable snapping grid inside the confirmed outer area so users can fine-tune row and column counts while matching customized layouts.
 
-For the exact v2 UI flow, refer to the screenshots under `flow/`.
+Advanced Buttons asks the user to confirm an outer area, set the snapping grid, choose one or more Quick Panel Button labels through a toggle list with a selected-chip summary, and then fine-tune the generated button boxes. The app remembers the last successful main mode (`Default` or `Advanced`) and, for Advanced exports, also remembers the last successful advanced target (`Controls only` or `Buttons only`) as preselected choices on the Select Mode flow.
+
+After calibration, the app lets users choose a background image, pan/zoom it against a live preview, and export square PNGs in Good Lock application order. Advanced Controls exports only enabled Controls panels. Advanced Buttons exports only the selected Button panels. The S25+ One UI 8.5 preset remains the base template. Default mode scales that preset into the calibrated outer union, while Advanced Controls and Advanced Buttons start from preset-based boxes and then let the user fine-tune each panel.
+
+For Buttons in Customize, the preview/export path uses full-fill image rendering with a user-adjustable opacity slider on the Customize screen. That opacity control is local to the screen, affects both live preview and Button exports, and is intentionally not persisted.
+
+For the exact current UI flow, refer to the screenshots under `flow/`.
 
 ## Tech Stack
 

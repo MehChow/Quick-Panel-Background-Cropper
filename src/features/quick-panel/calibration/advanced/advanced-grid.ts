@@ -55,6 +55,22 @@ export function getSnapGridPoints(
 ) {
   const xAxis = createSnapAxis(outerRect.x, outerRect.width, grid.columns);
   const yAxis = createSnapAxis(outerRect.y, outerRect.height, grid.rows);
+  const internalX = xAxis.lines.slice(1, -1);
+  const internalY = yAxis.lines.slice(1, -1);
+
+  if (grid.columns <= 1 && grid.rows <= 1) {
+    return [];
+  }
+
+  if (grid.rows <= 1) {
+    const centerY = outerRect.y + outerRect.height / 2;
+    return internalX.map((x) => ({ x, y: centerY }));
+  }
+
+  if (grid.columns <= 1) {
+    const centerX = outerRect.x + outerRect.width / 2;
+    return internalY.map((y) => ({ x: centerX, y }));
+  }
 
   return yAxis.lines.flatMap((y) => xAxis.lines.map((x) => ({ x, y })));
 }

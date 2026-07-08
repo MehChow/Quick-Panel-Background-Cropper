@@ -12,6 +12,42 @@ This file is a running project note log for implementation details that are easy
 
 ## Entries
 
+### 2026-07-08: Advanced calibration single-axis snap dots
+
+#### Original concern
+
+Advanced calibration grid preview became misleading when one axis was `1`.
+
+- `4 x 1` grid showed no useful horizontal separation hint for side-by-side panels.
+- `1 x 4` grid had same problem in opposite direction.
+- Problem affected both Advanced Controls and Advanced Buttons because both use same grid overlay.
+
+#### Root cause
+
+- Grid overlay rendered only dot intersections.
+- When `rows === 1`, all dots collapsed into single horizontal band.
+- When `columns === 1`, all dots collapsed into single vertical band.
+- Snap math itself still worked. Only preview language failed.
+
+#### Final solution
+
+- Keep real grid values unchanged. `1` stays `1`.
+- Change shared point generator in `src/features/quick-panel/calibration/advanced/advanced-grid.ts`.
+- For `4 x 1`, render internal column dots on vertical separators, centered on outer rect mid-height.
+- For `1 x 4`, render internal row dots on horizontal separators, centered on outer rect mid-width.
+- For `1 x 1`, render no dots.
+- For grids where both axes are greater than `1`, keep full intersection-dot overlay.
+
+#### Reuse guidance
+
+- Do not fake single-axis grids by forcing minimum `2` rows or columns in state.
+- If preview cue weak but snap behavior correct, fix overlay first before changing calibration model.
+- Shared advanced grid helpers are right hook point when Controls-only and Buttons-only show same preview bug.
+
+#### Related verification
+
+- `npm run lint -- src/features/quick-panel/calibration/advanced/advanced-grid.ts`
+
 ### 2026-07-08: v3 Advanced Buttons-only flow
 
 #### What shipped

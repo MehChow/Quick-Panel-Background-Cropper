@@ -24,10 +24,10 @@ const en = {
       subtitle: "Choose the Quick Panel layout that matches yours",
       default: "Default",
       defaultDescription:
-        "For the standard layout:\nButton box > Brightness > Volume > Media player",
+        "For the standard Controls layout:\nButton box > Brightness > Volume > Media player",
       advanced: "Advanced",
       advancedDescription:
-        "For customized layouts with rearranged, resized, removed, vertical, or other adjusted Controls panels.",
+        "For customized Controls layouts, or when you want to export selected Quick Panel Buttons only. After choosing Advanced, pick Controls only or Buttons only.",
       advancedTargetTitle: "Advanced target",
       advancedTargetSubtitle: "Choose one target for this Advanced export.",
       advancedControlsOnly: "Controls only",
@@ -38,7 +38,7 @@ const en = {
         "Selected Quick Panel Buttons from your screenshot.",
       helpTitle: "Which mode should I choose?",
       helpSubtitle:
-        "Pick the one that matches how your Quick Panel is arranged.",
+        "Pick the one that matches your Quick Panel layout and what you want to export.",
     },
     calibration: {
       title: "Calibration",
