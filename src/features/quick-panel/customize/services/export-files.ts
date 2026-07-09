@@ -2,6 +2,7 @@ import { File, Paths } from "expo-file-system";
 import { Album, Asset, requestPermissionsAsync } from "expo-media-library";
 import { Platform } from "react-native";
 import { captureRef, releaseCapture } from "react-native-view-shot";
+import { recordCrashlyticsError } from "@/lib/crashlytics";
 import { getPanelLabel, translate } from "../../model/i18n";
 import { exportSidePixels } from "../../model/panel-geometry";
 import type {
@@ -41,14 +42,25 @@ async function captureNamedFiles(refs: ExportRefs, preset: QuickPanelPreset) {
       );
     }
 
-    const tmpUri = await captureRef(ref, {
-      fileName: panel.fileName.replace(".png", ""),
-      format: "png",
-      height: exportSidePixels,
-      quality: 1,
-      result: "tmpfile",
-      width: exportSidePixels,
-    });
+    let tmpUri: string;
+
+    try {
+      tmpUri = await captureRef(ref, {
+        fileName: panel.fileName.replace(".png", ""),
+        format: "png",
+        height: exportSidePixels,
+        quality: 1,
+        result: "tmpfile",
+        width: exportSidePixels,
+      });
+    } catch (error) {
+      void recordCrashlyticsError(error, {
+        action: "capture_export_panel",
+        panelId: id,
+        presetId: preset.id,
+      });
+      throw error;
+    }
 
     try {
       const source = new File(tmpUri);

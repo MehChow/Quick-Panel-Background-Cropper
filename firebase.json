@@ -1,0 +1,6 @@
+{
+  "react-native": {
+    "crashlytics_debug_enabled": false,
+    "crashlytics_javascript_exception_handler_chaining_enabled": false
+  }
+}

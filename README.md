@@ -162,7 +162,9 @@ the same device.
 - the Android debug build gets the package suffix `.dev`
 - `npm run build-apk` uses `APP_VARIANT=apk` and builds a release APK variant
   named `QPBC apk`
-- `npm run build-closed` bumps Android `versionCode`, shows the build version
-  in-app, and builds the closed-testing AAB
+- `npm run build-beta` uses `APP_VARIANT=beta`, bumps Android `versionCode`,
+  shows the build version in-app, and builds the open-beta AAB
+- APK builds use `google-services/google-services-apk.json`, while beta builds
+  use `google-services/google-services-open.json`
 - after native config changes, run `npm run android` again so the generated
   `android/` project picks up the latest config-plugin changes

@@ -12,6 +12,60 @@ This file is a running project note log for implementation details that are easy
 
 ## Entries
 
+### 2026-07-09: Crashlytics beta observability and Android build variants
+
+#### Original concern
+
+The app needed minimal crash visibility for APK smoke testing and Google Play
+open beta without turning daily local development into a Firebase setup
+problem. The APK build uses a different package suffix than the beta build, so
+Firebase package matching had to stay aligned with the active Android variant.
+
+#### What changed
+
+- Added React Native Firebase Crashlytics with a small wrapper in
+  `src/lib/crashlytics.ts`.
+- Crash logging is limited to high-value failure points:
+  - image picking
+  - image normalization
+  - export failure
+  - per-panel export capture failure
+  - Good Lock unavailable / Samsung Store open failure
+- Added `firebase.json` to keep Crashlytics debug collection off and disable JS
+  exception-handler chaining.
+- Added privacy-policy disclosure in `docs/index.html` for Firebase
+  Crashlytics.
+- Android build variants now select Firebase config by `APP_VARIANT`:
+  - `apk` -> `google-services/google-services-apk.json`
+  - `beta` -> `google-services/google-services-open.json`
+  - `dev` -> no Firebase plugin wiring and no `googleServicesFile`
+- Renamed the Play AAB build path from `build-closed` to `build-beta`.
+- `build-beta` now runs Android prebuild before bundling so variant-specific
+  native config is applied consistently.
+
+#### Root cause worth remembering
+
+- The important constraint is not "one google-services file per repo". It is
+  "the runtime Android package name must match a Firebase Android app present
+  in the selected Google Services config."
+- The dev build has a `.dev` package suffix, so wiring Firebase there without a
+  matching Firebase app would create avoidable native setup failures.
+- The durable fix was to keep Firebase native config variant-aware in
+  `app.config.ts` instead of hardcoding one `googleServicesFile` in `app.json`.
+
+#### Reuse guidance
+
+- Keep Crashlytics context conservative. Do not send image contents, image
+  filenames, local file paths, or other user-selected media metadata in custom
+  keys or logs.
+- If a future Android variant changes `applicationId` or adds a suffix, decide
+  its Firebase wiring at the same time.
+- For variant-specific native config in this repo, prefer `APP_VARIANT` in
+  `app.config.ts` plus wrapper scripts, not manual file swapping before builds.
+- If the Play release path changes again, keep the public script name aligned
+  with the actual distribution stage (`beta`, `production`, etc.) so the docs
+  and workflow stay obvious.
+
 ### 2026-06-30: Advanced calibration leave guard
 
 #### Original concern
