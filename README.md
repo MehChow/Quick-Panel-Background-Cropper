@@ -166,5 +166,9 @@ the same device.
   shows the build version in-app, and builds the open-beta AAB
 - APK builds use `google-services/google-services-apk.json`, while beta builds
   use `google-services/google-services-open.json`
+- release builds require upload-key values in `android/gradle.properties`,
+  `~/.gradle/gradle.properties`, or env:
+  `MYAPP_UPLOAD_STORE_FILE`, `MYAPP_UPLOAD_KEY_ALIAS`,
+  `MYAPP_UPLOAD_STORE_PASSWORD`, and `MYAPP_UPLOAD_KEY_PASSWORD`
 - after native config changes, run `npm run android` again so the generated
   `android/` project picks up the latest config-plugin changes
