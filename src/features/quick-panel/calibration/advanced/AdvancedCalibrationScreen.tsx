@@ -1,18 +1,24 @@
-import { useState } from "react";
+import { Button } from "@/components/ani-ui/button";
 import { Text } from "@/components/ani-ui/text";
-import { CalibrationHelpSheet } from "@/features/quick-panel/shared/CalibrationHelpSheet";
 import { PanelAlignmentHelpSheet } from "@/features/quick-panel/shared/PanelAlignmentHelpSheet";
 import { PanelReviewHelpSheet } from "@/features/quick-panel/shared/PanelReviewHelpSheet";
+import { QuickPanelScreenShell } from "@/features/quick-panel/shared/QuickPanelScreenShell";
 import { SubPageHeader } from "@/features/quick-panel/shared/SubPageHeader";
+import {
+  markHelpSeen,
+  type HelpEntryId,
+} from "@/features/quick-panel/store/storage";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ScrollView, View } from "react-native";
+import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { CalibrationCanvas } from "../shared/CalibrationCanvas";
-import { AdvancedGridSheet } from "./AdvancedGridSheet";
+import { OuterCalibrationStep } from "../shared/OuterCalibrationStep";
 import { isPanelPhase, type AdvancedCalibrationPhase } from "./advanced-steps";
 import { AdvancedCalibrationControls } from "./AdvancedCalibrationControls";
-import { AdvancedOuterOverlay } from "./components/AdvancedOuterOverlay";
+import { AdvancedGridSheet } from "./AdvancedGridSheet";
+import { AdvancedCalibrationLeaveDialog } from "./components/AdvancedCalibrationLeaveDialog";
 import { AdvancedPanelCanvas } from "./components/AdvancedPanelCanvas";
+import { AdvancedPanelSelection } from "./components/AdvancedPanelSelection";
 import { useAdvancedCalibrationScreen } from "./hooks/useAdvancedCalibrationScreen";
 
 export function AdvancedCalibrationScreen() {
@@ -22,17 +28,26 @@ export function AdvancedCalibrationScreen() {
   const {
     advancedDraft,
     canGoBack,
+    closeLeaveDialog,
+    enabledPanels,
+    errorKey,
     error,
     goBack,
     goForward,
     grid,
     isConfirmPhase,
+    isGridPhase,
+    isLeaveDialogOpen,
     isOuterPhase,
+    isPanelSelectionPhase,
+    leaveCalibration,
     phase,
     importScreenshot,
+    requestLeaveCalibration,
     saveCalibration,
     setColumns,
     setRows,
+    setAdvancedEnabledPanels,
     setAdvancedOuterRect,
     setAdvancedPanels,
   } = useAdvancedCalibrationScreen();
@@ -41,32 +56,109 @@ export function AdvancedCalibrationScreen() {
   const panels = advancedDraft?.panels ?? null;
   const isEditing = Boolean(screenshot && outerRect);
   const isPanelStep = isPanelPhase(phase);
-  const showHelpButton = isEditing && (isOuterPhase || isPanelStep || isConfirmPhase);
+  const isNextDisabled = isPanelSelectionPhase && enabledPanels.length === 0;
+  const showHelpButton = isEditing && (isPanelStep || isConfirmPhase);
+  const activeHelpId = getActiveHelpId(phase);
+  const actionAccessibilityLabel = showHelpButton
+    ? t("calibration.helpButton")
+    : undefined;
+  const openActiveHelp = () => {
+    if (activeHelpId) {
+      markHelpSeen(activeHelpId);
+    }
+    if (isGridPhase) {
+      setIsGridHelpOpen(true);
+      return;
+    }
+    setIsHelpOpen(true);
+  };
 
-  const handleBack = () => { goBack(); };
-  const handleNext = () => { goForward(); };
-  const handleSave = () => { saveCalibration(); };
+  const handleBack = () => {
+    goBack();
+  };
+  const handleNext = () => {
+    goForward();
+  };
+  const handleSave = () => {
+    saveCalibration();
+  };
+
+  if (isOuterPhase) {
+    return (
+      <SafeAreaView style={{ flex: 1 }}>
+        <OuterCalibrationStep
+          error={error}
+          errorKey={errorKey}
+          footerTestID="advanced-calibration-footer"
+          helpId="calibration-outer"
+          primaryLabel={t("advancedCalibration.next")}
+          rect={outerRect}
+          screenshot={screenshot}
+          subtitle={t("advancedCalibration.outerSubtitle")}
+          title={t("advancedCalibration.title")}
+          onImport={importScreenshot}
+          onPrimaryPress={handleNext}
+          onRectChange={setAdvancedOuterRect}
+        />
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <View className="px-5 pt-8">
-        <SubPageHeader
-          actionAccessibilityLabel={showHelpButton ? t("calibration.helpButton") : undefined}
-          actionVariant={showHelpButton ? "helper-balanced" : undefined}
-          onActionPress={showHelpButton ? () => setIsHelpOpen(true) : undefined}
-          title={t("advancedCalibration.title")}
-          subtitle={getSubtitle(phase, t)}
-        />
-      </View>
-      <ScrollView
-        className="flex-1"
-        contentContainerClassName="px-5 pb-8"
-        contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
-        overScrollMode="never"
+      <QuickPanelScreenShell
+        footer={
+          isEditing ? (
+            <AdvancedCalibrationControls
+              canGoBack={canGoBack}
+              columns={grid.columns}
+              isConfirmPhase={isConfirmPhase}
+              isGridPhase={isGridPhase}
+              isNextDisabled={isNextDisabled}
+              isOuterPhase={isOuterPhase}
+              onBack={handleBack}
+              onColumnsChange={setColumns}
+              onGridHelpPress={() => setIsGridHelpOpen(true)}
+              onImport={importScreenshot}
+              onNext={handleNext}
+              onRowsChange={setRows}
+              onSave={handleSave}
+              rows={grid.rows}
+            />
+          ) : (
+            <Button
+              className="my-4 w-full bg-white"
+              onPress={importScreenshot}
+              textClassName="font-semibold text-black"
+            >
+              {t("calibration.chooseFromAlbum")}
+            </Button>
+          )
+        }
+        footerTestID="advanced-calibration-footer"
+        header={
+          <SubPageHeader
+            actionAccessibilityLabel={actionAccessibilityLabel}
+            actionHelpId={activeHelpId ?? undefined}
+            actionVariant={showHelpButton ? "helper-balanced" : undefined}
+            onActionPress={showHelpButton ? openActiveHelp : undefined}
+            onBackPress={requestLeaveCalibration}
+            title={t("advancedCalibration.title")}
+            subtitle={getSubtitle(phase, t)}
+          />
+        }
       >
-        {!isOuterPhase && screenshot && outerRect && panels ? (
+        {isPanelSelectionPhase && screenshot && outerRect ? (
+          <View className="flex-1 justify-center">
+            <AdvancedPanelSelection
+              enabledPanels={enabledPanels}
+              onEnabledPanelsChange={setAdvancedEnabledPanels}
+            />
+          </View>
+        ) : screenshot && outerRect && panels ? (
           <AdvancedPanelCanvas
             grid={grid}
+            enabledPanels={enabledPanels}
             screenshot={screenshot}
             outerRect={outerRect}
             phase={phase}
@@ -74,54 +166,33 @@ export function AdvancedCalibrationScreen() {
             onPanelsChange={setAdvancedPanels}
           />
         ) : (
-          <CalibrationCanvas
-            screenshot={screenshot}
-            rect={outerRect}
-            onImport={importScreenshot}
-            renderOverlay={(scale) => (
-              outerRect && screenshot
-                ? (
-                  <AdvancedOuterOverlay
-                    rect={outerRect}
-                    scale={scale}
-                    screenshot={screenshot}
-                    onRectChange={setAdvancedOuterRect}
-                  />
-                )
-                : null
-            )}
-            showControls={false}
-          />
+          <View />
         )}
         {error ? (
           <Text className="mt-4 rounded-md bg-red-500/15 p-3 text-sm text-red-100">
             {error}
           </Text>
         ) : null}
-      </ScrollView>
-      {isEditing ? (
-        <View className="border-t border-white/10 px-5">
-          <AdvancedCalibrationControls
-            canGoBack={canGoBack}
-            columns={grid.columns}
-            isGridVisible={isPanelStep}
-            isConfirmPhase={isConfirmPhase}
-            isOuterPhase={isOuterPhase}
-            onBack={handleBack}
-            onColumnsChange={setColumns}
-            onGridHelpPress={() => setIsGridHelpOpen(true)}
-            onImport={importScreenshot}
-            onNext={handleNext}
-            onRowsChange={setRows}
-            onSave={handleSave}
-            rows={grid.rows}
-          />
-        </View>
+        {errorKey ? (
+          <Text className="mt-4 rounded-md bg-red-500/15 p-3 text-sm text-red-100">
+            {t(errorKey)}
+          </Text>
+        ) : null}
+      </QuickPanelScreenShell>
+      {isHelpOpen && isPanelStep ? (
+        <PanelAlignmentHelpSheet onClose={() => setIsHelpOpen(false)} />
       ) : null}
-      {isHelpOpen && isOuterPhase ? <CalibrationHelpSheet onClose={() => setIsHelpOpen(false)} /> : null}
-      {isHelpOpen && isPanelStep ? <PanelAlignmentHelpSheet onClose={() => setIsHelpOpen(false)} /> : null}
-      {isHelpOpen && isConfirmPhase ? <PanelReviewHelpSheet onClose={() => setIsHelpOpen(false)} /> : null}
-      {isGridHelpOpen && isPanelStep ? <AdvancedGridSheet onClose={() => setIsGridHelpOpen(false)} /> : null}
+      {isHelpOpen && isConfirmPhase ? (
+        <PanelReviewHelpSheet onClose={() => setIsHelpOpen(false)} />
+      ) : null}
+      {isGridHelpOpen && isGridPhase ? (
+        <AdvancedGridSheet onClose={() => setIsGridHelpOpen(false)} />
+      ) : null}
+      <AdvancedCalibrationLeaveDialog
+        onClose={closeLeaveDialog}
+        onLeave={leaveCalibration}
+        open={isLeaveDialogOpen}
+      />
     </SafeAreaView>
   );
 }
@@ -133,8 +204,28 @@ function getSubtitle(
   if (phase === "outer") {
     return t("advancedCalibration.outerSubtitle");
   }
+  if (phase === "panelSelection") {
+    return t("advancedCalibration.panelSelectionSubtitle");
+  }
+  if (phase === "grid") {
+    return t("advancedCalibration.gridSubtitle");
+  }
   if (phase === "confirm") {
     return t("advancedCalibration.confirmSubtitle");
   }
-  return t("advancedCalibration.panelSubtitle", { panel: t(`panels.${phase}`) });
+  return t("advancedCalibration.panelSubtitle", {
+    panel: t(`panels.${phase}`),
+  });
+}
+
+function getActiveHelpId(
+  phase: AdvancedCalibrationPhase,
+): HelpEntryId | null {
+  if (isPanelPhase(phase)) {
+    return "advanced-calibration-panel-alignment";
+  }
+  if (phase === "confirm") {
+    return "advanced-calibration-panel-review";
+  }
+  return null;
 }

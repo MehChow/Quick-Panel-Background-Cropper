@@ -68,8 +68,15 @@ export function ModeOptionCard({
   };
 
   return (
-    <View className={cn("flex-1", isSelected ? "opacity-100" : "opacity-55")}>
-      <View className="overflow-hidden rounded-2xl border border-white/15 bg-zinc-900/80">
+    <View
+      className={cn(
+        "w-full",
+        isSelected ? "opacity-100" : "opacity-55",
+      )}
+    >
+      <View
+        className="max-h-[460px] w-full self-center overflow-hidden rounded-2xl border border-white/15 bg-zinc-900/80"
+      >
         {mode === "default" ? (
           <Pressable
             accessibilityLabel={label}
@@ -80,7 +87,7 @@ export function ModeOptionCard({
             <Image
               source={images.modeDefault}
               contentFit="cover"
-              className="w-full"
+              className="max-h-[460px] w-full"
               style={{ aspectRatio: 0.48 }}
             />
           </Pressable>
@@ -110,7 +117,11 @@ export function ModeOptionCard({
                 <Image
                   source={item}
                   contentFit="cover"
-                  style={{ aspectRatio: 0.48, width: carouselWidth }}
+                  className="max-h-[460px]"
+                  style={{
+                    aspectRatio: 0.48,
+                    width: carouselWidth,
+                  }}
                 />
               )}
             />

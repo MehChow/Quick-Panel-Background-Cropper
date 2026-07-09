@@ -13,11 +13,12 @@ import type {
   QuickPanelPreset,
   QuickPanelStep,
 } from "../model/types";
-import { loadCalibrations } from "./storage";
+import { loadCalibrations, loadLastExportedMode } from "./storage";
 
 export interface QuickPanelStateData {
   step: QuickPanelStep;
   selectedMode: CustomizationMode | null;
+  lastExportedMode: CustomizationMode | null;
   defaultCalibration: DefaultCalibration | null;
   advancedCalibration: AdvancedCalibration | null;
   activePreset: QuickPanelPreset;
@@ -28,6 +29,9 @@ export interface QuickPanelStateData {
   transform: ImageTransform;
   exports: GeneratedExport[];
   isExporting: boolean;
+  isProcessingImage: boolean;
+  noticeKey: string | null;
+  errorKey: string | null;
   error: string | null;
 }
 
@@ -40,6 +44,9 @@ export function createResetWorkState() {
     image: null,
     transform: createEmptyTransform(),
     exports: [] as GeneratedExport[],
+    isProcessingImage: false,
+    noticeKey: null,
+    errorKey: null,
   };
 }
 
@@ -62,6 +69,7 @@ export function createInitialQuickPanelStateData(): QuickPanelStateData {
   return {
     step: "landing",
     selectedMode: null,
+    lastExportedMode: loadLastExportedMode(),
     defaultCalibration: saved.default,
     advancedCalibration: saved.advanced,
     activePreset: s25PlusOneUi85Preset,
@@ -72,6 +80,9 @@ export function createInitialQuickPanelStateData(): QuickPanelStateData {
     transform: createEmptyTransform(),
     exports: [],
     isExporting: false,
+    isProcessingImage: false,
+    noticeKey: null,
+    errorKey: null,
     error: null,
   };
 }

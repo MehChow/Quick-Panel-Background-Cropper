@@ -1,19 +1,24 @@
 import { Image as ExpoImage } from "expo-image";
-import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
 import { useShallow } from "zustand/react/shallow";
 import { translate } from "../../model/i18n";
 import type { ExportRefs } from "../../model/types";
+import { pickImageFromLibrary } from "../../shared/pick-image-from-library";
 import { quickPanelSelectors } from "../../store/selectors";
 import { useQuickPanelStore } from "../../store/quick-panel-store";
+import { recordCrashlyticsError } from "@/lib/crashlytics";
 import { captureAndSaveExports } from "../services/export-files";
+import { normalizeCustomizeImage } from "../services/normalize-customize-image";
 
 export function useCustomizeActions(refs: ExportRefs) {
   const router = useRouter();
   const {
     activePreset,
     image,
-    setImage,
+    isProcessingImage,
+    startImageProcessing,
+    finishImageProcessing,
+    failImageProcessing,
     resetFit,
     startExport,
     finishExport,
@@ -21,26 +26,58 @@ export function useCustomizeActions(refs: ExportRefs) {
   } = useQuickPanelStore(useShallow(quickPanelSelectors.customizeActions));
 
   const pickImage = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      allowsEditing: false,
-      mediaTypes: ["images"],
-      quality: 1,
-    });
+    if (isProcessingImage) {
+      return;
+    }
 
-    if (!result.canceled && result.assets[0]) {
-      const asset = result.assets[0];
-      setImage({
-        fileName: asset.fileName,
-        height: asset.height,
-        uri: asset.uri,
-        width: asset.width,
+    try {
+      const pickedImage = await pickImageFromLibrary();
+      if (!pickedImage) {
+        return;
+      }
+
+      startImageProcessing();
+
+      try {
+        const normalized = await normalizeCustomizeImage(pickedImage);
+        finishImageProcessing(normalized.image, normalized.noticeKey);
+      } catch (error) {
+        void recordCrashlyticsError(error, {
+          action: "normalize_customize_image",
+          mode: useQuickPanelStore.getState().selectedMode,
+          presetId: activePreset.id,
+        });
+        failImageProcessing(
+          null,
+          error instanceof Error
+            ? error.message
+            : "errors.unableToProcessImage",
+        );
+      }
+    } catch (error) {
+      void recordCrashlyticsError(error, {
+        action: "pick_customize_image",
+        mode: useQuickPanelStore.getState().selectedMode,
+        presetId: activePreset.id,
       });
+      failImageProcessing(
+        null,
+        error instanceof Error
+          ? error.message
+          : "errors.unableToOpenImagePicker",
+      );
     }
   };
 
-  const exportImages = async () => {
-    startExport();
+  const beginExport = () => {
+    if (!image || isProcessingImage) {
+      return;
+    }
 
+    startExport();
+  };
+
+  const exportImages = async () => {
     try {
       if (image) {
         await ExpoImage.prefetch(image.uri);
@@ -49,6 +86,11 @@ export function useCustomizeActions(refs: ExportRefs) {
       finishExport(exports);
       router.replace("/result");
     } catch (error) {
+      void recordCrashlyticsError(error, {
+        action: "export_images",
+        mode: useQuickPanelStore.getState().selectedMode,
+        presetId: activePreset.id,
+      });
       failExport(
         error instanceof Error
           ? error.message
@@ -57,5 +99,5 @@ export function useCustomizeActions(refs: ExportRefs) {
     }
   };
 
-  return { exportImages, pickImage, resetFit };
+  return { beginExport, exportImages, pickImage, resetFit };
 }

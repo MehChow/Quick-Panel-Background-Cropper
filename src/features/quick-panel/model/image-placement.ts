@@ -1,8 +1,8 @@
 import type { ImageTransform, PickedImage, QuickPanelPreset } from "./types";
-import { getImageBounds } from "./panel-geometry";
+import { getImagePlacementBounds } from "./panel-geometry";
 
 export function getCoverScale(image: PickedImage, preset: QuickPanelPreset) {
-  const imageBounds = getImageBounds(preset);
+  const imageBounds = getImagePlacementBounds(preset);
   return Math.max(
     imageBounds.width / image.width,
     imageBounds.height / image.height,
@@ -22,12 +22,25 @@ export function getFitTransform(
   }, image, preset);
 }
 
+export function isTransformAtFit(
+  transform: ImageTransform,
+  image: PickedImage,
+  preset: QuickPanelPreset,
+) {
+  const fit = getFitTransform(image, preset);
+  return (
+    isNearlyEqual(transform.scale, fit.scale) &&
+    isNearlyEqual(transform.x, fit.x) &&
+    isNearlyEqual(transform.y, fit.y)
+  );
+}
+
 export function clampTransform(
   transform: ImageTransform,
   image: PickedImage,
   preset: QuickPanelPreset,
 ): ImageTransform {
-  const imageBounds = getImageBounds(preset);
+  const imageBounds = getImagePlacementBounds(preset);
   const minScale = getCoverScale(image, preset);
   const scale = Math.max(minScale, Math.min(minScale * 8, transform.scale));
   const width = image.width * scale;
@@ -54,4 +67,8 @@ function clampAxis(
   }
 
   return Math.max(min, Math.min(max, value));
+}
+
+function isNearlyEqual(a: number, b: number) {
+  return Math.abs(a - b) < 0.01;
 }

@@ -1,11 +1,13 @@
 import { Text } from "@/components/ani-ui/text";
 import BottomSheet, {
   BottomSheetBackdrop,
-  BottomSheetView,
+  BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
 import { useTranslation } from "react-i18next";
-import { View } from "react-native";
+import { useWindowDimensions, View } from "react-native";
 import { PanelAlignmentTips } from "./PanelAlignmentTips";
+import { getHelpSheetMediaLayout } from "./help-sheet-media-layout";
+import { useBottomSheetInsets } from "./useBottomSheetInsets";
 
 interface PanelAlignmentHelpSheetProps {
   onClose: () => void;
@@ -15,6 +17,9 @@ export function PanelAlignmentHelpSheet({
   onClose,
 }: PanelAlignmentHelpSheetProps) {
   const { t } = useTranslation();
+  const { height, width } = useWindowDimensions();
+  const layout = getHelpSheetMediaLayout(width, height);
+  const { bottomInset, contentPaddingBottom } = useBottomSheetInsets();
 
   return (
     <BottomSheet
@@ -33,6 +38,7 @@ export function PanelAlignmentHelpSheet({
         borderRadius: 32,
         borderWidth: 1,
       }}
+      enableDynamicSizing
       enableOverDrag={false}
       enablePanDownToClose
       handleIndicatorStyle={{
@@ -41,9 +47,16 @@ export function PanelAlignmentHelpSheet({
         width: 48,
       }}
       index={0}
+      bottomInset={bottomInset}
+      maxDynamicContentSize={layout.maxHeight}
       onClose={onClose}
     >
-      <BottomSheetView className="pb-8 pt-2">
+      <BottomSheetScrollView
+        contentContainerStyle={{
+          paddingBottom: contentPaddingBottom,
+          paddingTop: 8,
+        }}
+      >
         <View className="mb-5 flex-row items-start gap-4">
           <View className="flex-1 gap-4 px-5">
             <Text className="text-lg font-semibold text-white">
@@ -58,7 +71,7 @@ export function PanelAlignmentHelpSheet({
         <View className="px-5">
           <PanelAlignmentTips />
         </View>
-      </BottomSheetView>
+      </BottomSheetScrollView>
     </BottomSheet>
   );
 }

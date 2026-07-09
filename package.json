@@ -5,10 +5,13 @@
   "dependencies": {
     "@expo/ui": "~56.0.15",
     "@gorhom/bottom-sheet": "^5",
+    "@react-native-firebase/app": "^25.1.0",
+    "@react-native-firebase/crashlytics": "^25.1.0",
     "@react-native-vector-icons/lucide": "^13.1.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "expo": "~56.0.8",
+    "expo-application": "~56.0.3",
     "expo-build-properties": "~56.0.19",
     "expo-constants": "~56.0.16",
     "expo-dev-client": "~56.0.20",
@@ -17,6 +20,7 @@
     "expo-font": "~56.0.5",
     "expo-haptics": "~56.0.3",
     "expo-image": "~56.0.11",
+    "expo-image-manipulator": "~56.0.19",
     "expo-image-picker": "~56.0.18",
     "expo-linear-gradient": "~56.0.4",
     "expo-linking": "~56.0.13",
@@ -52,6 +56,7 @@
     "@testing-library/react-native": "^13.3.3",
     "@types/jest": "29.5.14",
     "@types/react": "~19.2.2",
+    "cross-env": "^10.1.0",
     "eslint": "^9.0.0",
     "eslint-config-expo": "~56.0.4",
     "glob": "^13.0.6",
@@ -64,13 +69,13 @@
   "scripts": {
     "start": "expo start",
     "reset-project": "node ./scripts/reset-project.js",
-    "android": "expo run:android",
-    "ios": "expo run:ios",
     "test": "jest",
     "test:watch": "jest --watch",
-    "web": "expo start --web",
     "lint": "expo lint",
-    "convert-assets": "node ./convert-to-webp.js"
+    "convert-assets": "node ./convert-to-webp.js",
+    "android": "node ./scripts/run-android-task.cjs dev",
+    "build-apk": "node ./scripts/run-android-task.cjs apk",
+    "build-beta": "node ./scripts/run-android-task.cjs beta"
   },
   "jest": {
     "preset": "jest-expo",

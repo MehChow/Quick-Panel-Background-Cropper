@@ -47,12 +47,14 @@ export interface AdvancedCalibration {
   screenshotHeight: number;
   grid: AdvancedSnapGrid;
   outerRect: PanelRect;
+  enabledPanels: PanelId[];
   panels: PanelRects;
 }
 
 export interface AdvancedCalibrationDraft {
   screenshot: PickedImage | null;
   outerRect: PanelRect | null;
+  enabledPanels: PanelId[];
   panels: PanelRects | null;
 }
 
@@ -61,6 +63,9 @@ export interface PickedImage {
   width: number;
   height: number;
   fileName?: string | null;
+  originalWidth?: number;
+  originalHeight?: number;
+  wasOptimized?: boolean;
 }
 
 export interface ImageTransform {

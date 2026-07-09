@@ -8,6 +8,7 @@ import type {
   CustomizationMode,
   GeneratedExport,
   ImageTransform,
+  PanelId,
   PanelRect,
   PanelRects,
   PickedImage,
@@ -25,14 +26,17 @@ import {
   getFailExportState,
   getFinishExportState,
   getImageState,
+  getFinishImageProcessingState,
+  getFailImageProcessingState,
   getLandingState,
   getModeSelectionState,
   getModeState,
   getResetFitState,
+  getStartImageProcessingState,
   getStartExportState,
   getTransformState,
 } from "./quick-panel-transitions";
-import { saveCalibration, saveCalibrations } from "./storage";
+import { saveCalibration, saveCalibrations, saveLastExportedMode } from "./storage";
 import { createAdvancedDraft, getCalibrationFromDraft } from "./advanced-calibration-state";
 
 export interface QuickPanelState extends QuickPanelStateData {
@@ -41,14 +45,19 @@ export interface QuickPanelState extends QuickPanelStateData {
   selectMode: (mode: CustomizationMode) => boolean;
   goToCalibration: () => void;
   goToAdvancedCalibration: () => void;
+  setError: (error: string | null) => void;
   setScreenshot: (screenshot: PickedImage, rect: PanelRect) => void;
   setCalibrationRect: (rect: PanelRect) => void;
   acceptCalibration: () => boolean;
   setAdvancedScreenshot: (screenshot: PickedImage, suggestedOuter: PanelRect) => void;
   setAdvancedOuterRect: (rect: PanelRect) => void;
   confirmAdvancedOuterRect: () => void;
+  setAdvancedEnabledPanels: (enabledPanels: PanelId[]) => void;
   setAdvancedPanels: (panels: PanelRects) => void;
   acceptAdvancedCalibration: (grid: AdvancedSnapGrid) => boolean;
+  startImageProcessing: () => void;
+  finishImageProcessing: (image: PickedImage, noticeKey: string | null) => void;
+  failImageProcessing: (message: string | null, errorKey: string | null) => void;
   setImage: (image: PickedImage) => void;
   setTransform: (transform: ImageTransform) => void;
   resetFit: () => void;
@@ -73,6 +82,7 @@ export const useQuickPanelStore = create<QuickPanelState>((set, get) => ({
   },
   goToCalibration: () => set(getDefaultCalibrationState(get().defaultCalibration)),
   goToAdvancedCalibration: () => set(getAdvancedCalibrationState(get().advancedCalibration)),
+  setError: (error) => set({ error }),
   setScreenshot: (screenshot, rect) => set({ screenshot, calibrationRect: rect, error: null }),
   setCalibrationRect: (rect) => set({ calibrationRect: rect, error: null }),
   acceptCalibration: () => {
@@ -117,6 +127,12 @@ export const useQuickPanelStore = create<QuickPanelState>((set, get) => ({
       error: null,
     };
   }),
+  setAdvancedEnabledPanels: (enabledPanels) => set((state) => ({
+    advancedDraft: state.advancedDraft
+      ? { ...state.advancedDraft, enabledPanels }
+      : null,
+    error: enabledPanels.length > 0 ? null : translate("errors.selectAdvancedPanel"),
+  })),
   setAdvancedPanels: (panels) => set((state) => ({
     advancedDraft: state.advancedDraft ? { ...state.advancedDraft, panels } : null,
     error: null,
@@ -132,6 +148,11 @@ export const useQuickPanelStore = create<QuickPanelState>((set, get) => ({
     set(getAcceptAdvancedCalibrationResult(calibration));
     return true;
   },
+  startImageProcessing: () => set(getStartImageProcessingState()),
+  finishImageProcessing: (image, noticeKey) =>
+    set(getFinishImageProcessingState(image, get().activePreset, noticeKey)),
+  failImageProcessing: (message, errorKey) =>
+    set(getFailImageProcessingState(message, errorKey)),
   setImage: (image) => set(getImageState(image, get().activePreset)),
   setTransform: (transform) => set(getTransformState(transform, get().image, get().activePreset)),
   resetFit: () => {
@@ -139,6 +160,15 @@ export const useQuickPanelStore = create<QuickPanelState>((set, get) => ({
     if (nextState) set(nextState);
   },
   startExport: () => set(getStartExportState()),
-  finishExport: (exports) => set(getFinishExportState(exports)),
+  finishExport: (exports) => {
+    const selectedMode = get().selectedMode;
+    if (exports.length > 0 && selectedMode) {
+      saveLastExportedMode(selectedMode);
+    }
+    set({
+      ...getFinishExportState(exports),
+      lastExportedMode: exports.length > 0 ? selectedMode : get().lastExportedMode,
+    });
+  },
   failExport: (message) => set(getFailExportState(message)),
 }));

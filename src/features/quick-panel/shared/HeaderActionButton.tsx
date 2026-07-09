@@ -1,6 +1,9 @@
 import { cn } from "@/lib/utils";
 import { Lucide } from "@react-native-vector-icons/lucide";
 import { Pressable, View } from "react-native";
+import Animated from "react-native-reanimated";
+import { type HelpEntryId, useHasSeenHelp } from "../store/storage";
+import { useHelperAttentionAnimation } from "./useHelperAttentionAnimation";
 
 export type HeaderActionVariant =
   | "default"
@@ -9,6 +12,7 @@ export type HeaderActionVariant =
 
 interface HeaderActionButtonProps {
   accessibilityLabel: string;
+  helpId?: HelpEntryId;
   icon?: React.ComponentProps<typeof Lucide>["name"];
   onPress: () => void;
   variant?: HeaderActionVariant;
@@ -52,12 +56,23 @@ const themes: Record<HeaderActionVariant, HeaderActionTheme> = {
 
 export function HeaderActionButton({
   accessibilityLabel,
+  helpId,
   icon,
   onPress,
   variant = "default",
 }: HeaderActionButtonProps) {
   const theme = themes[variant];
   const iconName = icon ?? theme.iconName;
+  const hasSeenHelp = useHasSeenHelp(helpId);
+  const shouldShowAttention = helpId ? !hasSeenHelp : false;
+  const {
+    firstPulseStyle,
+    iconAnimatedStyle,
+    secondPulseStyle,
+    shouldAnimate,
+  } = useHelperAttentionAnimation({
+    enabled: shouldShowAttention,
+  });
 
   return (
     <Pressable
@@ -67,21 +82,39 @@ export function HeaderActionButton({
       onPress={onPress}
     >
       {({ pressed }) => (
-        <View
-          className={cn(
-            "h-11 w-11 items-center justify-center overflow-hidden",
-            theme.className,
-            pressed && theme.pressedClassName,
-          )}
-        >
-          {theme.showInnerRing ? (
-            <View className="absolute inset-0.5 rounded-[14px] border border-white/8" />
+        <View className="relative h-11 w-11 items-center justify-center">
+          {shouldAnimate ? (
+            <>
+              <Animated.View
+                className="absolute h-11 w-11 rounded-2xl bg-[#f3c992]"
+                pointerEvents="none"
+                style={firstPulseStyle}
+              />
+              <Animated.View
+                className="absolute h-11 w-11 rounded-2xl bg-[#f5d6aa]"
+                pointerEvents="none"
+                style={secondPulseStyle}
+              />
+            </>
           ) : null}
-          <Lucide
-            color={theme.iconColor}
-            name={iconName}
-            size={theme.iconSize}
-          />
+          <View
+            className={cn(
+              "h-11 w-11 items-center justify-center overflow-hidden",
+              theme.className,
+              pressed && theme.pressedClassName,
+            )}
+          >
+            {theme.showInnerRing ? (
+              <View className="absolute inset-0.5 rounded-[14px] border border-white/8" />
+            ) : null}
+            <Animated.View style={iconAnimatedStyle}>
+              <Lucide
+                color={theme.iconColor}
+                name={iconName}
+                size={theme.iconSize}
+              />
+            </Animated.View>
+          </View>
         </View>
       )}
     </Pressable>

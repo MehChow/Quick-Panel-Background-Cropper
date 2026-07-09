@@ -1,5 +1,9 @@
 import { useState } from "react";
 import {
+  logCrashlytics,
+  recordCrashlyticsError,
+} from "@/lib/crashlytics";
+import {
   openGoodLock,
   openGoodLockInSamsungStore,
 } from "./services/good-lock-link";
@@ -27,6 +31,9 @@ export function useGoodLockLink(): GoodLockLinkState {
     setIsOpeningGoodLock(true);
 
     const didOpenGoodLock = await openGoodLock();
+    if (!didOpenGoodLock) {
+      logCrashlytics("Good Lock app unavailable");
+    }
 
     setIsOpeningGoodLock(false);
     setIsGoodLockDialogOpen(!didOpenGoodLock);
@@ -34,7 +41,11 @@ export function useGoodLockLink(): GoodLockLinkState {
 
   const openSamsungStore = async () => {
     setIsOpeningSamsungStore(true);
-    await openGoodLockInSamsungStore();
+    try {
+      await openGoodLockInSamsungStore();
+    } catch (error) {
+      void recordCrashlyticsError(error, { action: "open_samsung_store" });
+    }
     setIsOpeningSamsungStore(false);
     setIsGoodLockDialogOpen(false);
   };

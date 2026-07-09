@@ -13,10 +13,11 @@ interface ExportSurfaceProps {
   image: PickedImage;
   transform: ImageTransform;
   side: number;
+  onImageLoad: () => void;
 }
 
 export const ExportSurface = forwardRef<View, ExportSurfaceProps>(
-  function ExportSurface({ panel, image, transform, side }, ref) {
+  function ExportSurface({ panel, image, transform, side, onImageLoad }, ref) {
     const squareRect = getExportSquareRect(panel);
     const squareScale = side / squareRect.width;
     const imageScale = transform.scale * squareScale;
@@ -25,12 +26,13 @@ export const ExportSurface = forwardRef<View, ExportSurfaceProps>(
       <View
         ref={ref}
         collapsable={false}
-        className="overflow-hidden bg-black"
-        style={{ height: side, width: side }}
+        className="overflow-hidden"
+        style={{ backgroundColor: "transparent", height: side, width: side }}
       >
         <Image
           source={{ uri: image.uri }}
           contentFit="fill"
+          onLoad={onImageLoad}
           style={{
             height: image.height * imageScale,
             left: (transform.x - squareRect.x) * squareScale,

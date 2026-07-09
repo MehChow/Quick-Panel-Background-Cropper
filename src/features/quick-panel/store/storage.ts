@@ -1,18 +1,30 @@
-import { createMMKV } from "react-native-mmkv";
+import { createMMKV, useMMKVString } from "react-native-mmkv";
 import type {
   AdvancedCalibration,
   AdvancedSnapGrid,
+  CustomizationMode,
   DefaultCalibration,
+  PanelId,
   PanelRect,
   PanelRects,
 } from "../model/types";
+import { panelIds } from "../model/panel-ids";
 
 const calibrationFlagKey = "quick-panel.is-calibrated";
 const calibrationRectKey = "quick-panel.calibration-rect";
 const calibrationsV2Key = "quick-panel.calibrations-v2";
+const lastExportedModeKey = "quick-panel.last-exported-mode";
+const seenHelpKey = "quick-panel.seen-help";
 
 export const supportedLanguages = ["en", "zh"] as const;
 export type SupportedLanguage = (typeof supportedLanguages)[number];
+export const helpEntryIds = [
+  "select-mode",
+  "calibration-outer",
+  "advanced-calibration-panel-alignment",
+  "advanced-calibration-panel-review",
+] as const;
+export type HelpEntryId = (typeof helpEntryIds)[number];
 
 const storage = createMMKV({ id: "quick-panel" });
 
@@ -26,6 +38,8 @@ export interface SavedCalibration {
   isCalibrated: boolean;
   rect: PanelRect | null;
 }
+
+type SavedSeenHelp = Partial<Record<HelpEntryId, true>>;
 
 export function loadCalibrations(): SavedCalibrations {
   const saved = parseCalibrations(storage.getString(calibrationsV2Key));
@@ -58,6 +72,41 @@ export function saveCalibration(rect: PanelRect) {
   storage.set(calibrationRectKey, JSON.stringify(rect));
 }
 
+export function loadLastExportedMode(): CustomizationMode | null {
+  const savedMode = storage.getString(lastExportedModeKey);
+  return isCustomizationMode(savedMode) ? savedMode : null;
+}
+
+export function saveLastExportedMode(mode: CustomizationMode) {
+  storage.set(lastExportedModeKey, mode);
+}
+
+export function loadSeenHelp(): SavedSeenHelp {
+  return parseSeenHelp(storage.getString(seenHelpKey));
+}
+
+export function hasSeenHelp(helpId: HelpEntryId): boolean {
+  return loadSeenHelp()[helpId] === true;
+}
+
+export function useHasSeenHelp(helpId: HelpEntryId | null | undefined): boolean {
+  const [seenHelpValue] = useMMKVString(seenHelpKey, storage);
+  if (!helpId) {
+    return false;
+  }
+  return parseSeenHelp(seenHelpValue)[helpId] === true;
+}
+
+export function markHelpSeen(helpId: HelpEntryId) {
+  storage.set(
+    seenHelpKey,
+    JSON.stringify({
+      ...loadSeenHelp(),
+      [helpId]: true,
+    }),
+  );
+}
+
 export function isSupportedLanguage(
   language: string | undefined,
 ): language is SupportedLanguage {
@@ -81,6 +130,20 @@ function parseCalibrations(value: string | undefined): SavedCalibrations | null 
   }
 }
 
+function parseSeenHelp(value: string | undefined): SavedSeenHelp {
+  try {
+    const parsed = value ? JSON.parse(value) as Record<string, unknown> : {};
+    return helpEntryIds.reduce<SavedSeenHelp>((result, helpId) => {
+      if (parsed[helpId] === true) {
+        result[helpId] = true;
+      }
+      return result;
+    }, {});
+  } catch {
+    return {};
+  }
+}
+
 function parseDefaultCalibration(value: unknown): DefaultCalibration | null {
   if (!value || typeof value !== "object" || !("rect" in value)) {
     return null;
@@ -97,6 +160,7 @@ function parseAdvancedCalibration(value: unknown): AdvancedCalibration | null {
   const outerRect = parseRectValue(item.outerRect);
   const panels = parsePanelRects(item.panels);
   const grid = parseAdvancedGrid(item.grid);
+  const enabledPanels = parseEnabledPanels(item.enabledPanels);
   if (
     typeof item.screenshotWidth !== "number" ||
     typeof item.screenshotHeight !== "number" ||
@@ -111,8 +175,22 @@ function parseAdvancedCalibration(value: unknown): AdvancedCalibration | null {
     screenshotHeight: item.screenshotHeight,
     grid,
     outerRect,
+    enabledPanels,
     panels,
   };
+}
+
+function parseEnabledPanels(value: unknown): PanelId[] {
+  if (!Array.isArray(value)) {
+    return panelIds;
+  }
+  const panels = value.filter((item): item is PanelId =>
+    typeof item === "string" && panelIds.includes(item as PanelId)
+  );
+  const uniquePanels = panels.filter((id, index) => panels.indexOf(id) === index);
+  return uniquePanels.length > 0
+    ? panelIds.filter((id) => uniquePanels.includes(id))
+    : panelIds;
 }
 
 function parsePanelRects(value: unknown): PanelRects | null {
@@ -158,5 +236,9 @@ function parseRectValue(value: unknown): PanelRect | null {
 }
 
 function isGridValue(value: unknown): value is number {
-  return typeof value === "number" && Number.isInteger(value) && value >= 2 && value <= 8;
+  return typeof value === "number" && Number.isInteger(value) && value >= 1 && value <= 8;
+}
+
+function isCustomizationMode(value: unknown): value is CustomizationMode {
+  return value === "default" || value === "advanced";
 }

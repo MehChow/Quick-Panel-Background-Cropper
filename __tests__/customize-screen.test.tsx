@@ -40,12 +40,16 @@ jest.mock("@/features/quick-panel/customize/hooks/useCustomizeScreen", () => ({
   useCustomizeScreen: () => ({
     activePreset: null,
     error: "Unable to export images.",
+    errorKey: "errors.imageTooLarge",
     exportImages: jest.fn(),
-    exports: [],
-    hasExported: false,
+    exportLoadToken: 1,
+    goToAdvancedCalibration: jest.fn(),
+    goToCalibration: jest.fn(),
     image: null,
     isExporting: false,
     isPreviewAdjusting: false,
+    isProcessingImage: false,
+    noticeKey: "customize.imageOptimized",
     pickImage: jest.fn(),
     refs: {
       brightness: { current: null },
@@ -54,16 +58,27 @@ jest.mock("@/features/quick-panel/customize/hooks/useCustomizeScreen", () => ({
       volume: { current: null },
     },
     resetFit: jest.fn(),
+    canReset: false,
+    selectedMode: "default",
+    setIsExportSurfaceReady: jest.fn(),
     setIsPreviewAdjusting: jest.fn(),
     setTransform: jest.fn(),
+    shouldRenderExportSurfaces: false,
     transform: { scale: 1, x: 0, y: 0 },
   }),
 }));
 
 describe("CustomizeScreen", () => {
+  it("renders the inline notice via translation key", () => {
+    render(<CustomizeScreen />);
+
+    expect(screen.getByText("customize.imageOptimized")).toBeTruthy();
+  });
+
   it("renders the inline error banner", () => {
     render(<CustomizeScreen />);
 
+    expect(screen.getByText("errors.imageTooLarge")).toBeTruthy();
     expect(screen.getByText("Unable to export images.")).toBeTruthy();
   });
 });

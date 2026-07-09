@@ -1,12 +1,11 @@
 import { getLocales } from "expo-localization";
-import i18n from "i18next";
+import { createInstance } from "i18next";
 import { initReactI18next } from "react-i18next";
 import {
   isSupportedLanguage,
   type SupportedLanguage,
 } from "../src/features/quick-panel/store/storage";
-import en from "./locales/en";
-import zh from "./locales/zh";
+import { enLocale, zhLocale } from "./resources";
 
 function getLanguage(): SupportedLanguage {
   const locale = getLocales()[0];
@@ -21,12 +20,14 @@ function getLanguage(): SupportedLanguage {
 
 export const lng = getLanguage();
 
+const i18n = createInstance();
+
 i18n
   .use(initReactI18next) // passes i18n down to react-i18next
   .init({
     resources: {
-      en,
-      zh,
+      en: enLocale,
+      zh: zhLocale,
     },
     lng,
     fallbackLng: "en",

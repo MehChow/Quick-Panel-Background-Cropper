@@ -1,5 +1,7 @@
 import { GestureDetector } from "react-native-gesture-handler";
 import Animated from "react-native-reanimated";
+import { useState } from "react";
+import { useWindowDimensions, View } from "react-native";
 import type {
   ImageTransform,
   PickedImage,
@@ -23,6 +25,8 @@ export function QuickPanelPreview({
   onTransformChange,
   preset,
 }: QuickPanelPreviewProps) {
+  const { width: windowWidth, height: windowHeight } = useWindowDimensions();
+  const [containerWidth, setContainerWidth] = useState(0);
   const {
     gesture,
     handleLayout,
@@ -37,34 +41,48 @@ export function QuickPanelPreview({
     onAdjustingChange,
     onTransformChange,
   });
+  const previewRatio = panelUnion.width / panelUnion.height;
+  const horizontalPadding = 40;
+  const widthBasis = containerWidth || windowWidth;
+  const previewWidthBudget = Math.max(0, (widthBasis - horizontalPadding) * 0.75);
+  const previewHeightBudget = windowHeight * 0.46;
+  const previewWidth = Math.min(
+    previewWidthBudget,
+    previewHeightBudget * previewRatio,
+  );
 
   return (
-    <GestureDetector gesture={gesture}>
-      <Animated.View
-        className="w-full overflow-hidden"
-        onLayout={handleLayout}
-        style={{
-          aspectRatio: panelUnion.width / panelUnion.height,
-          opacity: 0.9,
-        }}
-      >
-        {layoutScale
-          ? preset.visualOrder.map((id) => (
-              <PanelSlice
-                key={id}
-                showOverlay
-                mode={preset.mode}
-                panel={preset.panels[id]}
-                image={image}
-                layoutScale={layoutScale}
-                originX={panelUnion.x}
-                originY={panelUnion.y}
-                previewScale={sharedScale}
-                transform={sharedTransform}
-              />
-            ))
-          : null}
-      </Animated.View>
-    </GestureDetector>
+    <View
+      className="w-full items-center"
+      onLayout={(event) => setContainerWidth(event.nativeEvent.layout.width)}
+    >
+      <GestureDetector gesture={gesture}>
+        <Animated.View
+          onLayout={handleLayout}
+          style={{
+            aspectRatio: previewRatio,
+            opacity: 0.9,
+            width: previewWidth,
+          }}
+        >
+          {layoutScale
+            ? preset.visualOrder.map((id) => (
+                <PanelSlice
+                  key={id}
+                  showOverlay
+                  mode={preset.mode}
+                  panel={preset.panels[id]}
+                  image={image}
+                  layoutScale={layoutScale}
+                  originX={panelUnion.x}
+                  originY={panelUnion.y}
+                  previewScale={sharedScale}
+                  transform={sharedTransform}
+                />
+              ))
+            : null}
+        </Animated.View>
+      </GestureDetector>
+    </View>
   );
 }

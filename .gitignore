@@ -41,5 +41,22 @@ coverage/
 /ios
 /android
 
+# Identity & Keystores
+*.jks
+*.keystore
+
+# Local configuration overrides
+android/local.properties
+
 # google play console
 quick-panel-background-cropper-6040e62063a2.json
+
+# google services
+google-services/
+
+# superpowers skills
+docs/superpowers
+
+# eas credentials
+credentials.json
+credentials/

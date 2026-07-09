@@ -1,7 +1,7 @@
 import { Image } from "expo-image";
 import { useState } from "react";
 import { View } from "react-native";
-import type { PanelRect, PanelRects, PickedImage } from "../../../model/types";
+import type { PanelId, PanelRect, PanelRects, PickedImage } from "../../../model/types";
 import type { AdvancedSnapGrid } from "../advanced-grid";
 import {
   getVisiblePanelIds,
@@ -11,8 +11,11 @@ import {
 import { AdvancedPanelBox } from "./AdvancedPanelBox";
 import { AdvancedSnapGridOverlay } from "./AdvancedSnapGridOverlay";
 
+const canvasPadding = 12;
+
 interface Props {
   grid: AdvancedSnapGrid;
+  enabledPanels: PanelId[];
   outerRect: PanelRect;
   phase: AdvancedCalibrationPhase;
   panels: PanelRects;
@@ -22,17 +25,24 @@ interface Props {
 
 export function AdvancedPanelCanvas({
   grid,
+  enabledPanels,
   outerRect,
   phase,
   panels,
   screenshot,
   onPanelsChange,
 }: Props) {
-  const [contentWidth, setContentWidth] = useState(0);
+  const [viewport, setViewport] = useState({ height: 0, width: 0 });
   const viewportRect = getViewportRect(outerRect, screenshot);
-  const scale = contentWidth ? contentWidth / viewportRect.width : 1;
+  const maxWidth = Math.max(viewport.width - canvasPadding * 2, 0);
+  const maxHeight = Math.max(viewport.height - canvasPadding * 2, 0);
+  const widthScale = maxWidth / viewportRect.width;
+  const heightScale = maxHeight / viewportRect.height;
+  const scale = Math.min(widthScale, heightScale);
+  const canvasWidth = Number.isFinite(scale) ? viewportRect.width * scale : 0;
+  const canvasHeight = Number.isFinite(scale) ? viewportRect.height * scale : 0;
   const activeId = isPanelPhase(phase) ? phase : null;
-  const visibleIds = getVisiblePanelIds(phase);
+  const visibleIds = getVisiblePanelIds(phase, enabledPanels);
   const localOuterRect = toLocalRect(outerRect, viewportRect);
 
   const changePanel = (id: keyof PanelRects, rect: PanelRect) => {
@@ -41,12 +51,19 @@ export function AdvancedPanelCanvas({
 
   return (
     <View
-      className="overflow-hidden border border-zinc-800 bg-black"
-      style={{ aspectRatio: viewportRect.width / viewportRect.height }}
+      className="flex-1 items-center justify-center"
+      onLayout={(event) =>
+        setViewport({
+          height: event.nativeEvent.layout.height,
+          width: event.nativeEvent.layout.width,
+        })}
     >
       <View
-        className="absolute inset-px overflow-hidden"
-        onLayout={(event) => setContentWidth(event.nativeEvent.layout.width)}
+        className="overflow-hidden bg-black"
+        style={{
+          height: canvasHeight,
+          width: canvasWidth,
+        }}
       >
         <Image
           source={{ uri: screenshot.uri }}

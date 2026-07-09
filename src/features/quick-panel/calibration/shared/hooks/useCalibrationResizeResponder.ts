@@ -4,7 +4,11 @@ import {
   type PanResponderGestureState,
 } from "react-native";
 import type { PanelRect, PickedImage } from "../../../model/types";
-import { clampRect, resizeRect, type HandlePosition } from "../calibration-rect";
+import {
+  clampResizedRect,
+  resizeRect,
+  type HandlePosition,
+} from "../calibration-rect";
 
 interface UseCalibrationResizeResponderParams {
   position: HandlePosition;
@@ -30,7 +34,9 @@ export function useCalibrationResizeResponder({
     ) => {
       const dx = gesture.dx / scale;
       const dy = gesture.dy / scale;
-      onRectChange(clampRect(resizeRect(rect, position, dx, dy), screenshot));
+      onRectChange(
+        clampResizedRect(resizeRect(rect, position, dx, dy), screenshot, position),
+      );
     },
   });
 }

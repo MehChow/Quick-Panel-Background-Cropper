@@ -10,6 +10,20 @@ import { View } from "react-native";
 import type { PanelRect, PickedImage } from "../../model/types";
 
 const exampleImageAspectRatio = 9 / 19.5;
+const canvasPadding = 12;
+const screenshotFrameStyle = {
+  borderColor: "rgba(255, 255, 255, 0.92)",
+  borderWidth: 1.5,
+  elevation: 8,
+  shadowColor: "#000",
+  shadowOffset: { width: 0, height: 8 },
+  shadowOpacity: 0.24,
+  shadowRadius: 18,
+} as const;
+const screenshotInnerFrameStyle = {
+  borderColor: "rgba(0, 0, 0, 0.22)",
+  borderWidth: 1,
+} as const;
 
 interface CalibrationCanvasProps {
   controls?: ReactNode;
@@ -18,10 +32,11 @@ interface CalibrationCanvasProps {
   screenshot: PickedImage | null;
   onImport: () => void;
   showControls?: boolean;
+  showImportButton?: boolean;
 }
 
 interface ImportScreenshotCardProps {
-  onImport: () => void;
+  onImport?: () => void;
 }
 
 interface ExamplePanelImageProps {
@@ -37,30 +52,60 @@ export function CalibrationCanvas({
   screenshot,
   onImport,
   showControls = true,
+  showImportButton = true,
 }: CalibrationCanvasProps) {
-  const [viewWidth, setViewWidth] = useState(0);
-  const scale = screenshot && viewWidth ? viewWidth / screenshot.width : 1;
+  const [viewport, setViewport] = useState({ height: 0, width: 0 });
 
   if (!screenshot || !rect) {
-    return <ImportScreenshotCard onImport={onImport} />;
+    return (
+      <View className="flex-1 justify-center">
+        <ImportScreenshotCard
+          onImport={showImportButton ? onImport : undefined}
+        />
+      </View>
+    );
   }
 
+  const maxWidth = Math.max(viewport.width - canvasPadding * 2, 0);
+  const maxHeight = Math.max(viewport.height - canvasPadding * 2, 0);
+  const widthScale = maxWidth / screenshot.width;
+  const heightScale = maxHeight / screenshot.height;
+  const scale = Math.min(widthScale, heightScale);
+  const canvasWidth = Number.isFinite(scale) ? screenshot.width * scale : 0;
+  const canvasHeight = Number.isFinite(scale) ? screenshot.height * scale : 0;
+
   return (
-    <View className="gap-4">
+    <View
+      className="flex-1 justify-center"
+      onLayout={(event) =>
+        setViewport({
+          height: event.nativeEvent.layout.height,
+          width: event.nativeEvent.layout.width,
+        })
+      }
+    >
       <View
-        className="overflow-hidden rounded-[28px] border border-zinc-800 bg-black"
-        onLayout={(event) => setViewWidth(event.nativeEvent.layout.width)}
-        style={{ aspectRatio: screenshot.width / screenshot.height }}
+        className="self-center overflow-hidden rounded-[28px] bg-black"
+        style={{
+          height: canvasHeight,
+          ...screenshotFrameStyle,
+          width: canvasWidth,
+        }}
       >
         <Image
           source={{ uri: screenshot.uri }}
           contentFit="fill"
           style={{ height: "100%", width: "100%" }}
         />
+        <View
+          pointerEvents="none"
+          className="absolute inset-0 rounded-[28px]"
+          style={screenshotInnerFrameStyle}
+        />
         {renderOverlay(scale)}
       </View>
 
-      {showControls ? controls : null}
+      {showControls ? <View className="mt-4">{controls}</View> : null}
     </View>
   );
 }
@@ -69,7 +114,7 @@ function ImportScreenshotCard({ onImport }: ImportScreenshotCardProps) {
   const { t } = useTranslation();
 
   return (
-    <Card className="w-full gap-4 rounded-2xl border-zinc-800 bg-zinc-900">
+    <Card className="w-full max-w-107.5 gap-4 self-center rounded-2xl border-zinc-800 bg-zinc-900 min-[480px]:max-w-115 min-[600px]:max-w-130">
       <View>
         <Text className="text-center text-lg font-semibold text-white">
           {t("calibration.importTitle")}
@@ -84,27 +129,31 @@ function ImportScreenshotCard({ onImport }: ImportScreenshotCardProps) {
           {t("landing.example")}
         </Text>
 
-        <View className="flex-row gap-4">
-          <ExamplePanelImage
-            icon="check"
-            iconColor="green"
-            source={images.tutorialCorrect}
-          />
-          <ExamplePanelImage
-            icon="x"
-            iconColor="red"
-            source={images.tutorialIncorrect}
-          />
+        <View className="w-full max-w-95 self-center">
+          <View className="flex-row gap-4">
+            <ExamplePanelImage
+              icon="check"
+              iconColor="green"
+              source={images.tutorialCorrect}
+            />
+            <ExamplePanelImage
+              icon="x"
+              iconColor="red"
+              source={images.tutorialIncorrect}
+            />
+          </View>
         </View>
       </View>
 
-      <Button
-        className="w-full"
-        onPress={onImport}
-        textClassName="font-semibold"
-      >
-        {t("calibration.chooseFromAlbum")}
-      </Button>
+      {onImport ? (
+        <Button
+          className="w-full"
+          onPress={onImport}
+          textClassName="font-semibold"
+        >
+          {t("calibration.chooseFromAlbum")}
+        </Button>
+      ) : null}
     </Card>
   );
 }
