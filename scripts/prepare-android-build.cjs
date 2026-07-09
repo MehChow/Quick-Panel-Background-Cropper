@@ -3,12 +3,12 @@ const path = require("path");
 
 const mode = process.argv[2];
 const showVersionArg = process.argv[3];
-const incrementModes = new Set(["apk-bump", "internal", "closed"]);
+const incrementModes = new Set(["apk-bump", "internal", "beta"]);
 const supportedModes = new Set(["apk", ...incrementModes]);
 
 if (!supportedModes.has(mode)) {
   console.error(
-    "Usage: node scripts/prepare-android-build.cjs <apk|apk-bump|internal|closed> <true|false>",
+    "Usage: node scripts/prepare-android-build.cjs <apk|apk-bump|internal|beta> <true|false>",
   );
   process.exit(1);
 }
