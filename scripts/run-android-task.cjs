@@ -32,6 +32,10 @@ const tasks = {
       env: { APP_VARIANT: "apk" },
     },
     {
+      command: process.execPath,
+      args: ["./scripts/configure-android-release-signing.cjs"],
+    },
+    {
       command: gradleCommand,
       args: ["app:assembleRelease"],
       cwd: androidDir,
@@ -47,6 +51,10 @@ const tasks = {
       command: npxCommand,
       args: ["expo", "prebuild", "--platform", "android"],
       env: { APP_VARIANT: "beta" },
+    },
+    {
+      command: process.execPath,
+      args: ["./scripts/configure-android-release-signing.cjs"],
     },
     {
       command: gradleCommand,
