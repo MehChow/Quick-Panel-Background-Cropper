@@ -32,21 +32,35 @@ const tasks = {
       env: { APP_VARIANT: "apk" },
     },
     {
+      command: process.execPath,
+      args: ["./scripts/configure-android-release-signing.cjs"],
+    },
+    {
       command: gradleCommand,
       args: ["app:assembleRelease"],
       cwd: androidDir,
       env: { APP_VARIANT: "apk" },
     },
   ],
-  closed: [
+  beta: [
     {
       command: process.execPath,
-      args: ["./scripts/prepare-android-build.cjs", "closed", "true"],
+      args: ["./scripts/prepare-android-build.cjs", "beta", "true"],
+    },
+    {
+      command: npxCommand,
+      args: ["expo", "prebuild", "--platform", "android"],
+      env: { APP_VARIANT: "beta" },
+    },
+    {
+      command: process.execPath,
+      args: ["./scripts/configure-android-release-signing.cjs"],
     },
     {
       command: gradleCommand,
       args: ["app:bundleRelease"],
       cwd: androidDir,
+      env: { APP_VARIANT: "beta" },
     },
   ],
 };
@@ -72,7 +86,7 @@ function runStep(step) {
 }
 
 if (!tasks[mode]) {
-  console.error("Usage: node scripts/run-android-task.cjs <dev|apk|closed>");
+  console.error("Usage: node scripts/run-android-task.cjs <dev|apk|beta>");
   process.exit(1);
 }
 

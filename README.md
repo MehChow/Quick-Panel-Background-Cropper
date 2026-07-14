@@ -162,7 +162,13 @@ the same device.
 - the Android debug build gets the package suffix `.dev`
 - `npm run build-apk` uses `APP_VARIANT=apk` and builds a release APK variant
   named `QPBC apk`
-- `npm run build-closed` bumps Android `versionCode`, shows the build version
-  in-app, and builds the closed-testing AAB
+- `npm run build-beta` uses `APP_VARIANT=beta`, bumps Android `versionCode`,
+  shows the build version in-app, and builds the open-beta AAB
+- APK builds use `google-services/google-services-apk.json`, while beta builds
+  use `google-services/google-services-open.json`
+- release builds require upload-key values in `android/gradle.properties`,
+  `~/.gradle/gradle.properties`, or env:
+  `MYAPP_UPLOAD_STORE_FILE`, `MYAPP_UPLOAD_KEY_ALIAS`,
+  `MYAPP_UPLOAD_STORE_PASSWORD`, and `MYAPP_UPLOAD_KEY_PASSWORD`
 - after native config changes, run `npm run android` again so the generated
   `android/` project picks up the latest config-plugin changes

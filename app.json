@@ -8,7 +8,7 @@
     "scheme": "quickpanelbackgroundcropper",
     "userInterfaceStyle": "automatic",
     "android": {
-      "versionCode": 30000018,
+      "versionCode": 30000021,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/appicon.png",
         "backgroundColor": "#FFFFFF",
@@ -75,9 +75,6 @@
       "eas": {
         "projectId": "a6ede84a-b016-4465-9663-198d32a222cc"
       }
-    },
-    "ios": {
-      "bundleIdentifier": "com.meh-chow.quickpanelbackgroundcropper"
     }
   }
 }

@@ -5,6 +5,8 @@
   "dependencies": {
     "@expo/ui": "~56.0.15",
     "@gorhom/bottom-sheet": "^5",
+    "@react-native-firebase/app": "^25.1.0",
+    "@react-native-firebase/crashlytics": "^25.1.0",
     "@react-native-vector-icons/lucide": "^13.1.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -73,7 +75,7 @@
     "convert-assets": "node ./convert-to-webp.js",
     "android": "node ./scripts/run-android-task.cjs dev",
     "build-apk": "node ./scripts/run-android-task.cjs apk",
-    "build-closed": "node ./scripts/run-android-task.cjs closed"
+    "build-beta": "node ./scripts/run-android-task.cjs beta"
   },
   "jest": {
     "preset": "jest-expo",

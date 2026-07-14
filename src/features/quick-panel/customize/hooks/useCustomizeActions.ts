@@ -6,6 +6,7 @@ import type { ExportRefs } from "../../model/types";
 import { pickImageFromLibrary } from "../../shared/pick-image-from-library";
 import { quickPanelSelectors } from "../../store/selectors";
 import { useQuickPanelStore } from "../../store/quick-panel-store";
+import { recordCrashlyticsError } from "@/lib/crashlytics";
 import { captureAndSaveExports } from "../services/export-files";
 import { normalizeCustomizeImage } from "../services/normalize-customize-image";
 
@@ -41,6 +42,11 @@ export function useCustomizeActions(refs: ExportRefs) {
         const normalized = await normalizeCustomizeImage(pickedImage);
         finishImageProcessing(normalized.image, normalized.noticeKey);
       } catch (error) {
+        void recordCrashlyticsError(error, {
+          action: "normalize_customize_image",
+          mode: useQuickPanelStore.getState().selectedMode,
+          presetId: activePreset.id,
+        });
         failImageProcessing(
           null,
           error instanceof Error
@@ -49,6 +55,11 @@ export function useCustomizeActions(refs: ExportRefs) {
         );
       }
     } catch (error) {
+      void recordCrashlyticsError(error, {
+        action: "pick_customize_image",
+        mode: useQuickPanelStore.getState().selectedMode,
+        presetId: activePreset.id,
+      });
       failImageProcessing(
         null,
         error instanceof Error
@@ -75,6 +86,11 @@ export function useCustomizeActions(refs: ExportRefs) {
       finishExport(exports);
       router.replace("/result");
     } catch (error) {
+      void recordCrashlyticsError(error, {
+        action: "export_images",
+        mode: useQuickPanelStore.getState().selectedMode,
+        presetId: activePreset.id,
+      });
       failExport(
         error instanceof Error
           ? error.message
