@@ -28,6 +28,7 @@ export const quickPanelSelectors = {
     selectedAdvancedTarget: state.selectedAdvancedTarget,
     errorKey: state.errorKey,
     error: state.error,
+    setError: state.setError,
     setAdvancedScreenshot: state.setAdvancedScreenshot,
     setAdvancedOuterRect: state.setAdvancedOuterRect,
     confirmAdvancedOuterRect: state.confirmAdvancedOuterRect,

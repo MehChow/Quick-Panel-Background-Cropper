@@ -37,6 +37,7 @@ export function useAdvancedCalibrationScreen() {
     selectedAdvancedTarget,
     errorKey,
     error,
+    setError,
     setAdvancedScreenshot,
     setAdvancedOuterRect,
     confirmAdvancedOuterRect,
@@ -147,6 +148,7 @@ export function useAdvancedCalibrationScreen() {
     if (!previousPhase) {
       return;
     }
+    setError(null);
     if (previousPhase === "outer") {
       setResumePhase(displayedPhase === "outer" ? null : displayedPhase);
     }
