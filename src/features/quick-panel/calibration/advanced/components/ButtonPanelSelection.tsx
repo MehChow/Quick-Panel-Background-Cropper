@@ -1,4 +1,5 @@
 import { Text } from "@/components/ani-ui/text";
+import { Lucide } from "@react-native-vector-icons/lucide";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Pressable, ScrollView, TextInput, View } from "react-native";
@@ -82,10 +83,13 @@ export function ButtonPanelSelection({ buttons, outerRect, onButtonsChange }: Pr
               selectedLabels.map((label) => (
                 <Pressable
                   key={label}
-                  className="rounded-full border border-emerald-300/40 bg-emerald-300/10 px-3 py-1.5"
+                  accessibilityLabel={`${t("advancedCalibration.remove")} ${label}`}
+                  accessibilityRole="button"
+                  className="flex-row items-center gap-1.5 rounded-full border border-emerald-300/40 bg-emerald-300/10 px-3 py-1.5"
                   onPress={() => toggleLabel(label)}
                 >
                   <Text className="text-xs font-semibold text-emerald-100">{label}</Text>
+                  <Lucide color="#d1fae5" name="x" size={12} />
                 </Pressable>
               ))
             ) : (
@@ -99,9 +103,9 @@ export function ButtonPanelSelection({ buttons, outerRect, onButtonsChange }: Pr
           {labels.map((item) => (
             <Pressable
               key={item.id}
-              accessibilityRole="switch"
+              accessibilityRole="checkbox"
               accessibilityState={{ checked: selectedLabels.includes(item.label) }}
-              className={`min-h-11 flex-row items-center justify-between rounded-xl border px-3 ${
+              className={`min-h-11 justify-center rounded-xl border px-3 ${
                 selectedLabels.includes(item.label)
                   ? "border-emerald-300/40 bg-emerald-300/10"
                   : "border-white/10 bg-zinc-800/70"
@@ -109,15 +113,6 @@ export function ButtonPanelSelection({ buttons, outerRect, onButtonsChange }: Pr
               onPress={() => toggleLabel(item.label)}
             >
               <Text className="font-semibold text-white">{item.label}</Text>
-              <Text
-                className={`text-xs font-semibold uppercase ${
-                  selectedLabels.includes(item.label) ? "text-emerald-200" : "text-zinc-500"
-                }`}
-              >
-                {selectedLabels.includes(item.label)
-                  ? t("advancedCalibration.panelEnabled")
-                  : t("advancedCalibration.panelDisabled")}
-              </Text>
             </Pressable>
           ))}
         </View>
