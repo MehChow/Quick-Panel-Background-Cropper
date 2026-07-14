@@ -1,7 +1,23 @@
 import { render, screen } from "@testing-library/react-native";
 import { CustomizeScreen } from "@/features/quick-panel/customize/CustomizeScreen";
+import type { QuickPanelPreset } from "@/features/quick-panel/model/types";
 
 const mockUseCustomizeScreen = jest.fn();
+const mockActivePreset = {
+  id: "test-controls",
+  label: "Test Controls",
+  mode: "default",
+  width: 100,
+  height: 100,
+  customizationArea: { x: 0, y: 0, width: 100, height: 100, radius: 0 },
+  panels: {},
+  visualOrder: [],
+  goodLockOrder: [],
+} satisfies QuickPanelPreset;
+
+jest.mock("@/components/ani-ui/slider", () => ({
+  Slider: () => null,
+}));
 
 jest.mock("react-i18next", () => ({
   useTranslation: () => ({
@@ -44,7 +60,7 @@ jest.mock("@/features/quick-panel/customize/hooks/useCustomizeScreen", () => ({
 
 function createScreenState(shouldRenderExportSurfaces: boolean) {
   return {
-    activePreset: { mode: "default" },
+    activePreset: mockActivePreset,
     error: null,
     exportImages: jest.fn(),
     exportLoadToken: 1,

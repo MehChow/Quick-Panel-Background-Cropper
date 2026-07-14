@@ -12,6 +12,10 @@ const mockReleaseCapture = jest.fn();
 const mockCopy = jest.fn();
 const mockRequestPermissionsAsync = jest.fn();
 
+jest.mock("@/lib/crashlytics", () => ({
+  recordCrashlyticsError: jest.fn(),
+}));
+
 jest.mock("expo-media-library", () => ({
   Album: {
     create: (...args: unknown[]) => mockAlbumCreate(...args),

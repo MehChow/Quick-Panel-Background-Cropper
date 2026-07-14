@@ -1,5 +1,10 @@
 import { render, screen } from "@testing-library/react-native";
 import { CustomizeScreen } from "@/features/quick-panel/customize/CustomizeScreen";
+import type { QuickPanelPreset } from "@/features/quick-panel/model/types";
+
+jest.mock("@/components/ani-ui/slider", () => ({
+  Slider: () => null,
+}));
 
 jest.mock("react-i18next", () => ({
   useTranslation: () => ({
@@ -36,37 +41,51 @@ jest.mock("@/features/quick-panel/customize/components/QuickPanelPreview", () =>
   QuickPanelPreview: () => null,
 }));
 
-jest.mock("@/features/quick-panel/customize/hooks/useCustomizeScreen", () => ({
-  useCustomizeScreen: () => ({
-    activePreset: null,
-    error: "Unable to export images.",
-    errorKey: "errors.imageTooLarge",
-    exportImages: jest.fn(),
-    exportLoadToken: 1,
-    goToAdvancedCalibration: jest.fn(),
-    goToCalibration: jest.fn(),
-    image: null,
-    isExporting: false,
-    isPreviewAdjusting: false,
-    isProcessingImage: false,
-    noticeKey: "customize.imageOptimized",
-    pickImage: jest.fn(),
-    refs: {
-      brightness: { current: null },
-      buttonBox: { current: null },
-      mediaPlayer: { current: null },
-      volume: { current: null },
-    },
-    resetFit: jest.fn(),
-    canReset: false,
-    selectedMode: "default",
-    setIsExportSurfaceReady: jest.fn(),
-    setIsPreviewAdjusting: jest.fn(),
-    setTransform: jest.fn(),
-    shouldRenderExportSurfaces: false,
-    transform: { scale: 1, x: 0, y: 0 },
-  }),
-}));
+jest.mock("@/features/quick-panel/customize/hooks/useCustomizeScreen", () => {
+  const mockActivePreset = {
+    id: "test-controls",
+    label: "Test Controls",
+    mode: "default",
+    width: 100,
+    height: 100,
+    customizationArea: { x: 0, y: 0, width: 100, height: 100, radius: 0 },
+    panels: {},
+    visualOrder: [],
+    goodLockOrder: [],
+  } satisfies QuickPanelPreset;
+
+  return {
+    useCustomizeScreen: () => ({
+      activePreset: mockActivePreset,
+      error: "Unable to export images.",
+      errorKey: "errors.imageTooLarge",
+      exportImages: jest.fn(),
+      exportLoadToken: 1,
+      goToAdvancedCalibration: jest.fn(),
+      goToCalibration: jest.fn(),
+      image: null,
+      isExporting: false,
+      isPreviewAdjusting: false,
+      isProcessingImage: false,
+      noticeKey: "customize.imageOptimized",
+      pickImage: jest.fn(),
+      refs: {
+        brightness: { current: null },
+        buttonBox: { current: null },
+        mediaPlayer: { current: null },
+        volume: { current: null },
+      },
+      resetFit: jest.fn(),
+      canReset: false,
+      selectedMode: "default",
+      setIsExportSurfaceReady: jest.fn(),
+      setIsPreviewAdjusting: jest.fn(),
+      setTransform: jest.fn(),
+      shouldRenderExportSurfaces: false,
+      transform: { scale: 1, x: 0, y: 0 },
+    }),
+  };
+});
 
 describe("CustomizeScreen", () => {
   it("renders the inline notice via translation key", () => {
