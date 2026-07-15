@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { Pressable, ScrollView, TextInput, View } from "react-native";
 import { searchButtonLabels } from "../../../model/button-labels";
 import type { ButtonCalibrationItem, ButtonPanelId, PanelRect, PickedImage } from "../../../model/types";
-import { ButtonAreaPreview } from "./ButtonAreaPreview";
+import { CalibrationAreaPreview } from "./CalibrationAreaPreview";
 
 interface Props {
   buttons: ButtonCalibrationItem[];
@@ -70,7 +70,7 @@ export function ButtonPanelSelection({
 
   return (
     <View className="min-h-0 flex-1 overflow-hidden rounded-2xl border border-white/10 bg-zinc-900/80">
-      <ButtonAreaPreview outerRect={outerRect} screenshot={screenshot}>
+      <CalibrationAreaPreview outerRect={outerRect} screenshot={screenshot}>
         {(previewTrigger) => (
           <ScrollView
             showsVerticalScrollIndicator={false}
@@ -138,7 +138,7 @@ export function ButtonPanelSelection({
             ) : null}
           </ScrollView>
         )}
-      </ButtonAreaPreview>
+      </CalibrationAreaPreview>
     </View>
   );
 }

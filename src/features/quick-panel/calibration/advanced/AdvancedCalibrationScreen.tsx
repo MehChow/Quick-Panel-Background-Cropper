@@ -167,6 +167,8 @@ export function AdvancedCalibrationScreen() {
           <View className="flex-1 justify-center">
             <AdvancedPanelSelection
               enabledPanels={controlEnabledPanels}
+              outerRect={outerRect}
+              screenshot={screenshot}
               onEnabledPanelsChange={setAdvancedEnabledPanels}
             />
           </View>

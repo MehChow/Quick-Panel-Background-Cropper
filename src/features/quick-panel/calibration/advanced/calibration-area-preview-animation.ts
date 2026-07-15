@@ -2,7 +2,7 @@ interface MutableAnimationValue {
   value: number;
 }
 
-export function resetButtonAreaPreviewAnimation(
+export function resetCalibrationAreaPreviewAnimation(
   progress: MutableAnimationValue,
   originX: MutableAnimationValue,
   originY: MutableAnimationValue,

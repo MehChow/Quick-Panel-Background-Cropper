@@ -6,7 +6,7 @@ import Animated, {
   useAnimatedStyle,
 } from "react-native-reanimated";
 import type { PanelRect, PickedImage } from "../../../model/types";
-import type { ButtonAreaPreviewSize } from "../button-area-preview-geometry";
+import type { CalibrationAreaPreviewSize } from "../calibration-area-preview-geometry";
 
 interface Props {
   cardRef: RefObject<View | null>;
@@ -14,13 +14,13 @@ interface Props {
   isReducedMotionEnabled: boolean;
   originX: SharedValue<number>;
   originY: SharedValue<number>;
-  previewSize: ButtonAreaPreviewSize;
+  previewSize: CalibrationAreaPreviewSize;
   progress: SharedValue<number>;
   screenshot: PickedImage;
   onDismiss: () => void;
 }
 
-export function ButtonAreaPreviewOverlay({
+export function CalibrationAreaPreviewOverlay({
   cardRef,
   crop,
   isReducedMotionEnabled,
@@ -55,7 +55,7 @@ export function ButtonAreaPreviewOverlay({
       <View
         accessibilityViewIsModal
         className="flex-1"
-        testID="button-area-preview-overlay"
+        testID="calibration-area-preview-overlay"
       >
         <Pressable
           accessibilityLabel="Close outlined area preview"

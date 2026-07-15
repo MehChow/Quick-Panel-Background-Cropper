@@ -7,12 +7,12 @@ import { Easing, useSharedValue, withTiming } from "react-native-reanimated";
 import { scheduleOnRN } from "react-native-worklets";
 import { useReducedMotionEnabled } from "../../../shared/useReducedMotionEnabled";
 import type { PanelRect, PickedImage } from "../../../model/types";
+import { resetCalibrationAreaPreviewAnimation } from "../calibration-area-preview-animation";
 import {
-  clampButtonAreaPreviewRect,
-  fitButtonAreaPreview,
-} from "../button-area-preview-geometry";
-import { resetButtonAreaPreviewAnimation } from "../button-area-preview-animation";
-import { ButtonAreaPreviewOverlay } from "./ButtonAreaPreviewOverlay";
+  clampCalibrationAreaPreviewRect,
+  fitCalibrationAreaPreview,
+} from "../calibration-area-preview-geometry";
+import { CalibrationAreaPreviewOverlay } from "./CalibrationAreaPreviewOverlay";
 
 interface Props {
   children: (previewTrigger: ReactNode) => ReactNode;
@@ -20,7 +20,7 @@ interface Props {
   screenshot: PickedImage;
 }
 
-export function ButtonAreaPreview({ children, outerRect, screenshot }: Props) {
+export function CalibrationAreaPreview({ children, outerRect, screenshot }: Props) {
   const triggerRef = useRef<View>(null);
   const cardRef = useRef<View>(null);
   const isPreviewOpenRef = useRef(false);
@@ -52,7 +52,7 @@ export function ButtonAreaPreview({ children, outerRect, screenshot }: Props) {
   const openPreview = () => {
     if (isPreviewOpenRef.current) return;
     isPreviewOpenRef.current = true;
-    resetButtonAreaPreviewAnimation(progress, originX, originY);
+    resetCalibrationAreaPreviewAnimation(progress, originX, originY);
     setIsPreviewOpen(true);
     setIsOverlayMounted(true);
     void Haptics.selectionAsync().catch(() => undefined);
@@ -74,8 +74,8 @@ export function ButtonAreaPreview({ children, outerRect, screenshot }: Props) {
     });
     return () => cancelAnimationFrame(frame);
   }, [isOverlayMounted, isPreviewOpen, isReducedMotionEnabled, originX, originY, progress]);
-  const crop = clampButtonAreaPreviewRect(outerRect, screenshot);
-  const previewSize = fitButtonAreaPreview(
+  const crop = clampCalibrationAreaPreviewRect(outerRect, screenshot);
+  const previewSize = fitCalibrationAreaPreview(
     crop,
     Math.max(panelSize.width - 32, 0),
     panelSize.height * 0.6,
@@ -110,7 +110,7 @@ export function ButtonAreaPreview({ children, outerRect, screenshot }: Props) {
         {children(trigger)}
       </View>
       {isOverlayMounted ? (
-        <ButtonAreaPreviewOverlay
+        <CalibrationAreaPreviewOverlay
           cardRef={cardRef}
           crop={crop}
           isReducedMotionEnabled={isReducedMotionEnabled}

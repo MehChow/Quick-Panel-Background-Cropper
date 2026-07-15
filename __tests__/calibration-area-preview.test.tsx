@@ -1,6 +1,6 @@
+import { CalibrationAreaPreview } from "@/features/quick-panel/calibration/advanced/components/CalibrationAreaPreview";
 import { fireEvent, render, waitFor } from "@testing-library/react-native";
 import { View } from "react-native";
-import { ButtonAreaPreview } from "@/features/quick-panel/calibration/advanced/components/ButtonAreaPreview";
 
 const screenshot = {
   uri: "file:///quick-panel.png",
@@ -15,36 +15,36 @@ const outerRect = {
   radius: 0,
 };
 
-describe("ButtonAreaPreview", () => {
+describe("CalibrationAreaPreview", () => {
   it("pins the preview on tap and dismisses it from the backdrop", async () => {
     const screen = render(
-      <ButtonAreaPreview outerRect={outerRect} screenshot={screenshot}>
+      <CalibrationAreaPreview outerRect={outerRect} screenshot={screenshot}>
         {(previewTrigger) => <View>{previewTrigger}</View>}
-      </ButtonAreaPreview>,
+      </CalibrationAreaPreview>,
     );
 
     fireEvent.press(screen.getByLabelText("Preview outlined area"));
 
-    expect(screen.getByTestId("button-area-preview-overlay")).toBeTruthy();
+    expect(screen.getByTestId("calibration-area-preview-overlay")).toBeTruthy();
     expect(screen.queryByText("Release to close")).toBeNull();
 
     fireEvent.press(screen.getByLabelText("Close outlined area preview"));
 
     await waitFor(() => {
-      expect(screen.queryByTestId("button-area-preview-overlay")).toBeNull();
+      expect(screen.queryByTestId("calibration-area-preview-overlay")).toBeNull();
     });
   });
 
   it("does not open the preview on long press", () => {
     const screen = render(
-      <ButtonAreaPreview outerRect={outerRect} screenshot={screenshot}>
+      <CalibrationAreaPreview outerRect={outerRect} screenshot={screenshot}>
         {(previewTrigger) => <View>{previewTrigger}</View>}
-      </ButtonAreaPreview>,
+      </CalibrationAreaPreview>,
     );
     const trigger = screen.getByLabelText("Preview outlined area");
 
     fireEvent(trigger, "longPress");
 
-    expect(screen.queryByTestId("button-area-preview-overlay")).toBeNull();
+    expect(screen.queryByTestId("calibration-area-preview-overlay")).toBeNull();
   });
 });

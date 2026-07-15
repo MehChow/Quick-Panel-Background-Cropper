@@ -1,12 +1,12 @@
 import type { PanelRect, PickedImage } from "../../model/types";
 
-export interface ButtonAreaPreviewSize {
+export interface CalibrationAreaPreviewSize {
   height: number;
   scale: number;
   width: number;
 }
 
-export function clampButtonAreaPreviewRect(
+export function clampCalibrationAreaPreviewRect(
   rect: PanelRect,
   screenshot: PickedImage,
 ): PanelRect {
@@ -24,11 +24,11 @@ export function clampButtonAreaPreviewRect(
   };
 }
 
-export function fitButtonAreaPreview(
+export function fitCalibrationAreaPreview(
   crop: PanelRect,
   maxWidth: number,
   maxHeight: number,
-): ButtonAreaPreviewSize {
+): CalibrationAreaPreviewSize {
   if (crop.width <= 0 || crop.height <= 0 || maxWidth <= 0 || maxHeight <= 0) {
     return { height: 0, scale: 0, width: 0 };
   }
