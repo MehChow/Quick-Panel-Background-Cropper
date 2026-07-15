@@ -9,9 +9,9 @@ import { useReducedMotionEnabled } from "../../../shared/useReducedMotionEnabled
 import type { PanelRect, PickedImage } from "../../../model/types";
 import { resetCalibrationAreaPreviewAnimation } from "../calibration-area-preview-animation";
 import {
-  clampCalibrationAreaPreviewRect,
-  fitCalibrationAreaPreview,
-} from "../calibration-area-preview-geometry";
+  clampCalibrationAreaRect,
+  fitCalibrationArea,
+} from "../calibration-area-geometry";
 import { CalibrationAreaPreviewOverlay } from "./CalibrationAreaPreviewOverlay";
 
 interface Props {
@@ -74,8 +74,8 @@ export function CalibrationAreaPreview({ children, outerRect, screenshot }: Prop
     });
     return () => cancelAnimationFrame(frame);
   }, [isOverlayMounted, isPreviewOpen, isReducedMotionEnabled, originX, originY, progress]);
-  const crop = clampCalibrationAreaPreviewRect(outerRect, screenshot);
-  const previewSize = fitCalibrationAreaPreview(
+  const crop = clampCalibrationAreaRect(outerRect, screenshot);
+  const previewSize = fitCalibrationArea(
     crop,
     Math.max(panelSize.width - 32, 0),
     panelSize.height * 0.6,

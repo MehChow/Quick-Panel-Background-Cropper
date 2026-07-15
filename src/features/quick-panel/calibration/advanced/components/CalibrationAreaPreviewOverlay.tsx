@@ -6,7 +6,7 @@ import Animated, {
   useAnimatedStyle,
 } from "react-native-reanimated";
 import type { PanelRect, PickedImage } from "../../../model/types";
-import type { CalibrationAreaPreviewSize } from "../calibration-area-preview-geometry";
+import type { CalibrationAreaLayout } from "../calibration-area-geometry";
 
 interface Props {
   cardRef: RefObject<View | null>;
@@ -14,7 +14,7 @@ interface Props {
   isReducedMotionEnabled: boolean;
   originX: SharedValue<number>;
   originY: SharedValue<number>;
-  previewSize: CalibrationAreaPreviewSize;
+  previewSize: CalibrationAreaLayout;
   progress: SharedValue<number>;
   screenshot: PickedImage;
   onDismiss: () => void;

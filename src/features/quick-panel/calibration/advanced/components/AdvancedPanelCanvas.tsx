@@ -2,6 +2,10 @@ import { Image } from "expo-image";
 import { useState } from "react";
 import { View } from "react-native";
 import type { EditablePanelItem, PanelId, PanelRect, PanelRects, PickedImage } from "../../../model/types";
+import {
+  clampCalibrationAreaRect,
+  fitCalibrationArea,
+} from "../calibration-area-geometry";
 import type { AdvancedSnapGrid } from "../advanced-grid";
 import {
   getVisiblePanelIds,
@@ -33,14 +37,14 @@ export function AdvancedPanelCanvas({
   onPanelsChange,
 }: Props) {
   const [viewport, setViewport] = useState({ height: 0, width: 0 });
-  const viewportRect = getViewportRect(outerRect, screenshot);
+  const viewportRect = clampCalibrationAreaRect(outerRect, screenshot);
   const maxWidth = Math.max(viewport.width - canvasPadding * 2, 0);
   const maxHeight = Math.max(viewport.height - canvasPadding * 2, 0);
-  const widthScale = maxWidth / viewportRect.width;
-  const heightScale = maxHeight / viewportRect.height;
-  const scale = Math.min(widthScale, heightScale);
-  const canvasWidth = Number.isFinite(scale) ? viewportRect.width * scale : 0;
-  const canvasHeight = Number.isFinite(scale) ? viewportRect.height * scale : 0;
+  const {
+    height: canvasHeight,
+    scale,
+    width: canvasWidth,
+  } = fitCalibrationArea(viewportRect, maxWidth, maxHeight);
   const activeId = isPanelPhase(phase) ? phase : null;
   const panelIds = panelItems.map((item) => item.id);
   const visibleIds = getVisiblePanelIds(phase, panelIds);
@@ -106,16 +110,6 @@ export function AdvancedPanelCanvas({
       </View>
     </View>
   );
-}
-
-function getViewportRect(outerRect: PanelRect, screenshot: PickedImage): PanelRect {
-  return {
-    x: outerRect.x,
-    y: outerRect.y,
-    width: Math.min(outerRect.width, screenshot.width - outerRect.x),
-    height: Math.min(outerRect.height, screenshot.height - outerRect.y),
-    radius: 0,
-  };
 }
 
 function toLocalRect(rect: PanelRect, viewportRect: PanelRect): PanelRect {
