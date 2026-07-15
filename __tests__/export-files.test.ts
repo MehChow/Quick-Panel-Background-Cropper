@@ -3,6 +3,7 @@ import type { ExportRefs } from "@/features/quick-panel/model/types";
 import { createButtonsPreset } from "@/features/quick-panel/calibration/advanced/buttons-geometry";
 import { captureAndSaveExports } from "@/features/quick-panel/customize/services/export-files";
 import type { View } from "react-native";
+import i18n from "../i18next/i18next";
 
 const mockAlbumCreate = jest.fn();
 const mockAlbumGet = jest.fn();
@@ -160,6 +161,30 @@ describe("captureAndSaveExports", () => {
     await expect(
       captureAndSaveExports(refs, s25PlusOneUi85Preset),
     ).rejects.toThrow("The export preview for Media player is unavailable.");
+  });
+
+  it("localizes button display labels without translating filenames", async () => {
+    await i18n.changeLanguage("zh");
+    try {
+      const preset = createButtonsPreset({
+        screenshotWidth: 100,
+        screenshotHeight: 100,
+        grid: { columns: 1, rows: 1 },
+        outerRect: { x: 0, y: 0, width: 100, height: 50, radius: 0 },
+        buttons: [
+          {
+            id: "button-1",
+            label: "Bluetooth",
+            rect: { x: 0, y: 0, width: 40, height: 40, radius: 0 },
+          },
+        ],
+      });
+
+      expect(preset.panels["button-1"].label).toBe("藍牙");
+      expect(preset.panels["button-1"].fileName).toBe("01-bluetooth.png");
+    } finally {
+      await i18n.changeLanguage("en");
+    }
   });
 
   it("exports dynamic button refs in reviewed order with duplicate filenames", async () => {

@@ -3,7 +3,7 @@ import { Lucide } from "@react-native-vector-icons/lucide";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Pressable, ScrollView, TextInput, View } from "react-native";
-import { searchButtonLabels } from "../../../model/button-labels";
+import { getButtonDisplayLabel, searchButtonLabels } from "../../../model/button-labels";
 import type { ButtonCalibrationItem, ButtonPanelId, PanelRect, PickedImage } from "../../../model/types";
 import { CalibrationAreaPreview } from "./CalibrationAreaPreview";
 
@@ -48,7 +48,8 @@ export function ButtonPanelSelection({
   const { t } = useTranslation();
   const [query, setQuery] = useState("");
   const selectedLabels = buttons.map((button) => button.label);
-  const labels = searchButtonLabels(query).slice(0, 12);
+  const translateLabel = (key: string) => t(key);
+  const labels = searchButtonLabels(query, translateLabel).slice(0, 12);
   const setLabels = (nextLabels: string[]) => {
     onButtonsChange(createButtonItems(nextLabels, outerRect));
   };
@@ -94,12 +95,12 @@ export function ButtonPanelSelection({
                 {selectedLabels.length ? selectedLabels.map((label) => (
                   <Pressable
                     key={label}
-                    accessibilityLabel={`${t("advancedCalibration.remove")} ${label}`}
+                    accessibilityLabel={`${t("advancedCalibration.remove")} ${getButtonDisplayLabel(label, translateLabel)}`}
                     accessibilityRole="button"
                     className="flex-row items-center gap-1.5 rounded-full border border-emerald-300/40 bg-emerald-300/10 px-3 py-1.5"
                     onPress={() => toggleLabel(label)}
                   >
-                    <Text className="text-xs font-semibold text-emerald-100">{label}</Text>
+                    <Text className="text-xs font-semibold text-emerald-100">{getButtonDisplayLabel(label, translateLabel)}</Text>
                     <Lucide color="#d1fae5" name="x" size={12} />
                   </Pressable>
                 )) : (
@@ -122,7 +123,7 @@ export function ButtonPanelSelection({
                   }`}
                   onPress={() => toggleLabel(item.label)}
                 >
-                  <Text className="font-semibold text-white">{item.label}</Text>
+                  <Text className="font-semibold text-white">{getButtonDisplayLabel(item.label, translateLabel)}</Text>
                 </Pressable>
               ))}
             </View>

@@ -1,4 +1,5 @@
 import { createButtonFileNames } from "../../model/button-export-names";
+import { getButtonLabel } from "../../model/i18n";
 import type {
   AdvancedButtonsCalibration,
   ButtonCalibrationItem,
@@ -26,7 +27,7 @@ export function createButtonsPreset(calibration: AdvancedButtonsCalibration): Qu
       {
         id: button.id,
         family: "button",
-        label: button.label,
+        label: getButtonLabel(button.label),
         fileName: fileNames[index],
         rect: { ...button.rect, radius: 0 },
       },
@@ -37,7 +38,7 @@ export function createButtonsPreset(calibration: AdvancedButtonsCalibration): Qu
 export function getButtonPanelItems(buttons: ButtonCalibrationItem[]): EditablePanelItem[] {
   return buttons.map((button) => ({
     id: button.id,
-    label: button.label,
+    label: getButtonLabel(button.label),
     family: "button",
   }));
 }

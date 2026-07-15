@@ -2,7 +2,7 @@
 
 ## Goal
 
-Translate all 61 built-in Quick Panel Button labels through i18next. Built-in
+Translate all 60 built-in Quick Panel Button labels through i18next. Built-in
 labels must follow the app's active language everywhere they are displayed,
 while persisted values and exported PNG filenames remain English. Custom labels
 must remain exactly as entered.

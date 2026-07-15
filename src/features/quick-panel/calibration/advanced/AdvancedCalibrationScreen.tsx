@@ -12,6 +12,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import type { EditablePanelItem } from "../../model/types";
 import { OuterCalibrationStep } from "../shared/OuterCalibrationStep";
 import { isPanelPhase, type AdvancedCalibrationPhase } from "./advanced-steps";
 import { AdvancedCalibrationControls } from "./AdvancedCalibrationControls";
@@ -150,7 +151,7 @@ export function AdvancedCalibrationScreen() {
             onActionPress={showHelpButton ? openActiveHelp : undefined}
             onBackPress={requestLeaveCalibration}
             title={t("advancedCalibration.title")}
-            subtitle={getSubtitle(phase, t)}
+            subtitle={getSubtitle(phase, t, panelItems)}
           />
         }
       >
@@ -217,6 +218,7 @@ export function AdvancedCalibrationScreen() {
 function getSubtitle(
   phase: AdvancedCalibrationPhase,
   t: ReturnType<typeof useTranslation>["t"],
+  panelItems: EditablePanelItem[],
 ) {
   if (phase === "outer") {
     return t("advancedCalibration.outerSubtitle");
@@ -231,7 +233,7 @@ function getSubtitle(
     return t("advancedCalibration.confirmSubtitle");
   }
   return t("advancedCalibration.panelSubtitle", {
-    panel: t(`panels.${phase}`),
+    panel: panelItems.find((item) => item.id === phase)?.label ?? t(`panels.${phase}`),
   });
 }
 

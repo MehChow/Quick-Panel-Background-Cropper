@@ -1,7 +1,10 @@
 export interface BuiltInButtonLabel {
   id: string;
   label: string;
+  translationKey: string;
 }
+
+export type ButtonLabelTranslator = (key: string) => string;
 
 const pinnedLabels = [
   "Wi-Fi",
@@ -69,20 +72,39 @@ const otherLabels = [
   "Hotspot 2.0",
 ];
 
-export const buttonLabelCatalog: BuiltInButtonLabel[] = [...pinnedLabels, ...otherLabels].map((label) => ({
-  id: slug(label),
-  label,
-}));
+export const buttonLabelCatalog: BuiltInButtonLabel[] = [...pinnedLabels, ...otherLabels].map((label) => {
+  const id = slug(label);
+  return { id, label, translationKey: `buttonLabels.${id}` };
+});
+
+const buttonLabelsByCanonicalLabel = new Map(
+  buttonLabelCatalog.map((item) => [item.label, item]),
+);
 
 export const pinnedButtonLabelIds = buttonLabelCatalog
   .slice(0, pinnedLabels.length)
   .map((item) => item.id);
 
-export function searchButtonLabels(query: string): BuiltInButtonLabel[] {
+export function getButtonDisplayLabel(
+  label: string,
+  translate: ButtonLabelTranslator,
+): string {
+  const item = buttonLabelsByCanonicalLabel.get(label);
+  return item ? translate(item.translationKey) : label;
+}
+
+export function searchButtonLabels(
+  query: string,
+  translate?: ButtonLabelTranslator,
+): BuiltInButtonLabel[] {
   const needle = query.trim().toLowerCase();
-  return needle
-    ? buttonLabelCatalog.filter((item) => item.label.toLowerCase().includes(needle))
-    : buttonLabelCatalog;
+  if (!needle) return buttonLabelCatalog;
+
+  return buttonLabelCatalog.filter((item) => {
+    const localizedLabel = translate?.(item.translationKey) ?? item.label;
+    return item.label.toLowerCase().includes(needle) ||
+      localizedLabel.toLowerCase().includes(needle);
+  });
 }
 
 function slug(value: string) {
