@@ -26,16 +26,9 @@ calibration data.
 
 ## Interaction
 
-The eye button supports two read-only preview behaviors:
-
-1. Press and hold for a momentary preview. Show the preview after a 300 ms
-   long-press threshold and hide it when the press ends or is cancelled.
-2. Tap for an accessibility fallback. Keep the same preview open until the user
-   taps outside it or taps the eye button again.
-
-The momentary preview must not steal the active press responder. Releasing while
-the opening transition is still running should immediately begin the closing
-transition. Opening the preview provides one light selection haptic.
+Tap the eye button to open the read-only preview. Keep it open until the user
+taps the dimmed backdrop. Opening the preview provides one light selection
+haptic.
 
 ## Preview Card
 
@@ -49,8 +42,6 @@ transition. Opening the preview provides one light selection haptic.
 - Add the same emerald outline used for the confirmed outer area.
 - Fit the crop within the panel with 16-point side margins and a 60% panel-height
   cap. Use contain-style sizing for unusually wide or tall outer rectangles.
-- Show a small `Release to close` caption for momentary previews. Omit that
-  caption for pinned tap previews, which use the dismissible backdrop.
 - Do not create a new cropped image file or persist preview state.
 
 ## Motion
@@ -82,8 +73,7 @@ The preview should appear spatially connected to the eye button:
 ## Accessibility
 
 - Give the eye button a `Preview outlined area` accessibility label.
-- Explain the tap behavior in its accessibility hint; do not require long press
-  as the only way to access the preview.
+- Explain the tap and backdrop-dismiss behavior in its accessibility hint.
 - Keep a minimum 44-point touch target.
 - Treat the pinned preview as a dismissible overlay and return focus to the eye
   button when it closes.
@@ -101,9 +91,9 @@ The preview should appear spatially connected to the eye button:
 ## Verification
 
 No new automated tests are required unless explicitly requested. Run lint and
-TypeScript checks after implementation. Manually verify long-press open/release,
-tap open/dismiss, release during entrance, reduced motion, TalkBack labeling,
-short-screen sizing, and accurate crop alignment against the prior green area.
+TypeScript checks after implementation. Manually verify tap open/dismiss,
+reduced motion, TalkBack labeling, short-screen sizing, and accurate crop
+alignment against the prior green area.
 
 ## Non-goals
 

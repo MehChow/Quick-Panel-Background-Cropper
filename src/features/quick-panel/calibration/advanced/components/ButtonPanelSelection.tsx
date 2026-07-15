@@ -4,11 +4,13 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Pressable, ScrollView, TextInput, View } from "react-native";
 import { searchButtonLabels } from "../../../model/button-labels";
-import type { ButtonCalibrationItem, ButtonPanelId, PanelRect } from "../../../model/types";
+import type { ButtonCalibrationItem, ButtonPanelId, PanelRect, PickedImage } from "../../../model/types";
+import { ButtonAreaPreview } from "./ButtonAreaPreview";
 
 interface Props {
   buttons: ButtonCalibrationItem[];
   outerRect: PanelRect;
+  screenshot: PickedImage;
   onButtonsChange: (buttons: ButtonCalibrationItem[]) => void;
 }
 
@@ -37,7 +39,12 @@ function getInitialButtonRect(index: number, count: number, outerRect: PanelRect
   };
 }
 
-export function ButtonPanelSelection({ buttons, outerRect, onButtonsChange }: Props) {
+export function ButtonPanelSelection({
+  buttons,
+  outerRect,
+  screenshot,
+  onButtonsChange,
+}: Props) {
   const { t } = useTranslation();
   const [query, setQuery] = useState("");
   const selectedLabels = buttons.map((button) => button.label);
@@ -62,71 +69,76 @@ export function ButtonPanelSelection({ buttons, outerRect, onButtonsChange }: Pr
   const canAddCustomLabel = Boolean(query.trim()) && !selectedLabels.includes(query.trim());
 
   return (
-    <View className="min-h-0 flex-1 rounded-2xl border border-white/10 bg-zinc-900/80 p-4">
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerClassName="gap-3 pb-2"
-      >
-        <TextInput
-          className="min-h-12 rounded-xl border border-white/10 bg-zinc-950 px-4 text-white"
-          placeholder={t("advancedCalibration.buttonSearchPlaceholder")}
-          placeholderTextColor="#71717a"
-          value={query}
-          onChangeText={setQuery}
-        />
-        <View className="gap-2 rounded-xl border border-white/10 bg-zinc-950/70 p-3">
-          <Text className="text-sm font-semibold text-white">
-            {t("advancedCalibration.selectedButtons", { count: selectedLabels.length })}
-          </Text>
-          <View className="flex-row flex-wrap gap-2">
-            {selectedLabels.length ? (
-              selectedLabels.map((label) => (
-                <Pressable
-                  key={label}
-                  accessibilityLabel={`${t("advancedCalibration.remove")} ${label}`}
-                  accessibilityRole="button"
-                  className="flex-row items-center gap-1.5 rounded-full border border-emerald-300/40 bg-emerald-300/10 px-3 py-1.5"
-                  onPress={() => toggleLabel(label)}
-                >
-                  <Text className="text-xs font-semibold text-emerald-100">{label}</Text>
-                  <Lucide color="#d1fae5" name="x" size={12} />
-                </Pressable>
-              ))
-            ) : (
-              <Text className="text-sm text-zinc-500">
-                {t("advancedCalibration.noButtonsSelected")}
-              </Text>
-            )}
-          </View>
-        </View>
-        <View className="gap-2">
-          {labels.map((item) => (
-            <Pressable
-              key={item.id}
-              accessibilityRole="checkbox"
-              accessibilityState={{ checked: selectedLabels.includes(item.label) }}
-              className={`min-h-11 justify-center rounded-xl border px-3 ${
-                selectedLabels.includes(item.label)
-                  ? "border-emerald-300/40 bg-emerald-300/10"
-                  : "border-white/10 bg-zinc-800/70"
-              }`}
-              onPress={() => toggleLabel(item.label)}
-            >
-              <Text className="font-semibold text-white">{item.label}</Text>
-            </Pressable>
-          ))}
-        </View>
-        {canAddCustomLabel ? (
-          <Pressable
-            className="min-h-11 justify-center rounded-xl border border-dashed border-white/20 bg-zinc-950 px-3"
-            onPress={() => addLabel(query)}
+    <View className="min-h-0 flex-1 overflow-hidden rounded-2xl border border-white/10 bg-zinc-900/80">
+      <ButtonAreaPreview outerRect={outerRect} screenshot={screenshot}>
+        {(previewTrigger) => (
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerClassName="gap-3 p-4 pb-6"
           >
-            <Text className="font-semibold text-white">
-              {t("advancedCalibration.addCustomButtonLabel", { label: query.trim() })}
-            </Text>
-          </Pressable>
-        ) : null}
-      </ScrollView>
+            <View className="flex-row gap-3">
+              <TextInput
+                className="min-h-12 flex-1 rounded-xl border border-white/10 bg-zinc-950 px-4 text-white"
+                placeholder={t("advancedCalibration.buttonSearchPlaceholder")}
+                placeholderTextColor="#71717a"
+                value={query}
+                onChangeText={setQuery}
+              />
+              {previewTrigger}
+            </View>
+            <View className="gap-2 rounded-xl border border-white/10 bg-zinc-950/70 p-3">
+              <Text className="text-sm font-semibold text-white">
+                {t("advancedCalibration.selectedButtons", { count: selectedLabels.length })}
+              </Text>
+              <View className="flex-row flex-wrap gap-2">
+                {selectedLabels.length ? selectedLabels.map((label) => (
+                  <Pressable
+                    key={label}
+                    accessibilityLabel={`${t("advancedCalibration.remove")} ${label}`}
+                    accessibilityRole="button"
+                    className="flex-row items-center gap-1.5 rounded-full border border-emerald-300/40 bg-emerald-300/10 px-3 py-1.5"
+                    onPress={() => toggleLabel(label)}
+                  >
+                    <Text className="text-xs font-semibold text-emerald-100">{label}</Text>
+                    <Lucide color="#d1fae5" name="x" size={12} />
+                  </Pressable>
+                )) : (
+                  <Text className="text-sm text-zinc-500">
+                    {t("advancedCalibration.noButtonsSelected")}
+                  </Text>
+                )}
+              </View>
+            </View>
+            <View className="gap-2">
+              {labels.map((item) => (
+                <Pressable
+                  key={item.id}
+                  accessibilityRole="checkbox"
+                  accessibilityState={{ checked: selectedLabels.includes(item.label) }}
+                  className={`min-h-11 justify-center rounded-xl border px-3 ${
+                    selectedLabels.includes(item.label)
+                      ? "border-emerald-300/40 bg-emerald-300/10"
+                      : "border-white/10 bg-zinc-800/70"
+                  }`}
+                  onPress={() => toggleLabel(item.label)}
+                >
+                  <Text className="font-semibold text-white">{item.label}</Text>
+                </Pressable>
+              ))}
+            </View>
+            {canAddCustomLabel ? (
+              <Pressable
+                className="min-h-11 justify-center rounded-xl border border-dashed border-white/20 bg-zinc-950 px-3"
+                onPress={() => addLabel(query)}
+              >
+                <Text className="font-semibold text-white">
+                  {t("advancedCalibration.addCustomButtonLabel", { label: query.trim() })}
+                </Text>
+              </Pressable>
+            ) : null}
+          </ScrollView>
+        )}
+      </ButtonAreaPreview>
     </View>
   );
 }

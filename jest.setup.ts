@@ -87,6 +87,10 @@ jest.mock("react-native-mmkv", () => {
   };
 });
 
+jest.mock("react-native-worklets", () =>
+  jest.requireActual("react-native-worklets/src/mock"),
+);
+
 jest.mock("react-native-reanimated", () => {
   const Reanimated = require("react-native-reanimated/mock");
   Reanimated.default.call = () => {};

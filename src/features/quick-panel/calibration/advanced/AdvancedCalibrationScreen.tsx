@@ -159,6 +159,7 @@ export function AdvancedCalibrationScreen() {
             <ButtonPanelSelection
               buttons={buttons}
               outerRect={outerRect}
+              screenshot={screenshot}
               onButtonsChange={setAdvancedButtons}
             />
           </View>

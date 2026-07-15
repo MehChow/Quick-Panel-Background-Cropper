@@ -52,16 +52,4 @@ For the exact current UI flow, refer to the screenshots under `flow/`.
 
 - DRY principle
 - Extract business logic into custom hook
-- Keep files small, each file under 150 lines of code
-
-## Git Workflow
-
-- When the user asks to stage, commit, or push changes, use the personal skill `project-git-finish` at `C:\Users\User\.codex\skills\project-git-finish\SKILL.md`
-- Use commit messages in the format `action: description`
-
-## Testing Notes
-
-- Keep tests secondary and lightweight; prioritize high-value coverage over broad test volume
-- Only write tests when the user explicitly asks for them
-- Prefer tests for store/state transitions, persistence restore/save behavior, native failure branches, and critical error/fallback UI states
-- Keep gesture feel, visual polish, and real Samsung/Good Lock integration as manual testing concerns
+- Keep components files small (.tsx, .jsx), each file under 150 lines of code
