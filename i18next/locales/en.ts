@@ -68,7 +68,7 @@ const en = {
       pickerTitle: "Choose background image",
       pickerSubtitle: "PNG, JPG, and WEBP are supported.",
       layoutPreview: "Current layout preview",
-      buttonPanelOpacity: "Button panel opacity",
+      buttonPanelOpacity: "Button image intensity",
       chooseAnotherImage: "Choose another image",
       resetPosition: "Reset position",
       exportPngs: "Export PNGs",

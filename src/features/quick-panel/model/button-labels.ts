@@ -22,7 +22,6 @@ const pinnedLabels = [
 ];
 
 const otherLabels = [
-  "Dark mode",
   "Eye comfort shield",
   "Do not disturb",
   "Link to Windows",
@@ -72,7 +71,10 @@ const otherLabels = [
   "Hotspot 2.0",
 ];
 
-export const buttonLabelCatalog: BuiltInButtonLabel[] = [...pinnedLabels, ...otherLabels].map((label) => {
+export const buttonLabelCatalog: BuiltInButtonLabel[] = [
+  ...pinnedLabels,
+  ...otherLabels,
+].map((label) => {
   const id = slug(label);
   return { id, label, translationKey: `buttonLabels.${id}` };
 });
@@ -102,11 +104,16 @@ export function searchButtonLabels(
 
   return buttonLabelCatalog.filter((item) => {
     const localizedLabel = translate?.(item.translationKey) ?? item.label;
-    return item.label.toLowerCase().includes(needle) ||
-      localizedLabel.toLowerCase().includes(needle);
+    return (
+      item.label.toLowerCase().includes(needle) ||
+      localizedLabel.toLowerCase().includes(needle)
+    );
   });
 }
 
 function slug(value: string) {
-  return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
 }

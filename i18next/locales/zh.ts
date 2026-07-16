@@ -62,7 +62,7 @@ const zh = {
       pickerTitle: "選擇背景圖片",
       pickerSubtitle: "支援 PNG、JPG 和 WEBP。",
       layoutPreview: "目前版面預覽",
-      buttonPanelOpacity: "按鈕面板透明度",
+      buttonPanelOpacity: "按鈕圖片強度",
       chooseAnotherImage: "選擇另一張圖片",
       resetPosition: "重設位置",
       exportPngs: "匯出 PNG",

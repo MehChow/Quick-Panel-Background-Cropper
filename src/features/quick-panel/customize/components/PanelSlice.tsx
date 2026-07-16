@@ -65,10 +65,11 @@ export function PanelSlice({
         style={[
           StyleSheet.absoluteFill,
           imageStyle,
-          panel.family === "button" ? { opacity: buttonPanelOpacity } : null,
+          {
+            opacity: panel.family === "button" ? buttonPanelOpacity : 0.5,
+          },
         ]}
       />
-      {panel.family === "button" ? null : <View className="absolute inset-0 bg-black/10" />}
       {showOverlay ? (
         <PanelOverlay
           height={panel.rect.height * layoutScale}

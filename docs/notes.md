@@ -12,6 +12,15 @@ This file is a running project note log for implementation details that are easy
 
 ## Entries
 
+### 2026-07-16: Controls preview and Button image intensity
+
+- One UI 8.5 device measurements show Controls retain about 50% of source
+  image contrast, while Button PNG alpha is applied linearly.
+- Controls therefore preview at 50% image opacity without a black overlay, but
+  still export at full opacity so One UI applies its treatment only once.
+- The local Button image intensity slider continues to affect both Button
+  preview and Button exports, with the existing 78% default unchanged.
+
 ### 2026-07-08: Advanced calibration single-axis snap dots
 
 #### Original concern
