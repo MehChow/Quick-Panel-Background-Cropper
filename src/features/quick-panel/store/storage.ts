@@ -14,10 +14,7 @@ import type {
 } from "../model/types";
 import { panelIds } from "../model/panel-ids";
 
-const calibrationFlagKey = "quick-panel.is-calibrated";
-const calibrationRectKey = "quick-panel.calibration-rect";
-const calibrationsV2Key = "quick-panel.calibrations-v2";
-const calibrationsV3Key = "quick-panel.calibrations-v3";
+const calibrationsKey = "quick-panel.calibrations";
 const lastExportedModeKey = "quick-panel.last-exported-mode";
 const lastExportedAdvancedTargetKey = "quick-panel.last-exported-advanced-target";
 const seenHelpKey = "quick-panel.seen-help";
@@ -35,64 +32,23 @@ export type HelpEntryId = (typeof helpEntryIds)[number];
 const storage = createMMKV({ id: "quick-panel" });
 
 export interface SavedCalibrations {
-  version: 3;
   default: DefaultCalibration | null;
   advancedControls: AdvancedCalibration | null;
   advancedButtons: AdvancedButtonsCalibration | null;
 }
 
-interface SavedCalibrationsV2 {
-  version: 2;
-  default: DefaultCalibration | null;
-  advanced: AdvancedCalibration | null;
-}
-
-export interface SavedCalibration {
-  isCalibrated: boolean;
-  rect: PanelRect | null;
-}
-
 type SavedSeenHelp = Partial<Record<HelpEntryId, true>>;
 
 export function loadCalibrations(): SavedCalibrations {
-  const saved = parseCalibrationsV3(storage.getString(calibrationsV3Key));
-  if (saved) {
-    return saved;
-  }
-  const v2 = parseCalibrationsV2(storage.getString(calibrationsV2Key));
-  if (v2) {
-    return {
-      version: 3,
-      default: v2.default,
-      advancedControls: v2.advanced,
-      advancedButtons: null,
-    };
-  }
-
-  const legacy = loadCalibration();
-  return {
-    version: 3,
-    default: legacy.rect ? { rect: legacy.rect } : null,
+  return parseCalibrations(storage.getString(calibrationsKey)) ?? {
+    default: null,
     advancedControls: null,
     advancedButtons: null,
   };
 }
 
 export function saveCalibrations(calibrations: SavedCalibrations) {
-  storage.set(calibrationsV3Key, JSON.stringify(calibrations));
-}
-
-export function loadCalibration(): SavedCalibration {
-  const isCalibrated = storage.getBoolean(calibrationFlagKey) ?? false;
-  const rect = parseRect(storage.getString(calibrationRectKey));
-  return isCalibrated && rect
-    ? { isCalibrated: true, rect }
-    : { isCalibrated: false, rect: null };
-}
-
-export function saveCalibration(rect: PanelRect) {
-  storage.set(calibrationFlagKey, true);
-  storage.set(calibrationRectKey, JSON.stringify(rect));
+  storage.set(calibrationsKey, JSON.stringify(calibrations));
 }
 
 export function loadLastExportedMode(): CustomizationMode | null {
@@ -145,35 +101,17 @@ export function isSupportedLanguage(
   return supportedLanguages.includes(language as SupportedLanguage);
 }
 
-function parseCalibrationsV3(value: string | undefined): SavedCalibrations | null {
+function parseCalibrations(value: string | undefined): SavedCalibrations | null {
   try {
     const parsed = value ? JSON.parse(value) as Partial<SavedCalibrations> : null;
-    if (!parsed || parsed.version !== 3) {
+    if (!parsed || typeof parsed !== "object") {
       return null;
     }
 
     return {
-      version: 3,
       default: parseDefaultCalibration(parsed.default),
       advancedControls: parseAdvancedCalibration(parsed.advancedControls),
       advancedButtons: parseAdvancedButtonsCalibration(parsed.advancedButtons),
-    };
-  } catch {
-    return null;
-  }
-}
-
-function parseCalibrationsV2(value: string | undefined): SavedCalibrationsV2 | null {
-  try {
-    const parsed = value ? JSON.parse(value) as Partial<SavedCalibrationsV2> : null;
-    if (!parsed || parsed.version !== 2) {
-      return null;
-    }
-
-    return {
-      version: 2,
-      default: parseDefaultCalibration(parsed.default),
-      advanced: parseAdvancedCalibration(parsed.advanced),
     };
   } catch {
     return null;
@@ -307,14 +245,6 @@ function parseAdvancedGrid(value: unknown): AdvancedSnapGrid | null {
   return isGridValue(grid.columns) && isGridValue(grid.rows)
     ? { columns: grid.columns, rows: grid.rows }
     : null;
-}
-
-function parseRect(value: string | undefined): PanelRect | null {
-  try {
-    return value ? parseRectValue(JSON.parse(value)) : null;
-  } catch {
-    return null;
-  }
 }
 
 function parseRectValue(value: unknown): PanelRect | null {

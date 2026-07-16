@@ -44,7 +44,6 @@ import {
   getTransformState,
 } from "./quick-panel-transitions";
 import {
-  saveCalibration,
   saveCalibrations,
   saveLastExportedAdvancedTarget,
   saveLastExportedMode,
@@ -125,9 +124,7 @@ export const useQuickPanelStore = create<QuickPanelState>((set, get) => ({
       return false;
     }
     const state = get();
-    saveCalibration(result.defaultCalibration.rect);
     saveCalibrations({
-      version: 3,
       default: result.defaultCalibration,
       advancedControls: state.advancedCalibration,
       advancedButtons: state.advancedButtonsCalibration,
@@ -226,7 +223,6 @@ export const useQuickPanelStore = create<QuickPanelState>((set, get) => ({
         return false;
       }
       saveCalibrations({
-        version: 3,
         default: state.defaultCalibration,
         advancedControls: state.advancedCalibration,
         advancedButtons: calibration,
@@ -240,7 +236,6 @@ export const useQuickPanelStore = create<QuickPanelState>((set, get) => ({
       return false;
     }
     saveCalibrations({
-      version: 3,
       default: state.defaultCalibration,
       advancedControls: calibration,
       advancedButtons: state.advancedButtonsCalibration,

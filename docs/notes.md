@@ -12,6 +12,47 @@ This file is a running project note log for implementation details that are easy
 
 ## Entries
 
+### 2026-07-16: Calibration crop coordinate alignment
+
+#### Root cause
+
+- Shared calibration canvas measured screenshot width and height before applying
+  a layout border to same container.
+- Screenshot rendered inside border, but green selection overlay still used
+  outer dimensions and scale.
+- Saved rectangle became slightly compressed toward top-left. Small
+  Buttons-only selections magnified visible gap and overlap.
+- Advanced area preview repeated same bug with its bordered clipping view.
+- Later editable canvas and exports received already-wrong `outerRect`; they
+  exposed upstream error rather than creating separate offset.
+
+#### Fix
+
+- Screenshot and green overlay now share one exact-size, borderless coordinate
+  surface in `CalibrationImageSurface`.
+- White/dark screenshot frames moved to absolute, non-interactive overlays.
+  Shadow wrapper keeps existing rounded appearance without changing geometry.
+- Advanced eye preview now clips through borderless
+  `CalibrationAreaPreviewCard`; emerald frame is absolute and non-interactive.
+- No border compensation, alternate axis scale, preset adjustment, or export
+  geometry change added.
+
+#### Storage reset
+
+- Removed legacy, v2, and v3 calibration migration/fallback paths.
+- Current calibration data uses stable unversioned
+  `quick-panel.calibrations` key.
+- Old calibration keys are ignored, forcing one accurate recalibration.
+- Language, seen-help state, last exported mode, and last Advanced target remain
+  separate and preserved.
+
+#### Verification
+
+- Added exact-size surface and small-crop preview regression tests.
+- Full result: 28 Jest suites, 64 tests, ESLint, TypeScript, and
+  `git diff --check` passed.
+- Device retest confirmed visible green selection now matches later crop.
+
 ### 2026-07-16: Controls preview and Button image intensity
 
 - One UI 8.5 device measurements show Controls retain about 50% of source

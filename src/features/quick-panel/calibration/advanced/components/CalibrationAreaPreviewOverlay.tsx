@@ -1,4 +1,3 @@
-import { Image } from "expo-image";
 import type { RefObject } from "react";
 import { Modal, Pressable, View } from "react-native";
 import Animated, {
@@ -7,6 +6,7 @@ import Animated, {
 } from "react-native-reanimated";
 import type { PanelRect, PickedImage } from "../../../model/types";
 import type { CalibrationAreaLayout } from "../calibration-area-geometry";
+import { CalibrationAreaPreviewCard } from "./CalibrationAreaPreviewCard";
 
 interface Props {
   cardRef: RefObject<View | null>;
@@ -70,25 +70,12 @@ export function CalibrationAreaPreviewOverlay({
         />
         <View className="absolute inset-0 items-center justify-center" pointerEvents="none">
           <Animated.View style={cardStyle}>
-            <View
-              ref={cardRef}
-              accessible={false}
-              className="overflow-hidden rounded-2xl border-2 border-emerald-300 bg-black"
-              style={{ height: previewSize.height, width: previewSize.width }}
-            >
-              <Image
-                accessible={false}
-                contentFit="fill"
-                source={{ uri: screenshot.uri }}
-                style={{
-                  height: screenshot.height * previewSize.scale,
-                  left: -crop.x * previewSize.scale,
-                  position: "absolute",
-                  top: -crop.y * previewSize.scale,
-                  width: screenshot.width * previewSize.scale,
-                }}
-              />
-            </View>
+            <CalibrationAreaPreviewCard
+              cardRef={cardRef}
+              crop={crop}
+              previewSize={previewSize}
+              screenshot={screenshot}
+            />
           </Animated.View>
         </View>
       </View>
