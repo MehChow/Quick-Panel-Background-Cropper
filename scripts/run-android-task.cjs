@@ -17,7 +17,12 @@ const tasks = {
     },
     {
       command: npxCommand,
-      args: ["expo", "run:android"],
+      args: [
+        "expo",
+        "run:android",
+        "--app-id",
+        "com.meh_chow.quickpanelbackgroundcropper.dev",
+      ],
       env: { APP_VARIANT: "dev" },
     },
   ],
