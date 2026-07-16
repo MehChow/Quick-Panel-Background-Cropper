@@ -2,9 +2,13 @@
 
 Read the exact versioned docs at https://docs.expo.dev/versions/v56.0.0/ before writing any code.
 
+## App status
+
+Quick Panel Background Cropper (QPBC) has been released for production on Google Play with version v1.0.0, which is the v2 of app (only support Controls panel customization with default and advanced mode). For any changes in the future, the local data should be persisted across any app updates by default (e.g. calibration preset, helper icon animation flag). If the changes absolutely requires a reset of the local data, warn the user first before proceeding to any further actions.
+
 ## App brief
 
-Quick Panel Background Cropper is an Expo app for creating Samsung Good Lock Quick Panel background PNGs from one user-selected image. In v3, the app supports both Quick Panel **Controls** customization and an Advanced **Buttons-only** branch. The supported Controls panels are Button box, Media player, Brightness, and Volume. The Buttons-only branch supports one or more manually selected Quick Panel Buttons exported as separate square PNGs.
+QPBC is an Expo app for creating Samsung Good Lock Quick Panel background PNGs from one user-selected image, with all features run locally. In v3, the app separates advanced mode with **Controls-only** and **Buttons-only** branches. The supported Controls panels are Button box, Media player, Brightness, and Volume. The Buttons-only branch supports one or more manually selected Quick Panel Buttons exported as separate square PNGs.
 
 The user flow is: landing -> mode selection -> calibration -> image selection -> preview adjustment -> export result. Default mode asks the user to import a fully expanded Quick Panel screenshot, adjust one green rectangle around the full Controls area, and save it as the layout basis. Advanced mode now has two visible steps: first choose `Advanced`, then choose either `Controls only` or `Buttons only`.
 
@@ -16,7 +20,7 @@ After calibration, the app lets users choose a background image, pan/zoom it aga
 
 For Buttons in Customize, the preview/export path uses full-fill image rendering with a user-adjustable opacity slider on the Customize screen. That opacity control is local to the screen, affects both live preview and Button exports, and is intentionally not persisted.
 
-For the exact current UI flow, refer to the screenshots under `flow/`.
+For the exact UI flow for v2, refer to the screenshots under `flow/default-mode`, `flow/advanced-mode`, and bottom helper sheet from `flow/bottom-sheet-tutorial`. For v3 Buttons-only mode, see `flow/v3-buttons-only`.
 
 ## Tech Stack
 
