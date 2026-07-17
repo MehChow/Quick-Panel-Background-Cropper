@@ -1,140 +1,80 @@
-import { ExportSurfaces } from "@/features/quick-panel/customize/components/ExportSurfaces";
-import type { QuickPanelPreset } from "@/features/quick-panel/model/types";
+import { ExportSurfaceHost } from "@/features/quick-panel/customize/components/ExportSurfaceHost";
+import type { ExportSurfaceToken } from "@/features/quick-panel/customize/hooks/useSequentialExport";
+import type { PanelDefinition } from "@/features/quick-panel/model/types";
 import { act, render } from "@testing-library/react-native";
+import { createRef } from "react";
+import type { View } from "react-native";
+
+let mockSurfaceProps: Record<string, unknown> | null = null;
 
 jest.mock(
   "@/features/quick-panel/customize/components/ExportSurface",
   () => {
     const React = jest.requireActual("react");
-    const { View } = jest.requireActual("react-native");
-    interface MockExportSurfaceProps {
-      identifierPositions: { horizontal: number; vertical: number };
-      onIdentifierPositionReady: () => void;
-      onImageLoad: () => void;
-      panel: {
-        buttonIdentifier?: { columnSpan: number; rowSpan: number };
-        id: string;
-      };
-      showButtonIdentifiers: boolean;
-    }
+    const { View: MockView } = jest.requireActual("react-native");
     return {
-      ExportSurface: React.forwardRef((props: MockExportSurfaceProps, _ref: unknown) => {
-        const previousHorizontalPosition = React.useRef(
-          props.identifierPositions.horizontal,
-        );
-
-        React.useEffect(() => {
-          const didPositionChange = previousHorizontalPosition.current
-            !== props.identifierPositions.horizontal;
-          previousHorizontalPosition.current = props.identifierPositions.horizontal;
-          const identifier = props.panel.buttonIdentifier;
-          if (
-            didPositionChange
-            && props.showButtonIdentifiers
-            && identifier
-            && identifier.columnSpan > identifier.rowSpan
-          ) {
-            props.onIdentifierPositionReady();
-          }
-        }, [
-          props.identifierPositions.horizontal,
-          props.onIdentifierPositionReady,
-          props.panel.buttonIdentifier,
-          props.showButtonIdentifiers,
-        ]);
-
+      ExportSurface: (props: Record<string, unknown>) => {
+        mockSurfaceProps = props;
         return React.createElement(
-          View,
+          MockView,
           null,
-          React.createElement(View, {
+          React.createElement(MockView, {
             onSignal: props.onImageLoad,
-            testID: `${props.panel.id}-image-ready`,
+            testID: "current-image-ready",
           }),
-          React.createElement(View, {
+          React.createElement(MockView, {
             onSignal: props.onIdentifierPositionReady,
-            testID: `${props.panel.id}-identifier-ready`,
+            testID: "current-identifier-ready",
           }),
         );
-      }),
+      },
     };
   },
 );
 
-const preset = {
-  id: "readiness-buttons",
-  label: "Readiness Buttons",
-  mode: "advanced",
-  width: 100,
-  height: 100,
-  customizationArea: { x: 0, y: 0, width: 100, height: 100, radius: 0 },
-  panels: {
-    "button-1": {
-      id: "button-1",
-      label: "Wi-Fi",
-      fileName: "01-wi-fi.png",
-      family: "button",
-      rect: { x: 0, y: 0, width: 100, height: 50, radius: 0 },
-      buttonIdentifier: { columnSpan: 2, rowSpan: 1, iconName: "wifi" },
-    },
-    "button-2": {
-      id: "button-2",
-      label: "Bluetooth",
-      fileName: "02-bluetooth.png",
-      family: "button",
-      rect: { x: 0, y: 50, width: 50, height: 100, radius: 0 },
-      buttonIdentifier: { columnSpan: 1, rowSpan: 2, iconName: "bluetooth" },
-    },
-  },
-  visualOrder: ["button-1", "button-2"],
-  goodLockOrder: ["button-1", "button-2"],
-} satisfies QuickPanelPreset;
-
-const baseProps = {
-  buttonIdentifierOpacity: 0.7,
-  buttonPanelOpacity: 0.78,
-  identifierPositions: { horizontal: 0.5, vertical: 0.5 },
-  image: { height: 200, uri: "file:///background.png", width: 100 },
-  loadToken: 1,
-  onReady: jest.fn(),
-  preset,
-  refs: {},
-  showButtonIdentifiers: true,
-  transform: { scale: 1, x: 0, y: 0 },
+const panel: PanelDefinition = {
+  id: "button-1",
+  label: "Wi-Fi",
+  fileName: "01-wi-fi.png",
+  family: "button",
+  rect: { x: 0, y: 0, width: 100, height: 50, radius: 0 },
+  buttonIdentifier: { columnSpan: 2, rowSpan: 1, iconName: "wifi" },
 };
+const token: ExportSurfaceToken = { panelId: "button-1", runId: 7 };
 
-describe("ExportSurfaces identifier readiness", () => {
+describe("ExportSurfaceHost readiness", () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    mockSurfaceProps = null;
   });
 
-  it("waits for horizontal placement and resets for current render inputs", () => {
-    const screen = render(<ExportSurfaces {...baseProps} />);
-    const signal = (testID: string) => {
-      act(() => screen.getByTestId(testID).props.onSignal());
-    };
-
-    signal("button-1-image-ready");
-    signal("button-2-image-ready");
-    signal("button-2-identifier-ready");
-    expect(baseProps.onReady).not.toHaveBeenCalled();
-
-    signal("button-1-identifier-ready");
-    signal("button-1-identifier-ready");
-    expect(baseProps.onReady).toHaveBeenCalledTimes(1);
-
-    screen.rerender(
-      <ExportSurfaces
-        {...baseProps}
+  it("renders one active panel and echoes its token from ready callbacks", () => {
+    const markIdentifierReady = jest.fn();
+    const markImageReady = jest.fn();
+    const screen = render(
+      <ExportSurfaceHost
+        activePanel={panel}
+        activeToken={token}
+        buttonIdentifierOpacity={0.7}
+        buttonPanelOpacity={0.78}
+        exportRef={createRef<View>()}
         identifierPositions={{ horizontal: 0.2, vertical: 0.8 }}
+        image={{ height: 200, uri: "file:///original.png", width: 100 }}
+        markIdentifierReady={markIdentifierReady}
+        markImageReady={markImageReady}
+        showButtonIdentifiers
+        transform={{ scale: 1, x: 0, y: 0 }}
       />,
     );
-    signal("button-1-image-ready");
-    signal("button-2-image-ready");
-    expect(baseProps.onReady).toHaveBeenCalledTimes(2);
 
-    screen.rerender(<ExportSurfaces {...baseProps} showButtonIdentifiers={false} />);
-    signal("button-1-image-ready");
-    signal("button-2-image-ready");
-    expect(baseProps.onReady).toHaveBeenCalledTimes(3);
+    expect(screen.getAllByTestId("export-surface-button-1")).toHaveLength(1);
+    expect(mockSurfaceProps).toMatchObject({
+      identifierPositions: { horizontal: 0.2, vertical: 0.8 },
+      panel,
+      showButtonIdentifiers: true,
+    });
+    act(() => screen.getByTestId("current-image-ready").props.onSignal());
+    act(() => screen.getByTestId("current-identifier-ready").props.onSignal());
+    expect(markImageReady).toHaveBeenCalledWith(token);
+    expect(markIdentifierReady).toHaveBeenCalledWith(token);
   });
 });

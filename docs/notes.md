@@ -12,6 +12,34 @@ This file is a running project note log for implementation details that are easy
 
 ## Entries
 
+### 2026-07-17: Buttons-only performance baseline
+
+Target fixture: `SM-S9360`, One UI 8.5 (`ro.build.version.oneui=80500`),
+QuickStar 10.0.04.26, local `apk` release variant, 1920x1080 approximately
+3.58 MB PNG, six mixed Buttons, and a 4x5 grid. The device is connected and
+app data was not cleared, but the exact baseline was not run: `npm run
+build-apk` stopped before Gradle because the four Android upload-key values are
+not configured, the `.apk` application id is not installed, and the fixture
+image is not present in the workspace. Dev-client or production measurements
+were not substituted.
+
+| sample | janky/deadline rate | p95 frame time | slow UI frames | slow bitmap uploads | duration | peak PSS | graphics memory | swap | visible result | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| calibration move | unavailable: signed APK not built | unavailable: signed APK not built | unavailable: signed APK not built | unavailable: signed APK not built | unavailable: fixture not run | unavailable: fixture not run | unavailable: fixture not run | unavailable: fixture not run | not run | Upload-key configuration is required before the clean baseline. |
+| calibration resize | unavailable: signed APK not built | unavailable: signed APK not built | unavailable: signed APK not built | unavailable: signed APK not built | unavailable: fixture not run | unavailable: fixture not run | unavailable: fixture not run | unavailable: fixture not run | not run | Upload-key configuration is required before the clean baseline. |
+| Customize pan | unavailable: signed APK not built | unavailable: signed APK not built | unavailable: signed APK not built | unavailable: signed APK not built | unavailable: fixture not run | unavailable: fixture not run | unavailable: fixture not run | unavailable: fixture not run | not run | Upload-key configuration is required before the clean baseline. |
+| Customize pinch | unavailable: signed APK not built | unavailable: signed APK not built | unavailable: signed APK not built | unavailable: signed APK not built | unavailable: fixture not run | unavailable: fixture not run | unavailable: fixture not run | unavailable: fixture not run | not run | Upload-key configuration is required before the clean baseline. |
+| export | unavailable: signed APK not built | unavailable: signed APK not built | unavailable: signed APK not built | unavailable: signed APK not built | unavailable: three runs not captured | unavailable: three runs not captured | unavailable: three runs not captured | unavailable: three runs not captured | not run | Spinner/pulse, output fidelity, and Good Lock application still require device QA. |
+
+Implementation status: calibration gestures now keep their draft rectangle on
+the UI thread and commit once; Customize uses an owned 1080-long-edge preview
+proxy with transform-only panel rendering; export mounts and captures one
+Good Lock-order surface at a time. Automated verification passes with 40 Jest
+suites and 138 tests, ESLint, TypeScript, `git diff --check`, and an Android
+production bundle export to a temporary directory. Performance, output-
+fidelity, update/persistence, and Good Lock acceptance gates remain unclaimed
+until the signed fixture can be built and measured.
+
 ### 2026-07-17: Compact Button Customize adjustment tabs
 
 - Replaced the stacked Button Customize sliders with four direct adjustment

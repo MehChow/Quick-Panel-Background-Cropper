@@ -27,8 +27,16 @@ jest.mock(
 
 const image = { height: 200, uri: "file:///background.png", width: 100 };
 const transform = { scale: 1, x: 0, y: 0 };
-const sharedTransform = { value: transform } as SharedValue<ImageTransform>;
-const previewScale = { value: 1 } as SharedValue<number>;
+const sharedTransform = {
+  get: () => transform,
+  set: jest.fn(),
+  value: transform,
+} as unknown as SharedValue<ImageTransform>;
+const previewScale = {
+  get: () => 1,
+  set: jest.fn(),
+  value: 1,
+} as unknown as SharedValue<number>;
 
 function createPanel(family: PanelDefinition["family"]): PanelDefinition {
   return {
@@ -57,6 +65,7 @@ describe("panel image intensity", () => {
         originY={0}
         panel={createPanel("control")}
         previewScale={previewScale}
+        previewUri="file:///preview.png"
         showOverlay={false}
         showButtonIdentifiers
         transform={sharedTransform}
@@ -84,15 +93,19 @@ describe("panel image intensity", () => {
         originY={0}
         panel={createPanel("button")}
         previewScale={previewScale}
+        previewUri="file:///preview.png"
         showOverlay={false}
         showButtonIdentifiers
         transform={sharedTransform}
       />,
     );
 
-    expect(StyleSheet.flatten(screen.getByTestId("expo-image").props.style)).toMatchObject({
+    const previewImage = screen.getByTestId("expo-image");
+    expect(StyleSheet.flatten(previewImage.props.style)).toMatchObject({
       opacity: 0.63,
     });
+    expect(previewImage.props.source).toEqual({ uri: "file:///preview.png" });
+    expect(previewImage.props.cachePolicy).toBe("memory-disk");
   });
 
   it("keeps Controls exports fully opaque", () => {
@@ -111,9 +124,11 @@ describe("panel image intensity", () => {
       />,
     );
 
-    expect(StyleSheet.flatten(screen.getByTestId("expo-image").props.style)).toMatchObject({
+    const exportImage = screen.getByTestId("expo-image");
+    expect(StyleSheet.flatten(exportImage.props.style)).toMatchObject({
       opacity: 1,
     });
+    expect(exportImage.props.cachePolicy).toBe("memory-disk");
   });
 
   it("applies the slider value to Button exports", () => {

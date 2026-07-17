@@ -81,6 +81,7 @@ export function snapMovedPanelRect(
   outerRect: PanelRect,
   grid: AdvancedSnapGrid,
 ): SnapResult {
+  "worklet";
   const xAxis = createSnapAxis(outerRect.x, outerRect.width, grid.columns);
   const yAxis = createSnapAxis(outerRect.y, outerRect.height, grid.rows);
   const right = rect.x + rect.width;
@@ -122,6 +123,7 @@ export function snapResizedPanelRect(
   grid: AdvancedSnapGrid,
   position: HandlePosition,
 ): SnapResult {
+  "worklet";
   const xAxis = createSnapAxis(outerRect.x, outerRect.width, grid.columns);
   const yAxis = createSnapAxis(outerRect.y, outerRect.height, grid.rows);
   let left = rect.x;

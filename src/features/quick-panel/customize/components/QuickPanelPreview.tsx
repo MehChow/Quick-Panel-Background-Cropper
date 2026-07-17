@@ -17,6 +17,7 @@ interface QuickPanelPreviewProps {
   identifierPositions: ButtonIdentifierPositions;
   showButtonIdentifiers: boolean;
   image: PickedImage;
+  previewUri: string;
   preset: QuickPanelPreset;
   transform: ImageTransform;
   onAdjustingChange: (isAdjusting: boolean) => void;
@@ -28,6 +29,7 @@ export function QuickPanelPreview({
   buttonPanelOpacity,
   identifierPositions,
   image,
+  previewUri,
   onAdjustingChange,
   transform,
   onTransformChange,
@@ -86,6 +88,7 @@ export function QuickPanelPreview({
                   mode={preset.mode}
                   panel={preset.panels[id]}
                   image={image}
+                  previewUri={previewUri}
                   layoutScale={layoutScale}
                   originX={panelUnion.x}
                   originY={panelUnion.y}

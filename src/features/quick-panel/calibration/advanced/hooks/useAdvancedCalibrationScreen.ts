@@ -1,5 +1,5 @@
 import { useRouter } from "expo-router";
-import { useEffect, useState } from "react";
+import { useEffect, useEffectEvent, useState } from "react";
 import { BackHandler } from "react-native";
 import { useShallow } from "zustand/react/shallow";
 import {
@@ -135,14 +135,16 @@ export function useAdvancedCalibrationScreen() {
     return true;
   };
 
+  const handleHardwareBack = useEffectEvent(requestLeaveCalibration);
+
   useEffect(() => {
     const subscription = BackHandler.addEventListener(
       "hardwareBackPress",
-      requestLeaveCalibration,
+      () => handleHardwareBack(),
     );
 
     return () => subscription.remove();
-  });
+  }, []);
 
   const goBack = () => {
     if (!previousPhase) {

@@ -25,7 +25,8 @@
 - `src/features/quick-panel/customize/components/ButtonAdjustmentSlider.tsx`
 - `src/features/quick-panel/customize/hooks/useButtonCustomizeControls.ts`
 - `src/features/quick-panel/customize/components/ButtonIdentifierOverlay.tsx`
-- `src/features/quick-panel/customize/components/ExportSurfaces.tsx`
+- `src/features/quick-panel/customize/components/ExportSurfaceHost.tsx`
+- `src/features/quick-panel/customize/hooks/useSequentialExport.ts`
 - `src/features/quick-panel/model/button-identifier-layout.ts`
 - `__tests__/button-customize-controls.test.tsx`
 - `__tests__/customize-screen-export-surfaces.test.tsx`
@@ -44,15 +45,23 @@
   exported output, and applied Good Lock result. QuickStar version was not
   recorded.
 
-## Later follow-up: Buttons-only performance
+## Later follow-up: Buttons-only performance optimization
 
-The user reports an obvious laggy feeling throughout the Buttons-only feature
-on the high-end `SM-S9360`, affecting both Advanced Buttons calibration and
-Customize. Treat this as a separate optimization investigation rather than part
-of the tab UI work.
-
-Before changing behavior, profile both flows on the physical device and compare
-JS/UI frame timing. Check render frequency during calibration gestures and
-Customize image transforms, full-resolution image/overlay work, and any
-off-screen preview or export surfaces that may remain mounted unnecessarily.
-Preserve calibration data and output fidelity while investigating.
+- Advanced panel move/resize gestures use Reanimated draft rectangles and
+  commit to React/Zustand once when a gesture ends or is cancelled. The shared
+  snap, constraint, haptic, and phase behavior remains intact.
+- Customize creates a transient PNG proxy only when the normalized source is
+  larger than a 1080-pixel long edge. Panel previews render that proxy through
+  fixed-size image layers with transform-only animation and memory-disk cache;
+  exports retain the original normalized URI.
+- Export prefetches best-effort, mounts one 1024-square surface at a time in
+  Good Lock order, ignores stale readiness tokens, waits only for the current
+  horizontal identifier measurement, and saves media only after every capture
+  succeeds.
+- Focused and full automated verification passes: 40 Jest suites, 138 tests,
+  ESLint, TypeScript, `git diff --check`, and an Android production bundle
+  export to a temporary directory.
+- The signed `apk` benchmark and physical output/persistence QA remain pending.
+  `npm run build-apk` is blocked before Gradle because the four Android
+  upload-key values are not configured. No dev-client metrics were substituted;
+  see `docs/notes.md` for the unavailable baseline record.

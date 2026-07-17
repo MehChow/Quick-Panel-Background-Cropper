@@ -54,6 +54,7 @@ export const ExportSurface = forwardRef<View, ExportSurfaceProps>(
         style={{ backgroundColor: "transparent", height: side, width: side }}
       >
         <Image
+          cachePolicy="memory-disk"
           source={{ uri: image.uri }}
           contentFit="fill"
           onLoad={onImageLoad}

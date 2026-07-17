@@ -3,6 +3,7 @@ import { useAdvancedCalibrationScreen } from "@/features/quick-panel/calibration
 import { pickImageFromLibrary } from "@/features/quick-panel/shared/pick-image-from-library";
 import { createInitialQuickPanelStateData } from "@/features/quick-panel/store/quick-panel-defaults";
 import { useQuickPanelStore } from "@/features/quick-panel/store/quick-panel-store";
+import { BackHandler } from "react-native";
 
 const mockBack = jest.fn();
 
@@ -70,5 +71,29 @@ describe("advanced calibration leave guard", () => {
 
     expect(mockBack).not.toHaveBeenCalled();
     expect(getHook().isLeaveDialogOpen).toBe(true);
+  });
+
+  it("keeps one hardware-back subscription across draft rerenders", async () => {
+    const remove = jest.fn();
+    const addEventListener = jest
+      .spyOn(BackHandler, "addEventListener")
+      .mockReturnValue({ remove });
+    const screen = render(<HookProbe />);
+
+    await act(async () => {
+      await getHook().importScreenshot();
+    });
+    act(() => {
+      getHook().goForward();
+      getHook().setRows(4);
+      getHook().setColumns(3);
+    });
+
+    expect(addEventListener).toHaveBeenCalledTimes(1);
+    expect(remove).not.toHaveBeenCalled();
+
+    screen.unmount();
+    expect(remove).toHaveBeenCalledTimes(1);
+    addEventListener.mockRestore();
   });
 });

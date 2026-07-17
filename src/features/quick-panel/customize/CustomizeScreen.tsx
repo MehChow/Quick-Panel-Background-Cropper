@@ -8,23 +8,32 @@ import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { CustomizeActions } from "./components/CustomizeActions";
 import { ButtonCustomizeControls } from "./components/ButtonCustomizeControls";
-import { ExportSurfaces } from "./components/ExportSurfaces";
+import { ExportSurfaceHost } from "./components/ExportSurfaceHost";
 import { ImagePickerCard } from "./components/ImagePickerCard";
 import { QuickPanelPreview } from "./components/QuickPanelPreview";
 import { useButtonCustomizeControls } from "./hooks/useButtonCustomizeControls";
+import { useCustomizePreviewImage } from "./hooks/useCustomizePreviewImage";
 import { useCustomizeScreen } from "./hooks/useCustomizeScreen";
+import { useSequentialExport } from "./hooks/useSequentialExport";
 
 export function CustomizeScreen() {
   const { t } = useTranslation();
   const router = useRouter();
   const {
     selectedMode, activePreset, image, transform, setTransform,
-    isExporting, isProcessingImage, noticeKey, errorKey, error, refs,
-    isPreviewAdjusting, setIsPreviewAdjusting, exportImages, exportLoadToken,
-    pickImage, resetFit, canReset, setIsExportSurfaceReady,
-    shouldRenderExportSurfaces, goToCalibration, goToAdvancedCalibration,
+    isExporting, isProcessingImage, noticeKey, errorKey, error,
+    isPreviewAdjusting, setIsPreviewAdjusting,
+    pickImage, resetFit, canReset,
+    goToCalibration, goToAdvancedCalibration,
   } = useCustomizeScreen();
   const buttonControls = useButtonCustomizeControls(activePreset);
+  const previewImage = useCustomizePreviewImage(image);
+  const sequentialExport = useSequentialExport({
+    image,
+    isProcessingImage,
+    preset: activePreset,
+    showButtonIdentifiers: buttonControls.showButtonIdentifiers,
+  });
 
   const recalibrate = () => {
     if (selectedMode === "advanced") {
@@ -47,7 +56,7 @@ export function CustomizeScreen() {
             <CustomizeActions
               isExporting={isExporting}
               isProcessingImage={isProcessingImage}
-              onExport={exportImages}
+              onExport={sequentialExport.startExport}
               onPick={pickImage}
               onReset={resetFit}
               canReset={canReset}
@@ -73,7 +82,8 @@ export function CustomizeScreen() {
         <ScrollView
           className="flex-1"
           contentContainerClassName="grow justify-center pb-4"
-          scrollEnabled={!isPreviewAdjusting}
+          pointerEvents={isExporting ? "none" : "auto"}
+          scrollEnabled={!isPreviewAdjusting && !isExporting}
           overScrollMode="never"
           showsVerticalScrollIndicator={false}
         >
@@ -84,6 +94,7 @@ export function CustomizeScreen() {
                 buttonPanelOpacity={buttonControls.buttonPanelOpacity / 100}
                 identifierPositions={buttonControls.identifierPositions}
                 image={image}
+                previewUri={previewImage.previewUri}
                 preset={activePreset}
                 onAdjustingChange={setIsPreviewAdjusting}
                 transform={transform}
@@ -127,17 +138,18 @@ export function CustomizeScreen() {
           ) : null}
         </ScrollView>
       </QuickPanelScreenShell>
-      {image && shouldRenderExportSurfaces ? (
-        <ExportSurfaces
+      {image && sequentialExport.activePanel && sequentialExport.activeToken ? (
+        <ExportSurfaceHost
+          activePanel={sequentialExport.activePanel}
+          activeToken={sequentialExport.activeToken}
           buttonIdentifierOpacity={buttonControls.buttonIdentifierOpacity / 100}
           buttonPanelOpacity={buttonControls.buttonPanelOpacity / 100}
+          exportRef={sequentialExport.exportRef}
           identifierPositions={buttonControls.identifierPositions}
           image={image}
-          loadToken={exportLoadToken}
-          onReady={setIsExportSurfaceReady}
+          markIdentifierReady={sequentialExport.markIdentifierReady}
+          markImageReady={sequentialExport.markImageReady}
           transform={transform}
-          preset={activePreset}
-          refs={refs}
           showButtonIdentifiers={buttonControls.showButtonIdentifiers}
         />
       ) : null}

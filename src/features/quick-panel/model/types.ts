@@ -1,5 +1,3 @@
-import type { RefObject } from "react";
-import type { View } from "react-native";
 import type { LucideIconName } from "@react-native-vector-icons/lucide";
 import type { CustomButtonIconId } from "./button-labels";
 
@@ -123,8 +121,6 @@ export interface GeneratedExport {
   previewUri: string;
   uri: string;
 }
-
-export type ExportRefs = Partial<Record<PanelId, RefObject<View | null>>>;
 
 export type QuickPanelStep =
   | "landing"

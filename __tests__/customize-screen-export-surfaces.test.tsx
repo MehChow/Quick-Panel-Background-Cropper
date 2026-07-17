@@ -3,6 +3,7 @@ import { CustomizeScreen } from "@/features/quick-panel/customize/CustomizeScree
 import type { QuickPanelPreset } from "@/features/quick-panel/model/types";
 
 const mockUseCustomizeScreen = jest.fn();
+const mockUseSequentialExport = jest.fn();
 let mockPreviewProps: Record<string, unknown> | null = null;
 let mockExportProps: Record<string, unknown> | null = null;
 const mockActivePreset = {
@@ -64,8 +65,8 @@ jest.mock("@/features/quick-panel/customize/components/QuickPanelPreview", () =>
   },
 }));
 
-jest.mock("@/features/quick-panel/customize/components/ExportSurfaces", () => ({
-  ExportSurfaces: (props: Record<string, unknown>) => {
+jest.mock("@/features/quick-panel/customize/components/ExportSurfaceHost", () => ({
+  ExportSurfaceHost: (props: Record<string, unknown>) => {
     mockExportProps = props;
     const React = jest.requireActual("react");
     const { Text } = jest.requireActual("react-native");
@@ -77,15 +78,48 @@ jest.mock("@/features/quick-panel/customize/hooks/useCustomizeScreen", () => ({
   useCustomizeScreen: () => mockUseCustomizeScreen(),
 }));
 
+jest.mock("@/features/quick-panel/customize/hooks/useCustomizePreviewImage", () => ({
+  useCustomizePreviewImage: (image: { uri: string } | null) => ({
+    isPreparingPreview: false,
+    previewUri: image?.uri ?? "",
+  }),
+}));
+
+jest.mock("@/features/quick-panel/customize/hooks/useSequentialExport", () => ({
+  useSequentialExport: () => mockUseSequentialExport(),
+}));
+
+function createSequentialState(
+  isActive: boolean,
+  preset: QuickPanelPreset = mockActivePreset,
+) {
+  const firstPanelId = preset.goodLockOrder[0];
+  const activePanel = isActive
+    ? (firstPanelId ? preset.panels[firstPanelId] : null) ?? {
+        id: "buttonBox" as const,
+        label: "Button box",
+        fileName: "01-button-box.png",
+        family: "control" as const,
+        rect: { x: 0, y: 0, width: 100, height: 100, radius: 0 },
+      }
+    : null;
+  return {
+    activePanel,
+    activeToken: activePanel ? { panelId: activePanel.id, runId: 1 } : null,
+    exportRef: { current: null },
+    markIdentifierReady: jest.fn(),
+    markImageReady: jest.fn(),
+    startExport: jest.fn(),
+  };
+}
+
 function createScreenState(
-  shouldRenderExportSurfaces: boolean,
   activePreset: QuickPanelPreset = mockActivePreset,
 ) {
   return {
     activePreset,
     error: null,
     exportImages: jest.fn(),
-    exportLoadToken: 1,
     image: { height: 2000, uri: "file:///image.jpg", width: 1500 },
     isExporting: false,
     isPreviewAdjusting: false,
@@ -104,7 +138,6 @@ function createScreenState(
     setIsPreviewAdjusting: jest.fn(),
     setIsExportSurfaceReady: jest.fn(),
     setTransform: jest.fn(),
-    shouldRenderExportSurfaces,
     transform: { scale: 1, x: 0, y: 0 },
     goToCalibration: jest.fn(),
     goToAdvancedCalibration: jest.fn(),
@@ -115,10 +148,11 @@ describe("CustomizeScreen export surfaces", () => {
   beforeEach(() => {
     mockPreviewProps = null;
     mockExportProps = null;
+    mockUseSequentialExport.mockReturnValue(createSequentialState(false));
   });
 
   it("does not mount export surfaces during normal preview", () => {
-    mockUseCustomizeScreen.mockReturnValue(createScreenState(false));
+    mockUseCustomizeScreen.mockReturnValue(createScreenState());
 
     render(<CustomizeScreen />);
 
@@ -126,7 +160,8 @@ describe("CustomizeScreen export surfaces", () => {
   });
 
   it("mounts export surfaces only while export rendering is needed", () => {
-    mockUseCustomizeScreen.mockReturnValue(createScreenState(true));
+    mockUseCustomizeScreen.mockReturnValue(createScreenState());
+    mockUseSequentialExport.mockReturnValue(createSequentialState(true));
 
     render(<CustomizeScreen />);
 
@@ -167,7 +202,10 @@ describe("CustomizeScreen export surfaces", () => {
       visualOrder: ["button-1" as const, "button-2" as const, "button-3" as const],
       goodLockOrder: ["button-1" as const, "button-2" as const, "button-3" as const],
     } satisfies QuickPanelPreset;
-    mockUseCustomizeScreen.mockReturnValue(createScreenState(true, buttonPreset));
+    mockUseCustomizeScreen.mockReturnValue(createScreenState(buttonPreset));
+    mockUseSequentialExport.mockReturnValue(
+      createSequentialState(true, buttonPreset),
+    );
 
     const mounted = render(<CustomizeScreen />);
 
