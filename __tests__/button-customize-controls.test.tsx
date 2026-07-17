@@ -33,49 +33,65 @@ describe("ButtonCustomizeControls", () => {
     jest.clearAllMocks();
   });
 
-  it("keeps image intensity and enabled identifier intensity independent", () => {
+  it("starts on image intensity with one active slider", () => {
     const screen = render(<ButtonCustomizeControls {...baseProps} />);
 
-    expect(screen.getByTestId("button-panel-opacity-slider").props.value).toBe(78);
+    expect(
+      screen.getByTestId("button-adjustment-image-tab").props.accessibilityState,
+    ).toEqual({ disabled: false, selected: true });
+    expect(screen.getByTestId("button-panel-opacity-slider").props).toMatchObject({
+      disabled: false,
+      value: 78,
+    });
+    expect(screen.queryByTestId("button-identifier-opacity-slider")).toBeNull();
+    expect(
+      screen.queryByTestId("horizontal-identifier-position-slider"),
+    ).toBeNull();
+    expect(
+      screen.queryByTestId("vertical-identifier-position-slider"),
+    ).toBeNull();
+  });
+
+  it("routes the shared slider through each selected adjustment tab", () => {
+    const screen = render(<ButtonCustomizeControls {...baseProps} />);
+
+    fireEvent.press(screen.getByTestId("button-adjustment-identifier-tab"));
     expect(screen.getByTestId("button-identifier-opacity-slider").props).toMatchObject({
       disabled: false,
+      onValueChange: baseProps.onButtonIdentifierOpacityChange,
       value: 70,
     });
-    expect(screen.getByTestId("horizontal-identifier-position-slider").props).toMatchObject({
-      disabled: false,
+
+    fireEvent.press(screen.getByTestId("button-adjustment-horizontal-tab"));
+    expect(
+      screen.getByTestId("horizontal-identifier-position-slider").props,
+    ).toMatchObject({
+      onValueChange: baseProps.onHorizontalIdentifierPositionChange,
       value: 50,
     });
+
+    fireEvent.press(screen.getByTestId("button-adjustment-vertical-tab"));
     expect(
-      screen.getByTestId("horizontal-identifier-position-slider").props.onValueChange,
-    ).toBe(baseProps.onHorizontalIdentifierPositionChange);
-    expect(screen.getByTestId("vertical-identifier-position-slider").props).toMatchObject({
-      disabled: false,
+      screen.getByTestId("vertical-identifier-position-slider").props,
+    ).toMatchObject({
+      onValueChange: baseProps.onVerticalIdentifierPositionChange,
       value: 50,
-    });
-    expect(
-      screen.getByTestId("vertical-identifier-position-slider").props.onValueChange,
-    ).toBe(baseProps.onVerticalIdentifierPositionChange);
-    expect(screen.getByRole("switch").props.accessibilityState).toEqual({
-      checked: true,
     });
   });
 
-  it("only renders position sliders for orientations in the preset", () => {
+  it("only renders position tabs for orientations in the preset", () => {
     const screen = render(
       <ButtonCustomizeControls {...baseProps} hasHorizontalButtons={false} />,
     );
 
-    expect(screen.queryByTestId("horizontal-identifier-position-slider")).toBeNull();
-    expect(screen.getByTestId("vertical-identifier-position-slider")).toBeTruthy();
+    expect(screen.queryByTestId("button-adjustment-horizontal-tab")).toBeNull();
+    expect(screen.getByTestId("button-adjustment-vertical-tab")).toBeTruthy();
 
     screen.rerender(
-      <ButtonCustomizeControls
-        {...baseProps}
-        hasVerticalButtons={false}
-      />,
+      <ButtonCustomizeControls {...baseProps} hasVerticalButtons={false} />,
     );
-    expect(screen.getByTestId("horizontal-identifier-position-slider")).toBeTruthy();
-    expect(screen.queryByTestId("vertical-identifier-position-slider")).toBeNull();
+    expect(screen.getByTestId("button-adjustment-horizontal-tab")).toBeTruthy();
+    expect(screen.queryByTestId("button-adjustment-vertical-tab")).toBeNull();
   });
 
   it("requests hiding identifiers from the switch", () => {
@@ -86,25 +102,47 @@ describe("ButtonCustomizeControls", () => {
     expect(baseProps.onShowButtonIdentifiersChange).toHaveBeenCalledWith(false);
   });
 
-  it("keeps the identifier slider mounted, disabled, and dimmed while off", () => {
-    const screen = render(
+  it("returns to image when identifiers are hidden from a position tab", () => {
+    const screen = render(<ButtonCustomizeControls {...baseProps} />);
+    fireEvent.press(screen.getByTestId("button-adjustment-horizontal-tab"));
+
+    expect(
+      screen.getByTestId("button-adjustment-horizontal-tab").props
+        .accessibilityState,
+    ).toEqual({ disabled: false, selected: true });
+
+    screen.rerender(
       <ButtonCustomizeControls {...baseProps} showButtonIdentifiers={false} />,
     );
 
-    expect(screen.getByTestId("button-identifier-opacity-slider").props).toMatchObject({
-      disabled: true,
-      value: 70,
-    });
-    expect(screen.getByTestId("horizontal-identifier-position-slider").props).toMatchObject({
-      disabled: true,
-      value: 50,
-    });
-    expect(screen.getByTestId("vertical-identifier-position-slider").props).toMatchObject({
-      disabled: true,
-      value: 50,
+    expect(
+      screen.getByTestId("button-adjustment-image-tab").props
+        .accessibilityState,
+    ).toMatchObject({ disabled: false, selected: true });
+    expect(screen.getByTestId("button-panel-opacity-slider").props).toMatchObject({
+      disabled: false,
+      value: 78,
     });
     expect(
-      screen.getByTestId("button-identifier-opacity-control").props.className,
-    ).toContain("opacity-50");
+      screen.getByTestId("button-adjustment-identifier-tab").props
+        .accessibilityState,
+    ).toMatchObject({ disabled: true, selected: false });
+    expect(
+      screen.getByTestId("button-adjustment-horizontal-tab").props
+        .accessibilityState,
+    ).toMatchObject({ disabled: true, selected: false });
+    expect(
+      screen.getByTestId("button-adjustment-vertical-tab").props
+        .accessibilityState,
+    ).toMatchObject({ disabled: true, selected: false });
+    expect(
+      screen.queryByTestId("horizontal-identifier-position-slider"),
+    ).toBeNull();
+
+    screen.rerender(<ButtonCustomizeControls {...baseProps} />);
+    fireEvent.press(screen.getByTestId("button-adjustment-horizontal-tab"));
+    expect(
+      screen.getByTestId("horizontal-identifier-position-slider").props.value,
+    ).toBe(50);
   });
 });

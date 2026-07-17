@@ -184,7 +184,9 @@ describe("CustomizeScreen export surfaces", () => {
       showButtonIdentifiers: true,
     });
 
+    fireEvent.press(screen.getByTestId("button-adjustment-horizontal-tab"));
     fireEvent.press(screen.getByTestId("horizontal-identifier-position-slider"));
+    fireEvent.press(screen.getByTestId("button-adjustment-vertical-tab"));
     fireEvent.press(screen.getByTestId("vertical-identifier-position-slider"));
     expect(mockPreviewProps).toMatchObject({
       buttonIdentifierOpacity: 0.7,
@@ -210,6 +212,7 @@ describe("CustomizeScreen export surfaces", () => {
     });
 
     fireEvent.press(screen.getByRole("switch"));
+    fireEvent.press(screen.getByTestId("button-adjustment-identifier-tab"));
     fireEvent.press(screen.getByTestId("button-identifier-opacity-slider"));
     expect(mockPreviewProps).toMatchObject({
       buttonIdentifierOpacity: 0.35,

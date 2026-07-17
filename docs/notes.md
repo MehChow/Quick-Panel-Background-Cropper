@@ -12,6 +12,20 @@ This file is a running project note log for implementation details that are easy
 
 ## Entries
 
+### 2026-07-17: Compact Button Customize adjustment tabs
+
+- Replaced the stacked Button Customize sliders with four direct adjustment
+  tabs and one active slider so the live preview remains visible while tuning.
+- Image is the default tab. Hiding identifiers from Identifier, Horiz., or
+  Vert. immediately returns to Image while preserving all adjustment values.
+- Orientation tabs remain conditional on the active Buttons preset.
+- Values, defaults, preview/export behavior, and persistence remain unchanged.
+- Additional arbitrary tuning: None.
+- Android dev build, install, launch, and JS bundle loading succeeded on
+  `SM-S9360` running One UI 8.5. The user confirmed the compact UI, live
+  behavior, export result, and applied Good Lock output; QuickStar version was
+  not recorded.
+
 ### 2026-07-17: Buttons identifier position controls
 
 - Horizontal and vertical long Buttons use independent, screen-local position

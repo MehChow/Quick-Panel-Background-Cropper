@@ -29,12 +29,32 @@ describe("customize locale strings", () => {
     expect(enLocale.translation.customize.verticalIdentifierPosition).toBe(
       "Vertical identifier position",
     );
+    expect(enLocale.translation.customize.buttonAdjustmentImageTab).toBe("Image");
+    expect(enLocale.translation.customize.buttonAdjustmentIdentifierTab).toBe(
+      "Identifier",
+    );
+    expect(enLocale.translation.customize.buttonAdjustmentHorizontalTab).toBe(
+      "Horiz.",
+    );
+    expect(enLocale.translation.customize.buttonAdjustmentVerticalTab).toBe(
+      "Vert.",
+    );
     expect(enLocale.translation.customize.buttonIdentifiersOn).toBe("On");
     expect(enLocale.translation.customize.buttonIdentifiersOff).toBe("Off");
     expect(zhLocale.translation.customize.showButtonIdentifiers).toBeTruthy();
     expect(zhLocale.translation.customize.buttonIdentifierOpacity).toBeTruthy();
     expect(zhLocale.translation.customize.horizontalIdentifierPosition).toBeTruthy();
     expect(zhLocale.translation.customize.verticalIdentifierPosition).toBeTruthy();
+    expect(zhLocale.translation.customize.buttonAdjustmentImageTab).toBe("圖片");
+    expect(zhLocale.translation.customize.buttonAdjustmentIdentifierTab).toBe(
+      "識別標記",
+    );
+    expect(zhLocale.translation.customize.buttonAdjustmentHorizontalTab).toBe(
+      "水平",
+    );
+    expect(zhLocale.translation.customize.buttonAdjustmentVerticalTab).toBe(
+      "垂直",
+    );
     expect(zhLocale.translation.customize.buttonIdentifiersOn).toBeTruthy();
     expect(zhLocale.translation.customize.buttonIdentifiersOff).toBeTruthy();
   });
