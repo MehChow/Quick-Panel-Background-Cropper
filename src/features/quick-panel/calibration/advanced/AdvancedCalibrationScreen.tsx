@@ -12,7 +12,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import type { EditablePanelItem } from "../../model/types";
+import type { AdvancedTarget, EditablePanelItem } from "../../model/types";
 import { OuterCalibrationStep } from "../shared/OuterCalibrationStep";
 import { isPanelPhase, type AdvancedCalibrationPhase } from "./advanced-steps";
 import { AdvancedCalibrationControls } from "./AdvancedCalibrationControls";
@@ -151,7 +151,12 @@ export function AdvancedCalibrationScreen() {
             onActionPress={showHelpButton ? openActiveHelp : undefined}
             onBackPress={requestLeaveCalibration}
             title={t("advancedCalibration.title")}
-            subtitle={getSubtitle(phase, t, panelItems)}
+            subtitle={getSubtitle(
+              phase,
+              selectedAdvancedTarget ?? "controls",
+              t,
+              panelItems,
+            )}
           />
         }
       >
@@ -198,13 +203,19 @@ export function AdvancedCalibrationScreen() {
         ) : null}
       </QuickPanelScreenShell>
       {isHelpOpen && isPanelStep ? (
-        <PanelAlignmentHelpSheet onClose={() => setIsHelpOpen(false)} />
+        <PanelAlignmentHelpSheet
+          target={selectedAdvancedTarget ?? "controls"}
+          onClose={() => setIsHelpOpen(false)}
+        />
       ) : null}
       {isHelpOpen && isConfirmPhase ? (
         <PanelReviewHelpSheet onClose={() => setIsHelpOpen(false)} />
       ) : null}
       {isGridHelpOpen && isGridPhase ? (
-        <AdvancedGridSheet onClose={() => setIsGridHelpOpen(false)} />
+        <AdvancedGridSheet
+          target={selectedAdvancedTarget ?? "controls"}
+          onClose={() => setIsGridHelpOpen(false)}
+        />
       ) : null}
       <AdvancedCalibrationLeaveDialog
         onClose={closeLeaveDialog}
@@ -217,6 +228,7 @@ export function AdvancedCalibrationScreen() {
 
 function getSubtitle(
   phase: AdvancedCalibrationPhase,
+  target: AdvancedTarget,
   t: ReturnType<typeof useTranslation>["t"],
   panelItems: EditablePanelItem[],
 ) {
@@ -224,13 +236,25 @@ function getSubtitle(
     return t("advancedCalibration.outerSubtitle");
   }
   if (phase === "panelSelection") {
-    return t("advancedCalibration.panelSelectionSubtitle");
+    return t(
+      target === "buttons"
+        ? "advancedCalibration.buttonSelectionSubtitle"
+        : "advancedCalibration.panelSelectionSubtitle",
+    );
   }
   if (phase === "grid") {
-    return t("advancedCalibration.gridSubtitle");
+    return t(
+      target === "buttons"
+        ? "advancedCalibration.buttonGridSubtitle"
+        : "advancedCalibration.gridSubtitle",
+    );
   }
   if (phase === "confirm") {
-    return t("advancedCalibration.confirmSubtitle");
+    return t(
+      target === "buttons"
+        ? "advancedCalibration.buttonConfirmSubtitle"
+        : "advancedCalibration.confirmSubtitle",
+    );
   }
   return t("advancedCalibration.panelSubtitle", {
     panel: panelItems.find((item) => item.id === phase)?.label ?? t(`panels.${phase}`),

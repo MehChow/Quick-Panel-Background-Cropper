@@ -74,14 +74,23 @@ const zh = {
       title: "進階校正",
       outerSubtitle: "框住你想校正的完整區域",
       panelSelectionSubtitle: "關閉這個區域中不適用的版面",
+      buttonSelectionSubtitle: "選擇這個區域中的 Quick Panel 按鈕",
       gridSubtitle: "先設定格線，再逐一調整已啟用的版面方框",
+      buttonGridSubtitle: "先設定格線，再逐一調整已選取的按鈕方框",
       panelSubtitle: "拖曳並調整 {{panel}} 範圍",
       confirmSubtitle: "儲存前確認已啟用的版面方框",
+      buttonConfirmSubtitle: "儲存前確認已選取的按鈕方框",
       panelHelpTitle: "如何對齊這個版面範圍",
       panelHelpBody:
         "拖曳並調整紫色方框，讓它剛好貼齊這個版面的邊緣。格線圓點應該落在版面周圍的留白處，而不是被紫色邊框壓住。當方框對齊正確時，這些圓點能幫助你判斷間距，讓整體版面更平均、更準確。",
       panelHelpGood: "讓紫色方框貼齊版面邊緣，讓格線圓點留在周圍留白處。",
       panelHelpBad: "不要讓紫色邊框壓到格線圓點，或跑進版面周圍的留白。",
+      buttonPanelHelpBody:
+        "拖曳並調整藍色方框，讓它剛好貼齊這個按鈕的邊緣。格線圓點應該落在按鈕周圍的留白處，而不是被藍色邊框壓住。當方框對齊正確時，這些圓點能幫助你判斷間距，讓整體版面更平均、更準確。",
+      buttonPanelHelpGood:
+        "讓藍色方框貼齊按鈕邊緣，讓格線圓點留在周圍留白處。",
+      buttonPanelHelpBad:
+        "不要讓藍色邊框壓到格線圓點，或跑進按鈕周圍的留白。",
       reviewHelpTitle: "如何檢查校正結果",
       reviewHelpBody:
         "儲存前，請確認每個橘色方框都準確貼齊對應版面的邊緣，版面之間的間距看起來也平均一致。這一步檢查得越精準，匯出的裁切圖片在 Good Lock 裡就越容易對齊。",
@@ -102,6 +111,8 @@ const zh = {
       gridSheetTitle: "如何設定格線",
       gridSheetSubtitle:
         "選擇能讓格線圓點落在控制項之間留白處的列數與欄數。可參考下方範例，判斷哪一種格線更貼近你的截圖。",
+      buttonGridSheetSubtitle:
+        "選擇能讓格線圓點落在按鈕之間留白處的列數與欄數。可參考下方範例，判斷哪一種格線更貼近你的截圖。",
       buttonSearchPlaceholder: "搜尋或自訂標籤",
       selectedButtons: "已選 {{count}} 個",
       noButtonsSelected: "點選下方標籤即可加入。",

@@ -15,4 +15,24 @@ describe("customize locale strings", () => {
       "已優化所選圖片，拖曳調整會更順暢。",
     );
   });
+
+  it("defines target-aware Advanced helper copy in English and Chinese", () => {
+    const english = enLocale.translation.advancedCalibration;
+    const chinese = zhLocale.translation.advancedCalibration;
+
+    expect(english.buttonSelectionSubtitle).toBeTruthy();
+    expect(english.buttonGridSubtitle).toBeTruthy();
+    expect(english.buttonConfirmSubtitle).toBeTruthy();
+    expect(english.buttonGridSheetSubtitle).toBeTruthy();
+    expect(english.buttonPanelHelpBody).toBeTruthy();
+    expect(english.buttonPanelHelpGood).toBeTruthy();
+    expect(english.buttonPanelHelpBad).toBeTruthy();
+    expect(chinese.buttonSelectionSubtitle).toBeTruthy();
+    expect(chinese.buttonGridSubtitle).toBeTruthy();
+    expect(chinese.buttonConfirmSubtitle).toBeTruthy();
+    expect(chinese.buttonGridSheetSubtitle).toBeTruthy();
+    expect(chinese.buttonPanelHelpBody).toBeTruthy();
+    expect(chinese.buttonPanelHelpGood).toBeTruthy();
+    expect(chinese.buttonPanelHelpBad).toBeTruthy();
+  });
 });

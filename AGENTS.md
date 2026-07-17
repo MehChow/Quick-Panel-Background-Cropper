@@ -20,7 +20,7 @@ After calibration, the app lets users choose a background image, pan/zoom it aga
 
 For Buttons in Customize, the preview/export path uses full-fill image rendering with a user-adjustable opacity slider on the Customize screen. That opacity control is local to the screen, affects both live preview and Button exports, and is intentionally not persisted.
 
-For the exact UI flow for v2, refer to the screenshots under `flow/default-mode`, `flow/advanced-mode`, and bottom helper sheet from `flow/bottom-sheet-tutorial`. For v3 Buttons-only mode, see `flow/v3-buttons-only`.
+For the exact UI flows, refer to `flow/default`, `flow/advanced/controls-only`, `flow/advanced/buttons-only`, and the bottom helper sheets under `flow/bottom-sheet-tutorial`.
 
 ## Tech Stack
 

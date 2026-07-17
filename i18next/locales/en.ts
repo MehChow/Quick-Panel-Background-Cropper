@@ -81,9 +81,15 @@ const en = {
       outerSubtitle: "Wrap the full region you want to calibrate",
       panelSelectionSubtitle:
         "Turn off the unwanted panels that are missing from this region",
+      buttonSelectionSubtitle:
+        "Choose the Quick Panel Buttons in this region",
       gridSubtitle: "Set the grid before aligning the enabled panel boxes",
+      buttonGridSubtitle:
+        "Set the grid before aligning the selected Button boxes",
       panelSubtitle: "Drag and resize the {{panel}} area",
       confirmSubtitle: "Review the enabled panel boxes before saving",
+      buttonConfirmSubtitle:
+        "Review the selected Button boxes before saving",
       panelHelpTitle: "How to align this area",
       panelHelpBody:
         "Drag and resize the purple box so it sits exactly on the edges of this area. The grid dots should stay in the gaps around it, not under the purple border. When the box is aligned correctly, those dots help you judge the spacing and keep the overall layout even and accurate.",
@@ -91,6 +97,12 @@ const en = {
         "Match the purple box to the area edges so the grid dots stay in the gaps.",
       panelHelpBad:
         "Do not place the purple border over the grid dots or into the spacing around the area.",
+      buttonPanelHelpBody:
+        "Drag and resize the blue box so it sits exactly on the edges of this Button. The grid dots should stay in the gaps around it, not under the blue border. When the box is aligned correctly, those dots help you judge the spacing and keep the overall layout even and accurate.",
+      buttonPanelHelpGood:
+        "Match the blue box to the Button edges so the grid dots stay in the gaps.",
+      buttonPanelHelpBad:
+        "Do not place the blue border over the grid dots or into the spacing around the Button.",
       reviewHelpTitle: "How to review your calibration",
       reviewHelpBody:
         "Before saving, check that every orange box sits cleanly on its panel edges and that the gaps between panels look even. A precise review here helps ensure your exported crops line up correctly in Good Lock.",
@@ -111,6 +123,8 @@ const en = {
       gridSheetTitle: "How to set the grid",
       gridSheetSubtitle:
         "Choose the row and column counts that make the grid dots fall into the gaps between your controls. Use the examples below to decide which grid matches your screenshot more closely.",
+      buttonGridSheetSubtitle:
+        "Choose the row and column counts that make the grid dots fall into the gaps between your Buttons. Use the examples below to decide which grid matches your screenshot more closely.",
       buttonSearchPlaceholder: "Search or custom label",
       selectedButtons: "Selected {{count}}",
       noButtonsSelected: "Tap labels below to add them.",

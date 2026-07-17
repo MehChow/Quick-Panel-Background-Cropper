@@ -8,13 +8,16 @@ import { useWindowDimensions, View } from "react-native";
 import { PanelAlignmentTips } from "./PanelAlignmentTips";
 import { getHelpSheetMediaLayout } from "./help-sheet-media-layout";
 import { useBottomSheetInsets } from "./useBottomSheetInsets";
+import type { AdvancedTarget } from "../model/types";
 
 interface PanelAlignmentHelpSheetProps {
   onClose: () => void;
+  target: AdvancedTarget;
 }
 
 export function PanelAlignmentHelpSheet({
   onClose,
+  target,
 }: PanelAlignmentHelpSheetProps) {
   const { t } = useTranslation();
   const { height, width } = useWindowDimensions();
@@ -63,13 +66,17 @@ export function PanelAlignmentHelpSheet({
               {t("advancedCalibration.panelHelpTitle")}
             </Text>
             <Text className="text-sm font-medium leading-6 text-zinc-300">
-              {t("advancedCalibration.panelHelpBody")}
+              {t(
+                target === "buttons"
+                  ? "advancedCalibration.buttonPanelHelpBody"
+                  : "advancedCalibration.panelHelpBody",
+              )}
             </Text>
           </View>
         </View>
 
         <View className="px-5">
-          <PanelAlignmentTips />
+          <PanelAlignmentTips target={target} />
         </View>
       </BottomSheetScrollView>
     </BottomSheet>
