@@ -15,6 +15,7 @@ export const images = {
   modeAdvanced1: require("@/assets/mode/advanced_1.webp"),
   modeAdvanced2: require("@/assets/mode/advanced_2.webp"),
   modeAdvanced3: require("@/assets/mode/advanced_3.webp"),
+  modeAdvanced4: require("@/assets/mode/advanced_4.webp"),
   modeDefault: require("@/assets/mode/default.webp"),
 
   tutorialCorrect: require("@/assets/tutorial/correct.webp"),
