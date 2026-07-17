@@ -1,7 +1,10 @@
 import { createButtonFileNames } from "@/features/quick-panel/model/button-export-names";
 import {
   buttonLabelCatalog,
+  customButtonIconChoices,
   getButtonDisplayLabel,
+  getButtonIconName,
+  isCustomButtonIconId,
   pinnedButtonLabelIds,
   searchButtonLabels,
 } from "@/features/quick-panel/model/button-labels";
@@ -17,6 +20,39 @@ function createTranslator(labels: ButtonLabelTranslations) {
 }
 
 describe("button labels", () => {
+  it("assigns a stable icon to every built-in label", () => {
+    for (const item of buttonLabelCatalog) {
+      expect(item.iconName).toBeTruthy();
+      expect(getButtonIconName(item.label, null)).toBe(item.iconName);
+    }
+  });
+
+  it("offers only the reviewed custom icon choices", () => {
+    expect(customButtonIconChoices.map((choice) => choice.id)).toEqual([
+      "star",
+      "zap",
+      "home",
+      "app-window",
+    ]);
+  });
+
+  it("uses built-in icons regardless of a supplied custom icon", () => {
+    expect(getButtonIconName("Wi-Fi", "star")).toBe("wifi");
+  });
+
+  it("requires an icon for custom labels", () => {
+    expect(() => getButtonIconName("My scene", null)).toThrow(
+      "Custom Button My scene has no icon",
+    );
+    expect(getButtonIconName("My scene", "zap")).toBe("zap");
+  });
+
+  it("rejects invalid custom icon identifiers", () => {
+    expect(isCustomButtonIconId("zap")).toBe(true);
+    expect(isCustomButtonIconId("wifi")).toBe(false);
+    expect(isCustomButtonIconId(undefined)).toBe(false);
+  });
+
   it("keeps pinned labels first when search is empty", () => {
     expect(buttonLabelCatalog).toHaveLength(59);
     expect(

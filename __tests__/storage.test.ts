@@ -43,7 +43,14 @@ const currentCalibrations = {
       {
         id: "button-1",
         label: "Wi-Fi",
+        customIconId: null,
         rect: { x: 20, y: 40, width: 120, height: 120, radius: 0 },
+      },
+      {
+        id: "button-2",
+        label: "My scene",
+        customIconId: "star",
+        rect: { x: 150, y: 40, width: 120, height: 120, radius: 0 },
       },
     ],
   },
@@ -127,6 +134,34 @@ describe("storage", () => {
     expect(loadCalibrations()).toEqual({
       default: { rect },
       advancedControls: null,
+      advancedButtons: null,
+    });
+  });
+
+  it("rejects a Buttons branch when custom icon metadata is missing", () => {
+    const mmkvStore = (globalThis as typeof globalThis & MmkvTestGlobal)
+      .__mmkvStore;
+    mmkvStore?.set(
+      "quick-panel.calibrations",
+      JSON.stringify({
+        default: { rect },
+        advancedControls: currentCalibrations.advancedControls,
+        advancedButtons: {
+          ...currentCalibrations.advancedButtons,
+          buttons: [
+            {
+              id: "button-1",
+              label: "My scene",
+              rect: { x: 20, y: 40, width: 120, height: 120, radius: 0 },
+            },
+          ],
+        },
+      }),
+    );
+
+    expect(loadCalibrations()).toEqual({
+      default: { rect },
+      advancedControls: currentCalibrations.advancedControls,
       advancedButtons: null,
     });
   });

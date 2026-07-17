@@ -32,6 +32,9 @@ const previewScale = { value: 1 } as SharedValue<number>;
 
 function createPanel(family: PanelDefinition["family"]): PanelDefinition {
   return {
+    buttonIdentifier: family === "button"
+      ? { columnSpan: 1, rowSpan: 1, iconName: "wifi" }
+      : undefined,
     family,
     fileName: `${family}.png`,
     id: family === "button" ? "button-1" : "brightness",
@@ -44,6 +47,7 @@ describe("panel image intensity", () => {
   it("previews Controls at 50% image opacity without a black overlay", () => {
     const screen = render(
       <PanelSlice
+        buttonIdentifierOpacity={0.7}
         buttonPanelOpacity={0.78}
         image={image}
         layoutScale={1}
@@ -53,6 +57,7 @@ describe("panel image intensity", () => {
         panel={createPanel("control")}
         previewScale={previewScale}
         showOverlay={false}
+        showButtonIdentifiers
         transform={sharedTransform}
       />,
     );
@@ -68,6 +73,7 @@ describe("panel image intensity", () => {
   it("keeps Button preview opacity driven by the slider value", () => {
     const screen = render(
       <PanelSlice
+        buttonIdentifierOpacity={0.7}
         buttonPanelOpacity={0.63}
         image={image}
         layoutScale={1}
@@ -77,6 +83,7 @@ describe("panel image intensity", () => {
         panel={createPanel("button")}
         previewScale={previewScale}
         showOverlay={false}
+        showButtonIdentifiers
         transform={sharedTransform}
       />,
     );
@@ -89,11 +96,13 @@ describe("panel image intensity", () => {
   it("keeps Controls exports fully opaque", () => {
     const screen = render(
       <ExportSurface
+        buttonIdentifierOpacity={0.7}
         buttonPanelOpacity={0.63}
         image={image}
         onImageLoad={jest.fn()}
         panel={createPanel("control")}
         side={100}
+        showButtonIdentifiers
         transform={transform}
       />,
     );
@@ -106,11 +115,13 @@ describe("panel image intensity", () => {
   it("applies the slider value to Button exports", () => {
     const screen = render(
       <ExportSurface
+        buttonIdentifierOpacity={0.7}
         buttonPanelOpacity={0.63}
         image={image}
         onImageLoad={jest.fn()}
         panel={createPanel("button")}
         side={100}
+        showButtonIdentifiers
         transform={transform}
       />,
     );

@@ -16,6 +16,21 @@ describe("customize locale strings", () => {
     );
   });
 
+  it("defines Button identifier controls in English and Chinese", () => {
+    expect(enLocale.translation.customize.showButtonIdentifiers).toBe(
+      "Show Button identifiers",
+    );
+    expect(enLocale.translation.customize.buttonIdentifierOpacity).toBe(
+      "Button identifier intensity",
+    );
+    expect(enLocale.translation.customize.buttonIdentifiersOn).toBe("On");
+    expect(enLocale.translation.customize.buttonIdentifiersOff).toBe("Off");
+    expect(zhLocale.translation.customize.showButtonIdentifiers).toBeTruthy();
+    expect(zhLocale.translation.customize.buttonIdentifierOpacity).toBeTruthy();
+    expect(zhLocale.translation.customize.buttonIdentifiersOn).toBeTruthy();
+    expect(zhLocale.translation.customize.buttonIdentifiersOff).toBeTruthy();
+  });
+
   it("defines target-aware Advanced helper copy in English and Chinese", () => {
     const english = enLocale.translation.advancedCalibration;
     const chinese = zhLocale.translation.advancedCalibration;
@@ -34,5 +49,17 @@ describe("customize locale strings", () => {
     expect(chinese.buttonPanelHelpBody).toBeTruthy();
     expect(chinese.buttonPanelHelpGood).toBeTruthy();
     expect(chinese.buttonPanelHelpBad).toBeTruthy();
+    expect(english.customIconDialogTitle).toBeTruthy();
+    expect(english.customIconDialogBody).toBeTruthy();
+    expect(english.customIconStar).toBe("Star");
+    expect(english.customIconZap).toBe("Zap");
+    expect(english.customIconHome).toBe("Home");
+    expect(english.customIconAppWindow).toBe("App Window");
+    expect(chinese.customIconDialogTitle).toBeTruthy();
+    expect(chinese.customIconDialogBody).toBeTruthy();
+    expect(chinese.customIconStar).toBeTruthy();
+    expect(chinese.customIconZap).toBeTruthy();
+    expect(chinese.customIconHome).toBeTruthy();
+    expect(chinese.customIconAppWindow).toBeTruthy();
   });
 });

@@ -12,6 +12,26 @@ This file is a running project note log for implementation details that are easy
 
 ## Entries
 
+### 2026-07-17: Buttons-only identifier overlays
+
+- Button identifiers are available only in Advanced Buttons-only previews and
+  exports. Default and Advanced Controls rendering remain unchanged.
+- Grid spans determine identifier shape: `1x1` is centered icon-only, vertical
+  spans are top-centered icon-only, and every other shape is a left-centered
+  icon plus the localized label.
+- Identifier visibility and intensity are screen-local Customize choices. Each
+  visit starts enabled at 70%; turning visibility off preserves the slider value
+  until the screen is left. Button image intensity remains separate at 78%.
+- Icon and text stay fixed white (`#FFFFFF`) with one shared opacity and a subtle
+  dark shadow. No capsule, scrim, or backing is added.
+- Preview and export share classification and proportions but use separate
+  absolute size clamps. Exports calculate placement from the visible Button
+  sub-rectangle inside the centered square crop.
+- Custom labels require one of four persisted icon choices: Star, Zap, Home, or
+  App Window. Built-in icons remain derived from the stable catalog mapping.
+- Arbitrary built-in icon mappings: None. The approved semantically matched map
+  was implemented unchanged.
+
 ### 2026-07-16: Calibration crop coordinate alignment
 
 #### Root cause

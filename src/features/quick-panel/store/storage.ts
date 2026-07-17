@@ -13,6 +13,10 @@ import type {
   PanelRect,
 } from "../model/types";
 import { panelIds } from "../model/panel-ids";
+import {
+  getBuiltInButtonLabel,
+  isCustomButtonIconId,
+} from "../model/button-labels";
 
 const calibrationsKey = "quick-panel.calibrations";
 const lastExportedModeKey = "quick-panel.last-exported-mode";
@@ -208,7 +212,7 @@ function parseAdvancedButtonsCalibration(value: unknown): AdvancedButtonsCalibra
     typeof item.screenshotHeight !== "number" ||
     !grid ||
     !outerRect ||
-    buttons.length === 0
+    !buttons || buttons.length === 0
   ) {
     return null;
   }
@@ -221,20 +225,43 @@ function parseAdvancedButtonsCalibration(value: unknown): AdvancedButtonsCalibra
   };
 }
 
-function parseButtonItems(value: unknown): ButtonCalibrationItem[] {
+function parseButtonItems(value: unknown): ButtonCalibrationItem[] | null {
   if (!Array.isArray(value)) {
-    return [];
+    return null;
   }
-  return value.flatMap((item): ButtonCalibrationItem[] => {
+  const buttons: ButtonCalibrationItem[] = [];
+  for (const item of value) {
     if (!item || typeof item !== "object") {
-      return [];
+      return null;
     }
     const button = item as Partial<ButtonCalibrationItem>;
     const rect = parseRectValue(button.rect);
-    return isButtonPanelId(button.id) && typeof button.label === "string" && button.label.trim() && rect
-      ? [{ id: button.id, label: button.label, rect }]
-      : [];
-  });
+    const isBuiltIn = typeof button.label === "string"
+      && Boolean(getBuiltInButtonLabel(button.label));
+    if (
+      !isButtonPanelId(button.id)
+      || typeof button.label !== "string"
+      || !button.label.trim()
+      || !rect
+    ) {
+      return null;
+    }
+    let customIconId: ButtonCalibrationItem["customIconId"];
+    if (isBuiltIn) {
+      if (button.customIconId !== null) return null;
+      customIconId = null;
+    } else {
+      if (!isCustomButtonIconId(button.customIconId)) return null;
+      customIconId = button.customIconId;
+    }
+    buttons.push({
+      id: button.id,
+      label: button.label,
+      customIconId,
+      rect,
+    });
+  }
+  return buttons;
 }
 
 function parseAdvancedGrid(value: unknown): AdvancedSnapGrid | null {

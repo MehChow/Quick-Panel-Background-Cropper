@@ -1,4 +1,6 @@
 import { createButtonFileNames } from "../../model/button-export-names";
+import { getButtonGridSpan } from "../../model/button-identifier-layout";
+import { getButtonIconName } from "../../model/button-labels";
 import { getButtonLabel } from "../../model/i18n";
 import type {
   AdvancedButtonsCalibration,
@@ -30,6 +32,14 @@ export function createButtonsPreset(calibration: AdvancedButtonsCalibration): Qu
         label: getButtonLabel(button.label),
         fileName: fileNames[index],
         rect: { ...button.rect, radius: 0 },
+        buttonIdentifier: {
+          ...getButtonGridSpan(
+            button.rect,
+            calibration.outerRect,
+            calibration.grid,
+          ),
+          iconName: getButtonIconName(button.label, button.customIconId),
+        },
       },
     ])),
   };

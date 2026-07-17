@@ -11,7 +11,9 @@ import { useQuickPanelPreviewGestures } from "../hooks/useQuickPanelPreviewGestu
 import { PanelSlice } from "./PanelSlice";
 
 interface QuickPanelPreviewProps {
+  buttonIdentifierOpacity: number;
   buttonPanelOpacity: number;
+  showButtonIdentifiers: boolean;
   image: PickedImage;
   preset: QuickPanelPreset;
   transform: ImageTransform;
@@ -20,12 +22,14 @@ interface QuickPanelPreviewProps {
 }
 
 export function QuickPanelPreview({
+  buttonIdentifierOpacity,
   buttonPanelOpacity,
   image,
   onAdjustingChange,
   transform,
   onTransformChange,
   preset,
+  showButtonIdentifiers,
 }: QuickPanelPreviewProps) {
   const { width: windowWidth, height: windowHeight } = useWindowDimensions();
   const [containerWidth, setContainerWidth] = useState(0);
@@ -70,9 +74,11 @@ export function QuickPanelPreview({
           {layoutScale
             ? preset.visualOrder.map((id) => (
                 <PanelSlice
+                  buttonIdentifierOpacity={buttonIdentifierOpacity}
                   buttonPanelOpacity={buttonPanelOpacity}
                   key={id}
                   showOverlay
+                  showButtonIdentifiers={showButtonIdentifiers}
                   mode={preset.mode}
                   panel={preset.panels[id]}
                   image={image}

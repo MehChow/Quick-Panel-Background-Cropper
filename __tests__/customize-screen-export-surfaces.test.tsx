@@ -1,8 +1,10 @@
-import { render, screen } from "@testing-library/react-native";
+import { fireEvent, render, screen } from "@testing-library/react-native";
 import { CustomizeScreen } from "@/features/quick-panel/customize/CustomizeScreen";
 import type { QuickPanelPreset } from "@/features/quick-panel/model/types";
 
 const mockUseCustomizeScreen = jest.fn();
+let mockPreviewProps: Record<string, unknown> | null = null;
+let mockExportProps: Record<string, unknown> | null = null;
 const mockActivePreset = {
   id: "test-controls",
   label: "Test Controls",
@@ -16,7 +18,17 @@ const mockActivePreset = {
 } satisfies QuickPanelPreset;
 
 jest.mock("@/components/ani-ui/slider", () => ({
-  Slider: () => null,
+  Slider: (props: Record<string, unknown>) => {
+    const React = jest.requireActual("react");
+    const { Pressable } = jest.requireActual("react-native");
+    const onValueChange = props.onValueChange;
+    return React.createElement(Pressable, {
+      ...props,
+      onPress: () => {
+        if (typeof onValueChange === "function") onValueChange(35);
+      },
+    });
+  },
 }));
 
 jest.mock("react-i18next", () => ({
@@ -43,11 +55,15 @@ jest.mock("@/features/quick-panel/customize/components/ImagePickerCard", () => (
 }));
 
 jest.mock("@/features/quick-panel/customize/components/QuickPanelPreview", () => ({
-  QuickPanelPreview: () => null,
+  QuickPanelPreview: (props: Record<string, unknown>) => {
+    mockPreviewProps = props;
+    return null;
+  },
 }));
 
 jest.mock("@/features/quick-panel/customize/components/ExportSurfaces", () => ({
-  ExportSurfaces: () => {
+  ExportSurfaces: (props: Record<string, unknown>) => {
+    mockExportProps = props;
     const React = jest.requireActual("react");
     const { Text } = jest.requireActual("react-native");
     return React.createElement(Text, null, "export-surfaces");
@@ -58,9 +74,12 @@ jest.mock("@/features/quick-panel/customize/hooks/useCustomizeScreen", () => ({
   useCustomizeScreen: () => mockUseCustomizeScreen(),
 }));
 
-function createScreenState(shouldRenderExportSurfaces: boolean) {
+function createScreenState(
+  shouldRenderExportSurfaces: boolean,
+  activePreset: QuickPanelPreset = mockActivePreset,
+) {
   return {
-    activePreset: mockActivePreset,
+    activePreset,
     error: null,
     exportImages: jest.fn(),
     exportLoadToken: 1,
@@ -90,6 +109,11 @@ function createScreenState(shouldRenderExportSurfaces: boolean) {
 }
 
 describe("CustomizeScreen export surfaces", () => {
+  beforeEach(() => {
+    mockPreviewProps = null;
+    mockExportProps = null;
+  });
+
   it("does not mount export surfaces during normal preview", () => {
     mockUseCustomizeScreen.mockReturnValue(createScreenState(false));
 
@@ -104,5 +128,72 @@ describe("CustomizeScreen export surfaces", () => {
     render(<CustomizeScreen />);
 
     expect(screen.getByText("export-surfaces")).toBeTruthy();
+  });
+
+  it("keeps Button identifier controls screen-local and synchronized", () => {
+    const buttonPreset = {
+      ...mockActivePreset,
+      id: "test-buttons",
+      mode: "advanced" as const,
+      panels: {
+        "button-1": {
+          id: "button-1" as const,
+          label: "Wi-Fi",
+          fileName: "01-wi-fi.png",
+          family: "button" as const,
+          rect: { x: 0, y: 0, width: 100, height: 100, radius: 0 },
+          buttonIdentifier: { columnSpan: 1, rowSpan: 1, iconName: "wifi" as const },
+        },
+      },
+      visualOrder: ["button-1" as const],
+      goodLockOrder: ["button-1" as const],
+    } satisfies QuickPanelPreset;
+    mockUseCustomizeScreen.mockReturnValue(createScreenState(true, buttonPreset));
+
+    const mounted = render(<CustomizeScreen />);
+
+    expect(mockPreviewProps).toMatchObject({
+      buttonIdentifierOpacity: 0.7,
+      buttonPanelOpacity: 0.78,
+      showButtonIdentifiers: true,
+    });
+    expect(mockExportProps).toMatchObject({
+      buttonIdentifierOpacity: 0.7,
+      buttonPanelOpacity: 0.78,
+      showButtonIdentifiers: true,
+    });
+
+    fireEvent.press(screen.getByRole("switch"));
+    expect(mockPreviewProps).toMatchObject({
+      buttonIdentifierOpacity: 0.7,
+      buttonPanelOpacity: 0.78,
+      showButtonIdentifiers: false,
+    });
+    expect(mockExportProps).toMatchObject({
+      buttonIdentifierOpacity: 0.7,
+      buttonPanelOpacity: 0.78,
+      showButtonIdentifiers: false,
+    });
+
+    fireEvent.press(screen.getByRole("switch"));
+    fireEvent.press(screen.getByTestId("button-identifier-opacity-slider"));
+    expect(mockPreviewProps).toMatchObject({
+      buttonIdentifierOpacity: 0.35,
+      buttonPanelOpacity: 0.78,
+      showButtonIdentifiers: true,
+    });
+    expect(mockExportProps).toMatchObject({
+      buttonIdentifierOpacity: 0.35,
+      buttonPanelOpacity: 0.78,
+      showButtonIdentifiers: true,
+    });
+
+    mounted.unmount();
+    render(<CustomizeScreen />);
+    expect(mockPreviewProps).toMatchObject({
+      buttonIdentifierOpacity: 0.7,
+      buttonPanelOpacity: 0.78,
+      showButtonIdentifiers: true,
+    });
   });
 });

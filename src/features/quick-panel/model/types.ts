@@ -1,5 +1,7 @@
 import type { RefObject } from "react";
 import type { View } from "react-native";
+import type { LucideIconName } from "@react-native-vector-icons/lucide";
+import type { CustomButtonIconId } from "./button-labels";
 
 export type ControlPanelId = "buttonBox" | "brightness" | "volume" | "mediaPlayer";
 export type ButtonPanelId = `button-${number}`;
@@ -22,6 +24,13 @@ export interface PanelDefinition {
   fileName: string;
   family: PanelFamily;
   rect: PanelRect;
+  buttonIdentifier?: ButtonIdentifierDefinition;
+}
+
+export interface ButtonIdentifierDefinition {
+  columnSpan: number;
+  iconName: LucideIconName;
+  rowSpan: number;
 }
 
 export interface QuickPanelPreset {
@@ -67,6 +76,7 @@ export interface AdvancedCalibrationDraft {
 export interface ButtonCalibrationItem {
   id: ButtonPanelId;
   label: string;
+  customIconId: CustomButtonIconId | null;
   rect: PanelRect;
 }
 

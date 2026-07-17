@@ -84,7 +84,7 @@ describe("getCalibrationFromDraft", () => {
       screenshot: { uri: "file:///screenshot.png", width: 100, height: 100 },
       outerRect: { x: 0, y: 0, width: 100, height: 100, radius: 0 },
       buttons: [
-        { id: "button-1", label: "Wi-Fi", rect: { x: 0, y: 0, width: 40, height: 40, radius: 0 } },
+        { id: "button-1", label: "Wi-Fi", customIconId: null, rect: { x: 0, y: 0, width: 40, height: 40, radius: 0 } },
       ],
     }, grid);
 

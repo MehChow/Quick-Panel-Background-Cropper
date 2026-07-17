@@ -11,11 +11,14 @@ import type {
   PickedImage,
 } from "../../model/types";
 import { PanelOverlay } from "./PanelOverlay";
+import { ButtonIdentifierOverlay } from "./ButtonIdentifierOverlay";
 
 const AnimatedImage = Animated.createAnimatedComponent(Image);
 
 interface PanelSliceProps {
+  buttonIdentifierOpacity: number;
   buttonPanelOpacity: number;
+  showButtonIdentifiers: boolean;
   showOverlay: boolean;
   mode: CustomizationMode;
   panel: PanelDefinition;
@@ -28,7 +31,9 @@ interface PanelSliceProps {
 }
 
 export function PanelSlice({
+  buttonIdentifierOpacity,
   buttonPanelOpacity,
+  showButtonIdentifiers,
   showOverlay,
   mode,
   panel,
@@ -70,6 +75,20 @@ export function PanelSlice({
           },
         ]}
       />
+      {showButtonIdentifiers && panel.family === "button" && panel.buttonIdentifier ? (
+        <ButtonIdentifierOverlay
+          bounds={{
+            x: 0,
+            y: 0,
+            width: panel.rect.width * layoutScale,
+            height: panel.rect.height * layoutScale,
+          }}
+          identifier={panel.buttonIdentifier}
+          label={panel.label}
+          opacity={buttonIdentifierOpacity}
+          target="preview"
+        />
+      ) : null}
       {showOverlay ? (
         <PanelOverlay
           height={panel.rect.height * layoutScale}

@@ -3,40 +3,17 @@ import { Lucide } from "@react-native-vector-icons/lucide";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Pressable, ScrollView, TextInput, View } from "react-native";
+import { createButtonItems } from "../button-selection";
 import { getButtonDisplayLabel, searchButtonLabels } from "../../../model/button-labels";
-import type { ButtonCalibrationItem, ButtonPanelId, PanelRect, PickedImage } from "../../../model/types";
+import type { ButtonCalibrationItem, PanelRect, PickedImage } from "../../../model/types";
 import { CalibrationAreaPreview } from "./CalibrationAreaPreview";
+import { CustomButtonIconDialog } from "./CustomButtonIconDialog";
 
 interface Props {
   buttons: ButtonCalibrationItem[];
   outerRect: PanelRect;
   screenshot: PickedImage;
   onButtonsChange: (buttons: ButtonCalibrationItem[]) => void;
-}
-
-function createButtonItems(labels: string[], outerRect: PanelRect): ButtonCalibrationItem[] {
-  return labels.map((label, index) => ({
-    id: `button-${index + 1}` as ButtonPanelId,
-    label,
-    rect: getInitialButtonRect(index, labels.length, outerRect),
-  }));
-}
-
-function getInitialButtonRect(index: number, count: number, outerRect: PanelRect): PanelRect {
-  const columns = Math.min(2, count);
-  const rows = Math.ceil(count / columns);
-  const gap = 8;
-  const column = index % columns;
-  const row = Math.floor(index / columns);
-  const width = (outerRect.width - gap * (columns + 1)) / columns;
-  const height = (outerRect.height - gap * (rows + 1)) / rows;
-  return {
-    x: outerRect.x + gap + column * (width + gap),
-    y: outerRect.y + gap + row * (height + gap),
-    width,
-    height,
-    radius: 0,
-  };
 }
 
 export function ButtonPanelSelection({
@@ -47,24 +24,25 @@ export function ButtonPanelSelection({
 }: Props) {
   const { t } = useTranslation();
   const [query, setQuery] = useState("");
+  const [pendingCustomLabel, setPendingCustomLabel] = useState<string | null>(null);
   const selectedLabels = buttons.map((button) => button.label);
   const translateLabel = (key: string) => t(key);
   const labels = searchButtonLabels(query, translateLabel).slice(0, 12);
-  const setLabels = (nextLabels: string[]) => {
-    onButtonsChange(createButtonItems(nextLabels, outerRect));
-  };
-  const addLabel = (label: string) => {
-    const trimmed = label.trim();
-    if (!trimmed || selectedLabels.includes(trimmed)) return;
-    setLabels([...selectedLabels, trimmed]);
-    setQuery("");
+  const setChoices = (nextButtons: Pick<ButtonCalibrationItem, "customIconId" | "label">[]) => {
+    onButtonsChange(createButtonItems(nextButtons, outerRect));
   };
   const toggleLabel = (label: string) => {
-    setLabels(
+    setChoices(
       selectedLabels.includes(label)
-        ? selectedLabels.filter((item) => item !== label)
-        : [...selectedLabels, label],
+        ? buttons.filter((item) => item.label !== label)
+        : [...buttons, { label, customIconId: null }],
     );
+    setQuery("");
+  };
+  const selectCustomIcon = (customIconId: ButtonCalibrationItem["customIconId"]) => {
+    if (!pendingCustomLabel || !customIconId) return;
+    setChoices([...buttons, { label: pendingCustomLabel, customIconId }]);
+    setPendingCustomLabel(null);
     setQuery("");
   };
   const canAddCustomLabel = Boolean(query.trim()) && !selectedLabels.includes(query.trim());
@@ -130,7 +108,7 @@ export function ButtonPanelSelection({
             {canAddCustomLabel ? (
               <Pressable
                 className="min-h-11 justify-center rounded-xl border border-dashed border-white/20 bg-zinc-950 px-3"
-                onPress={() => addLabel(query)}
+                onPress={() => setPendingCustomLabel(query.trim())}
               >
                 <Text className="font-semibold text-white">
                   {t("advancedCalibration.addCustomButtonLabel", { label: query.trim() })}
@@ -140,6 +118,12 @@ export function ButtonPanelSelection({
           </ScrollView>
         )}
       </CalibrationAreaPreview>
+      <CustomButtonIconDialog
+        label={pendingCustomLabel ?? ""}
+        onClose={() => setPendingCustomLabel(null)}
+        onSelect={selectCustomIcon}
+        open={pendingCustomLabel !== null}
+      />
     </View>
   );
 }

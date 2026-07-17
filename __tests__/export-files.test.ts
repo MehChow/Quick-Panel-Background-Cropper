@@ -175,6 +175,7 @@ describe("captureAndSaveExports", () => {
           {
             id: "button-1",
             label: "Bluetooth",
+            customIconId: null,
             rect: { x: 0, y: 0, width: 40, height: 40, radius: 0 },
           },
         ],
@@ -187,6 +188,41 @@ describe("captureAndSaveExports", () => {
     }
   });
 
+  it("attaches built-in and custom identifier metadata to Button panels", () => {
+    const preset = createButtonsPreset({
+      screenshotWidth: 200,
+      screenshotHeight: 200,
+      grid: { columns: 2, rows: 2 },
+      outerRect: { x: 0, y: 0, width: 200, height: 200, radius: 0 },
+      buttons: [
+        {
+          id: "button-1",
+          label: "Wi-Fi",
+          customIconId: null,
+          rect: { x: 0, y: 0, width: 100, height: 100, radius: 0 },
+        },
+        {
+          id: "button-2",
+          label: "My scene",
+          customIconId: "zap",
+          rect: { x: 0, y: 100, width: 200, height: 100, radius: 0 },
+        },
+      ],
+    });
+
+    expect(preset.panels["button-1"]).toMatchObject({
+      label: "Wi-Fi",
+      fileName: "01-wi-fi.png",
+      buttonIdentifier: { columnSpan: 1, rowSpan: 1, iconName: "wifi" },
+    });
+    expect(preset.panels["button-2"]).toMatchObject({
+      label: "My scene",
+      fileName: "02-my-scene.png",
+      buttonIdentifier: { columnSpan: 2, rowSpan: 1, iconName: "zap" },
+    });
+    expect(preset.goodLockOrder).toEqual(["button-1", "button-2"]);
+  });
+
   it("exports dynamic button refs in reviewed order with duplicate filenames", async () => {
     const view = {} as View;
     const preset = createButtonsPreset({
@@ -195,8 +231,8 @@ describe("captureAndSaveExports", () => {
       grid: { columns: 2, rows: 1 },
       outerRect: { x: 0, y: 0, width: 100, height: 50, radius: 0 },
       buttons: [
-        { id: "button-1", label: "Wi-Fi", rect: { x: 0, y: 0, width: 40, height: 40, radius: 0 } },
-        { id: "button-2", label: "Wi-Fi", rect: { x: 50, y: 0, width: 40, height: 40, radius: 0 } },
+        { id: "button-1", label: "Wi-Fi", customIconId: null, rect: { x: 0, y: 0, width: 40, height: 40, radius: 0 } },
+        { id: "button-2", label: "Wi-Fi", customIconId: null, rect: { x: 50, y: 0, width: 40, height: 40, radius: 0 } },
       ],
     });
 

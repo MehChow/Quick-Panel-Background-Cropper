@@ -11,6 +11,7 @@ import type {
 import { ExportSurface } from "./ExportSurface";
 
 interface ExportSurfacesProps {
+  buttonIdentifierOpacity: number;
   buttonPanelOpacity: number;
   image: PickedImage;
   transform: ImageTransform;
@@ -18,9 +19,11 @@ interface ExportSurfacesProps {
   refs: ExportRefs;
   loadToken: number;
   onReady: () => void;
+  showButtonIdentifiers: boolean;
 }
 
 export function ExportSurfaces({
+  buttonIdentifierOpacity,
   buttonPanelOpacity,
   image,
   transform,
@@ -28,6 +31,7 @@ export function ExportSurfaces({
   refs,
   loadToken,
   onReady,
+  showButtonIdentifiers,
 }: ExportSurfacesProps) {
   const side = exportSidePixels / PixelRatio.get();
   const readinessRef = useRef(
@@ -57,6 +61,7 @@ export function ExportSurfaces({
     >
       {preset.goodLockOrder.map((id) => (
         <ExportSurface
+          buttonIdentifierOpacity={buttonIdentifierOpacity}
           buttonPanelOpacity={buttonPanelOpacity}
           key={id}
           ref={refs[id]}
@@ -65,6 +70,7 @@ export function ExportSurfaces({
           onImageLoad={() => handleImageLoad(id)}
           transform={transform}
           side={side}
+          showButtonIdentifiers={showButtonIdentifiers}
         />
       ))}
     </View>
