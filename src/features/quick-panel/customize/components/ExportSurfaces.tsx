@@ -1,6 +1,10 @@
-import { useEffect, useRef } from "react";
+import { useLayoutEffect, useRef } from "react";
 import { PixelRatio, View } from "react-native";
 import { createExportSurfaceReadiness } from "../export-surface-readiness";
+import {
+  getButtonIdentifierOrientation,
+  type ButtonIdentifierPositions,
+} from "../../model/button-identifier-layout";
 import { exportSidePixels } from "../../model/panel-geometry";
 import type {
   ExportRefs,
@@ -14,6 +18,7 @@ interface ExportSurfacesProps {
   buttonIdentifierOpacity: number;
   buttonPanelOpacity: number;
   image: PickedImage;
+  identifierPositions: ButtonIdentifierPositions;
   transform: ImageTransform;
   preset: QuickPanelPreset;
   refs: ExportRefs;
@@ -22,10 +27,25 @@ interface ExportSurfacesProps {
   showButtonIdentifiers: boolean;
 }
 
+function getMeasuredIdentifierIds(
+  order: QuickPanelPreset["goodLockOrder"],
+  panels: QuickPanelPreset["panels"],
+  areIdentifiersVisible: boolean,
+) {
+  if (!areIdentifiersVisible) return [];
+  return order.filter((id) => {
+    const panel = panels[id];
+    return panel?.family === "button"
+      && panel.buttonIdentifier
+      && getButtonIdentifierOrientation(panel.buttonIdentifier) === "horizontal";
+  });
+}
+
 export function ExportSurfaces({
   buttonIdentifierOpacity,
   buttonPanelOpacity,
   image,
+  identifierPositions,
   transform,
   preset,
   refs,
@@ -35,23 +55,50 @@ export function ExportSurfaces({
 }: ExportSurfacesProps) {
   const side = exportSidePixels / PixelRatio.get();
   const readinessRef = useRef(
-    createExportSurfaceReadiness(preset.goodLockOrder),
+    createExportSurfaceReadiness(
+      preset.goodLockOrder,
+      getMeasuredIdentifierIds(
+        preset.goodLockOrder,
+        preset.panels,
+        showButtonIdentifiers,
+      ),
+    ),
   );
   const isReadyReportedRef = useRef(false);
 
-  useEffect(() => {
-    readinessRef.current = createExportSurfaceReadiness(preset.goodLockOrder);
+  useLayoutEffect(() => {
+    readinessRef.current = createExportSurfaceReadiness(
+      preset.goodLockOrder,
+      getMeasuredIdentifierIds(
+        preset.goodLockOrder,
+        preset.panels,
+        showButtonIdentifiers,
+      ),
+    );
     isReadyReportedRef.current = false;
-  }, [image.uri, loadToken, preset.goodLockOrder, preset.id]);
+  }, [
+    identifierPositions.horizontal,
+    identifierPositions.vertical,
+    image.uri,
+    loadToken,
+    preset.goodLockOrder,
+    preset.id,
+    preset.panels,
+    showButtonIdentifiers,
+  ]);
+
+  const reportReady = (isReady: boolean) => {
+    if (!isReady || isReadyReportedRef.current) return;
+    isReadyReportedRef.current = true;
+    onReady();
+  };
 
   const handleImageLoad = (id: (typeof preset.goodLockOrder)[number]) => {
-    if (isReadyReportedRef.current) {
-      return;
-    }
-    if (readinessRef.current.markLoaded(id)) {
-      isReadyReportedRef.current = true;
-      onReady();
-    }
+    reportReady(readinessRef.current.markImageLoaded(id));
+  };
+
+  const handleIdentifierReady = (id: (typeof preset.goodLockOrder)[number]) => {
+    reportReady(readinessRef.current.markIdentifierReady(id));
   };
 
   return (
@@ -67,7 +114,9 @@ export function ExportSurfaces({
           ref={refs[id]}
           panel={preset.panels[id]}
           image={image}
+          identifierPositions={identifierPositions}
           onImageLoad={() => handleImageLoad(id)}
+          onIdentifierPositionReady={() => handleIdentifierReady(id)}
           transform={transform}
           side={side}
           showButtonIdentifiers={showButtonIdentifiers}

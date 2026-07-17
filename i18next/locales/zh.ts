@@ -65,6 +65,8 @@ const zh = {
       buttonPanelOpacity: "按鈕圖片強度",
       showButtonIdentifiers: "顯示按鈕識別標記",
       buttonIdentifierOpacity: "按鈕識別標記強度",
+      horizontalIdentifierPosition: "水平識別標記位置",
+      verticalIdentifierPosition: "垂直識別標記位置",
       buttonIdentifiersOn: "開",
       buttonIdentifiersOff: "關",
       chooseAnotherImage: "選擇另一張圖片",

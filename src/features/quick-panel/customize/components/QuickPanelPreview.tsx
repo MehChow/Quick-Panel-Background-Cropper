@@ -2,6 +2,7 @@ import { GestureDetector } from "react-native-gesture-handler";
 import Animated from "react-native-reanimated";
 import { useState } from "react";
 import { useWindowDimensions, View } from "react-native";
+import type { ButtonIdentifierPositions } from "../../model/button-identifier-layout";
 import type {
   ImageTransform,
   PickedImage,
@@ -13,6 +14,7 @@ import { PanelSlice } from "./PanelSlice";
 interface QuickPanelPreviewProps {
   buttonIdentifierOpacity: number;
   buttonPanelOpacity: number;
+  identifierPositions: ButtonIdentifierPositions;
   showButtonIdentifiers: boolean;
   image: PickedImage;
   preset: QuickPanelPreset;
@@ -24,6 +26,7 @@ interface QuickPanelPreviewProps {
 export function QuickPanelPreview({
   buttonIdentifierOpacity,
   buttonPanelOpacity,
+  identifierPositions,
   image,
   onAdjustingChange,
   transform,
@@ -76,6 +79,7 @@ export function QuickPanelPreview({
                 <PanelSlice
                   buttonIdentifierOpacity={buttonIdentifierOpacity}
                   buttonPanelOpacity={buttonPanelOpacity}
+                  identifierPositions={identifierPositions}
                   key={id}
                   showOverlay
                   showButtonIdentifiers={showButtonIdentifiers}

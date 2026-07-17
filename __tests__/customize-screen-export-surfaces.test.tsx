@@ -25,13 +25,16 @@ jest.mock("@/components/ani-ui/slider", () => ({
     return React.createElement(Pressable, {
       ...props,
       onPress: () => {
-        if (typeof onValueChange === "function") onValueChange(35);
+        if (typeof onValueChange === "function") {
+          onValueChange(props.testID === "vertical-identifier-position-slider" ? 80 : 35);
+        }
       },
     });
   },
 }));
 
 jest.mock("react-i18next", () => ({
+  initReactI18next: { init: jest.fn(), type: "3rdParty" },
   useTranslation: () => ({
     t: (key: string) => key,
   }),
@@ -141,12 +144,28 @@ describe("CustomizeScreen export surfaces", () => {
           label: "Wi-Fi",
           fileName: "01-wi-fi.png",
           family: "button" as const,
-          rect: { x: 0, y: 0, width: 100, height: 100, radius: 0 },
-          buttonIdentifier: { columnSpan: 1, rowSpan: 1, iconName: "wifi" as const },
+          rect: { x: 0, y: 0, width: 100, height: 50, radius: 0 },
+          buttonIdentifier: { columnSpan: 2, rowSpan: 1, iconName: "wifi" as const },
+        },
+        "button-2": {
+          id: "button-2" as const,
+          label: "Bluetooth",
+          fileName: "02-bluetooth.png",
+          family: "button" as const,
+          rect: { x: 0, y: 50, width: 50, height: 100, radius: 0 },
+          buttonIdentifier: { columnSpan: 1, rowSpan: 2, iconName: "bluetooth" as const },
+        },
+        "button-3": {
+          id: "button-3" as const,
+          label: "Smart View",
+          fileName: "03-smart-view.png",
+          family: "button" as const,
+          rect: { x: 50, y: 50, width: 50, height: 50, radius: 0 },
+          buttonIdentifier: { columnSpan: 1, rowSpan: 1, iconName: "scan" as const },
         },
       },
-      visualOrder: ["button-1" as const],
-      goodLockOrder: ["button-1" as const],
+      visualOrder: ["button-1" as const, "button-2" as const, "button-3" as const],
+      goodLockOrder: ["button-1" as const, "button-2" as const, "button-3" as const],
     } satisfies QuickPanelPreset;
     mockUseCustomizeScreen.mockReturnValue(createScreenState(true, buttonPreset));
 
@@ -155,12 +174,27 @@ describe("CustomizeScreen export surfaces", () => {
     expect(mockPreviewProps).toMatchObject({
       buttonIdentifierOpacity: 0.7,
       buttonPanelOpacity: 0.78,
+      identifierPositions: { horizontal: 0.5, vertical: 0.5 },
       showButtonIdentifiers: true,
     });
     expect(mockExportProps).toMatchObject({
       buttonIdentifierOpacity: 0.7,
       buttonPanelOpacity: 0.78,
+      identifierPositions: { horizontal: 0.5, vertical: 0.5 },
       showButtonIdentifiers: true,
+    });
+
+    fireEvent.press(screen.getByTestId("horizontal-identifier-position-slider"));
+    fireEvent.press(screen.getByTestId("vertical-identifier-position-slider"));
+    expect(mockPreviewProps).toMatchObject({
+      buttonIdentifierOpacity: 0.7,
+      buttonPanelOpacity: 0.78,
+      identifierPositions: { horizontal: 0.35, vertical: 0.8 },
+    });
+    expect(mockExportProps).toMatchObject({
+      buttonIdentifierOpacity: 0.7,
+      buttonPanelOpacity: 0.78,
+      identifierPositions: { horizontal: 0.35, vertical: 0.8 },
     });
 
     fireEvent.press(screen.getByRole("switch"));
@@ -180,11 +214,13 @@ describe("CustomizeScreen export surfaces", () => {
     expect(mockPreviewProps).toMatchObject({
       buttonIdentifierOpacity: 0.35,
       buttonPanelOpacity: 0.78,
+      identifierPositions: { horizontal: 0.35, vertical: 0.8 },
       showButtonIdentifiers: true,
     });
     expect(mockExportProps).toMatchObject({
       buttonIdentifierOpacity: 0.35,
       buttonPanelOpacity: 0.78,
+      identifierPositions: { horizontal: 0.35, vertical: 0.8 },
       showButtonIdentifiers: true,
     });
 
@@ -193,6 +229,7 @@ describe("CustomizeScreen export surfaces", () => {
     expect(mockPreviewProps).toMatchObject({
       buttonIdentifierOpacity: 0.7,
       buttonPanelOpacity: 0.78,
+      identifierPositions: { horizontal: 0.5, vertical: 0.5 },
       showButtonIdentifiers: true,
     });
   });

@@ -6,10 +6,16 @@ import { Pressable, View } from "react-native";
 interface ButtonCustomizeControlsProps {
   buttonIdentifierOpacity: number;
   buttonPanelOpacity: number;
+  hasHorizontalButtons: boolean;
+  hasVerticalButtons: boolean;
+  horizontalIdentifierPosition: number;
   onButtonIdentifierOpacityChange: (value: number) => void;
   onButtonPanelOpacityChange: (value: number) => void;
+  onHorizontalIdentifierPositionChange: (value: number) => void;
   onShowButtonIdentifiersChange: (value: boolean) => void;
+  onVerticalIdentifierPositionChange: (value: number) => void;
   showButtonIdentifiers: boolean;
+  verticalIdentifierPosition: number;
 }
 
 interface OpacityControlProps {
@@ -54,10 +60,16 @@ function OpacityControl({
 export function ButtonCustomizeControls({
   buttonIdentifierOpacity,
   buttonPanelOpacity,
+  hasHorizontalButtons,
+  hasVerticalButtons,
+  horizontalIdentifierPosition,
   onButtonIdentifierOpacityChange,
   onButtonPanelOpacityChange,
+  onHorizontalIdentifierPositionChange,
   onShowButtonIdentifiersChange,
+  onVerticalIdentifierPositionChange,
   showButtonIdentifiers,
+  verticalIdentifierPosition,
 }: ButtonCustomizeControlsProps) {
   const { t } = useTranslation();
   return (
@@ -90,7 +102,7 @@ export function ButtonCustomizeControls({
         </Text>
       </Pressable>
       <View
-        className={showButtonIdentifiers ? "" : "opacity-50"}
+        className={`gap-4 ${showButtonIdentifiers ? "" : "opacity-50"}`}
         testID="button-identifier-opacity-control"
       >
         <OpacityControl
@@ -100,6 +112,24 @@ export function ButtonCustomizeControls({
           testID="button-identifier-opacity-slider"
           value={buttonIdentifierOpacity}
         />
+        {hasHorizontalButtons ? (
+          <OpacityControl
+            disabled={!showButtonIdentifiers}
+            label={t("customize.horizontalIdentifierPosition")}
+            onValueChange={onHorizontalIdentifierPositionChange}
+            testID="horizontal-identifier-position-slider"
+            value={horizontalIdentifierPosition}
+          />
+        ) : null}
+        {hasVerticalButtons ? (
+          <OpacityControl
+            disabled={!showButtonIdentifiers}
+            label={t("customize.verticalIdentifierPosition")}
+            onValueChange={onVerticalIdentifierPositionChange}
+            testID="vertical-identifier-position-slider"
+            value={verticalIdentifierPosition}
+          />
+        ) : null}
       </View>
     </View>
   );

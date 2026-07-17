@@ -12,6 +12,24 @@ This file is a running project note log for implementation details that are easy
 
 ## Entries
 
+### 2026-07-17: Buttons identifier position controls
+
+- Horizontal and vertical long Buttons use independent, screen-local position
+  sliders. Both start at 50 and reset whenever Customize is entered.
+- Preview and export share normalized position intent, then constrain movement
+  from their own rendered bounds, safe insets, and content sizes.
+- Horizontal icon-and-label groups move together after their localized content
+  width is measured. Vertical icons move independently while staying centered
+  on the horizontal axis.
+- Equal-span Buttons such as `1x1` and `2x2` keep their previous identifier
+  placement and ignore both position values.
+- Export capture waits for every image and for the final committed placement of
+  each visible horizontal identifier that requires measurement.
+- Additional arbitrary tuning: None.
+- Device QA was not run in this session because ADB reported no connected
+  device. Earlier visual evidence identified `SM-S9360`; its One UI and
+  QuickStar versions were not recorded.
+
 ### 2026-07-17: Buttons-only identifier overlays
 
 - Button identifiers are available only in Advanced Buttons-only previews and

@@ -23,10 +23,18 @@ describe("customize locale strings", () => {
     expect(enLocale.translation.customize.buttonIdentifierOpacity).toBe(
       "Button identifier intensity",
     );
+    expect(enLocale.translation.customize.horizontalIdentifierPosition).toBe(
+      "Horizontal identifier position",
+    );
+    expect(enLocale.translation.customize.verticalIdentifierPosition).toBe(
+      "Vertical identifier position",
+    );
     expect(enLocale.translation.customize.buttonIdentifiersOn).toBe("On");
     expect(enLocale.translation.customize.buttonIdentifiersOff).toBe("Off");
     expect(zhLocale.translation.customize.showButtonIdentifiers).toBeTruthy();
     expect(zhLocale.translation.customize.buttonIdentifierOpacity).toBeTruthy();
+    expect(zhLocale.translation.customize.horizontalIdentifierPosition).toBeTruthy();
+    expect(zhLocale.translation.customize.verticalIdentifierPosition).toBeTruthy();
     expect(zhLocale.translation.customize.buttonIdentifiersOn).toBeTruthy();
     expect(zhLocale.translation.customize.buttonIdentifiersOff).toBeTruthy();
   });

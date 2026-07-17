@@ -7,6 +7,7 @@ jest.mock("@/components/ani-ui/slider", () => ({
 }));
 
 jest.mock("react-i18next", () => ({
+  initReactI18next: { init: jest.fn(), type: "3rdParty" },
   useTranslation: () => ({
     t: (key: string) => key,
   }),

@@ -2,6 +2,8 @@ import {
   getButtonExportBounds,
   getButtonGridSpan,
   getButtonIdentifierLayout,
+  getButtonIdentifierOrientation,
+  getConstrainedAxisOffset,
 } from "@/features/quick-panel/model/button-identifier-layout";
 import type { PanelDefinition } from "@/features/quick-panel/model/types";
 
@@ -13,6 +15,39 @@ function createIdentifier(columnSpan: number, rowSpan: number) {
 }
 
 describe("Button identifier layout", () => {
+  it.each([
+    [2, 1, "horizontal"],
+    [1, 2, "vertical"],
+    [1, 1, "square"],
+    [2, 2, "square"],
+  ] as const)("classifies %sx%s as %s", (columnSpan, rowSpan, expected) => {
+    expect(getButtonIdentifierOrientation(
+      createIdentifier(columnSpan, rowSpan),
+    )).toBe(expected);
+  });
+
+  it.each([
+    [0, 8],
+    [0.5, 34],
+    [1, 60],
+  ])("maps %s to a constrained safe-axis offset", (position, expected) => {
+    expect(getConstrainedAxisOffset({
+      axisLength: 100,
+      contentLength: 32,
+      inset: 8,
+      position,
+    })).toBe(expected);
+  });
+
+  it("clamps travel to zero when content consumes the safe axis", () => {
+    expect(getConstrainedAxisOffset({
+      axisLength: 100,
+      contentLength: 100,
+      inset: 8,
+      position: 1,
+    })).toBe(8);
+  });
+
   it("derives nearest clamped grid spans", () => {
     expect(getButtonGridSpan(
       { x: 0, y: 0, width: 190, height: 110, radius: 0 },
@@ -37,6 +72,7 @@ describe("Button identifier layout", () => {
       alignment: "center",
       bounds: { x: 0, y: 0, width: 40, height: 40 },
       iconSize: 13.6,
+      orientation: "square",
       showLabel: false,
     });
   });
@@ -46,13 +82,21 @@ describe("Button identifier layout", () => {
       { x: 0, y: 0, width: 40, height: 120 },
       createIdentifier(1, 3),
       "preview",
-    )).toMatchObject({ alignment: "top-center", showLabel: false });
+    )).toMatchObject({
+      alignment: "top-center",
+      orientation: "vertical",
+      showLabel: false,
+    });
   });
 
   it.each([
-    [2, 1],
-    [2, 2],
-  ])("left-centers icon and label for roomy %sx%s Buttons", (columnSpan, rowSpan) => {
+    [2, 1, "horizontal"],
+    [2, 2, "square"],
+  ] as const)("left-centers icon and label for roomy %sx%s Buttons", (
+    columnSpan,
+    rowSpan,
+    orientation,
+  ) => {
     const layout = getButtonIdentifierLayout(
       { x: 0, y: 0, width: 100, height: 50 },
       createIdentifier(columnSpan, rowSpan),
@@ -67,6 +111,7 @@ describe("Button identifier layout", () => {
       inset: 7,
       maxLabelWidth: 65,
       minimumFontScale: 0.7,
+      orientation,
       showLabel: true,
     });
   });

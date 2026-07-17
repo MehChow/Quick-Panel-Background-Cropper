@@ -2,7 +2,6 @@ import { Text } from "@/components/ani-ui/text";
 import { Button } from "@/components/ani-ui/button";
 import { QuickPanelScreenShell } from "@/features/quick-panel/shared/QuickPanelScreenShell";
 import { SubPageHeader } from "@/features/quick-panel/shared/SubPageHeader";
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { type Href, useRouter } from "expo-router";
 import { ScrollView, View } from "react-native";
@@ -12,16 +11,12 @@ import { ButtonCustomizeControls } from "./components/ButtonCustomizeControls";
 import { ExportSurfaces } from "./components/ExportSurfaces";
 import { ImagePickerCard } from "./components/ImagePickerCard";
 import { QuickPanelPreview } from "./components/QuickPanelPreview";
+import { useButtonCustomizeControls } from "./hooks/useButtonCustomizeControls";
 import { useCustomizeScreen } from "./hooks/useCustomizeScreen";
 
-const DEFAULT_BUTTON_PANEL_OPACITY = 78;
-const DEFAULT_BUTTON_IDENTIFIER_OPACITY = 70;
 export function CustomizeScreen() {
   const { t } = useTranslation();
   const router = useRouter();
-  const [buttonPanelOpacity, setButtonPanelOpacity] = useState(DEFAULT_BUTTON_PANEL_OPACITY);
-  const [buttonIdentifierOpacity, setButtonIdentifierOpacity] = useState(DEFAULT_BUTTON_IDENTIFIER_OPACITY);
-  const [showButtonIdentifiers, setShowButtonIdentifiers] = useState(true);
   const {
     selectedMode, activePreset, image, transform, setTransform,
     isExporting, isProcessingImage, noticeKey, errorKey, error, refs,
@@ -29,6 +24,7 @@ export function CustomizeScreen() {
     pickImage, resetFit, canReset, setIsExportSurfaceReady,
     shouldRenderExportSurfaces, goToCalibration, goToAdvancedCalibration,
   } = useCustomizeScreen();
+  const buttonControls = useButtonCustomizeControls(activePreset);
 
   const recalibrate = () => {
     if (selectedMode === "advanced") {
@@ -71,10 +67,7 @@ export function CustomizeScreen() {
           )
         }
         header={
-          <SubPageHeader
-            title={t("customize.title")}
-            subtitle={t("customize.subtitle")}
-          />
+          <SubPageHeader title={t("customize.title")} subtitle={t("customize.subtitle")} />
         }
       >
         <ScrollView
@@ -87,32 +80,35 @@ export function CustomizeScreen() {
           {image ? (
             <View className="items-center">
               <QuickPanelPreview
-                buttonIdentifierOpacity={buttonIdentifierOpacity / 100}
-                buttonPanelOpacity={buttonPanelOpacity / 100}
+                buttonIdentifierOpacity={buttonControls.buttonIdentifierOpacity / 100}
+                buttonPanelOpacity={buttonControls.buttonPanelOpacity / 100}
+                identifierPositions={buttonControls.identifierPositions}
                 image={image}
                 preset={activePreset}
                 onAdjustingChange={setIsPreviewAdjusting}
                 transform={transform}
                 onTransformChange={setTransform}
-                showButtonIdentifiers={showButtonIdentifiers}
+                showButtonIdentifiers={buttonControls.showButtonIdentifiers}
               />
               {hasButtonPanels ? (
                 <ButtonCustomizeControls
-                  buttonIdentifierOpacity={buttonIdentifierOpacity}
-                  buttonPanelOpacity={buttonPanelOpacity}
-                  onButtonIdentifierOpacityChange={setButtonIdentifierOpacity}
-                  onButtonPanelOpacityChange={setButtonPanelOpacity}
-                  onShowButtonIdentifiersChange={setShowButtonIdentifiers}
-                  showButtonIdentifiers={showButtonIdentifiers}
+                  buttonIdentifierOpacity={buttonControls.buttonIdentifierOpacity}
+                  buttonPanelOpacity={buttonControls.buttonPanelOpacity}
+                  hasHorizontalButtons={buttonControls.hasHorizontalButtons}
+                  hasVerticalButtons={buttonControls.hasVerticalButtons}
+                  horizontalIdentifierPosition={buttonControls.horizontalIdentifierPosition}
+                  onButtonIdentifierOpacityChange={buttonControls.setButtonIdentifierOpacity}
+                  onButtonPanelOpacityChange={buttonControls.setButtonPanelOpacity}
+                  onHorizontalIdentifierPositionChange={buttonControls.setHorizontalIdentifierPosition}
+                  onShowButtonIdentifiersChange={buttonControls.setShowButtonIdentifiers}
+                  onVerticalIdentifierPositionChange={buttonControls.setVerticalIdentifierPosition}
+                  showButtonIdentifiers={buttonControls.showButtonIdentifiers}
+                  verticalIdentifierPosition={buttonControls.verticalIdentifierPosition}
                 />
               ) : null}
             </View>
           ) : (
-            <ImagePickerCard
-              mode={selectedMode ?? "default"}
-              onRecalibrate={recalibrate}
-              preset={activePreset}
-            />
+            <ImagePickerCard mode={selectedMode ?? "default"} onRecalibrate={recalibrate} preset={activePreset} />
           )}
           {noticeKey ? (
             <Text className="mt-4 rounded-md bg-green-500/15 p-3 text-sm text-green-100">
@@ -133,15 +129,16 @@ export function CustomizeScreen() {
       </QuickPanelScreenShell>
       {image && shouldRenderExportSurfaces ? (
         <ExportSurfaces
-          buttonIdentifierOpacity={buttonIdentifierOpacity / 100}
-          buttonPanelOpacity={buttonPanelOpacity / 100}
+          buttonIdentifierOpacity={buttonControls.buttonIdentifierOpacity / 100}
+          buttonPanelOpacity={buttonControls.buttonPanelOpacity / 100}
+          identifierPositions={buttonControls.identifierPositions}
           image={image}
           loadToken={exportLoadToken}
           onReady={setIsExportSurfaceReady}
           transform={transform}
           preset={activePreset}
           refs={refs}
-          showButtonIdentifiers={showButtonIdentifiers}
+          showButtonIdentifiers={buttonControls.showButtonIdentifiers}
         />
       ) : null}
     </SafeAreaView>

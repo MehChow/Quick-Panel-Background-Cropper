@@ -16,10 +16,16 @@ jest.mock("react-i18next", () => ({
 const baseProps = {
   buttonIdentifierOpacity: 70,
   buttonPanelOpacity: 78,
+  hasHorizontalButtons: true,
+  hasVerticalButtons: true,
+  horizontalIdentifierPosition: 50,
   onButtonIdentifierOpacityChange: jest.fn(),
   onButtonPanelOpacityChange: jest.fn(),
+  onHorizontalIdentifierPositionChange: jest.fn(),
   onShowButtonIdentifiersChange: jest.fn(),
+  onVerticalIdentifierPositionChange: jest.fn(),
   showButtonIdentifiers: true,
+  verticalIdentifierPosition: 50,
 };
 
 describe("ButtonCustomizeControls", () => {
@@ -35,9 +41,41 @@ describe("ButtonCustomizeControls", () => {
       disabled: false,
       value: 70,
     });
+    expect(screen.getByTestId("horizontal-identifier-position-slider").props).toMatchObject({
+      disabled: false,
+      value: 50,
+    });
+    expect(
+      screen.getByTestId("horizontal-identifier-position-slider").props.onValueChange,
+    ).toBe(baseProps.onHorizontalIdentifierPositionChange);
+    expect(screen.getByTestId("vertical-identifier-position-slider").props).toMatchObject({
+      disabled: false,
+      value: 50,
+    });
+    expect(
+      screen.getByTestId("vertical-identifier-position-slider").props.onValueChange,
+    ).toBe(baseProps.onVerticalIdentifierPositionChange);
     expect(screen.getByRole("switch").props.accessibilityState).toEqual({
       checked: true,
     });
+  });
+
+  it("only renders position sliders for orientations in the preset", () => {
+    const screen = render(
+      <ButtonCustomizeControls {...baseProps} hasHorizontalButtons={false} />,
+    );
+
+    expect(screen.queryByTestId("horizontal-identifier-position-slider")).toBeNull();
+    expect(screen.getByTestId("vertical-identifier-position-slider")).toBeTruthy();
+
+    screen.rerender(
+      <ButtonCustomizeControls
+        {...baseProps}
+        hasVerticalButtons={false}
+      />,
+    );
+    expect(screen.getByTestId("horizontal-identifier-position-slider")).toBeTruthy();
+    expect(screen.queryByTestId("vertical-identifier-position-slider")).toBeNull();
   });
 
   it("requests hiding identifiers from the switch", () => {
@@ -56,6 +94,14 @@ describe("ButtonCustomizeControls", () => {
     expect(screen.getByTestId("button-identifier-opacity-slider").props).toMatchObject({
       disabled: true,
       value: 70,
+    });
+    expect(screen.getByTestId("horizontal-identifier-position-slider").props).toMatchObject({
+      disabled: true,
+      value: 50,
+    });
+    expect(screen.getByTestId("vertical-identifier-position-slider").props).toMatchObject({
+      disabled: true,
+      value: 50,
     });
     expect(
       screen.getByTestId("button-identifier-opacity-control").props.className,

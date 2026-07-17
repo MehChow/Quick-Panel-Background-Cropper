@@ -2,7 +2,10 @@ import { Image } from "expo-image";
 import { forwardRef } from "react";
 import { StyleSheet, View } from "react-native";
 import { getExportSquareRect } from "../../model/panel-geometry";
-import { getButtonExportBounds } from "../../model/button-identifier-layout";
+import {
+  getButtonExportBounds,
+  type ButtonIdentifierPositions,
+} from "../../model/button-identifier-layout";
 import type {
   ImageTransform,
   PanelDefinition,
@@ -15,8 +18,10 @@ interface ExportSurfaceProps {
   buttonPanelOpacity: number;
   panel: PanelDefinition;
   image: PickedImage;
+  identifierPositions: ButtonIdentifierPositions;
   transform: ImageTransform;
   side: number;
+  onIdentifierPositionReady: () => void;
   onImageLoad: () => void;
   showButtonIdentifiers: boolean;
 }
@@ -28,8 +33,10 @@ export const ExportSurface = forwardRef<View, ExportSurfaceProps>(
       buttonPanelOpacity,
       panel,
       image,
+      identifierPositions,
       transform,
       side,
+      onIdentifierPositionReady,
       onImageLoad,
       showButtonIdentifiers,
     },
@@ -66,7 +73,9 @@ export const ExportSurface = forwardRef<View, ExportSurfaceProps>(
             bounds={getButtonExportBounds(panel, side)}
             identifier={panel.buttonIdentifier}
             label={panel.label}
+            onPositionReady={onIdentifierPositionReady}
             opacity={buttonIdentifierOpacity}
+            positions={identifierPositions}
             target="export"
           />
         ) : null}

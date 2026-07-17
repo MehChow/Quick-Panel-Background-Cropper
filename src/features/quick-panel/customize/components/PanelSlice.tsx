@@ -4,6 +4,7 @@ import Animated, {
   type SharedValue,
   useAnimatedStyle,
 } from "react-native-reanimated";
+import type { ButtonIdentifierPositions } from "../../model/button-identifier-layout";
 import type {
   CustomizationMode,
   ImageTransform,
@@ -18,6 +19,7 @@ const AnimatedImage = Animated.createAnimatedComponent(Image);
 interface PanelSliceProps {
   buttonIdentifierOpacity: number;
   buttonPanelOpacity: number;
+  identifierPositions: ButtonIdentifierPositions;
   showButtonIdentifiers: boolean;
   showOverlay: boolean;
   mode: CustomizationMode;
@@ -33,6 +35,7 @@ interface PanelSliceProps {
 export function PanelSlice({
   buttonIdentifierOpacity,
   buttonPanelOpacity,
+  identifierPositions,
   showButtonIdentifiers,
   showOverlay,
   mode,
@@ -86,6 +89,7 @@ export function PanelSlice({
           identifier={panel.buttonIdentifier}
           label={panel.label}
           opacity={buttonIdentifierOpacity}
+          positions={identifierPositions}
           target="preview"
         />
       ) : null}

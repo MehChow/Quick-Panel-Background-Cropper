@@ -17,7 +17,20 @@ export type ButtonIdentifierAlignment =
   | "center"
   | "top-center"
   | "left-center";
+export type ButtonIdentifierOrientation = "horizontal" | "vertical" | "square";
 export type ButtonIdentifierRenderTarget = "preview" | "export";
+
+export interface ButtonIdentifierPositions {
+  horizontal: number;
+  vertical: number;
+}
+
+interface ConstrainedAxisOffsetInput {
+  axisLength: number;
+  contentLength: number;
+  inset: number;
+  position: number;
+}
 
 export interface ButtonIdentifierLayout {
   alignment: ButtonIdentifierAlignment;
@@ -28,6 +41,7 @@ export interface ButtonIdentifierLayout {
   inset: number;
   maxLabelWidth: number;
   minimumFontScale: number;
+  orientation: ButtonIdentifierOrientation;
   showLabel: boolean;
 }
 
@@ -82,6 +96,7 @@ export function getButtonIdentifierLayout(
   const inset = getSize(shortSide, sizing.inset);
   const isSingleCell = identifier.columnSpan === 1 && identifier.rowSpan === 1;
   const isVertical = !isSingleCell && identifier.rowSpan > identifier.columnSpan;
+  const orientation = getButtonIdentifierOrientation(identifier);
   const showLabel = !isSingleCell && !isVertical;
   return {
     alignment: isSingleCell ? "center" : isVertical ? "top-center" : "left-center",
@@ -94,8 +109,32 @@ export function getButtonIdentifierLayout(
       ? Math.max(0, bounds.width - inset * 2 - iconSize - gap)
       : 0,
     minimumFontScale: 0.7,
+    orientation,
     showLabel,
   };
+}
+
+export function getButtonIdentifierOrientation(
+  identifier: ButtonIdentifierDefinition,
+): ButtonIdentifierOrientation {
+  if (identifier.columnSpan > identifier.rowSpan) return "horizontal";
+  if (identifier.rowSpan > identifier.columnSpan) return "vertical";
+  return "square";
+}
+
+export function getConstrainedAxisOffset({
+  axisLength,
+  contentLength,
+  inset,
+  position,
+}: ConstrainedAxisOffsetInput): number {
+  const safeStart = inset;
+  const safeEnd = Math.max(
+    safeStart,
+    axisLength - inset - contentLength,
+  );
+  const normalized = clamp(position, 0, 1);
+  return safeStart + (safeEnd - safeStart) * normalized;
 }
 
 function getSize(

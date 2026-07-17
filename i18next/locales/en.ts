@@ -71,6 +71,8 @@ const en = {
       buttonPanelOpacity: "Button image intensity",
       showButtonIdentifiers: "Show Button identifiers",
       buttonIdentifierOpacity: "Button identifier intensity",
+      horizontalIdentifierPosition: "Horizontal identifier position",
+      verticalIdentifierPosition: "Vertical identifier position",
       buttonIdentifiersOn: "On",
       buttonIdentifiersOff: "Off",
       chooseAnotherImage: "Choose another image",
