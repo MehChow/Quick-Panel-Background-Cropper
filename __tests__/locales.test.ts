@@ -1,6 +1,24 @@
 import { enLocale, zhLocale } from "../i18next/resources";
 
 describe("customize locale strings", () => {
+  it("defines Customize image-placement help in English and Chinese", () => {
+    const english = enLocale.translation.customize;
+    const chinese = zhLocale.translation.customize;
+    expect(english.imagePlacementBoundaryHelp).toBe(
+      "The amber border marks the full area the image must cover. Zoom in if you need more room to move the image within it.",
+    );
+    expect(chinese.imagePlacementBoundaryHelp).toBe(
+      "琥珀色邊框表示圖片必須覆蓋的完整範圍。如需在範圍內有更多移動空間，請放大圖片。",
+    );
+    for (const locale of [english, chinese]) {
+      expect(locale.imagePlacementHelpButton).toBeTruthy();
+      expect(locale.imagePlacementHelpTitle).toBeTruthy();
+      expect(locale.imagePlacementHelpBody).toBeTruthy();
+      expect(locale.showSourceImageContext).toBeTruthy();
+      expect(locale.hideSourceImageContext).toBeTruthy();
+    }
+  });
+
   it("defines optimization copy for English and Chinese", () => {
     expect(enLocale.translation.customize.optimizingImage).toBe(
       "Optimizing image...",

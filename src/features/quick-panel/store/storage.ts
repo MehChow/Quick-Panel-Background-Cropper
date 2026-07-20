@@ -1,4 +1,4 @@
-import { createMMKV, useMMKVString } from "react-native-mmkv";
+import { createMMKV, useMMKVBoolean, useMMKVString } from "react-native-mmkv";
 import type {
   AdvancedCalibration,
   AdvancedButtonsCalibration,
@@ -22,6 +22,7 @@ const calibrationsKey = "quick-panel.calibrations";
 const lastExportedModeKey = "quick-panel.last-exported-mode";
 const lastExportedAdvancedTargetKey = "quick-panel.last-exported-advanced-target";
 const seenHelpKey = "quick-panel.seen-help";
+const showSourceImageContextKey = "quick-panel.show-source-image-context";
 
 export const supportedLanguages = ["en", "zh"] as const;
 export type SupportedLanguage = (typeof supportedLanguages)[number];
@@ -30,6 +31,7 @@ export const helpEntryIds = [
   "calibration-outer",
   "advanced-calibration-panel-alignment",
   "advanced-calibration-panel-review",
+  "customize-image-placement",
 ] as const;
 export type HelpEntryId = (typeof helpEntryIds)[number];
 
@@ -71,6 +73,15 @@ export function loadLastExportedAdvancedTarget(): AdvancedTarget | null {
 
 export function saveLastExportedAdvancedTarget(target: AdvancedTarget) {
   storage.set(lastExportedAdvancedTargetKey, target);
+}
+
+export function useShowSourceImageContext() {
+  const [savedValue, setSavedValue] = useMMKVBoolean(
+    showSourceImageContextKey,
+    storage,
+  );
+
+  return [savedValue ?? true, setSavedValue] as const;
 }
 
 export function loadSeenHelp(): SavedSeenHelp {

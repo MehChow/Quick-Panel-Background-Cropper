@@ -484,3 +484,22 @@ The advanced calibration help sheets regressed during the Fold/wide-screen respo
 
 - `__tests__/help-sheet-layout.test.ts`
 - `__tests__/help-sheet-sizing.test.tsx`
+
+### 2026-07-20: Toggleable Customize source-image context
+
+- Customize can reveal the transformed source image around panel shapes; only
+  the outside area is dimmed, while panel opacity and overlays keep their
+  previous behavior.
+- The eye preference defaults on and persists under
+  `quick-panel.show-source-image-context`; it never changes transform or export
+  data.
+- A localized header helper explains QuickStar's square-crop movement limit.
+- The preview always reserves the placement-frame geometry. The eye control now
+  sits beside `Select another image` in the fixed footer and changes only layer
+  visibility, so the stage and image nodes never resize, unmount, or flash.
+- One inset amber outline shows the complete preview movement boundary; it is
+  preview-only and remains mounted with zero opacity in the clean state.
+- Panel borders render as absolute overlays instead of participating in the
+  image clipping surface, so eye toggles preserve the exact image position.
+- The helper explains the preview-only amber movement boundary in its own
+  localized paragraph.

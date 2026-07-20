@@ -6,6 +6,7 @@ const mockUseCustomizeScreen = jest.fn();
 const mockUseSequentialExport = jest.fn();
 let mockPreviewProps: Record<string, unknown> | null = null;
 let mockExportProps: Record<string, unknown> | null = null;
+let mockActionProps: Record<string, unknown> | null = null;
 const mockActivePreset = {
   id: "test-controls",
   label: "Test Controls",
@@ -51,7 +52,10 @@ jest.mock("@/features/quick-panel/shared/SubPageHeader", () => ({
 }));
 
 jest.mock("@/features/quick-panel/customize/components/CustomizeActions", () => ({
-  CustomizeActions: () => null,
+  CustomizeActions: (props: Record<string, unknown>) => {
+    mockActionProps = props;
+    return null;
+  },
 }));
 
 jest.mock("@/features/quick-panel/customize/components/ImagePickerCard", () => ({
@@ -148,6 +152,7 @@ describe("CustomizeScreen export surfaces", () => {
   beforeEach(() => {
     mockPreviewProps = null;
     mockExportProps = null;
+    mockActionProps = null;
     mockUseSequentialExport.mockReturnValue(createSequentialState(false));
   });
 
@@ -157,6 +162,15 @@ describe("CustomizeScreen export surfaces", () => {
     render(<CustomizeScreen />);
 
     expect(screen.queryByText("export-surfaces")).toBeNull();
+    expect(mockPreviewProps).toMatchObject({ showSourceImageContext: true });
+    expect(mockPreviewProps).not.toHaveProperty(
+      "onShowSourceImageContextChange",
+    );
+    expect(mockActionProps).toMatchObject({ showSourceImageContext: true });
+    expect(mockActionProps).toHaveProperty(
+      "onShowSourceImageContextChange",
+      expect.any(Function),
+    );
   });
 
   it("mounts export surfaces only while export rendering is needed", () => {
@@ -166,6 +180,19 @@ describe("CustomizeScreen export surfaces", () => {
     render(<CustomizeScreen />);
 
     expect(screen.getByText("export-surfaces")).toBeTruthy();
+    expect(mockPreviewProps).toMatchObject({ showSourceImageContext: true });
+    expect(mockPreviewProps).not.toHaveProperty(
+      "onShowSourceImageContextChange",
+    );
+    expect(mockActionProps).toMatchObject({ showSourceImageContext: true });
+    expect(mockActionProps).toHaveProperty(
+      "onShowSourceImageContextChange",
+      expect.any(Function),
+    );
+    expect(mockExportProps).not.toHaveProperty("showSourceImageContext");
+    expect(mockExportProps).not.toHaveProperty(
+      "onShowSourceImageContextChange",
+    );
   });
 
   it("keeps Button identifier controls screen-local and synchronized", () => {

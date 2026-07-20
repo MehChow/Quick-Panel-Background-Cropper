@@ -9,7 +9,9 @@ import type {
   QuickPanelPreset,
 } from "../../model/types";
 import { useQuickPanelPreviewGestures } from "../hooks/useQuickPanelPreviewGestures";
+import { getCustomizePreviewFrame } from "../source-image-context-geometry";
 import { PanelSlice } from "./PanelSlice";
+import { SourceImageContext } from "./SourceImageContext";
 
 interface QuickPanelPreviewProps {
   buttonIdentifierOpacity: number;
@@ -22,6 +24,7 @@ interface QuickPanelPreviewProps {
   transform: ImageTransform;
   onAdjustingChange: (isAdjusting: boolean) => void;
   onTransformChange: (transform: ImageTransform) => void;
+  showSourceImageContext: boolean;
 }
 
 export function QuickPanelPreview({
@@ -35,24 +38,26 @@ export function QuickPanelPreview({
   onTransformChange,
   preset,
   showButtonIdentifiers,
+  showSourceImageContext,
 }: QuickPanelPreviewProps) {
   const { width: windowWidth, height: windowHeight } = useWindowDimensions();
   const [containerWidth, setContainerWidth] = useState(0);
+  const previewFrame = getCustomizePreviewFrame(preset);
   const {
     gesture,
     handleLayout,
     layoutScale,
-    panelUnion,
     sharedScale,
     sharedTransform,
   } = useQuickPanelPreviewGestures({
     image,
     preset,
+    previewFrame,
     transform,
     onAdjustingChange,
     onTransformChange,
   });
-  const previewRatio = panelUnion.width / panelUnion.height;
+  const previewRatio = previewFrame.width / previewFrame.height;
   const horizontalPadding = 40;
   const widthBasis = containerWidth || windowWidth;
   const previewWidthBudget = Math.max(0, (widthBasis - horizontalPadding) * 0.75);
@@ -67,38 +72,56 @@ export function QuickPanelPreview({
       className="w-full items-center"
       onLayout={(event) => setContainerWidth(event.nativeEvent.layout.width)}
     >
-      <GestureDetector gesture={gesture}>
-        <Animated.View
-          onLayout={handleLayout}
-          style={{
-            aspectRatio: previewRatio,
-            opacity: 0.9,
-            width: previewWidth,
-          }}
-        >
-          {layoutScale
-            ? preset.visualOrder.map((id) => (
-                <PanelSlice
-                  buttonIdentifierOpacity={buttonIdentifierOpacity}
-                  buttonPanelOpacity={buttonPanelOpacity}
-                  identifierPositions={identifierPositions}
-                  key={id}
-                  showOverlay
-                  showButtonIdentifiers={showButtonIdentifiers}
-                  mode={preset.mode}
-                  panel={preset.panels[id]}
-                  image={image}
-                  previewUri={previewUri}
-                  layoutScale={layoutScale}
-                  originX={panelUnion.x}
-                  originY={panelUnion.y}
-                  previewScale={sharedScale}
-                  transform={sharedTransform}
-                />
-              ))
-            : null}
-        </Animated.View>
-      </GestureDetector>
+      <View style={{ width: previewWidth }}>
+        <GestureDetector gesture={gesture}>
+          <Animated.View
+            onLayout={handleLayout}
+            style={{
+              aspectRatio: previewRatio,
+              opacity: 0.9,
+              overflow: "hidden",
+              width: previewWidth,
+            }}
+            testID="quick-panel-preview-stage"
+          >
+            {layoutScale ? (
+              <SourceImageContext
+                buttonPanelOpacity={buttonPanelOpacity}
+                frame={previewFrame}
+                image={image}
+                layoutScale={layoutScale}
+                preset={preset}
+                previewScale={sharedScale}
+                previewUri={previewUri}
+                transform={sharedTransform}
+                visible={showSourceImageContext}
+              />
+            ) : null}
+            {layoutScale
+              ? preset.visualOrder.map((id) => (
+                  <PanelSlice
+                    buttonIdentifierOpacity={buttonIdentifierOpacity}
+                    buttonPanelOpacity={buttonPanelOpacity}
+                    identifierPositions={identifierPositions}
+                    image={image}
+                    isImageLayerVisible={!showSourceImageContext}
+                    key={id}
+                    layoutScale={layoutScale}
+                    mode={preset.mode}
+                    originX={previewFrame.x}
+                    originY={previewFrame.y}
+                    panel={preset.panels[id]}
+                    previewScale={sharedScale}
+                    previewUri={previewUri}
+                    showButtonIdentifiers={showButtonIdentifiers}
+                    showOverlay
+                    transform={sharedTransform}
+                  />
+                ))
+              : null}
+          </Animated.View>
+        </GestureDetector>
+      </View>
     </View>
   );
 }

@@ -75,6 +75,7 @@ describe("storage", () => {
     );
     mmkvStore?.set("quick-panel.last-exported-mode", "advanced");
     mmkvStore?.set("quick-panel.last-exported-advanced-target", "buttons");
+    mmkvStore?.set("quick-panel.show-source-image-context", false);
     mmkvStore?.set(
       "quick-panel.seen-help",
       JSON.stringify({ "calibration-outer": true }),
@@ -88,6 +89,7 @@ describe("storage", () => {
     expect(loadLastExportedMode()).toBe("advanced");
     expect(loadLastExportedAdvancedTarget()).toBe("buttons");
     expect(hasSeenHelp("calibration-outer")).toBe(true);
+    expect(mmkvStore?.get("quick-panel.show-source-image-context")).toBe(false);
   });
 
   it("round-trips the current payload without a version discriminator", () => {

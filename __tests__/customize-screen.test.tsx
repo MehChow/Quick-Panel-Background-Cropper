@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react-native";
+import { fireEvent, render, screen } from "@testing-library/react-native";
 import { CustomizeScreen } from "@/features/quick-panel/customize/CustomizeScreen";
 import type { QuickPanelPreset } from "@/features/quick-panel/model/types";
 
@@ -52,13 +52,33 @@ jest.mock("react-i18next", () => ({
 }));
 
 jest.mock("@/features/quick-panel/shared/SubPageHeader", () => ({
-  SubPageHeader: ({ title, subtitle }: { title: string; subtitle: string }) => (
-    <>
-      <>{title}</>
-      <>{subtitle}</>
-    </>
-  ),
+  SubPageHeader: (props: Record<string, unknown>) => {
+    const { Pressable, Text, View } = jest.requireActual("react-native");
+    return (
+      <View>
+        <Text>{props.title as string}</Text>
+        <Text>{props.subtitle as string}</Text>
+        {typeof props.onActionPress === "function" ? (
+          <Pressable
+            accessibilityLabel={props.actionAccessibilityLabel as string}
+            onPress={props.onActionPress}
+          />
+        ) : null}
+      </View>
+    );
+  },
 }));
+
+jest.mock(
+  "@/features/quick-panel/customize/components/CustomizeImagePlacementHelpSheet",
+  () => ({
+    CustomizeImagePlacementHelpSheet: () => {
+      const { Text } = jest.requireActual("react-native");
+      return <Text>customize.imagePlacementHelpTitle</Text>;
+    },
+  }),
+  { virtual: true },
+);
 
 jest.mock("@/features/quick-panel/customize/components/CustomizeActions", () => ({
   CustomizeActions: () => null,
@@ -125,6 +145,14 @@ describe("CustomizeScreen", () => {
 
     expect(screen.getByText("errors.imageTooLarge")).toBeTruthy();
     expect(screen.getByText("Unable to export images.")).toBeTruthy();
+  });
+
+  it("opens localized image-placement help from the header", () => {
+    render(<CustomizeScreen />);
+    fireEvent.press(
+      screen.getByLabelText("customize.imagePlacementHelpButton"),
+    );
+    expect(screen.getByText("customize.imagePlacementHelpTitle")).toBeTruthy();
   });
 
   it("uses the proxy only for preview while export keeps the original URI", () => {

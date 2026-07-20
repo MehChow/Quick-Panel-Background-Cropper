@@ -112,6 +112,10 @@ const preset: QuickPanelPreset = {
 const initialTransform = { scale: 1, x: -100, y: -120 };
 const image = { height: 1000, uri: "file:///image.png", width: 1000 };
 
+interface PreviewFrameProps {
+  previewFrame: QuickPanelPreset["customizationArea"];
+}
+
 describe("Customize preview gestures", () => {
   beforeEach(() => {
     mockPanHandlers.length = 0;
@@ -125,6 +129,7 @@ describe("Customize preview gestures", () => {
         onAdjustingChange: jest.fn(),
         onTransformChange: jest.fn(),
         preset,
+        previewFrame: preset.customizationArea,
         transform: initialTransform,
       }),
     );
@@ -158,6 +163,7 @@ describe("Customize preview gestures", () => {
         onAdjustingChange: jest.fn(),
         onTransformChange: jest.fn(),
         preset,
+        previewFrame: preset.customizationArea,
         transform: initialTransform,
       }),
     );
@@ -183,6 +189,7 @@ describe("Customize preview gestures", () => {
         onAdjustingChange: jest.fn(),
         onTransformChange: jest.fn(),
         preset,
+        previewFrame: preset.customizationArea,
         transform: initialTransform,
       }),
     );
@@ -208,6 +215,7 @@ describe("Customize preview gestures", () => {
         onAdjustingChange: jest.fn(),
         onTransformChange: jest.fn(),
         preset,
+        previewFrame: preset.customizationArea,
         transform: initialTransform,
       }),
     );
@@ -261,6 +269,7 @@ describe("Customize preview gestures", () => {
         onAdjustingChange: jest.fn(),
         onTransformChange: jest.fn(),
         preset,
+        previewFrame: preset.customizationArea,
         transform: initialTransform,
       }),
     );
@@ -307,6 +316,7 @@ describe("Customize preview gestures", () => {
         onAdjustingChange: jest.fn(),
         onTransformChange: jest.fn(),
         preset,
+        previewFrame: preset.customizationArea,
         transform: initialTransform,
       }),
     );
@@ -337,5 +347,35 @@ describe("Customize preview gestures", () => {
       x: -355,
       y: -423.75,
     });
+  });
+
+  it("changes presentation frames without committing a new transform", () => {
+    const onTransformChange = jest.fn();
+    const sourceFrame = {
+      x: 0,
+      y: -100,
+      width: 300,
+      height: 500,
+      radius: 0,
+    };
+    const hook = renderHook(
+      ({ previewFrame }: PreviewFrameProps) =>
+        useQuickPanelPreviewGestures({
+          image,
+          onAdjustingChange: jest.fn(),
+          onTransformChange,
+          preset,
+          previewFrame,
+          transform: initialTransform,
+        }),
+      {
+        initialProps: { previewFrame: preset.customizationArea },
+      },
+    );
+
+    hook.rerender({ previewFrame: sourceFrame });
+
+    expect(hook.result.current.sharedTransform.get()).toEqual(initialTransform);
+    expect(onTransformChange).not.toHaveBeenCalled();
   });
 });

@@ -108,6 +108,67 @@ describe("panel image intensity", () => {
     expect(previewImage.props.cachePolicy).toBe("memory-disk");
   });
 
+  it("keeps image coordinates independent from the decorative panel border", () => {
+    const screen = render(
+      <PanelSlice
+        buttonIdentifierOpacity={0.7}
+        buttonPanelOpacity={0.63}
+        image={image}
+        identifierPositions={{ horizontal: 0.5, vertical: 0.5 }}
+        layoutScale={1}
+        mode="default"
+        originX={0}
+        originY={0}
+        panel={createPanel("control")}
+        previewScale={previewScale}
+        previewUri="file:///preview.png"
+        showOverlay={false}
+        showButtonIdentifiers
+        transform={sharedTransform}
+      />,
+    );
+    const panelSlice = screen.getByTestId("panel-slice-brightness");
+    const frame = screen.getByTestId("panel-slice-frame-brightness");
+
+    expect(StyleSheet.flatten(panelSlice.props.style).borderWidth).toBeUndefined();
+    expect(frame.props.pointerEvents).toBe("none");
+    expect(frame.props.className).toContain("absolute inset-0");
+    expect(StyleSheet.flatten(frame.props.style)).toMatchObject({
+      borderColor: "rgba(255,255,255,0.9)",
+      borderRadius: 32,
+      borderWidth: 1,
+    });
+  });
+
+  it("keeps the image mounted but visually hidden in overlay-only mode", () => {
+    const screen = render(
+      <PanelSlice
+        buttonIdentifierOpacity={0.7}
+        buttonPanelOpacity={0.63}
+        image={image}
+        identifierPositions={{ horizontal: 0.5, vertical: 0.5 }}
+        layoutScale={1}
+        mode="default"
+        originX={0}
+        originY={0}
+        panel={createPanel("control")}
+        previewScale={previewScale}
+        previewUri="file:///preview.png"
+        isImageLayerVisible={false}
+        showOverlay={false}
+        showButtonIdentifiers
+        transform={sharedTransform}
+      />,
+    );
+
+    expect(
+      StyleSheet.flatten(screen.getByTestId("expo-image").props.style),
+    ).toMatchObject({ opacity: 0 });
+    expect(screen.getByTestId("panel-slice-brightness").props.className).toContain(
+      "bg-transparent",
+    );
+  });
+
   it("keeps Controls exports fully opaque", () => {
     const screen = render(
       <ExportSurface

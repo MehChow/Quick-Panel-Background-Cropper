@@ -4,21 +4,24 @@ import { QuickPanelScreenShell } from "@/features/quick-panel/shared/QuickPanelS
 import { SubPageHeader } from "@/features/quick-panel/shared/SubPageHeader";
 import { useTranslation } from "react-i18next";
 import { type Href, useRouter } from "expo-router";
-import { ScrollView, View } from "react-native";
+import { useState } from "react";
+import { ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { CustomizeActions } from "./components/CustomizeActions";
-import { ButtonCustomizeControls } from "./components/ButtonCustomizeControls";
+import { CustomizeImagePlacementHelpSheet } from "./components/CustomizeImagePlacementHelpSheet";
+import { CustomizePreviewSection } from "./components/CustomizePreviewSection";
 import { ExportSurfaceHost } from "./components/ExportSurfaceHost";
 import { ImagePickerCard } from "./components/ImagePickerCard";
-import { QuickPanelPreview } from "./components/QuickPanelPreview";
 import { useButtonCustomizeControls } from "./hooks/useButtonCustomizeControls";
 import { useCustomizePreviewImage } from "./hooks/useCustomizePreviewImage";
 import { useCustomizeScreen } from "./hooks/useCustomizeScreen";
 import { useSequentialExport } from "./hooks/useSequentialExport";
-
+import { markHelpSeen, useShowSourceImageContext } from "../store/storage";
 export function CustomizeScreen() {
   const { t } = useTranslation();
   const router = useRouter();
+  const [isHelpOpen, setIsHelpOpen] = useState(false);
+  const [showSourceImageContext, setShowSourceImageContext] = useShowSourceImageContext();
   const {
     selectedMode, activePreset, image, transform, setTransform,
     isExporting, isProcessingImage, noticeKey, errorKey, error,
@@ -34,7 +37,6 @@ export function CustomizeScreen() {
     preset: activePreset,
     showButtonIdentifiers: buttonControls.showButtonIdentifiers,
   });
-
   const recalibrate = () => {
     if (selectedMode === "advanced") {
       goToAdvancedCalibration();
@@ -44,9 +46,10 @@ export function CustomizeScreen() {
     goToCalibration();
     router.push("/calibration");
   };
-  const hasButtonPanels = activePreset.visualOrder.some(
-    (id) => activePreset.panels[id]?.family === "button",
-  );
+  const openHelp = () => {
+    markHelpSeen("customize-image-placement");
+    setIsHelpOpen(true);
+  };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -59,6 +62,8 @@ export function CustomizeScreen() {
               onExport={sequentialExport.startExport}
               onPick={pickImage}
               onReset={resetFit}
+              onShowSourceImageContextChange={setShowSourceImageContext}
+              showSourceImageContext={showSourceImageContext}
               canReset={canReset}
             />
           ) : (
@@ -69,14 +74,19 @@ export function CustomizeScreen() {
               onPress={pickImage}
               textClassName="font-semibold text-zinc-900"
             >
-              {isProcessingImage
-                ? t("customize.optimizingImage")
-                : t("calibration.chooseFromAlbum")}
+              {isProcessingImage ? t("customize.optimizingImage") : t("calibration.chooseFromAlbum")}
             </Button>
           )
         }
         header={
-          <SubPageHeader title={t("customize.title")} subtitle={t("customize.subtitle")} />
+          <SubPageHeader
+            actionAccessibilityLabel={t("customize.imagePlacementHelpButton")}
+            actionHelpId="customize-image-placement"
+            actionVariant="helper-balanced"
+            onActionPress={openHelp}
+            subtitle={t("customize.subtitle")}
+            title={t("customize.title")}
+          />
         }
       >
         <ScrollView
@@ -88,36 +98,16 @@ export function CustomizeScreen() {
           showsVerticalScrollIndicator={false}
         >
           {image ? (
-            <View className="items-center">
-              <QuickPanelPreview
-                buttonIdentifierOpacity={buttonControls.buttonIdentifierOpacity / 100}
-                buttonPanelOpacity={buttonControls.buttonPanelOpacity / 100}
-                identifierPositions={buttonControls.identifierPositions}
-                image={image}
-                previewUri={previewImage.previewUri}
-                preset={activePreset}
-                onAdjustingChange={setIsPreviewAdjusting}
-                transform={transform}
-                onTransformChange={setTransform}
-                showButtonIdentifiers={buttonControls.showButtonIdentifiers}
-              />
-              {hasButtonPanels ? (
-                <ButtonCustomizeControls
-                  buttonIdentifierOpacity={buttonControls.buttonIdentifierOpacity}
-                  buttonPanelOpacity={buttonControls.buttonPanelOpacity}
-                  hasHorizontalButtons={buttonControls.hasHorizontalButtons}
-                  hasVerticalButtons={buttonControls.hasVerticalButtons}
-                  horizontalIdentifierPosition={buttonControls.horizontalIdentifierPosition}
-                  onButtonIdentifierOpacityChange={buttonControls.setButtonIdentifierOpacity}
-                  onButtonPanelOpacityChange={buttonControls.setButtonPanelOpacity}
-                  onHorizontalIdentifierPositionChange={buttonControls.setHorizontalIdentifierPosition}
-                  onShowButtonIdentifiersChange={buttonControls.setShowButtonIdentifiers}
-                  onVerticalIdentifierPositionChange={buttonControls.setVerticalIdentifierPosition}
-                  showButtonIdentifiers={buttonControls.showButtonIdentifiers}
-                  verticalIdentifierPosition={buttonControls.verticalIdentifierPosition}
-                />
-              ) : null}
-            </View>
+            <CustomizePreviewSection
+              buttonControls={buttonControls}
+              image={image}
+              onAdjustingChange={setIsPreviewAdjusting}
+              onTransformChange={setTransform}
+              preset={activePreset}
+              previewUri={previewImage.previewUri}
+              showSourceImageContext={showSourceImageContext}
+              transform={transform}
+            />
           ) : (
             <ImagePickerCard mode={selectedMode ?? "default"} onRecalibrate={recalibrate} preset={activePreset} />
           )}
@@ -153,6 +143,7 @@ export function CustomizeScreen() {
           showButtonIdentifiers={buttonControls.showButtonIdentifiers}
         />
       ) : null}
+      {isHelpOpen ? <CustomizeImagePlacementHelpSheet onClose={() => setIsHelpOpen(false)} /> : null}
     </SafeAreaView>
   );
 }

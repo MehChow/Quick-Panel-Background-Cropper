@@ -7,6 +7,7 @@ import { getCoverScale } from "../../model/image-placement";
 import { getImagePlacementBounds } from "../../model/panel-geometry";
 import type {
   ImageTransform,
+  PanelRect,
   PickedImage,
   QuickPanelPreset,
 } from "../../model/types";
@@ -18,6 +19,7 @@ import {
 interface UseQuickPanelPreviewGesturesParams {
   image: PickedImage;
   preset: QuickPanelPreset;
+  previewFrame: PanelRect;
   transform: ImageTransform;
   onAdjustingChange: (isAdjusting: boolean) => void;
   onTransformChange: (transform: ImageTransform) => void;
@@ -26,11 +28,21 @@ interface UseQuickPanelPreviewGesturesParams {
 export function useQuickPanelPreviewGestures({
   image,
   preset,
+  previewFrame,
   transform,
   onAdjustingChange,
   onTransformChange,
 }: UseQuickPanelPreviewGesturesParams) {
-  const [layoutScale, setLayoutScale] = useState<number | null>(null);
+  const frameKey = [
+    previewFrame.x,
+    previewFrame.y,
+    previewFrame.width,
+    previewFrame.height,
+  ].join(":");
+  const [previewLayout, setPreviewLayout] = useState<PreviewLayout | null>(null);
+  const layoutScale = previewLayout?.frameKey === frameKey
+    ? previewLayout.scale
+    : null;
   const activeGestureCount = useSharedValue(0);
   const hasPinchStarted = useSharedValue(false);
   const isPinching = useSharedValue(false);
@@ -41,7 +53,6 @@ export function useQuickPanelPreviewGestures({
   const pinchStartTransform = useSharedValue(transform);
   const sharedScale = useSharedValue(1);
   const sharedTransform = useSharedValue(transform);
-  const panelUnion = preset.customizationArea;
   const imageBounds = getImagePlacementBounds(preset);
   const minScale = getCoverScale(image, preset);
 
@@ -56,9 +67,9 @@ export function useQuickPanelPreviewGestures({
   }, [layoutScale, sharedScale]);
 
   const handleLayout = (event: LayoutChangeEvent) => {
-    const nextScale = event.nativeEvent.layout.width / panelUnion.width;
+    const nextScale = event.nativeEvent.layout.width / previewFrame.width;
     if (nextScale > 0) {
-      setLayoutScale(nextScale);
+      setPreviewLayout({ frameKey, scale: nextScale });
     }
   };
 
@@ -113,8 +124,8 @@ export function useQuickPanelPreviewGestures({
       shouldRebasePinch.set(false);
       pinchStartGestureScale.set(event.scale);
       pinchStartTransform.set(sharedTransform.get());
-      pinchStartFocalX.set(panelUnion.x + event.focalX / scaleFactor);
-      pinchStartFocalY.set(panelUnion.y + event.focalY / scaleFactor);
+      pinchStartFocalX.set(previewFrame.x + event.focalX / scaleFactor);
+      pinchStartFocalY.set(previewFrame.y + event.focalY / scaleFactor);
     })
     .onTouchesDown((event) => {
       if (hasPinchStarted.get() && event.numberOfTouches === 2) {
@@ -133,8 +144,8 @@ export function useQuickPanelPreviewGestures({
         return;
       }
       const scaleFactor = sharedScale.get();
-      const focalX = panelUnion.x + event.focalX / scaleFactor;
-      const focalY = panelUnion.y + event.focalY / scaleFactor;
+      const focalX = previewFrame.x + event.focalX / scaleFactor;
+      const focalY = previewFrame.y + event.focalY / scaleFactor;
       if (shouldRebasePinch.get()) {
         shouldRebasePinch.set(false);
         pinchStartGestureScale.set(event.scale);
@@ -173,8 +184,12 @@ export function useQuickPanelPreviewGestures({
     gesture: Gesture.Simultaneous(pan, pinch),
     handleLayout,
     layoutScale,
-    panelUnion,
     sharedScale,
     sharedTransform,
   };
+}
+
+interface PreviewLayout {
+  frameKey: string;
+  scale: number;
 }

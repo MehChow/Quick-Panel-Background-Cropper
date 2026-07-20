@@ -81,8 +81,35 @@ jest.mock("react-native-mmkv", () => {
     ] as const;
   };
 
+  const useMMKVBoolean = (key: string) => {
+    const value = React.useSyncExternalStore(
+      React.useCallback((onStoreChange: () => void) => {
+        const subscription = instance.addOnValueChangedListener((changedKey) => {
+          if (changedKey === key) {
+            onStoreChange();
+          }
+        });
+        return () => subscription.remove();
+      }, [key]),
+      React.useCallback(() => getBoolean(key), [key]),
+      React.useCallback(() => getBoolean(key), [key]),
+    );
+
+    return [
+      value,
+      (nextValue: boolean | undefined) => {
+        if (nextValue === undefined) {
+          instance.remove(key);
+          return;
+        }
+        instance.set(key, nextValue);
+      },
+    ] as const;
+  };
+
   return {
     createMMKV: () => instance,
+    useMMKVBoolean,
     useMMKVString,
   };
 });
