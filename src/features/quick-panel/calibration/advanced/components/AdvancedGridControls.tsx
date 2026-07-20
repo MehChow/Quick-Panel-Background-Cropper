@@ -39,15 +39,18 @@ export function AdvancedGridControls({
           {t("advancedCalibration.gridControlsTitle")}
         </Text>
         <View className="flex-row items-center gap-2">
-          <Switch
-            accessibilityLabel={t("advancedCalibration.gridToggleLabel")}
-            onValueChange={onGridEnabledChange}
-            testID="advanced-grid-toggle"
-            value={isGridEnabled}
-          />
           <GridHelpButton
             label={t("advancedCalibration.gridHelpButton")}
             onPress={onGridHelpPress}
+            testID="advanced-grid-help"
+          />
+          <Switch
+            accessibilityLabel={t("advancedCalibration.gridToggleLabel")}
+            offLabel={t("advancedCalibration.gridToggleOff")}
+            onLabel={t("advancedCalibration.gridToggleOn")}
+            onValueChange={onGridEnabledChange}
+            testID="advanced-grid-toggle"
+            value={isGridEnabled}
           />
         </View>
       </View>

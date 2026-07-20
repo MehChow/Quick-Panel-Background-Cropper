@@ -45,6 +45,7 @@ describe("AdvancedGridControls", () => {
     expect(
       screen.getByLabelText("advancedCalibration.gridHelpButton"),
     ).toBeTruthy();
+    expect(screen.getByTestId("advanced-grid-help")).toBeTruthy();
   });
 
   it("requests enabling from the accessible switch", () => {

@@ -134,6 +134,8 @@ const en = {
       gridHelpButton: "Grid help",
       gridControlsTitle: "Set the snapping grid",
       gridToggleLabel: "Enable snapping grid",
+      gridToggleOn: "On",
+      gridToggleOff: "Off",
       panelSelectionTitle: "Which panels are in this region?",
       panelSelectionBody:
         "Turn off any unwanted Controls panel that is missing from this region. Disabled panels will not be aligned or exported.",
