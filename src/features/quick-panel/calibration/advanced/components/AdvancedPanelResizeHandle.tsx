@@ -10,6 +10,7 @@ interface Props {
   color?: string;
   draftRect: SharedValue<PanelRect>;
   grid: AdvancedSnapGrid;
+  isGridEnabled: boolean;
   outerRect: PanelRect;
   position: HandlePosition;
   rect: PanelRect;

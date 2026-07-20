@@ -57,6 +57,7 @@ const baseProps = {
   family: "button" as const,
   grid: { columns: 4, rows: 5 },
   isActive: true,
+  isGridEnabled: true,
   label: "button-1" as const,
   labelText: "Wi-Fi",
   outerRect: { x: 0, y: 0, width: 300, height: 400, radius: 0 },

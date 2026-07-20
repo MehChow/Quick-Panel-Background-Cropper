@@ -177,6 +177,7 @@ function parseAdvancedCalibration(value: unknown): AdvancedCalibration | null {
     screenshotWidth: item.screenshotWidth,
     screenshotHeight: item.screenshotHeight,
     grid,
+    isGridEnabled: parseGridEnabled(item.isGridEnabled),
     outerRect,
     enabledPanels,
     panels,
@@ -231,6 +232,7 @@ function parseAdvancedButtonsCalibration(value: unknown): AdvancedButtonsCalibra
     screenshotWidth: item.screenshotWidth,
     screenshotHeight: item.screenshotHeight,
     grid,
+    isGridEnabled: parseGridEnabled(item.isGridEnabled),
     outerRect,
     buttons,
   };
@@ -283,6 +285,10 @@ function parseAdvancedGrid(value: unknown): AdvancedSnapGrid | null {
   return isGridValue(grid.columns) && isGridValue(grid.rows)
     ? { columns: grid.columns, rows: grid.rows }
     : null;
+}
+
+function parseGridEnabled(value: unknown): boolean {
+  return typeof value === "boolean" ? value : true;
 }
 
 function parseRectValue(value: unknown): PanelRect | null {

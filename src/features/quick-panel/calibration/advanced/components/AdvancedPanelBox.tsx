@@ -19,6 +19,7 @@ interface Props {
   grid: AdvancedSnapGrid;
   family: PanelFamily;
   isActive: boolean;
+  isGridEnabled: boolean;
   label: PanelId;
   labelText: string;
   outerRect: PanelRect;

@@ -19,6 +19,7 @@ const canvasPadding = 12;
 
 interface Props {
   grid: AdvancedSnapGrid;
+  isGridEnabled: boolean;
   panelItems: EditablePanelItem[];
   outerRect: PanelRect;
   phase: AdvancedCalibrationPhase;
@@ -29,6 +30,7 @@ interface Props {
 
 export function AdvancedPanelCanvas({
   grid,
+  isGridEnabled,
   panelItems,
   outerRect,
   phase,
@@ -86,7 +88,7 @@ export function AdvancedPanelCanvas({
           pointerEvents="none"
           className="absolute inset-0 border-2 border-emerald-300 bg-emerald-300/5"
         />
-        {phase !== "confirm" ? (
+        {isGridEnabled && phase !== "confirm" ? (
           <AdvancedSnapGridOverlay
             grid={grid}
             outerRect={localOuterRect}
@@ -99,6 +101,7 @@ export function AdvancedPanelCanvas({
             family={labels[id]?.family ?? "control"}
             grid={grid}
             isActive={activeId === id}
+            isGridEnabled={isGridEnabled}
             labelText={labels[id]?.label ?? id}
             outerRect={localOuterRect}
             rect={toLocalRect(panels[id], viewportRect)}

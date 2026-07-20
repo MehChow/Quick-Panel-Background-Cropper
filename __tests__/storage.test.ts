@@ -25,6 +25,7 @@ const currentCalibrations = {
     screenshotWidth: 1080,
     screenshotHeight: 2340,
     grid: { columns: 5, rows: 6 },
+    isGridEnabled: true,
     outerRect: rect,
     panels: {
       buttonBox: { x: 20, y: 40, width: 100, height: 120, radius: 0 },
@@ -38,6 +39,7 @@ const currentCalibrations = {
     screenshotWidth: 1080,
     screenshotHeight: 2340,
     grid: { columns: 2, rows: 2 },
+    isGridEnabled: false,
     outerRect: rect,
     buttons: [
       {
@@ -107,6 +109,30 @@ describe("storage", () => {
     expect(mmkvStore?.has("quick-panel.calibrations-v3")).toBe(false);
 
     expect(loadCalibrations()).toEqual(currentCalibrations);
+  });
+
+  it("defaults missing or invalid snapping preferences to enabled", () => {
+    const mmkvStore = (globalThis as typeof globalThis & MmkvTestGlobal)
+      .__mmkvStore;
+    const legacyControls = { ...currentCalibrations.advancedControls };
+    const legacyButtons: Record<string, unknown> = {
+      ...currentCalibrations.advancedButtons,
+      isGridEnabled: "off",
+    };
+    delete (legacyControls as Partial<typeof legacyControls>).isGridEnabled;
+
+    mmkvStore?.set(
+      "quick-panel.calibrations",
+      JSON.stringify({
+        default: null,
+        advancedControls: legacyControls,
+        advancedButtons: legacyButtons,
+      }),
+    );
+
+    const loaded = loadCalibrations();
+    expect(loaded.advancedControls?.isGridEnabled).toBe(true);
+    expect(loaded.advancedButtons?.isGridEnabled).toBe(true);
   });
 
   it("keeps valid branches and rejects invalid branches in the current payload", () => {

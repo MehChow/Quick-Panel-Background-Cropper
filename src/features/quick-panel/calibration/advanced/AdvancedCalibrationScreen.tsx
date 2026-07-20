@@ -42,6 +42,7 @@ export function AdvancedCalibrationScreen() {
     goBack,
     goForward,
     grid,
+    isGridEnabled,
     isConfirmPhase,
     isGridPhase,
     isLeaveDialogOpen,
@@ -53,6 +54,7 @@ export function AdvancedCalibrationScreen() {
     requestLeaveCalibration,
     saveCalibration,
     setColumns,
+    setIsGridEnabled,
     setRows,
     setAdvancedEnabledPanels,
     setAdvancedButtons,
@@ -120,11 +122,13 @@ export function AdvancedCalibrationScreen() {
               canGoBack={canGoBack}
               columns={grid.columns}
               isConfirmPhase={isConfirmPhase}
+              isGridEnabled={isGridEnabled}
               isGridPhase={isGridPhase}
               isNextDisabled={isNextDisabled}
               isOuterPhase={isOuterPhase}
               onBack={handleBack}
               onColumnsChange={setColumns}
+              onGridEnabledChange={setIsGridEnabled}
               onGridHelpPress={() => setIsGridHelpOpen(true)}
               onImport={importScreenshot}
               onNext={handleNext}
@@ -181,6 +185,7 @@ export function AdvancedCalibrationScreen() {
         ) : screenshot && outerRect && panels ? (
           <AdvancedPanelCanvas
             grid={grid}
+            isGridEnabled={isGridEnabled}
             panelItems={panelItems}
             screenshot={screenshot}
             outerRect={outerRect}

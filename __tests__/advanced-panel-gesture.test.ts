@@ -13,6 +13,7 @@ describe("advanced panel gesture geometry", () => {
         dx: 20,
         dy: 10,
         grid: { columns: 1, rows: 1 },
+        isGridEnabled: true,
         outerRect,
         scale: 0.5,
         startRect,
@@ -26,6 +27,7 @@ describe("advanced panel gesture geometry", () => {
         dx: 15,
         dy: 20,
         grid: { columns: 1, rows: 1 },
+        isGridEnabled: true,
         outerRect,
         position: "bottomRight",
         scale: 1,
@@ -40,6 +42,7 @@ describe("advanced panel gesture geometry", () => {
         dx: -20,
         dy: -10,
         grid: { columns: 1, rows: 1 },
+        isGridEnabled: true,
         outerRect,
         position: "topLeft",
         scale: 0.5,
@@ -53,6 +56,7 @@ describe("advanced panel gesture geometry", () => {
       dx: 47,
       dy: 0,
       grid: { columns: 3, rows: 4 },
+      isGridEnabled: true,
       outerRect,
       scale: 1,
       startRect,
@@ -61,6 +65,7 @@ describe("advanced panel gesture geometry", () => {
       dx: 400,
       dy: 500,
       grid: { columns: 1, rows: 1 },
+      isGridEnabled: true,
       outerRect,
       scale: 1,
       startRect,
@@ -68,6 +73,47 @@ describe("advanced panel gesture geometry", () => {
 
     expect(snapped.rect.x).toBe(94);
     expect(snapped.snapKey).toContain("left:x:94.00");
+    expect(clamped.rect).toMatchObject({ x: 220, y: 300 });
+  });
+
+  it("moves freely without a snap key when the grid is disabled", () => {
+    const result = getAdvancedPanelMoveResult({
+      dx: 47,
+      dy: 0,
+      grid: { columns: 3, rows: 4 },
+      isGridEnabled: false,
+      outerRect,
+      scale: 1,
+      startRect,
+    });
+
+    expect(result.rect.x).toBe(97);
+    expect(result.snapKey).toBeNull();
+  });
+
+  it("resizes freely but remains clamped when the grid is disabled", () => {
+    const free = getAdvancedPanelResizeResult({
+      dx: 47,
+      dy: 0,
+      grid: { columns: 3, rows: 4 },
+      isGridEnabled: false,
+      outerRect,
+      position: "bottomRight",
+      scale: 1,
+      startRect,
+    });
+    const clamped = getAdvancedPanelMoveResult({
+      dx: 400,
+      dy: 500,
+      grid: { columns: 3, rows: 4 },
+      isGridEnabled: false,
+      outerRect,
+      scale: 1,
+      startRect,
+    });
+
+    expect(free.rect).toMatchObject({ width: 127, height: 100 });
+    expect(free.snapKey).toBeNull();
     expect(clamped.rect).toMatchObject({ x: 220, y: 300 });
   });
 });
