@@ -12,6 +12,23 @@ This file is a running project note log for implementation details that are easy
 
 ## Entries
 
+### 2026-07-20: Customize pinch continuity
+
+- Pinch-start flash came from stale pan start state and competing simultaneous
+  pan/pinch transform writes. Pinch now captures transform and focal point when
+  activated, owns updates while active, and pan uses incremental deltas.
+- Android `ACTION_POINTER_UP` keeps RNGH pinch active, changes focal point to
+  remaining finger, then emits one trailing update. `onTouchesUp` now freezes
+  transform at two-to-one transition and ignores that invalid update.
+- One-finger pan resumes from frozen transform. Returning second finger rebases
+  existing pinch recognizer to current transform, focal point, and gesture
+  scale before accepting more zoom updates.
+- Clamp, export geometry, persisted transform behavior, and stored app data
+  remain unchanged.
+- Regression coverage reproduces Android event order, pointer-lift stability,
+  pan continuation, and second-finger return. Full verification passed: 41
+  Jest suites, 144 tests, ESLint, TypeScript, and `git diff --check`.
+
 ### 2026-07-17: Buttons-only performance baseline
 
 Target fixture: `SM-S9360`, One UI 8.5 (`ro.build.version.oneui=80500`),
