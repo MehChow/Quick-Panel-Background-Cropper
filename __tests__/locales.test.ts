@@ -5,17 +5,15 @@ describe("customize locale strings", () => {
     const english = enLocale.translation.customize;
     const chinese = zhLocale.translation.customize;
     expect(english.imagePlacementBoundaryHelp).toBe(
-      "The amber border marks the full area the image must cover. Zoom in if you need more room to move the image within it.",
+      "The full placement area is the region the image must cover. Zoom in if you need more room to move the image within it.",
     );
     expect(chinese.imagePlacementBoundaryHelp).toBe(
-      "琥珀色邊框表示圖片必須覆蓋的完整範圍。如需在範圍內有更多移動空間，請放大圖片。",
+      "完整放置範圍是圖片必須覆蓋的區域。如需在範圍內有更多移動空間，請放大圖片。",
     );
     for (const locale of [english, chinese]) {
       expect(locale.imagePlacementHelpButton).toBeTruthy();
       expect(locale.imagePlacementHelpTitle).toBeTruthy();
       expect(locale.imagePlacementHelpBody).toBeTruthy();
-      expect(locale.showSourceImageContext).toBeTruthy();
-      expect(locale.hideSourceImageContext).toBeTruthy();
     }
   });
 
@@ -23,14 +21,8 @@ describe("customize locale strings", () => {
     expect(enLocale.translation.customize.optimizingImage).toBe(
       "Optimizing image...",
     );
-    expect(enLocale.translation.customize.imageOptimized).toBe(
-      "Selected image was optimized for smoother adjustment.",
-    );
     expect(zhLocale.translation.customize.optimizingImage).toBe(
       "最佳化圖片中...",
-    );
-    expect(zhLocale.translation.customize.imageOptimized).toBe(
-      "已優化所選圖片，拖曳調整會更順暢。",
     );
   });
 

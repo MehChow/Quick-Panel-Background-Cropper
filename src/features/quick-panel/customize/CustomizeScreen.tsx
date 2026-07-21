@@ -1,12 +1,12 @@
-import { Text } from "@/components/ani-ui/text";
 import { Button } from "@/components/ani-ui/button";
 import { QuickPanelScreenShell } from "@/features/quick-panel/shared/QuickPanelScreenShell";
 import { SubPageHeader } from "@/features/quick-panel/shared/SubPageHeader";
 import { useTranslation } from "react-i18next";
 import { type Href, useRouter } from "expo-router";
-import { useState } from "react";
-import { ScrollView } from "react-native";
+import { useEffect, useState } from "react";
+import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { toast } from "sonner-native";
 import { CustomizeActions } from "./components/CustomizeActions";
 import { CustomizeImagePlacementHelpSheet } from "./components/CustomizeImagePlacementHelpSheet";
 import { CustomizePreviewSection } from "./components/CustomizePreviewSection";
@@ -16,21 +16,40 @@ import { useButtonCustomizeControls } from "./hooks/useButtonCustomizeControls";
 import { useCustomizePreviewImage } from "./hooks/useCustomizePreviewImage";
 import { useCustomizeScreen } from "./hooks/useCustomizeScreen";
 import { useSequentialExport } from "./hooks/useSequentialExport";
-import { markHelpSeen, useShowSourceImageContext } from "../store/storage";
+import { markHelpSeen } from "../store/storage";
 export function CustomizeScreen() {
   const { t } = useTranslation();
   const router = useRouter();
   const [isHelpOpen, setIsHelpOpen] = useState(false);
-  const [showSourceImageContext, setShowSourceImageContext] = useShowSourceImageContext();
   const {
     selectedMode, activePreset, image, transform, setTransform,
-    isExporting, isProcessingImage, noticeKey, errorKey, error,
-    isPreviewAdjusting, setIsPreviewAdjusting,
+    isExporting, isProcessingImage, errorKey, error,
+    setIsPreviewAdjusting,
     pickImage, resetFit, canReset,
     goToCalibration, goToAdvancedCalibration,
   } = useCustomizeScreen();
   const buttonControls = useButtonCustomizeControls(activePreset);
   const previewImage = useCustomizePreviewImage(image);
+  useEffect(() => {
+    if (!error && !errorKey) {
+      return;
+    }
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
+    const frameId = requestAnimationFrame(() => {
+      timeoutId = setTimeout(() => {
+        if (error || errorKey) {
+          toast.error(error ?? t(errorKey ?? "errors.unknown"));
+        }
+      }, 0);
+    });
+
+    return () => {
+      cancelAnimationFrame(frameId);
+      if (timeoutId !== null) {
+        clearTimeout(timeoutId);
+      }
+    };
+  }, [error, errorKey, t]);
   const sequentialExport = useSequentialExport({
     image,
     isProcessingImage,
@@ -62,8 +81,6 @@ export function CustomizeScreen() {
               onExport={sequentialExport.startExport}
               onPick={pickImage}
               onReset={resetFit}
-              onShowSourceImageContextChange={setShowSourceImageContext}
-              showSourceImageContext={showSourceImageContext}
               canReset={canReset}
             />
           ) : (
@@ -89,13 +106,10 @@ export function CustomizeScreen() {
           />
         }
       >
-        <ScrollView
-          className="flex-1"
-          contentContainerClassName="grow justify-center pb-4"
+        <View
+          className="flex-1 overflow-hidden"
+          testID="customize-middle-area"
           pointerEvents={isExporting ? "none" : "auto"}
-          scrollEnabled={!isPreviewAdjusting && !isExporting}
-          overScrollMode="never"
-          showsVerticalScrollIndicator={false}
         >
           {image ? (
             <CustomizePreviewSection
@@ -105,28 +119,12 @@ export function CustomizeScreen() {
               onTransformChange={setTransform}
               preset={activePreset}
               previewUri={previewImage.previewUri}
-              showSourceImageContext={showSourceImageContext}
               transform={transform}
             />
           ) : (
             <ImagePickerCard mode={selectedMode ?? "default"} onRecalibrate={recalibrate} preset={activePreset} />
           )}
-          {noticeKey ? (
-            <Text className="mt-4 rounded-md bg-green-500/15 p-3 text-sm text-green-100">
-              {t(noticeKey)}
-            </Text>
-          ) : null}
-          {error ? (
-            <Text className="mt-4 rounded-md bg-red-500/15 p-3 text-sm text-red-100">
-              {error}
-            </Text>
-          ) : null}
-          {errorKey ? (
-            <Text className="mt-4 rounded-md bg-red-500/15 p-3 text-sm text-red-100">
-              {t(errorKey)}
-            </Text>
-          ) : null}
-        </ScrollView>
+        </View>
       </QuickPanelScreenShell>
       {image && sequentialExport.activePanel && sequentialExport.activeToken ? (
         <ExportSurfaceHost

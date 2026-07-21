@@ -2,7 +2,6 @@ import { Button } from "@/components/ani-ui/button";
 import { Skeleton } from "@/components/ani-ui/skeleton";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
-import { SourceImageContextToggle } from "./SourceImageContextToggle";
 
 interface CustomizeActionsProps {
   canReset: boolean;
@@ -11,8 +10,6 @@ interface CustomizeActionsProps {
   onExport: () => void;
   onPick: () => void;
   onReset: () => void;
-  onShowSourceImageContextChange: (value: boolean) => void;
-  showSourceImageContext: boolean;
 }
 
 export function CustomizeActions({
@@ -22,20 +19,15 @@ export function CustomizeActions({
   onExport,
   onPick,
   onReset,
-  onShowSourceImageContextChange,
-  showSourceImageContext,
 }: CustomizeActionsProps) {
   const { t } = useTranslation();
   const isBusy = isExporting || isProcessingImage;
 
   return (
     <View className="mt-5 gap-3">
-      <View
-        className="flex-row gap-3"
-        testID="customize-image-source-actions"
-      >
+      <View>
         <Button
-          className="flex-1 bg-white px-0"
+          className="w-full bg-white px-0"
           disabled={isBusy}
           onPress={onPick}
           textClassName="w-full font-semibold text-black"
@@ -44,11 +36,6 @@ export function CustomizeActions({
             ? t("customize.optimizingImage")
             : t("customize.chooseAnotherImage")}
         </Button>
-        <SourceImageContextToggle
-          disabled={isBusy}
-          onChange={onShowSourceImageContextChange}
-          value={showSourceImageContext}
-        />
       </View>
       <View className="flex-row gap-3 pb-4">
         <View className="basis-0 flex-1">

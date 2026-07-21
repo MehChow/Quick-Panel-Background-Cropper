@@ -5,6 +5,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { Toaster } from "sonner-native";
 import "../../global.css";
 import "../../i18next/i18next";
 
@@ -28,6 +29,7 @@ export default function RootLayout() {
               }}
             />
           </View>
+          <Toaster position="top-center" theme="light" />
           {/* {__DEV__ ? <FloatingLanguageSwitchButton /> : null} */}
         </BottomSheetModalProvider>
       </SafeAreaProvider>

@@ -162,14 +162,10 @@ describe("CustomizeScreen export surfaces", () => {
     render(<CustomizeScreen />);
 
     expect(screen.queryByText("export-surfaces")).toBeNull();
-    expect(mockPreviewProps).toMatchObject({ showSourceImageContext: true });
-    expect(mockPreviewProps).not.toHaveProperty(
+    expect(mockPreviewProps).not.toHaveProperty("showSourceImageContext");
+    expect(mockActionProps).not.toHaveProperty("showSourceImageContext");
+    expect(mockActionProps).not.toHaveProperty(
       "onShowSourceImageContextChange",
-    );
-    expect(mockActionProps).toMatchObject({ showSourceImageContext: true });
-    expect(mockActionProps).toHaveProperty(
-      "onShowSourceImageContextChange",
-      expect.any(Function),
     );
   });
 
@@ -180,14 +176,10 @@ describe("CustomizeScreen export surfaces", () => {
     render(<CustomizeScreen />);
 
     expect(screen.getByText("export-surfaces")).toBeTruthy();
-    expect(mockPreviewProps).toMatchObject({ showSourceImageContext: true });
-    expect(mockPreviewProps).not.toHaveProperty(
+    expect(mockPreviewProps).not.toHaveProperty("showSourceImageContext");
+    expect(mockActionProps).not.toHaveProperty("showSourceImageContext");
+    expect(mockActionProps).not.toHaveProperty(
       "onShowSourceImageContextChange",
-    );
-    expect(mockActionProps).toMatchObject({ showSourceImageContext: true });
-    expect(mockActionProps).toHaveProperty(
-      "onShowSourceImageContextChange",
-      expect.any(Function),
     );
     expect(mockExportProps).not.toHaveProperty("showSourceImageContext");
     expect(mockExportProps).not.toHaveProperty(

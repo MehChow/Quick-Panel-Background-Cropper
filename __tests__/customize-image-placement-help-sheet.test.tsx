@@ -23,7 +23,7 @@ jest.mock("@/features/quick-panel/shared/useBottomSheetInsets", () => ({
 }));
 
 describe("CustomizeImagePlacementHelpSheet", () => {
-  it("explains the amber boundary in a separate paragraph", () => {
+  it("explains the full placement area in a separate paragraph", () => {
     render(<CustomizeImagePlacementHelpSheet onClose={jest.fn()} />);
 
     expect(screen.getByText("customize.imagePlacementHelpBody")).toBeTruthy();

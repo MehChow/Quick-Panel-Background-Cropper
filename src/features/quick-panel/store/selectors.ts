@@ -48,7 +48,6 @@ export const quickPanelSelectors = {
     exports: state.exports,
     isExporting: state.isExporting,
     isProcessingImage: state.isProcessingImage,
-    noticeKey: state.noticeKey,
     errorKey: state.errorKey,
     error: state.error,
     goToCalibration: state.goToCalibration,

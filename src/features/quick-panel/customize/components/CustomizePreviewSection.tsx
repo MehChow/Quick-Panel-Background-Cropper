@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { View } from "react-native";
 import type {
   ImageTransform,
@@ -15,7 +16,6 @@ interface CustomizePreviewSectionProps {
   onTransformChange: (value: ImageTransform) => void;
   preset: QuickPanelPreset;
   previewUri: string;
-  showSourceImageContext: boolean;
   transform: ImageTransform;
 }
 
@@ -26,15 +26,23 @@ export function CustomizePreviewSection({
   onTransformChange,
   preset,
   previewUri,
-  showSourceImageContext,
   transform,
 }: CustomizePreviewSectionProps) {
+  const [availableHeight, setAvailableHeight] = useState(0);
+  const [controlsHeight, setControlsHeight] = useState(0);
   const hasButtonPanels = preset.visualOrder.some(
     (id) => preset.panels[id]?.family === "button",
   );
+  const previewMaxHeight = Math.max(
+    0,
+    availableHeight - controlsHeight - (hasButtonPanels ? 16 : 0),
+  );
 
   return (
-    <View className="items-center">
+    <View
+      className="flex-1 items-center justify-center"
+      onLayout={(event) => setAvailableHeight(event.nativeEvent.layout.height)}
+    >
       <QuickPanelPreview
         buttonIdentifierOpacity={buttonControls.buttonIdentifierOpacity / 100}
         buttonPanelOpacity={buttonControls.buttonPanelOpacity / 100}
@@ -44,8 +52,8 @@ export function CustomizePreviewSection({
         onTransformChange={onTransformChange}
         preset={preset}
         previewUri={previewUri}
+        maxHeight={previewMaxHeight || undefined}
         showButtonIdentifiers={buttonControls.showButtonIdentifiers}
-        showSourceImageContext={showSourceImageContext}
         transform={transform}
       />
       {hasButtonPanels ? (
@@ -60,6 +68,7 @@ export function CustomizePreviewSection({
           onHorizontalIdentifierPositionChange={buttonControls.setHorizontalIdentifierPosition}
           onShowButtonIdentifiersChange={buttonControls.setShowButtonIdentifiers}
           onVerticalIdentifierPositionChange={buttonControls.setVerticalIdentifierPosition}
+          onLayout={(event) => setControlsHeight(event.nativeEvent.layout.height)}
           showButtonIdentifiers={buttonControls.showButtonIdentifiers}
           verticalIdentifierPosition={buttonControls.verticalIdentifierPosition}
         />

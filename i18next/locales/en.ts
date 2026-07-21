@@ -68,11 +68,8 @@ const en = {
       imagePlacementHelpBody:
         "QuickStar applies a square image to every panel. Wide panels display only the center part of that square, so the hidden area must remain covered too. Zoom in to create more space for moving the image.",
       imagePlacementBoundaryHelp:
-        "The amber border marks the full area the image must cover. Zoom in if you need more room to move the image within it.",
-      showSourceImageContext: "Show full source image",
-      hideSourceImageContext: "Hide full source image",
+        "The full placement area is the region the image must cover. Zoom in if you need more room to move the image within it.",
       optimizingImage: "Optimizing image...",
-      imageOptimized: "Selected image was optimized for smoother adjustment.",
       pickerTitle: "Choose background image",
       pickerSubtitle: "PNG, JPG, and WEBP are supported.",
       layoutPreview: "Current layout preview",

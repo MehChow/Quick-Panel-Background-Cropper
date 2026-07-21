@@ -1,6 +1,7 @@
+import { Switch } from "@/components/ani-ui/switch";
 import { Text } from "@/components/ani-ui/text";
 import { useTranslation } from "react-i18next";
-import { Pressable, View } from "react-native";
+import { type LayoutChangeEvent, View } from "react-native";
 import { ButtonAdjustmentTabs } from "./ButtonAdjustmentTabs";
 
 interface ButtonCustomizeControlsProps {
@@ -12,6 +13,7 @@ interface ButtonCustomizeControlsProps {
   onButtonIdentifierOpacityChange: (value: number) => void;
   onButtonPanelOpacityChange: (value: number) => void;
   onHorizontalIdentifierPositionChange: (value: number) => void;
+  onLayout?: (event: LayoutChangeEvent) => void;
   onShowButtonIdentifiersChange: (value: boolean) => void;
   onVerticalIdentifierPositionChange: (value: number) => void;
   showButtonIdentifiers: boolean;
@@ -27,6 +29,7 @@ export function ButtonCustomizeControls({
   onButtonIdentifierOpacityChange,
   onButtonPanelOpacityChange,
   onHorizontalIdentifierPositionChange,
+  onLayout,
   onShowButtonIdentifiersChange,
   onVerticalIdentifierPositionChange,
   showButtonIdentifiers,
@@ -34,28 +37,23 @@ export function ButtonCustomizeControls({
 }: ButtonCustomizeControlsProps) {
   const { t } = useTranslation();
   return (
-    <View className="mt-4 w-full max-w-md gap-3 rounded-2xl border border-white/10 bg-zinc-900/90 px-4 py-3">
-      <Pressable
-        accessibilityRole="switch"
-        accessibilityState={{ checked: showButtonIdentifiers }}
-        className={`min-h-11 flex-row items-center justify-between rounded-xl border px-3 ${
-          showButtonIdentifiers
-            ? "border-emerald-300/40 bg-emerald-300/10"
-            : "border-white/10 bg-zinc-800/70"
-        }`}
-        onPress={() => onShowButtonIdentifiersChange(!showButtonIdentifiers)}
-      >
+    <View
+      className="mt-4 w-full max-w-md gap-3 rounded-2xl border border-white/10 bg-zinc-900/90 px-4 py-3"
+      onLayout={onLayout}
+    >
+      <View className="min-h-11 flex-row items-center justify-between rounded-xl border border-white/10 bg-zinc-800/70 px-3">
         <Text className="font-semibold text-white">
           {t("customize.showButtonIdentifiers")}
         </Text>
-        <Text className={`text-xs font-semibold uppercase ${
-          showButtonIdentifiers ? "text-emerald-200" : "text-zinc-500"
-        }`}>
-          {t(showButtonIdentifiers
-            ? "customize.buttonIdentifiersOn"
-            : "customize.buttonIdentifiersOff")}
-        </Text>
-      </Pressable>
+        <Switch
+          accessibilityLabel={t("customize.showButtonIdentifiers")}
+          offLabel={t("customize.buttonIdentifiersOff")}
+          onLabel={t("customize.buttonIdentifiersOn")}
+          onValueChange={onShowButtonIdentifiersChange}
+          testID="show-button-identifiers-toggle"
+          value={showButtonIdentifiers}
+        />
+      </View>
       <ButtonAdjustmentTabs
         buttonIdentifierOpacity={buttonIdentifierOpacity}
         buttonPanelOpacity={buttonPanelOpacity}

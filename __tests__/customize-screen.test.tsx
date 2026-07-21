@@ -1,10 +1,13 @@
-import { fireEvent, render, screen } from "@testing-library/react-native";
+import { act, fireEvent, render, screen } from "@testing-library/react-native";
 import { CustomizeScreen } from "@/features/quick-panel/customize/CustomizeScreen";
 import type { QuickPanelPreset } from "@/features/quick-panel/model/types";
+import { toast } from "sonner-native";
 
 const mockUseCustomizeScreen = jest.fn();
 const mockUseSequentialExport = jest.fn();
-
+let animationFrames: Array<(timestamp: number) => void> = [];
+const originalRequestAnimationFrame = globalThis.requestAnimationFrame;
+const originalCancelAnimationFrame = globalThis.cancelAnimationFrame;
 const mockActivePreset = {
   id: "test-controls",
   label: "Test Controls",
@@ -28,7 +31,6 @@ const mockScreenState = {
   isExporting: false,
   isPreviewAdjusting: false,
   isProcessingImage: false,
-  noticeKey: "customize.imageOptimized",
   pickImage: jest.fn(),
   refs: {},
   resetFit: jest.fn(),
@@ -49,6 +51,10 @@ jest.mock("react-i18next", () => ({
   useTranslation: () => ({
     t: (key: string) => key,
   }),
+}));
+
+jest.mock("sonner-native", () => ({
+  toast: { error: jest.fn(), success: jest.fn() },
 }));
 
 jest.mock("@/features/quick-panel/shared/SubPageHeader", () => ({
@@ -123,6 +129,15 @@ jest.mock("@/features/quick-panel/customize/hooks/useSequentialExport", () => ({
 
 describe("CustomizeScreen", () => {
   beforeEach(() => {
+    jest.useFakeTimers();
+    animationFrames = [];
+    globalThis.requestAnimationFrame = jest.fn((callback) => {
+      animationFrames.push(callback);
+      return animationFrames.length;
+    });
+    globalThis.cancelAnimationFrame = jest.fn();
+    jest.mocked(toast.error).mockClear();
+    jest.mocked(toast.success).mockClear();
     mockUseCustomizeScreen.mockReturnValue(mockScreenState);
     mockUseSequentialExport.mockReturnValue({
       activePanel: null,
@@ -134,17 +149,21 @@ describe("CustomizeScreen", () => {
     });
   });
 
-  it("renders the inline notice via translation key", () => {
-    render(<CustomizeScreen />);
-
-    expect(screen.getByText("customize.imageOptimized")).toBeTruthy();
+  afterEach(() => {
+    jest.useRealTimers();
+    globalThis.requestAnimationFrame = originalRequestAnimationFrame;
+    globalThis.cancelAnimationFrame = originalCancelAnimationFrame;
   });
 
-  it("renders the inline error banner", () => {
+  it("shows export feedback as an error toast", () => {
     render(<CustomizeScreen />);
 
-    expect(screen.getByText("errors.imageTooLarge")).toBeTruthy();
-    expect(screen.getByText("Unable to export images.")).toBeTruthy();
+    expect(screen.queryByText("errors.imageTooLarge")).toBeNull();
+    expect(screen.queryByText("Unable to export images.")).toBeNull();
+    expect(toast.error).not.toHaveBeenCalled();
+    act(() => animationFrames.splice(0).forEach((callback) => callback(0)));
+    act(() => jest.runOnlyPendingTimers());
+    expect(toast.error).toHaveBeenCalledWith("Unable to export images.");
   });
 
   it("opens localized image-placement help from the header", () => {

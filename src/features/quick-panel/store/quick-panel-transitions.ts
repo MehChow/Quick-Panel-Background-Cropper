@@ -164,19 +164,17 @@ export function getImageState(image: PickedImage, activePreset: QuickPanelPreset
 }
 
 export function getStartImageProcessingState(): QuickPanelStatePatch {
-  return { error: null, errorKey: null, isProcessingImage: true, noticeKey: null };
+  return { error: null, errorKey: null, isProcessingImage: true };
 }
 
 export function getFinishImageProcessingState(
   image: PickedImage,
   activePreset: QuickPanelPreset,
-  noticeKey: string | null,
 ): QuickPanelStatePatch {
   return {
     ...getImageState(image, activePreset),
     errorKey: null,
     isProcessingImage: false,
-    noticeKey,
   };
 }
 
@@ -184,7 +182,7 @@ export function getFailImageProcessingState(
   message: string | null,
   errorKey: string | null,
 ): QuickPanelStatePatch {
-  return { error: message, errorKey, isProcessingImage: false, noticeKey: null };
+  return { error: message, errorKey, isProcessingImage: false };
 }
 
 export function getTransformState(transform: ImageTransform, image: PickedImage | null, activePreset: QuickPanelPreset): QuickPanelStatePatch {

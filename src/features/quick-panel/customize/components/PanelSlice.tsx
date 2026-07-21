@@ -1,4 +1,3 @@
-import { cn } from "@/lib/utils";
 import { Image } from "expo-image";
 import { StyleSheet, View } from "react-native";
 import Animated, {
@@ -13,7 +12,7 @@ import type {
   PickedImage,
 } from "../../model/types";
 import { getPanelImageTransform } from "../panel-image-transform";
-import { getPreviewPanelRadius } from "../source-image-context-geometry";
+import { getPreviewPanelRadius } from "../preview-geometry";
 import { PanelOverlay } from "./PanelOverlay";
 import { ButtonIdentifierOverlay } from "./ButtonIdentifierOverlay";
 
@@ -22,7 +21,6 @@ interface PanelSliceProps {
   buttonPanelOpacity: number;
   identifierPositions: ButtonIdentifierPositions;
   showButtonIdentifiers: boolean;
-  isImageLayerVisible?: boolean;
   showOverlay: boolean;
   mode: CustomizationMode;
   panel: PanelDefinition;
@@ -39,7 +37,6 @@ export function PanelSlice({
   buttonIdentifierOpacity,
   buttonPanelOpacity,
   identifierPositions,
-  isImageLayerVisible = true,
   showButtonIdentifiers,
   showOverlay,
   mode,
@@ -71,10 +68,7 @@ export function PanelSlice({
 
   return (
     <View
-      className={cn(
-        "absolute overflow-hidden",
-        isImageLayerVisible ? "bg-white/10" : "bg-transparent",
-      )}
+      className="absolute overflow-hidden bg-white/10"
       style={{
         borderRadius: panelRadius,
         height: panel.rect.height * layoutScale,
@@ -91,11 +85,7 @@ export function PanelSlice({
           source={{ uri: previewUri }}
           style={{
             height: image.height,
-            opacity: isImageLayerVisible
-              ? panel.family === "button"
-                ? buttonPanelOpacity
-                : 0.5
-              : 0,
+            opacity: panel.family === "button" ? buttonPanelOpacity : 0.5,
             width: image.width,
           }}
         />

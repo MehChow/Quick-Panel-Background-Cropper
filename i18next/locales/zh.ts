@@ -56,7 +56,6 @@ const zh = {
     },
     customize: {
       optimizingImage: "最佳化圖片中...",
-      imageOptimized: "已優化所選圖片，拖動調整會更順暢。",
       title: "自訂",
       subtitle: "選擇圖片後，再調整位置",
       imagePlacementHelpButton: "開啟圖片位置說明",
@@ -64,9 +63,7 @@ const zh = {
       imagePlacementHelpBody:
         "QuickStar 會為每個版面套用正方形圖片。較寬的版面只會顯示正方形中央的部分，因此隱藏區域也必須保持被圖片覆蓋。放大圖片即可騰出更多移動空間。",
       imagePlacementBoundaryHelp:
-        "琥珀色邊框表示圖片必須覆蓋的完整範圍。如需在範圍內有更多移動空間，請放大圖片。",
-      showSourceImageContext: "顯示完整來源圖片",
-      hideSourceImageContext: "隱藏完整來源圖片",
+        "完整放置範圍是圖片必須覆蓋的區域。如需在範圍內有更多移動空間，請放大圖片。",
       pickerTitle: "選擇背景圖片",
       pickerSubtitle: "支援 PNG、JPG 和 WEBP。",
       layoutPreview: "目前版面預覽",

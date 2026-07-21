@@ -97,9 +97,19 @@ describe("ButtonCustomizeControls", () => {
   it("requests hiding identifiers from the switch", () => {
     const screen = render(<ButtonCustomizeControls {...baseProps} />);
 
-    fireEvent.press(screen.getByRole("switch"));
+    fireEvent.press(screen.getByTestId("show-button-identifiers-toggle"));
 
     expect(baseProps.onShowButtonIdentifiersChange).toHaveBeenCalledWith(false);
+  });
+
+  it("uses the shared switch labels for the identifier toggle", () => {
+    const screen = render(<ButtonCustomizeControls {...baseProps} />);
+
+    expect(screen.getByTestId("show-button-identifiers-toggle").props).toMatchObject({
+      accessibilityRole: "switch",
+      accessibilityState: { checked: true, disabled: undefined },
+    });
+    expect(screen.getByText("customize.buttonIdentifiersOn")).toBeTruthy();
   });
 
   it("returns to image when identifiers are hidden from a position tab", () => {

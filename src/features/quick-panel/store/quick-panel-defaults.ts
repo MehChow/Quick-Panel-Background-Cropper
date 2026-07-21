@@ -42,7 +42,6 @@ export interface QuickPanelStateData {
   exports: GeneratedExport[];
   isExporting: boolean;
   isProcessingImage: boolean;
-  noticeKey: string | null;
   errorKey: string | null;
   error: string | null;
 }
@@ -57,7 +56,6 @@ export function createResetWorkState() {
     transform: createEmptyTransform(),
     exports: [] as GeneratedExport[],
     isProcessingImage: false,
-    noticeKey: null,
     errorKey: null,
   };
 }
@@ -102,7 +100,6 @@ export function createInitialQuickPanelStateData(): QuickPanelStateData {
     exports: [],
     isExporting: false,
     isProcessingImage: false,
-    noticeKey: null,
     errorKey: null,
     error: null,
   };

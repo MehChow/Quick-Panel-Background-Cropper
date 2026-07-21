@@ -9,9 +9,8 @@ import type {
   QuickPanelPreset,
 } from "../../model/types";
 import { useQuickPanelPreviewGestures } from "../hooks/useQuickPanelPreviewGestures";
-import { getCustomizePreviewFrame } from "../source-image-context-geometry";
+import { getCustomizePreviewFrame } from "../preview-geometry";
 import { PanelSlice } from "./PanelSlice";
-import { SourceImageContext } from "./SourceImageContext";
 
 interface QuickPanelPreviewProps {
   buttonIdentifierOpacity: number;
@@ -24,7 +23,7 @@ interface QuickPanelPreviewProps {
   transform: ImageTransform;
   onAdjustingChange: (isAdjusting: boolean) => void;
   onTransformChange: (transform: ImageTransform) => void;
-  showSourceImageContext: boolean;
+  maxHeight?: number;
 }
 
 export function QuickPanelPreview({
@@ -38,7 +37,7 @@ export function QuickPanelPreview({
   onTransformChange,
   preset,
   showButtonIdentifiers,
-  showSourceImageContext,
+  maxHeight,
 }: QuickPanelPreviewProps) {
   const { width: windowWidth, height: windowHeight } = useWindowDimensions();
   const [containerWidth, setContainerWidth] = useState(0);
@@ -60,8 +59,8 @@ export function QuickPanelPreview({
   const previewRatio = previewFrame.width / previewFrame.height;
   const horizontalPadding = 40;
   const widthBasis = containerWidth || windowWidth;
-  const previewWidthBudget = Math.max(0, (widthBasis - horizontalPadding) * 0.75);
-  const previewHeightBudget = windowHeight * 0.46;
+  const previewWidthBudget = Math.max(0, widthBasis - horizontalPadding);
+  const previewHeightBudget = maxHeight ?? windowHeight * 0.46;
   const previewWidth = Math.min(
     previewWidthBudget,
     previewHeightBudget * previewRatio,
@@ -84,19 +83,6 @@ export function QuickPanelPreview({
             }}
             testID="quick-panel-preview-stage"
           >
-            {layoutScale ? (
-              <SourceImageContext
-                buttonPanelOpacity={buttonPanelOpacity}
-                frame={previewFrame}
-                image={image}
-                layoutScale={layoutScale}
-                preset={preset}
-                previewScale={sharedScale}
-                previewUri={previewUri}
-                transform={sharedTransform}
-                visible={showSourceImageContext}
-              />
-            ) : null}
             {layoutScale
               ? preset.visualOrder.map((id) => (
                   <PanelSlice
@@ -104,7 +90,6 @@ export function QuickPanelPreview({
                     buttonPanelOpacity={buttonPanelOpacity}
                     identifierPositions={identifierPositions}
                     image={image}
-                    isImageLayerVisible={!showSourceImageContext}
                     key={id}
                     layoutScale={layoutScale}
                     mode={preset.mode}

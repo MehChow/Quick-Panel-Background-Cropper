@@ -30,7 +30,7 @@ export function useCustomizeActions() {
 
       try {
         const normalized = await normalizeCustomizeImage(pickedImage);
-        finishImageProcessing(normalized.image, normalized.noticeKey);
+        finishImageProcessing(normalized.image);
       } catch (error) {
         void recordCrashlyticsError(error, {
           action: "normalize_customize_image",

@@ -140,35 +140,6 @@ describe("panel image intensity", () => {
     });
   });
 
-  it("keeps the image mounted but visually hidden in overlay-only mode", () => {
-    const screen = render(
-      <PanelSlice
-        buttonIdentifierOpacity={0.7}
-        buttonPanelOpacity={0.63}
-        image={image}
-        identifierPositions={{ horizontal: 0.5, vertical: 0.5 }}
-        layoutScale={1}
-        mode="default"
-        originX={0}
-        originY={0}
-        panel={createPanel("control")}
-        previewScale={previewScale}
-        previewUri="file:///preview.png"
-        isImageLayerVisible={false}
-        showOverlay={false}
-        showButtonIdentifiers
-        transform={sharedTransform}
-      />,
-    );
-
-    expect(
-      StyleSheet.flatten(screen.getByTestId("expo-image").props.style),
-    ).toMatchObject({ opacity: 0 });
-    expect(screen.getByTestId("panel-slice-brightness").props.className).toContain(
-      "bg-transparent",
-    );
-  });
-
   it("keeps Controls exports fully opaque", () => {
     const screen = render(
       <ExportSurface
