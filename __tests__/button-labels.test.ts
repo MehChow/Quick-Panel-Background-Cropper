@@ -54,7 +54,7 @@ describe("button labels", () => {
   });
 
   it("keeps pinned labels first when search is empty", () => {
-    expect(buttonLabelCatalog).toHaveLength(59);
+    expect(buttonLabelCatalog).toHaveLength(30);
     expect(
       searchButtonLabels("")
         .slice(0, pinnedButtonLabelIds.length)
@@ -64,14 +64,14 @@ describe("button labels", () => {
 
   it("searches labels with trimmed case-insensitive substrings", () => {
     expect(searchButtonLabels("  rotate ").map((item) => item.label)).toContain(
-      "Auto rotate",
+      "Auto-Rotate",
     );
     expect(searchButtonLabels("DATA").map((item) => item.label)).toContain(
-      "Mobile data",
+      "Mobile Data",
     );
   });
 
-  it("provides English and Chinese translations for every built-in label", () => {
+  it("provides the reviewed English and Chinese button translations", () => {
     const enLabels = Reflect.get(
       en.translation,
       "buttonLabels",
@@ -81,11 +81,39 @@ describe("button labels", () => {
       "buttonLabels",
     ) as ButtonLabelTranslations;
 
+    const translatedLabels = {
+      bluetooth: "藍牙",
+      "mobile-data": "流動數據",
+      "flight-mode": "飛行模式",
+      "mobile-hotspot": "流動熱點",
+      location: "位置",
+      "quick-share": "快速共享",
+      "auto-rotate": "自動旋轉",
+      "eye-comfort-shield": "護眼模式",
+      "extra-dim": "額外調暗",
+      "do-not-disturb": "請勿打擾",
+      "live-caption": "即時字幕",
+      flashlight: "手電筒",
+      "power-saving": "省電模式",
+      "screen-recorder": "螢幕錄影",
+      "take-screenshot": "擷取螢幕截圖",
+      "qr-code-scanner": "掃描 QR 碼",
+      "performance-profile": "效能設定檔",
+      "wireless-powershare": "無線電源共享",
+      "camera-access": "相機存取",
+      "microphone-access": "話筒存取",
+      "secure-folder": "安全資料夾",
+      modes: "模式",
+      "link-to-windows": "連結至 Windows",
+      "wireless-dex": "無線 DeX",
+    };
+
     for (const item of buttonLabelCatalog) {
       expect(enLabels[item.id]).toBe(item.label);
-      expect(zhLabels[item.id]).toBeTruthy();
       expect(item.translationKey).toBe(`buttonLabels.${item.id}`);
     }
+
+    expect(zhLabels).toMatchObject(translatedLabels);
   });
 
   it("localizes built-in labels and preserves custom labels", () => {
