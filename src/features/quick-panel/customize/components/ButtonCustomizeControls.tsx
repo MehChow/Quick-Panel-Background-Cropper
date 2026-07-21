@@ -38,7 +38,7 @@ export function ButtonCustomizeControls({
   const { t } = useTranslation();
   return (
     <View
-      className="mt-4 w-full max-w-md gap-3 rounded-2xl border border-white/10 bg-zinc-900/90 px-4 py-3"
+      className="mt-4 w-full gap-3 rounded-2xl border border-white/10 bg-zinc-900/90 px-4 py-3"
       onLayout={onLayout}
     >
       <View className="min-h-11 flex-row items-center justify-between rounded-xl border border-white/10 bg-zinc-800/70 px-3">

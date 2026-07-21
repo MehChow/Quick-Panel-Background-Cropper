@@ -9,7 +9,7 @@ import type {
   QuickPanelPreset,
 } from "../../model/types";
 import { useQuickPanelPreviewGestures } from "../hooks/useQuickPanelPreviewGestures";
-import { getCustomizePreviewFrame } from "../preview-geometry";
+import { getCustomizePreviewDisplayFrame } from "../preview-geometry";
 import { PanelSlice } from "./PanelSlice";
 
 interface QuickPanelPreviewProps {
@@ -41,7 +41,7 @@ export function QuickPanelPreview({
 }: QuickPanelPreviewProps) {
   const { width: windowWidth, height: windowHeight } = useWindowDimensions();
   const [containerWidth, setContainerWidth] = useState(0);
-  const previewFrame = getCustomizePreviewFrame(preset);
+  const previewFrame = getCustomizePreviewDisplayFrame(preset);
   const {
     gesture,
     handleLayout,
@@ -57,7 +57,7 @@ export function QuickPanelPreview({
     onTransformChange,
   });
   const previewRatio = previewFrame.width / previewFrame.height;
-  const horizontalPadding = 40;
+  const horizontalPadding = 0;
   const widthBasis = containerWidth || windowWidth;
   const previewWidthBudget = Math.max(0, widthBasis - horizontalPadding);
   const previewHeightBudget = maxHeight ?? windowHeight * 0.46;
