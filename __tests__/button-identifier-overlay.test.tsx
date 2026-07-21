@@ -68,8 +68,28 @@ describe("ButtonIdentifierOverlay", () => {
     });
   });
 
-  it("applies opacity once while keeping icon and text white", () => {
+  it("keeps a horizontal identifier hidden until its content is measured", () => {
     const screen = renderOverlay(2, 1);
+    const rootStyle = StyleSheet.flatten(
+      screen.getByTestId("button-identifier-overlay").props.style,
+    );
+
+    expect(rootStyle.opacity).toBe(0);
+
+    fireEvent(screen.getByTestId("button-identifier-movable-content"), "layout", {
+      nativeEvent: { layout: { height: 20, width: 40, x: 0, y: 0 } },
+    });
+
+    expect(StyleSheet.flatten(
+      screen.getByTestId("button-identifier-overlay").props.style,
+    ).opacity).toBe(0.7);
+  });
+
+  it("applies opacity once measured while keeping icon and text white", () => {
+    const screen = renderOverlay(2, 1);
+    fireEvent(screen.getByTestId("button-identifier-movable-content"), "layout", {
+      nativeEvent: { layout: { height: 20, width: 40, x: 0, y: 0 } },
+    });
     const rootStyle = StyleSheet.flatten(
       screen.getByTestId("button-identifier-overlay").props.style,
     );

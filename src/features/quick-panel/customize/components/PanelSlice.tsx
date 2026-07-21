@@ -90,7 +90,7 @@ export function PanelSlice({
           }}
         />
       </Animated.View>
-      {showButtonIdentifiers && panel.family === "button" && panel.buttonIdentifier ? (
+      {panel.family === "button" && panel.buttonIdentifier ? (
         <ButtonIdentifierOverlay
           bounds={{
             x: 0,
@@ -100,7 +100,7 @@ export function PanelSlice({
           }}
           identifier={panel.buttonIdentifier}
           label={panel.label}
-          opacity={buttonIdentifierOpacity}
+          opacity={showButtonIdentifiers ? buttonIdentifierOpacity : 0}
           positions={identifierPositions}
           target="preview"
         />

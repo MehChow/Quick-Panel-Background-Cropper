@@ -136,7 +136,9 @@ export function ButtonIdentifierOverlay({
       style={{
         height: bounds.height,
         left: bounds.x,
-        opacity,
+        opacity: layout.orientation === "horizontal" && measuredWidth === null
+          ? 0
+          : opacity,
         position: "absolute",
         top: bounds.y,
         width: bounds.width,
