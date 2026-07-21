@@ -18,11 +18,6 @@ jest.mock("expo-localization", () => ({
   getLocales: () => [{ languageCode: "en" }],
 }));
 
-jest.mock("sonner-native", () => ({
-  Toaster: () => null,
-  toast: { error: jest.fn(), success: jest.fn() },
-}));
-
 jest.mock("react-native-mmkv", () => {
   const React = require("react");
   const getString = (key: string) => {

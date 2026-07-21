@@ -3,10 +3,9 @@ import { QuickPanelScreenShell } from "@/features/quick-panel/shared/QuickPanelS
 import { SubPageHeader } from "@/features/quick-panel/shared/SubPageHeader";
 import { useTranslation } from "react-i18next";
 import { type Href, useRouter } from "expo-router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { toast } from "sonner-native";
 import { CustomizeActions } from "./components/CustomizeActions";
 import { CustomizeImagePlacementHelpSheet } from "./components/CustomizeImagePlacementHelpSheet";
 import { CustomizePreviewSection } from "./components/CustomizePreviewSection";
@@ -23,33 +22,13 @@ export function CustomizeScreen() {
   const [isHelpOpen, setIsHelpOpen] = useState(false);
   const {
     selectedMode, activePreset, image, transform, setTransform,
-    isExporting, isProcessingImage, errorKey, error,
+    isExporting, isProcessingImage,
     setIsPreviewAdjusting,
     pickImage, resetFit, canReset,
     goToCalibration, goToAdvancedCalibration,
   } = useCustomizeScreen();
   const buttonControls = useButtonCustomizeControls(activePreset);
   const previewImage = useCustomizePreviewImage(image);
-  useEffect(() => {
-    if (!error && !errorKey) {
-      return;
-    }
-    let timeoutId: ReturnType<typeof setTimeout> | null = null;
-    const frameId = requestAnimationFrame(() => {
-      timeoutId = setTimeout(() => {
-        if (error || errorKey) {
-          toast.error(error ?? t(errorKey ?? "errors.unknown"));
-        }
-      }, 0);
-    });
-
-    return () => {
-      cancelAnimationFrame(frameId);
-      if (timeoutId !== null) {
-        clearTimeout(timeoutId);
-      }
-    };
-  }, [error, errorKey, t]);
   const sequentialExport = useSequentialExport({
     image,
     isProcessingImage,
