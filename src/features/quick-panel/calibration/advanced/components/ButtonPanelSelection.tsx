@@ -4,7 +4,11 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Pressable, ScrollView, TextInput, View } from "react-native";
 import { createButtonItems } from "../button-selection";
-import { getButtonDisplayLabel, searchButtonLabels } from "../../../model/button-labels";
+import {
+  getButtonDisplayLabel,
+  getButtonIconName,
+  searchButtonLabels,
+} from "../../../model/button-labels";
 import type { ButtonCalibrationItem, PanelRect, PickedImage } from "../../../model/types";
 import { CalibrationAreaPreview } from "./CalibrationAreaPreview";
 import { CustomButtonIconDialog } from "./CustomButtonIconDialog";
@@ -70,22 +74,55 @@ export function ButtonPanelSelection({
                 {t("advancedCalibration.selectedButtons", { count: selectedLabels.length })}
               </Text>
               <View className="flex-row flex-wrap gap-2">
-                {selectedLabels.length ? selectedLabels.map((label) => (
-                  <Pressable
-                    key={label}
-                    accessibilityLabel={`${t("advancedCalibration.remove")} ${getButtonDisplayLabel(label, translateLabel)}`}
-                    accessibilityRole="button"
-                    className="flex-row items-center gap-1.5 rounded-full border border-emerald-300/40 bg-emerald-300/10 px-3 py-1.5"
-                    onPress={() => toggleLabel(label)}
-                  >
-                    <Text className="text-xs font-semibold text-emerald-100">{getButtonDisplayLabel(label, translateLabel)}</Text>
-                    <Lucide color="#d1fae5" name="x" size={12} />
-                  </Pressable>
-                )) : (
+                {selectedLabels.length
+                  ? buttons.map((button) => {
+                      const isCustom = Boolean(button.customIconId);
+                      const displayLabel = getButtonDisplayLabel(
+                        button.label,
+                        translateLabel,
+                      );
+                      return (
+                        <Pressable
+                          key={button.label}
+                          accessibilityLabel={`${t("advancedCalibration.remove")} ${displayLabel}`}
+                          accessibilityRole="button"
+                          className={`flex-row items-center gap-1.5 rounded-full border px-3 py-1.5 ${
+                            isCustom
+                              ? "border-amber-300/50 bg-amber-300/10"
+                              : "border-emerald-300/40 bg-emerald-300/10"
+                          }`}
+                          onPress={() => toggleLabel(button.label)}
+                        >
+                          {isCustom ? (
+                            <Lucide
+                              color="#fde68a"
+                              name={getButtonIconName(
+                                button.label,
+                                button.customIconId,
+                              )}
+                              size={13}
+                            />
+                          ) : null}
+                          <Text
+                            className={`text-xs font-semibold ${
+                              isCustom ? "text-amber-100" : "text-emerald-100"
+                            }`}
+                          >
+                            {displayLabel}
+                          </Text>
+                          <Lucide
+                            color={isCustom ? "#fef3c7" : "#d1fae5"}
+                            name="x"
+                            size={12}
+                          />
+                        </Pressable>
+                      );
+                    })
+                  : (
                   <Text className="text-sm text-zinc-500">
                     {t("advancedCalibration.noButtonsSelected")}
                   </Text>
-                )}
+                    )}
               </View>
             </View>
             <View className="gap-2">

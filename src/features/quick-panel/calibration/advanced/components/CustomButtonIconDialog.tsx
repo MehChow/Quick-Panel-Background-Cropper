@@ -7,7 +7,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ani-ui/alert-dialog";
-import { Text } from "@/components/ani-ui/text";
 import { Lucide } from "@react-native-vector-icons/lucide";
 import { useTranslation } from "react-i18next";
 import { Pressable, View } from "react-native";
@@ -42,24 +41,27 @@ export function CustomButtonIconDialog({
             {t("advancedCalibration.customIconDialogBody", { label })}
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <View className="flex-row flex-wrap gap-3">
-          {customButtonIconChoices.map((choice) => {
-            const choiceLabel = t(choice.translationKey);
-            return (
-              <Pressable
-                key={choice.id}
-                accessibilityLabel={choiceLabel}
-                accessibilityRole="button"
-                className="w-[47%] items-center gap-2 rounded-xl border border-white/10 bg-zinc-900 p-3"
-                onPress={() => onSelect(choice.id)}
-              >
-                <Lucide color="#ffffff" name={choice.id} size={24} />
-                <Text className="text-sm font-semibold text-white">
-                  {choiceLabel}
-                </Text>
-              </Pressable>
-            );
-          })}
+        <View className="gap-3">
+          {[customButtonIconChoices.slice(0, 4), customButtonIconChoices.slice(4)].map(
+            (row, rowIndex) => (
+              <View key={rowIndex} className="flex-row gap-3">
+                {row.map((choice) => {
+                  const choiceLabel = t(choice.translationKey);
+                  return (
+                    <Pressable
+                      key={choice.id}
+                      accessibilityLabel={choiceLabel}
+                      accessibilityRole="button"
+                      className="aspect-square flex-1 items-center justify-center rounded-xl border border-white/10 bg-zinc-900 p-2"
+                      onPress={() => onSelect(choice.id)}
+                    >
+                      <Lucide color="#ffffff" name={choice.id} size={24} />
+                    </Pressable>
+                  );
+                })}
+              </View>
+            ),
+          )}
         </View>
         <AlertDialogFooter>
           <AlertDialogCancel onPress={onClose} className="border-0">

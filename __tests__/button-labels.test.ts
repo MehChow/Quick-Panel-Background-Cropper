@@ -29,11 +29,19 @@ describe("button labels", () => {
 
   it("offers only the reviewed custom icon choices", () => {
     expect(customButtonIconChoices.map((choice) => choice.id)).toEqual([
-      "star",
       "zap",
-      "home",
-      "app-window",
+      "star",
+      "sparkles",
+      "circle",
+      "music",
+      "gamepad-2",
+      "globe",
+      "sliders-horizontal",
     ]);
+    expect(new Set(customButtonIconChoices.map((choice) => choice.id)).size).toBe(8);
+    for (const choice of customButtonIconChoices) {
+      expect(isCustomButtonIconId(choice.id)).toBe(true);
+    }
   });
 
   it("uses built-in icons regardless of a supplied custom icon", () => {

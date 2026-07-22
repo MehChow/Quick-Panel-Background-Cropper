@@ -79,12 +79,22 @@ const builtInButtonIconNames: Record<string, LucideIconName> = {
 };
 
 export const customButtonIconChoices = [
-  { id: "star", translationKey: "advancedCalibration.customIconStar" },
   { id: "zap", translationKey: "advancedCalibration.customIconZap" },
-  { id: "home", translationKey: "advancedCalibration.customIconHome" },
+  { id: "star", translationKey: "advancedCalibration.customIconStar" },
   {
-    id: "app-window",
-    translationKey: "advancedCalibration.customIconAppWindow",
+    id: "sparkles",
+    translationKey: "advancedCalibration.customIconSparkles",
+  },
+  { id: "circle", translationKey: "advancedCalibration.customIconCircle" },
+  { id: "music", translationKey: "advancedCalibration.customIconMusic" },
+  {
+    id: "gamepad-2",
+    translationKey: "advancedCalibration.customIconGamepad",
+  },
+  { id: "globe", translationKey: "advancedCalibration.customIconGlobe" },
+  {
+    id: "sliders-horizontal",
+    translationKey: "advancedCalibration.customIconSliders",
   },
 ] as const;
 
