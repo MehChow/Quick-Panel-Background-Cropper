@@ -3,7 +3,10 @@ import {
   loadCalibrations,
   loadLastExportedAdvancedTarget,
   loadLastExportedMode,
+  loadButtonCustomizeSettings,
   saveCalibrations,
+  saveButtonCustomizeSettings,
+  type ButtonCustomizeSettings,
   type SavedCalibrations,
 } from "@/features/quick-panel/store/storage";
 
@@ -59,6 +62,20 @@ const currentCalibrations = {
 } satisfies SavedCalibrations;
 
 describe("storage", () => {
+  it("round-trips Buttons-only customization settings", () => {
+    const settings: ButtonCustomizeSettings = {
+      buttonIdentifierOpacity: 61,
+      buttonPanelOpacity: 84,
+      horizontalIdentifierPosition: 23,
+      showButtonIdentifiers: false,
+      verticalIdentifierPosition: 77,
+    };
+
+    saveButtonCustomizeSettings(settings);
+
+    expect(loadButtonCustomizeSettings()).toEqual(settings);
+  });
+
   it("ignores every old calibration format but preserves other preferences", () => {
     const mmkvStore = (globalThis as typeof globalThis & MmkvTestGlobal)
       .__mmkvStore;

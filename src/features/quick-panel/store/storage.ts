@@ -19,6 +19,7 @@ import {
 } from "../model/button-labels";
 
 const calibrationsKey = "quick-panel.calibrations";
+const buttonCustomizeSettingsKey = "quick-panel.button-customize-settings";
 const lastExportedModeKey = "quick-panel.last-exported-mode";
 const lastExportedAdvancedTargetKey = "quick-panel.last-exported-advanced-target";
 const seenHelpKey = "quick-panel.seen-help";
@@ -42,6 +43,22 @@ export interface SavedCalibrations {
   advancedButtons: AdvancedButtonsCalibration | null;
 }
 
+export interface ButtonCustomizeSettings {
+  buttonIdentifierOpacity: number;
+  buttonPanelOpacity: number;
+  horizontalIdentifierPosition: number;
+  showButtonIdentifiers: boolean;
+  verticalIdentifierPosition: number;
+}
+
+export const defaultButtonCustomizeSettings: ButtonCustomizeSettings = {
+  buttonIdentifierOpacity: 70,
+  buttonPanelOpacity: 78,
+  horizontalIdentifierPosition: 50,
+  showButtonIdentifiers: true,
+  verticalIdentifierPosition: 50,
+};
+
 type SavedSeenHelp = Partial<Record<HelpEntryId, true>>;
 
 export function loadCalibrations(): SavedCalibrations {
@@ -54,6 +71,14 @@ export function loadCalibrations(): SavedCalibrations {
 
 export function saveCalibrations(calibrations: SavedCalibrations) {
   storage.set(calibrationsKey, JSON.stringify(calibrations));
+}
+
+export function loadButtonCustomizeSettings(): ButtonCustomizeSettings {
+  return parseButtonCustomizeSettings(storage.getString(buttonCustomizeSettingsKey));
+}
+
+export function saveButtonCustomizeSettings(settings: ButtonCustomizeSettings) {
+  storage.set(buttonCustomizeSettingsKey, JSON.stringify(settings));
 }
 
 export function loadLastExportedMode(): CustomizationMode | null {
@@ -134,6 +159,38 @@ function parseSeenHelp(value: string | undefined): SavedSeenHelp {
     }, {});
   } catch {
     return {};
+  }
+}
+
+function parseButtonCustomizeSettings(value: string | undefined): ButtonCustomizeSettings {
+  try {
+    const parsed = value ? JSON.parse(value) as Partial<ButtonCustomizeSettings> : {};
+    if (!parsed || typeof parsed !== "object") {
+      return defaultButtonCustomizeSettings;
+    }
+    return {
+      buttonIdentifierOpacity: parsePercentage(
+        parsed.buttonIdentifierOpacity,
+        defaultButtonCustomizeSettings.buttonIdentifierOpacity,
+      ),
+      buttonPanelOpacity: parsePercentage(
+        parsed.buttonPanelOpacity,
+        defaultButtonCustomizeSettings.buttonPanelOpacity,
+      ),
+      horizontalIdentifierPosition: parsePercentage(
+        parsed.horizontalIdentifierPosition,
+        defaultButtonCustomizeSettings.horizontalIdentifierPosition,
+      ),
+      showButtonIdentifiers: typeof parsed.showButtonIdentifiers === "boolean"
+        ? parsed.showButtonIdentifiers
+        : defaultButtonCustomizeSettings.showButtonIdentifiers,
+      verticalIdentifierPosition: parsePercentage(
+        parsed.verticalIdentifierPosition,
+        defaultButtonCustomizeSettings.verticalIdentifierPosition,
+      ),
+    };
+  } catch {
+    return defaultButtonCustomizeSettings;
   }
 }
 
@@ -293,6 +350,12 @@ function parseRectValue(value: unknown): PanelRect | null {
 
 function isGridValue(value: unknown): value is number {
   return typeof value === "number" && Number.isInteger(value) && value >= 1 && value <= 8;
+}
+
+function parsePercentage(value: unknown, fallback: number): number {
+  return typeof value === "number" && Number.isFinite(value) && value >= 0 && value <= 100
+    ? value
+    : fallback;
 }
 
 function isCustomizationMode(value: unknown): value is CustomizationMode {

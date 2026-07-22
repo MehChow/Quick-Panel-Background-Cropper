@@ -187,7 +187,7 @@ describe("CustomizeScreen export surfaces", () => {
     );
   });
 
-  it("keeps Button identifier controls screen-local and synchronized", () => {
+  it("persists Button customization controls and keeps preview/export synchronized", () => {
     const buttonPreset = {
       ...mockActivePreset,
       id: "test-buttons",
@@ -271,15 +271,20 @@ describe("CustomizeScreen export surfaces", () => {
       identifierPositions: { horizontal: 0.35, vertical: 0.8 },
     });
 
+    fireEvent.press(screen.getByTestId("button-adjustment-image-tab"));
+    fireEvent.press(screen.getByTestId("button-panel-opacity-slider"));
+    expect(mockPreviewProps).toMatchObject({ buttonPanelOpacity: 0.35 });
+    expect(mockExportProps).toMatchObject({ buttonPanelOpacity: 0.35 });
+
     fireEvent.press(screen.getByRole("switch"));
     expect(mockPreviewProps).toMatchObject({
       buttonIdentifierOpacity: 0.7,
-      buttonPanelOpacity: 0.78,
+      buttonPanelOpacity: 0.35,
       showButtonIdentifiers: false,
     });
     expect(mockExportProps).toMatchObject({
       buttonIdentifierOpacity: 0.7,
-      buttonPanelOpacity: 0.78,
+      buttonPanelOpacity: 0.35,
       showButtonIdentifiers: false,
     });
 
@@ -288,13 +293,13 @@ describe("CustomizeScreen export surfaces", () => {
     fireEvent.press(screen.getByTestId("button-identifier-opacity-slider"));
     expect(mockPreviewProps).toMatchObject({
       buttonIdentifierOpacity: 0.35,
-      buttonPanelOpacity: 0.78,
+      buttonPanelOpacity: 0.35,
       identifierPositions: { horizontal: 0.35, vertical: 0.8 },
       showButtonIdentifiers: true,
     });
     expect(mockExportProps).toMatchObject({
       buttonIdentifierOpacity: 0.35,
-      buttonPanelOpacity: 0.78,
+      buttonPanelOpacity: 0.35,
       identifierPositions: { horizontal: 0.35, vertical: 0.8 },
       showButtonIdentifiers: true,
     });
@@ -302,9 +307,9 @@ describe("CustomizeScreen export surfaces", () => {
     mounted.unmount();
     render(<CustomizeScreen />);
     expect(mockPreviewProps).toMatchObject({
-      buttonIdentifierOpacity: 0.7,
-      buttonPanelOpacity: 0.78,
-      identifierPositions: { horizontal: 0.5, vertical: 0.5 },
+      buttonIdentifierOpacity: 0.35,
+      buttonPanelOpacity: 0.35,
+      identifierPositions: { horizontal: 0.35, vertical: 0.8 },
       showButtonIdentifiers: true,
     });
   });

@@ -4,10 +4,11 @@ import {
   type ButtonIdentifierPositions,
 } from "../../model/button-identifier-layout";
 import type { QuickPanelPreset } from "../../model/types";
-
-const DEFAULT_BUTTON_PANEL_OPACITY = 78;
-const DEFAULT_BUTTON_IDENTIFIER_OPACITY = 70;
-const DEFAULT_BUTTON_IDENTIFIER_POSITION = 50;
+import {
+  loadButtonCustomizeSettings,
+  saveButtonCustomizeSettings,
+  type ButtonCustomizeSettings,
+} from "../../store/storage";
 
 export interface ButtonCustomizeControlState {
   buttonIdentifierOpacity: number;
@@ -28,40 +29,40 @@ export interface ButtonCustomizeControlState {
 export function useButtonCustomizeControls(
   preset: QuickPanelPreset,
 ): ButtonCustomizeControlState {
-  const [buttonPanelOpacity, setButtonPanelOpacity] = useState(
-    DEFAULT_BUTTON_PANEL_OPACITY,
+  const [settings, setSettings] = useState<ButtonCustomizeSettings>(
+    loadButtonCustomizeSettings,
   );
-  const [buttonIdentifierOpacity, setButtonIdentifierOpacity] = useState(
-    DEFAULT_BUTTON_IDENTIFIER_OPACITY,
-  );
-  const [horizontalIdentifierPosition, setHorizontalIdentifierPosition] = useState(
-    DEFAULT_BUTTON_IDENTIFIER_POSITION,
-  );
-  const [verticalIdentifierPosition, setVerticalIdentifierPosition] = useState(
-    DEFAULT_BUTTON_IDENTIFIER_POSITION,
-  );
-  const [showButtonIdentifiers, setShowButtonIdentifiers] = useState(true);
+  const updateSetting = <K extends keyof ButtonCustomizeSettings>(
+    key: K,
+    value: ButtonCustomizeSettings[K],
+  ) => {
+    setSettings((current) => {
+      const next = { ...current, [key]: value };
+      saveButtonCustomizeSettings(next);
+      return next;
+    });
+  };
   const orientations = preset.visualOrder.map((id) => {
     const identifier = preset.panels[id]?.buttonIdentifier;
     return identifier ? getButtonIdentifierLayoutKind(identifier) : null;
   });
 
   return {
-    buttonIdentifierOpacity,
-    buttonPanelOpacity,
+    buttonIdentifierOpacity: settings.buttonIdentifierOpacity,
+    buttonPanelOpacity: settings.buttonPanelOpacity,
     hasHorizontalButtons: orientations.includes("horizontal"),
     hasVerticalButtons: orientations.includes("vertical"),
-    horizontalIdentifierPosition,
+    horizontalIdentifierPosition: settings.horizontalIdentifierPosition,
     identifierPositions: {
-      horizontal: horizontalIdentifierPosition / 100,
-      vertical: verticalIdentifierPosition / 100,
+      horizontal: settings.horizontalIdentifierPosition / 100,
+      vertical: settings.verticalIdentifierPosition / 100,
     },
-    setButtonIdentifierOpacity,
-    setButtonPanelOpacity,
-    setHorizontalIdentifierPosition,
-    setShowButtonIdentifiers,
-    setVerticalIdentifierPosition,
-    showButtonIdentifiers,
-    verticalIdentifierPosition,
+    setButtonIdentifierOpacity: (value) => updateSetting("buttonIdentifierOpacity", value),
+    setButtonPanelOpacity: (value) => updateSetting("buttonPanelOpacity", value),
+    setHorizontalIdentifierPosition: (value) => updateSetting("horizontalIdentifierPosition", value),
+    setShowButtonIdentifiers: (value) => updateSetting("showButtonIdentifiers", value),
+    setVerticalIdentifierPosition: (value) => updateSetting("verticalIdentifierPosition", value),
+    showButtonIdentifiers: settings.showButtonIdentifiers,
+    verticalIdentifierPosition: settings.verticalIdentifierPosition,
   };
 }
