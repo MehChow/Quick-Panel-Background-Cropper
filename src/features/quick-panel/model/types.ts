@@ -28,6 +28,7 @@ export interface PanelDefinition {
 export interface ButtonIdentifierDefinition {
   columnSpan: number;
   iconName: LucideIconName;
+  referenceCellSize: number;
   rowSpan: number;
 }
 

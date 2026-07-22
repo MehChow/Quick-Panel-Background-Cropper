@@ -102,7 +102,7 @@ export function PanelSlice({
           label={panel.label}
           opacity={showButtonIdentifiers ? buttonIdentifierOpacity : 0}
           positions={identifierPositions}
-          target="preview"
+          referenceCellSize={panel.buttonIdentifier.referenceCellSize * layoutScale}
         />
       ) : null}
       {showOverlay ? (

@@ -204,6 +204,7 @@ describe("export files", () => {
           columnSpan: 1,
           rowSpan: 1,
           iconName: "bluetooth",
+          referenceCellSize: 50,
         },
       });
     } finally {

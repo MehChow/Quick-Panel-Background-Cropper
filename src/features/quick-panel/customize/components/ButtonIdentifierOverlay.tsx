@@ -1,5 +1,3 @@
-import { Text } from "@/components/ani-ui/text";
-import { Lucide } from "@react-native-vector-icons/lucide";
 import { useEffect, useState } from "react";
 import { type LayoutChangeEvent, View } from "react-native";
 import {
@@ -7,10 +5,10 @@ import {
   getButtonIdentifierLayout,
   type ButtonIdentifierBounds,
   type ButtonIdentifierPositions,
-  type ButtonIdentifierRenderTarget,
 } from "../../model/button-identifier-layout";
 import type { ButtonIdentifierDefinition } from "../../model/types";
 import { buttonIdentifierStyles as styles } from "./button-identifier-content";
+import { ButtonIdentifierVisuals } from "./ButtonIdentifierVisuals";
 
 interface HorizontalMeasurement {
   key: string;
@@ -24,7 +22,7 @@ interface ButtonIdentifierOverlayProps {
   onPositionReady?: () => void;
   opacity: number;
   positions: ButtonIdentifierPositions;
-  target: ButtonIdentifierRenderTarget;
+  referenceCellSize: number;
 }
 
 export function ButtonIdentifierOverlay({
@@ -34,21 +32,25 @@ export function ButtonIdentifierOverlay({
   onPositionReady,
   opacity,
   positions,
-  target,
+  referenceCellSize,
 }: ButtonIdentifierOverlayProps) {
-  const layout = getButtonIdentifierLayout(bounds, identifier, target);
-  const measurementKey = [bounds.width, layout.fontSize, layout.iconSize, label, target]
-    .join(":");
+  const layout = getButtonIdentifierLayout(bounds, identifier, referenceCellSize);
+  const measurementKey = [
+    bounds.width,
+    layout.fontSize,
+    layout.iconBackgroundSize,
+    label,
+  ].join(":");
   const [measurement, setMeasurement] = useState<HorizontalMeasurement | null>(null);
   const measuredWidth = measurement?.key === measurementKey
     ? measurement.width
     : null;
 
   useEffect(() => {
-    if (layout.orientation === "horizontal" && measuredWidth !== null) {
+    if (layout.kind === "horizontal" && measuredWidth !== null) {
       onPositionReady?.();
     }
-  }, [layout.orientation, measuredWidth, onPositionReady, positions.horizontal]);
+  }, [layout.kind, measuredWidth, onPositionReady, positions.horizontal]);
 
   const handleHorizontalLayout = (event: LayoutChangeEvent) => {
     const width = event.nativeEvent.layout.width;
@@ -56,35 +58,12 @@ export function ButtonIdentifierOverlay({
       ? current
       : { key: measurementKey, width });
   };
-
-  const icon = (
-    <Lucide
-      color="#FFFFFF"
-      name={identifier.iconName}
-      size={layout.iconSize}
-      style={styles.shadow}
-    />
+  const visuals = (
+    <ButtonIdentifierVisuals identifier={identifier} label={label} layout={layout} />
   );
-  const labelContent = layout.showLabel ? (
-    <Text
-      adjustsFontSizeToFit
-      allowFontScaling={false}
-      ellipsizeMode="tail"
-      minimumFontScale={layout.minimumFontScale}
-      numberOfLines={1}
-      testID="button-identifier-label"
-      style={[
-        styles.label,
-        styles.shadow,
-        { fontSize: layout.fontSize, maxWidth: layout.maxLabelWidth },
-      ]}
-    >
-      {label}
-    </Text>
-  ) : null;
   let content;
 
-  if (layout.orientation === "horizontal") {
+  if (layout.kind === "horizontal") {
     const maxWidth = Math.max(0, bounds.width - layout.inset * 2);
     const left = getConstrainedAxisOffset({
       axisLength: bounds.width,
@@ -98,33 +77,40 @@ export function ButtonIdentifierOverlay({
         testID="button-identifier-movable-content"
         style={[styles.horizontal, { gap: layout.gap, left, maxWidth }]}
       >
-        {icon}
-        {labelContent}
+        {visuals}
       </View>
     );
-  } else if (layout.orientation === "vertical") {
+  } else if (layout.kind === "vertical") {
     const top = getConstrainedAxisOffset({
       axisLength: bounds.height,
-      contentLength: layout.iconSize,
+      contentLength: layout.iconBackgroundSize,
       inset: layout.inset,
       position: positions.vertical,
     });
     content = (
       <View
         testID="button-identifier-movable-content"
-        style={[styles.vertical, { height: layout.iconSize, top, width: bounds.width }]}
+        style={[
+          styles.vertical,
+          { height: layout.iconBackgroundSize, top, width: bounds.width },
+        ]}
       >
-        {icon}
+        {visuals}
       </View>
     );
   } else {
-    const contentStyle = layout.alignment === "center"
+    const contentStyle = layout.kind === "single"
       ? styles.center
-      : [styles.leftCenter, { gap: layout.gap, paddingHorizontal: layout.inset }];
+      : [
+        styles.corner,
+        {
+          paddingHorizontal: layout.cornerPadding,
+          paddingVertical: layout.cornerPadding,
+        },
+      ];
     content = (
       <View testID="button-identifier-content" style={[styles.content, contentStyle]}>
-        {icon}
-        {labelContent}
+        {visuals}
       </View>
     );
   }
@@ -136,9 +122,7 @@ export function ButtonIdentifierOverlay({
       style={{
         height: bounds.height,
         left: bounds.x,
-        opacity: layout.orientation === "horizontal" && measuredWidth === null
-          ? 0
-          : opacity,
+        opacity: layout.kind === "horizontal" && measuredWidth === null ? 0 : opacity,
         position: "absolute",
         top: bounds.y,
         width: bounds.width,

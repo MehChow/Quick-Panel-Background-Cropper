@@ -4,7 +4,7 @@ import { useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import type { View } from "react-native";
 import { useShallow } from "zustand/react/shallow";
-import { getButtonIdentifierOrientation } from "../../model/button-identifier-layout";
+import { getButtonIdentifierLayoutKind } from "../../model/button-identifier-layout";
 import { translate } from "../../model/i18n";
 import type {
   GeneratedExport,
@@ -148,7 +148,7 @@ export function useSequentialExport({
     const waitsForIdentifier = Boolean(
       showButtonIdentifiers
       && identifier
-      && getButtonIdentifierOrientation(identifier) === "horizontal",
+      && getButtonIdentifierLayoutKind(identifier) === "horizontal",
     );
     const token = { panelId: panel.id, runId };
     const nextSurface: ActiveSurface = {

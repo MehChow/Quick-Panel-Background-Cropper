@@ -75,7 +75,12 @@ const buttonsPreset = {
       fileName: "01-wi-fi.png",
       family: "button",
       rect: { x: 0, y: 0, width: 200, height: 100, radius: 0 },
-      buttonIdentifier: { columnSpan: 2, rowSpan: 1, iconName: "wifi" },
+      buttonIdentifier: {
+        columnSpan: 2,
+        rowSpan: 1,
+        iconName: "wifi",
+        referenceCellSize: 100,
+      },
     },
     "button-2": {
       id: "button-2",
@@ -83,7 +88,12 @@ const buttonsPreset = {
       fileName: "02-bluetooth.png",
       family: "button",
       rect: { x: 0, y: 100, width: 100, height: 200, radius: 0 },
-      buttonIdentifier: { columnSpan: 1, rowSpan: 2, iconName: "bluetooth" },
+      buttonIdentifier: {
+        columnSpan: 1,
+        rowSpan: 2,
+        iconName: "bluetooth",
+        referenceCellSize: 100,
+      },
     },
     "button-3": {
       id: "button-3",
@@ -91,7 +101,12 @@ const buttonsPreset = {
       fileName: "03-smart-view.png",
       family: "button",
       rect: { x: 100, y: 100, width: 100, height: 100, radius: 0 },
-      buttonIdentifier: { columnSpan: 1, rowSpan: 1, iconName: "scan" },
+      buttonIdentifier: {
+        columnSpan: 1,
+        rowSpan: 1,
+        iconName: "scan",
+        referenceCellSize: 100,
+      },
     },
   },
   visualOrder: ["button-1", "button-2", "button-3"],

@@ -12,6 +12,126 @@ This file is a running project note log for implementation details that are easy
 
 ## Entries
 
+### 2026-07-22: Buttons Customize preview and aligned PNG export
+
+This entry supersedes the older identifier sizing/classification details below.
+The durable rule is that preview and export use the same source-coordinate
+composition. They differ only in the scale and origin used to project that
+composition onto the preview stage or a 1024x1024 PNG.
+
+#### Shared coordinate contract
+
+- Calibration produces every Button rectangle in screenshot/source
+  coordinates. `createButtonsPreset` also calculates one shared
+  `referenceCellSize` from the smaller calibrated grid-cell dimension.
+- Customize keeps one image transform in the same coordinate system:
+  `{ x, y, scale }`. Pan and pinch update that transform; they do not create
+  separate per-panel crops.
+- Preview and export receive the same panel rectangles, image transform, Button
+  image opacity, identifier visibility/intensity, and normalized horizontal or
+  vertical identifier positions.
+- Do not introduce a second export-only crop, transform, or identifier sizing
+  model. Spatial alignment depends on projecting the same source values.
+
+#### Image handling in Customize preview
+
+- The normalized original image remains the export source and supplies the
+  logical image width and height.
+- For responsiveness, images with a long edge above 1080 may get a temporary
+  PNG preview proxy. Only its URI changes: the proxy is still rendered with the
+  original image's logical dimensions, so switching between proxy and original
+  does not change placement geometry.
+- The preview frame is the union of visible panels. Its measured width produces
+  `layoutScale = renderedPreviewWidth / sourcePreviewWidth`.
+- Each `PanelSlice` is placed at its scaled source rectangle and clips its own
+  contents. Every slice renders the same full image; it is aligned locally with:
+
+  ```text
+  translateX = (transform.x - panel.rect.x) * layoutScale
+  translateY = (transform.y - panel.rect.y) * layoutScale
+  imageScale = transform.scale * layoutScale
+  ```
+
+- Because each slice subtracts its own panel origin, adjacent Buttons reveal
+  matching parts of one continuous image rather than unrelated crops.
+- Button image intensity is applied to the image layer. Identifier visibility
+  and intensity are applied independently above it. The white preview frame is
+  decorative and is never exported.
+- The preview stage currently has its own `0.9` display opacity. This affects
+  on-screen appearance, not geometry or exported PNG alpha.
+
+#### Identifier handling in Customize preview
+
+- Identifier type comes from exact grid spans:
+  - `1xN`, `N > 1`: icon and text, vertically centered; Horizontal applies.
+  - `Nx1`, `N > 1`: icon only, horizontally centered; Vertical applies.
+  - `1x1`: centered icon only; position controls are ignored.
+  - Any other `NxM`: icon top-left and text bottom-right; position controls are
+    ignored.
+- Identifier sizes are derived from the shared cell reference, never from the
+  full panel short side. Preview passes
+  `referenceCellSize * layoutScale`, which keeps `1x4`, `3x1`, `3x3`, and other
+  shapes at the same apparent size.
+- Current cell-relative proportions are: glyph `0.34`, text `0.18`, gap `0.08`,
+  normal/corner inset `0.14`, and circle diameter `1.75 * glyph size`.
+- Corner labels add another `0.04` cell on the bottom and right. Their maximum
+  width reserves that extra inset, preventing the text or shadow from being
+  clipped while leaving the approved icon position unchanged.
+- Horizontal icon-and-label groups are measured before their normalized slider
+  position is converted into a safe absolute offset. Vertical movement uses
+  the full circle diameter when calculating safe travel.
+
+#### Converting the composition to aligned PNGs
+
+- Good Lock expects one 1024x1024 PNG per Button. A non-square panel is first
+  represented by a centered square whose side is
+  `max(panel.width, panel.height)`. The square may include source-image area
+  outside the visible Button; Good Lock performs the final panel-shaped clip.
+- `ExportSurface` renders from the normalized original image, not the preview
+  proxy. With `squareScale = renderSide / square.width`, it projects the same
+  image transform as follows:
+
+  ```text
+  left = (transform.x - square.x) * squareScale
+  top = (transform.y - square.y) * squareScale
+  width = image.width * transform.scale * squareScale
+  height = image.height * transform.scale * squareScale
+  ```
+
+- `getButtonExportBounds` maps the visible panel rectangle into its centered
+  export square. The identifier is constrained to those visible bounds, not to
+  the full 1024x1024 file.
+- Export identifier metrics use
+  `referenceCellSize * squareScale`. Raw identifier pixels therefore differ
+  between a `1x4`, `3x1`, and `3x3` PNG, which is intentional: Good Lock scales
+  those square files by different amounts. After application, the identifiers
+  return to the same cell-relative size seen in Customize and in default Quick
+  Panel Buttons.
+- The off-screen surface uses `1024 / PixelRatio.get()` layout points and
+  `react-native-view-shot` captures it at exactly 1024x1024 pixels. All sizing
+  stays proportional, so device density cancels instead of changing the final
+  apparent identifier size.
+- Exports mount and capture one panel at a time in `goodLockOrder`. Capture
+  waits for the original image to load. A visible horizontal identifier also
+  waits for its measured width and committed position; readiness tokens prevent
+  callbacks from an older panel/run from capturing the wrong surface.
+- Captures are PNG, copied to the cache with stable filenames, then saved to the
+  media-library album. A failed run cleans only files created by that run.
+
+#### Alignment guardrails
+
+- Keep source image dimensions and `{ x, y, scale }` authoritative for both
+  preview and export.
+- Keep identifier metrics cell-relative; never size them from the whole panel
+  or add fixed point caps for export.
+- Keep non-square identifier bounds inside the visible centered-square
+  sub-rectangle.
+- Preserve horizontal measurement readiness when changing label layout or
+  localization behavior.
+- Regression coverage must include mixed `1xN`, `Nx1`, `1x1`, and corner
+  panels, more than one `PixelRatio`, preview/export opacity, and sequential
+  capture readiness.
+
 ### 2026-07-20: Customize pinch continuity
 
 - Pinch-start flash came from stale pan start state and competing simultaneous

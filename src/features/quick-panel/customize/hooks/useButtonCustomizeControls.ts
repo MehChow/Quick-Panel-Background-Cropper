@@ -1,6 +1,6 @@
 import { useState } from "react";
 import {
-  getButtonIdentifierOrientation,
+  getButtonIdentifierLayoutKind,
   type ButtonIdentifierPositions,
 } from "../../model/button-identifier-layout";
 import type { QuickPanelPreset } from "../../model/types";
@@ -43,7 +43,7 @@ export function useButtonCustomizeControls(
   const [showButtonIdentifiers, setShowButtonIdentifiers] = useState(true);
   const orientations = preset.visualOrder.map((id) => {
     const identifier = preset.panels[id]?.buttonIdentifier;
-    return identifier ? getButtonIdentifierOrientation(identifier) : null;
+    return identifier ? getButtonIdentifierLayoutKind(identifier) : null;
   });
 
   return {

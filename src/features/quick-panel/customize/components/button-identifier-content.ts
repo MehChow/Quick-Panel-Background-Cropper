@@ -11,7 +11,17 @@ export const buttonIdentifierStyles = StyleSheet.create({
     top: 0,
   },
   label: { color: "#FFFFFF", fontWeight: "600" },
-  leftCenter: { alignItems: "center", flexDirection: "row" },
+  iconBackground: {
+    alignItems: "center",
+    backgroundColor: "#666666",
+    justifyContent: "center",
+  },
+  corner: {
+    alignItems: "flex-start",
+    flex: 1,
+    justifyContent: "space-between",
+  },
+  cornerLabel: { alignSelf: "flex-end" },
   shadow: {
     textShadowColor: "rgba(0, 0, 0, 0.45)",
     textShadowOffset: { height: 1, width: 0 },

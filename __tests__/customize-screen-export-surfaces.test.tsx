@@ -199,7 +199,12 @@ describe("CustomizeScreen export surfaces", () => {
           fileName: "01-wi-fi.png",
           family: "button" as const,
           rect: { x: 0, y: 0, width: 100, height: 50, radius: 0 },
-          buttonIdentifier: { columnSpan: 2, rowSpan: 1, iconName: "wifi" as const },
+          buttonIdentifier: {
+            columnSpan: 2,
+            rowSpan: 1,
+            iconName: "wifi" as const,
+            referenceCellSize: 50,
+          },
         },
         "button-2": {
           id: "button-2" as const,
@@ -207,7 +212,12 @@ describe("CustomizeScreen export surfaces", () => {
           fileName: "02-bluetooth.png",
           family: "button" as const,
           rect: { x: 0, y: 50, width: 50, height: 100, radius: 0 },
-          buttonIdentifier: { columnSpan: 1, rowSpan: 2, iconName: "bluetooth" as const },
+          buttonIdentifier: {
+            columnSpan: 1,
+            rowSpan: 2,
+            iconName: "bluetooth" as const,
+            referenceCellSize: 50,
+          },
         },
         "button-3": {
           id: "button-3" as const,
@@ -215,7 +225,12 @@ describe("CustomizeScreen export surfaces", () => {
           fileName: "03-smart-view.png",
           family: "button" as const,
           rect: { x: 50, y: 50, width: 50, height: 50, radius: 0 },
-          buttonIdentifier: { columnSpan: 1, rowSpan: 1, iconName: "scan" as const },
+          buttonIdentifier: {
+            columnSpan: 1,
+            rowSpan: 1,
+            iconName: "scan" as const,
+            referenceCellSize: 50,
+          },
         },
       },
       visualOrder: ["button-1" as const, "button-2" as const, "button-3" as const],

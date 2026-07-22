@@ -77,7 +77,7 @@ export const ExportSurface = forwardRef<View, ExportSurfaceProps>(
             onPositionReady={onIdentifierPositionReady}
             opacity={buttonIdentifierOpacity}
             positions={identifierPositions}
-            target="export"
+            referenceCellSize={panel.buttonIdentifier.referenceCellSize * squareScale}
           />
         ) : null}
       </View>

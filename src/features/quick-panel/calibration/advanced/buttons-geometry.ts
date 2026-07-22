@@ -15,6 +15,10 @@ import { arePanelsValid } from "./advanced-geometry";
 export function createButtonsPreset(calibration: AdvancedButtonsCalibration): QuickPanelPreset {
   const fileNames = createButtonFileNames(calibration.buttons.map((button) => button.label));
   const order = calibration.buttons.map((button) => button.id);
+  const referenceCellSize = Math.min(
+    calibration.outerRect.width / calibration.grid.columns,
+    calibration.outerRect.height / calibration.grid.rows,
+  );
   return {
     id: "one-ui-8-5-buttons",
     label: "Advanced Buttons",
@@ -39,6 +43,7 @@ export function createButtonsPreset(calibration: AdvancedButtonsCalibration): Qu
             calibration.grid,
           ),
           iconName: getButtonIconName(button.label, button.customIconId),
+          referenceCellSize,
         },
       },
     ])),

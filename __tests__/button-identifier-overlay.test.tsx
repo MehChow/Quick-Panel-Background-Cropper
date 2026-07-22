@@ -18,16 +18,22 @@ function renderOverlay(
   rowSpan: number,
   positions = { horizontal: 0.5, vertical: 0.5 },
   onPositionReady?: () => void,
+  overlayBounds = bounds,
 ) {
   return render(
     <ButtonIdentifierOverlay
-      bounds={bounds}
-      identifier={{ columnSpan, rowSpan, iconName: "wifi" }}
+      bounds={overlayBounds}
+      identifier={{
+        columnSpan,
+        rowSpan,
+        iconName: "wifi",
+        referenceCellSize: 50,
+      }}
       label="Wi-Fi"
       onPositionReady={onPositionReady}
       opacity={0.7}
       positions={positions}
-      target="preview"
+      referenceCellSize={50}
     />,
   );
 }
@@ -35,24 +41,42 @@ function renderOverlay(
 describe("ButtonIdentifierOverlay", () => {
   it("centers a 1x1 icon and omits the label", () => {
     const screen = renderOverlay(1, 1);
+    const iconBackground = screen.getByTestId("button-identifier-icon-background");
+    const icon = screen.getByTestId("mock-lucide");
 
     expect(StyleSheet.flatten(
       screen.getByTestId("button-identifier-content").props.style,
     )).toMatchObject({ alignItems: "center", justifyContent: "center" });
+    expect(StyleSheet.flatten(iconBackground.props.style)).toMatchObject({
+      alignItems: "center",
+      backgroundColor: "#666666",
+      borderRadius: 29.75 / 2,
+      height: 29.75,
+      justifyContent: "center",
+      width: 29.75,
+    });
+    expect(icon.props.size).toBe(17);
     expect(screen.queryByTestId("button-identifier-label")).toBeNull();
   });
 
-  it("top-centers a vertical icon and omits the label", () => {
-    const screen = renderOverlay(1, 2);
-
-    expect(StyleSheet.flatten(
+  it("moves a one-column icon while preserving horizontal centering", () => {
+    const screen = renderOverlay(1, 3, { horizontal: 0.5, vertical: 1 });
+    const contentStyle = StyleSheet.flatten(
       screen.getByTestId("button-identifier-movable-content").props.style,
-    )).toMatchObject({ alignItems: "center", left: 0, width: 100 });
+    );
+
+    expect(contentStyle).toMatchObject({
+      alignItems: "center",
+      height: 29.75,
+      left: 0,
+      top: 13.25,
+      width: 100,
+    });
     expect(screen.queryByTestId("button-identifier-label")).toBeNull();
   });
 
-  it("left-centers a roomy icon with a fitted localized label", () => {
-    const screen = renderOverlay(2, 1);
+  it("left-centers a one-row icon with a fitted localized label", () => {
+    const screen = renderOverlay(4, 1);
     const label = screen.getByTestId("button-identifier-label");
 
     expect(StyleSheet.flatten(
@@ -69,12 +93,10 @@ describe("ButtonIdentifierOverlay", () => {
   });
 
   it("keeps a horizontal identifier hidden until its content is measured", () => {
-    const screen = renderOverlay(2, 1);
-    const rootStyle = StyleSheet.flatten(
+    const screen = renderOverlay(4, 1);
+    expect(StyleSheet.flatten(
       screen.getByTestId("button-identifier-overlay").props.style,
-    );
-
-    expect(rootStyle.opacity).toBe(0);
+    ).opacity).toBe(0);
 
     fireEvent(screen.getByTestId("button-identifier-movable-content"), "layout", {
       nativeEvent: { layout: { height: 20, width: 40, x: 0, y: 0 } },
@@ -85,26 +107,8 @@ describe("ButtonIdentifierOverlay", () => {
     ).opacity).toBe(0.7);
   });
 
-  it("applies opacity once measured while keeping icon and text white", () => {
-    const screen = renderOverlay(2, 1);
-    fireEvent(screen.getByTestId("button-identifier-movable-content"), "layout", {
-      nativeEvent: { layout: { height: 20, width: 40, x: 0, y: 0 } },
-    });
-    const rootStyle = StyleSheet.flatten(
-      screen.getByTestId("button-identifier-overlay").props.style,
-    );
-    const labelStyle = StyleSheet.flatten(
-      screen.getByTestId("button-identifier-label").props.style,
-    );
-
-    expect(rootStyle.opacity).toBe(0.7);
-    expect(screen.getByTestId("mock-lucide").props.color).toBe("#FFFFFF");
-    expect(labelStyle.color).toBe("#FFFFFF");
-    expect(labelStyle.opacity).toBeUndefined();
-  });
-
   it("moves a measured horizontal icon-and-label group together", () => {
-    const screen = renderOverlay(2, 1, { horizontal: 0.5, vertical: 0.5 });
+    const screen = renderOverlay(4, 1, { horizontal: 0.5, vertical: 0.5 });
     const content = screen.getByTestId("button-identifier-movable-content");
 
     fireEvent(content, "layout", {
@@ -112,34 +116,73 @@ describe("ButtonIdentifierOverlay", () => {
     });
 
     expect(StyleSheet.flatten(content.props.style)).toMatchObject({ left: 30 });
-    expect(screen.getByTestId("mock-lucide")).toBeTruthy();
-    expect(screen.getByTestId("button-identifier-label")).toBeTruthy();
   });
 
-  it("moves a vertical icon while preserving horizontal centering", () => {
-    const screen = renderOverlay(1, 2, { horizontal: 0.5, vertical: 1 });
-
-    expect(StyleSheet.flatten(
-      screen.getByTestId("button-identifier-movable-content").props.style,
-    )).toMatchObject({ alignItems: "center", left: 0, top: 26, width: 100 });
-  });
-
-  it.each([[1, 1], [2, 2]])(
-    "ignores position values for square-like %sx%s Buttons",
-    (columnSpan, rowSpan) => {
-      const screen = renderOverlay(
-        columnSpan,
-        rowSpan,
-        { horizontal: 1, vertical: 1 },
-      );
-
-      expect(screen.queryByTestId("button-identifier-movable-content")).toBeNull();
+  it.each([
+    [4, 1, true, true],
+    [1, 3, false, true],
+    [1, 1, false, false],
+    [2, 2, true, false],
+    [2, 3, true, false],
+    [3, 2, true, false],
+    [3, 3, true, false],
+  ] as const)(
+    "%sx%s resolves label=%s movable=%s",
+    (columnSpan, rowSpan, hasLabel, isMovable) => {
+      const screen = renderOverlay(columnSpan, rowSpan);
+      expect(Boolean(screen.queryByTestId("button-identifier-label"))).toBe(hasLabel);
+      expect(Boolean(screen.queryByTestId(
+        "button-identifier-movable-content",
+      ))).toBe(isMovable);
     },
   );
 
+  it("anchors a corner icon top-left and its label bottom-right", () => {
+    const screen = renderOverlay(3, 3);
+    const contentStyle = StyleSheet.flatten(
+      screen.getByTestId("button-identifier-content").props.style,
+    );
+    const labelStyle = StyleSheet.flatten(
+      screen.getByTestId("button-identifier-label").props.style,
+    );
+
+    expect(contentStyle).toMatchObject({
+      alignItems: "flex-start",
+      flex: 1,
+      justifyContent: "space-between",
+      paddingHorizontal: 7,
+      paddingVertical: 7,
+    });
+    expect(labelStyle).toMatchObject({
+      alignSelf: "flex-end",
+      marginBottom: 2,
+      marginRight: 2,
+      maxWidth: 84,
+    });
+  });
+
+  it("keeps canonical icon and text metrics across panel sizes", () => {
+    const horizontal = renderOverlay(4, 1);
+    const horizontalIcon = horizontal.getByTestId("mock-lucide").props.size;
+    const horizontalText = StyleSheet.flatten(
+      horizontal.getByTestId("button-identifier-label").props.style,
+    ).fontSize;
+    horizontal.unmount();
+
+    const vertical = renderOverlay(1, 3);
+    expect(vertical.getByTestId("mock-lucide").props.size).toBe(horizontalIcon);
+    vertical.unmount();
+
+    const corner = renderOverlay(3, 3);
+    expect(corner.getByTestId("mock-lucide").props.size).toBe(horizontalIcon);
+    expect(StyleSheet.flatten(
+      corner.getByTestId("button-identifier-label").props.style,
+    ).fontSize).toBe(horizontalText);
+  });
+
   it("reports horizontal readiness only after measured placement commits", async () => {
     const onPositionReady = jest.fn();
-    const screen = renderOverlay(2, 1, undefined, onPositionReady);
+    const screen = renderOverlay(4, 1, undefined, onPositionReady);
 
     expect(onPositionReady).not.toHaveBeenCalled();
     fireEvent(screen.getByTestId("button-identifier-movable-content"), "layout", {

@@ -41,7 +41,12 @@ const previewScale = {
 function createPanel(family: PanelDefinition["family"]): PanelDefinition {
   return {
     buttonIdentifier: family === "button"
-      ? { columnSpan: 1, rowSpan: 1, iconName: "wifi" }
+      ? {
+        columnSpan: 1,
+        rowSpan: 1,
+        iconName: "wifi",
+        referenceCellSize: 80,
+      }
       : undefined,
     family,
     fileName: `${family}.png`,
@@ -182,6 +187,37 @@ describe("panel image intensity", () => {
     expect(StyleSheet.flatten(screen.getByTestId("expo-image").props.style)).toMatchObject({
       opacity: 0.63,
     });
+  });
+
+  it("scales the shared identifier reference through the export square", () => {
+    const panel: PanelDefinition = {
+      ...createPanel("button"),
+      rect: { height: 300, radius: 0, width: 300, x: 0, y: 0 },
+      buttonIdentifier: {
+        columnSpan: 3,
+        iconName: "zap",
+        referenceCellSize: 100,
+        rowSpan: 3,
+      },
+    };
+    const screen = render(
+      <ExportSurface
+        buttonIdentifierOpacity={0.7}
+        buttonPanelOpacity={0.63}
+        image={image}
+        identifierPositions={{ horizontal: 0.5, vertical: 0.5 }}
+        onIdentifierPositionReady={jest.fn()}
+        onImageLoad={jest.fn()}
+        panel={panel}
+        side={512}
+        showButtonIdentifiers
+        transform={transform}
+      />,
+    );
+
+    expect(StyleSheet.flatten(
+      screen.getByTestId("button-identifier-icon-background").props.style,
+    )).toMatchObject({ height: 101.547, width: 101.547 });
   });
 
   it("describes the slider as Button image intensity in both locales", () => {

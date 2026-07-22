@@ -2,26 +2,55 @@ import {
   getButtonExportBounds,
   getButtonGridSpan,
   getButtonIdentifierLayout,
-  getButtonIdentifierOrientation,
+  getButtonIdentifierLayoutKind,
   getConstrainedAxisOffset,
 } from "@/features/quick-panel/model/button-identifier-layout";
-import type { PanelDefinition } from "@/features/quick-panel/model/types";
+import { getExportSquareRect } from "@/features/quick-panel/model/panel-geometry";
+import type { PanelDefinition, PanelRect } from "@/features/quick-panel/model/types";
 
 const outerRect = { x: 0, y: 0, width: 400, height: 400, radius: 0 };
 const grid = { columns: 4, rows: 4 };
 
 function createIdentifier(columnSpan: number, rowSpan: number) {
-  return { columnSpan, rowSpan, iconName: "wifi" as const };
+  return {
+    columnSpan,
+    iconName: "wifi" as const,
+    referenceCellSize: 50,
+    rowSpan,
+  };
+}
+
+function createPanel(
+  rect: Pick<PanelRect, "width" | "height">,
+  columnSpan: number,
+  rowSpan: number,
+): PanelDefinition {
+  return {
+    id: "button-1",
+    label: "Wi-Fi",
+    fileName: "01-wi-fi.png",
+    family: "button",
+    rect: { ...rect, x: 0, y: 0, radius: 0 },
+    buttonIdentifier: {
+      columnSpan,
+      iconName: "wifi",
+      referenceCellSize: 100,
+      rowSpan,
+    },
+  };
 }
 
 describe("Button identifier layout", () => {
   it.each([
-    [2, 1, "horizontal"],
-    [1, 2, "vertical"],
-    [1, 1, "square"],
-    [2, 2, "square"],
+    [4, 1, "horizontal"],
+    [1, 3, "vertical"],
+    [1, 1, "single"],
+    [2, 2, "corner"],
+    [3, 2, "corner"],
+    [2, 3, "corner"],
+    [3, 3, "corner"],
   ] as const)("classifies %sx%s as %s", (columnSpan, rowSpan, expected) => {
-    expect(getButtonIdentifierOrientation(
+    expect(getButtonIdentifierLayoutKind(
       createIdentifier(columnSpan, rowSpan),
     )).toBe(expected);
   });
@@ -65,71 +94,73 @@ describe("Button identifier layout", () => {
     const layout = getButtonIdentifierLayout(
       { x: 0, y: 0, width: 40, height: 40 },
       createIdentifier(1, 1),
-      "preview",
+      40,
     );
 
     expect(layout).toMatchObject({
-      alignment: "center",
       bounds: { x: 0, y: 0, width: 40, height: 40 },
       iconSize: 13.6,
-      orientation: "square",
+      kind: "single",
       showLabel: false,
     });
   });
 
-  it("top-centers icon-only identifiers for vertical Buttons", () => {
+  it("moves icon-only identifiers for one-column Buttons", () => {
     expect(getButtonIdentifierLayout(
       { x: 0, y: 0, width: 40, height: 120 },
       createIdentifier(1, 3),
-      "preview",
+      40,
     )).toMatchObject({
-      alignment: "top-center",
-      orientation: "vertical",
+      kind: "vertical",
       showLabel: false,
     });
   });
 
-  it.each([
-    [2, 1, "horizontal"],
-    [2, 2, "square"],
-  ] as const)("left-centers icon and label for roomy %sx%s Buttons", (
-    columnSpan,
-    rowSpan,
-    orientation,
-  ) => {
-    const layout = getButtonIdentifierLayout(
+  it("reserves the full circular icon width in horizontal Buttons", () => {
+    expect(getButtonIdentifierLayout(
       { x: 0, y: 0, width: 100, height: 50 },
-      createIdentifier(columnSpan, rowSpan),
-      "preview",
-    );
-
-    expect(layout).toMatchObject({
-      alignment: "left-center",
+      createIdentifier(4, 1),
+      50,
+    )).toMatchObject({
       fontSize: 9,
       gap: 4,
+      iconBackgroundSize: 29.75,
       iconSize: 17,
       inset: 7,
-      maxLabelWidth: 65,
+      kind: "horizontal",
+      maxLabelWidth: 52.25,
       minimumFontScale: 0.7,
-      orientation,
       showLabel: true,
     });
   });
 
-  it("uses larger absolute sizing for exports", () => {
-    const preview = getButtonIdentifierLayout(
-      { x: 0, y: 0, width: 40, height: 40 },
-      createIdentifier(1, 1),
-      "preview",
+  it("uses one rendered cell reference for every panel kind", () => {
+    const horizontal = getButtonIdentifierLayout(
+      { x: 0, y: 0, width: 200, height: 50 },
+      createIdentifier(4, 1),
+      50,
     );
-    const exported = getButtonIdentifierLayout(
-      { x: 0, y: 0, width: 1024, height: 1024 },
-      createIdentifier(1, 1),
-      "export",
+    const vertical = getButtonIdentifierLayout(
+      { x: 0, y: 0, width: 50, height: 150 },
+      createIdentifier(1, 3),
+      50,
+    );
+    const corner = getButtonIdentifierLayout(
+      { x: 0, y: 0, width: 150, height: 150 },
+      createIdentifier(3, 3),
+      50,
     );
 
-    expect(preview.iconSize).toBe(13.6);
-    expect(exported.iconSize).toBe(96);
+    expect([horizontal.iconSize, vertical.iconSize, corner.iconSize]).toEqual([
+      17, 17, 17,
+    ]);
+    expect([
+      horizontal.iconBackgroundSize,
+      vertical.iconBackgroundSize,
+      corner.iconBackgroundSize,
+    ]).toEqual([29.75, 29.75, 29.75]);
+    expect(horizontal.fontSize).toBe(9);
+    expect(corner.fontSize).toBe(9);
   });
 
   it.each([
@@ -146,4 +177,31 @@ describe("Button identifier layout", () => {
 
     expect(getButtonExportBounds(panel, 1024)).toEqual(expected);
   });
+
+  it.each([2, 3])(
+    "keeps applied identifier size stable at PixelRatio %s",
+    (pixelRatio) => {
+      const side = 1024 / pixelRatio;
+      const panels = [
+        createPanel({ width: 400, height: 100 }, 4, 1),
+        createPanel({ width: 100, height: 300 }, 1, 3),
+        createPanel({ width: 300, height: 300 }, 3, 3),
+      ];
+      const appliedSizes = panels.map((panel) => {
+        const square = getExportSquareRect(panel);
+        const squareScale = side / square.width;
+        const identifier = panel.buttonIdentifier!;
+        const layout = getButtonIdentifierLayout(
+          getButtonExportBounds(panel, side),
+          identifier,
+          identifier.referenceCellSize * squareScale,
+        );
+        return layout.iconSize * pixelRatio * square.width / 1024;
+      });
+
+      expect(appliedSizes[0]).toBeCloseTo(34);
+      expect(appliedSizes[1]).toBeCloseTo(34);
+      expect(appliedSizes[2]).toBeCloseTo(34);
+    },
+  );
 });

@@ -38,7 +38,12 @@ const panel: PanelDefinition = {
   fileName: "01-wi-fi.png",
   family: "button",
   rect: { x: 0, y: 0, width: 100, height: 50, radius: 0 },
-  buttonIdentifier: { columnSpan: 2, rowSpan: 1, iconName: "wifi" },
+  buttonIdentifier: {
+    columnSpan: 2,
+    rowSpan: 1,
+    iconName: "wifi",
+    referenceCellSize: 50,
+  },
 };
 const token: ExportSurfaceToken = { panelId: "button-1", runId: 7 };
 

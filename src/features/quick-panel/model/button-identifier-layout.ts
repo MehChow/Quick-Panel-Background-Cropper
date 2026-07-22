@@ -13,12 +13,11 @@ export interface ButtonIdentifierBounds {
   y: number;
 }
 
-export type ButtonIdentifierAlignment =
-  | "center"
-  | "top-center"
-  | "left-center";
-export type ButtonIdentifierOrientation = "horizontal" | "vertical" | "square";
-export type ButtonIdentifierRenderTarget = "preview" | "export";
+export type ButtonIdentifierLayoutKind =
+  | "horizontal"
+  | "vertical"
+  | "single"
+  | "corner";
 
 export interface ButtonIdentifierPositions {
   horizontal: number;
@@ -33,27 +32,28 @@ interface ConstrainedAxisOffsetInput {
 }
 
 export interface ButtonIdentifierLayout {
-  alignment: ButtonIdentifierAlignment;
   bounds: ButtonIdentifierBounds;
+  cornerLabelInset: number;
+  cornerPadding: number;
   fontSize: number;
   gap: number;
+  iconBackgroundSize: number;
   iconSize: number;
   inset: number;
+  kind: ButtonIdentifierLayoutKind;
   maxLabelWidth: number;
   minimumFontScale: number;
-  orientation: ButtonIdentifierOrientation;
   showLabel: boolean;
 }
 
-const targetSizing = {
-  preview: {
-    icon: [0.34, 12, 28], font: [0.18, 9, 16],
-    gap: [0.08, 4, 10], inset: [0.14, 6, 18],
-  },
-  export: {
-    icon: [0.34, 18, 96], font: [0.18, 14, 56],
-    gap: [0.08, 8, 32], inset: [0.14, 12, 48],
-  },
+const identifierRatios = {
+  cornerLabelInset: 0.04,
+  cornerPadding: 0.14,
+  font: 0.18,
+  gap: 0.08,
+  icon: 0.34,
+  iconBackground: 1.75,
+  inset: 0.14,
 } as const;
 
 export function getButtonGridSpan(
@@ -86,40 +86,51 @@ export function getButtonExportBounds(
 export function getButtonIdentifierLayout(
   bounds: ButtonIdentifierBounds,
   identifier: ButtonIdentifierDefinition,
-  target: ButtonIdentifierRenderTarget,
+  renderedReferenceCellSize: number,
 ): ButtonIdentifierLayout {
-  const shortSide = Math.min(bounds.width, bounds.height);
-  const sizing = targetSizing[target];
-  const iconSize = getSize(shortSide, sizing.icon);
-  const fontSize = getSize(shortSide, sizing.font);
-  const gap = getSize(shortSide, sizing.gap);
-  const inset = getSize(shortSide, sizing.inset);
-  const isSingleCell = identifier.columnSpan === 1 && identifier.rowSpan === 1;
-  const isVertical = !isSingleCell && identifier.rowSpan > identifier.columnSpan;
-  const orientation = getButtonIdentifierOrientation(identifier);
-  const showLabel = !isSingleCell && !isVertical;
+  const kind = getButtonIdentifierLayoutKind(identifier);
+  const iconSize = round(renderedReferenceCellSize * identifierRatios.icon);
+  const iconBackgroundSize = round(iconSize * identifierRatios.iconBackground);
+  const fontSize = round(renderedReferenceCellSize * identifierRatios.font);
+  const gap = round(renderedReferenceCellSize * identifierRatios.gap);
+  const inset = round(renderedReferenceCellSize * identifierRatios.inset);
+  const cornerPadding = round(
+    renderedReferenceCellSize * identifierRatios.cornerPadding,
+  );
+  const cornerLabelInset = round(
+    renderedReferenceCellSize * identifierRatios.cornerLabelInset,
+  );
+  const showLabel = kind === "horizontal" || kind === "corner";
+  const maxLabelWidth = kind === "corner"
+    ? Math.max(0, bounds.width - cornerPadding * 2 - cornerLabelInset)
+    : showLabel
+      ? Math.max(0, bounds.width - inset * 2 - iconBackgroundSize - gap)
+      : 0;
+
   return {
-    alignment: isSingleCell ? "center" : isVertical ? "top-center" : "left-center",
     bounds,
+    cornerLabelInset,
+    cornerPadding,
     fontSize,
     gap,
+    iconBackgroundSize,
     iconSize,
     inset,
-    maxLabelWidth: showLabel
-      ? Math.max(0, bounds.width - inset * 2 - iconSize - gap)
-      : 0,
+    kind,
+    maxLabelWidth,
     minimumFontScale: 0.7,
-    orientation,
     showLabel,
   };
 }
 
-export function getButtonIdentifierOrientation(
+export function getButtonIdentifierLayoutKind(
   identifier: ButtonIdentifierDefinition,
-): ButtonIdentifierOrientation {
-  if (identifier.columnSpan > identifier.rowSpan) return "horizontal";
-  if (identifier.rowSpan > identifier.columnSpan) return "vertical";
-  return "square";
+): ButtonIdentifierLayoutKind {
+  const { columnSpan, rowSpan } = identifier;
+  if (rowSpan === 1 && columnSpan === 1) return "single";
+  if (rowSpan === 1 && columnSpan > 1) return "horizontal";
+  if (columnSpan === 1 && rowSpan > 1) return "vertical";
+  return "corner";
 }
 
 export function getConstrainedAxisOffset({
@@ -137,12 +148,8 @@ export function getConstrainedAxisOffset({
   return safeStart + (safeEnd - safeStart) * normalized;
 }
 
-function getSize(
-  shortSide: number,
-  sizing: readonly [number, number, number],
-) {
-  const size = clamp(shortSide * sizing[0], sizing[1], sizing[2]);
-  return Math.round(size * 1000) / 1000;
+function round(value: number) {
+  return Math.round(value * 1000) / 1000;
 }
 
 function clamp(value: number, minimum: number, maximum: number) {
