@@ -80,14 +80,14 @@ For a first-time user, the app has three customization paths:
 8. Review the exported results and apply them in Good Lock manually.
 
 <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-  <img src="./flow/default/Default_1.webp" width="200">
-  <img src="./flow/default/Default_2.webp" width="200">
-  <img src="./flow/default/Default_3.webp" width="200">
-  <img src="./flow/default/Default_4.webp" width="200">
-  <img src="./flow/default/Default_5.webp" width="200">
-  <img src="./flow/default/Default_6.webp" width="200">
-  <img src="./flow/default/Default_7.webp" width="200">
-  <img src="./flow/default/Default_8.webp" width="200">
+  <img src="./flow/default/1.webp" width="200">
+  <img src="./flow/default/2.webp" width="200">
+  <img src="./flow/default/3.webp" width="200">
+  <img src="./flow/default/4.webp" width="200">
+  <img src="./flow/default/5.webp" width="200">
+  <img src="./flow/default/6.webp" width="200">
+  <img src="./flow/default/7.webp" width="200">
+  <img src="./flow/default/8.webp" width="200">
 </div><br>
 
 ### Advanced Controls
@@ -108,20 +108,21 @@ For a first-time user, the app has three customization paths:
 13. Review the exported results and apply them in Good Lock manually.
 
 <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-  <img src="./flow/advanced/controls-only/Controls_only_1.webp" width="200">
-  <img src="./flow/advanced/controls-only/Controls_only_2.webp" width="200">
-  <img src="./flow/advanced/controls-only/Controls_only_3.webp" width="200">
-  <img src="./flow/advanced/controls-only/Controls_only_4.webp" width="200">
-  <img src="./flow/advanced/controls-only/Controls_only_5.webp" width="200">
-  <img src="./flow/advanced/controls-only/Controls_only_6.webp" width="200">
-  <img src="./flow/advanced/controls-only/Controls_only_7.webp" width="200">
-  <img src="./flow/advanced/controls-only/Controls_only_8.webp" width="200">
-  <img src="./flow/advanced/controls-only/Controls_only_9.webp" width="200">
-  <img src="./flow/advanced/controls-only/Controls_only_10.webp" width="200">
-  <img src="./flow/advanced/controls-only/Controls_only_11.webp" width="200">
-  <img src="./flow/advanced/controls-only/Controls_only_12.webp" width="200">
-  <img src="./flow/advanced/controls-only/Controls_only_13.webp" width="200">
-  <img src="./flow/advanced/controls-only/Controls_only_14.webp" width="200">
+  <img src="./flow/advanced/controls-only/1.webp" width="200">
+  <img src="./flow/advanced/controls-only/2.webp" width="200">
+  <img src="./flow/advanced/controls-only/3.webp" width="200">
+  <img src="./flow/advanced/controls-only/4.webp" width="200">
+  <img src="./flow/advanced/controls-only/5.webp" width="200">
+  <img src="./flow/advanced/controls-only/6.webp" width="200">
+  <img src="./flow/advanced/controls-only/7.webp" width="200">
+  <img src="./flow/advanced/controls-only/8.webp" width="200">
+  <img src="./flow/advanced/controls-only/9.webp" width="200">
+  <img src="./flow/advanced/controls-only/10.webp" width="200">
+  <img src="./flow/advanced/controls-only/11.webp" width="200">
+  <img src="./flow/advanced/controls-only/12.webp" width="200">
+  <img src="./flow/advanced/controls-only/13.webp" width="200">
+  <img src="./flow/advanced/controls-only/14.webp" width="200">
+  <img src="./flow/advanced/controls-only/15.webp" width="200">
 </div><br>
 
 ### Advanced Buttons
@@ -142,23 +143,26 @@ For a first-time user, the app has three customization paths:
 12. Export the selected Button PNGs and apply them in the shown order.
 
 <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-  <img src="./flow/advanced/buttons-only/Buttons_only_1.webp" width="200">
-  <img src="./flow/advanced/buttons-only/Buttons_only_2.webp" width="200">
-  <img src="./flow/advanced/buttons-only/Buttons_only_3.webp" width="200">
-  <img src="./flow/advanced/buttons-only/Buttons_only_4.webp" width="200">
-  <img src="./flow/advanced/buttons-only/Buttons_only_5.webp" width="200">
-  <img src="./flow/advanced/buttons-only/Buttons_only_6.webp" width="200">
-  <img src="./flow/advanced/buttons-only/Buttons_only_7.webp" width="200">
-  <img src="./flow/advanced/buttons-only/Buttons_only_8.webp" width="200">
-  <img src="./flow/advanced/buttons-only/Buttons_only_9.webp" width="200">
-  <img src="./flow/advanced/buttons-only/Buttons_only_10.webp" width="200">
-  <img src="./flow/advanced/buttons-only/Buttons_only_11.webp" width="200">
-  <img src="./flow/advanced/buttons-only/Buttons_only_12.webp" width="200">
-  <img src="./flow/advanced/buttons-only/Buttons_only_13.webp" width="200">
-  <img src="./flow/advanced/buttons-only/Buttons_only_14.webp" width="200">
-  <img src="./flow/advanced/buttons-only/Buttons_only_15.webp" width="200">
-  <img src="./flow/advanced/buttons-only/Buttons_only_16.webp" width="200">
-  <img src="./flow/advanced/buttons-only/Buttons_only_17.webp" width="200">
+  <img src="./flow/advanced/buttons-only/1.webp" width="200">
+  <img src="./flow/advanced/buttons-only/2.webp" width="200">
+  <img src="./flow/advanced/buttons-only/3.webp" width="200">
+  <img src="./flow/advanced/buttons-only/4.webp" width="200">
+  <img src="./flow/advanced/buttons-only/5.webp" width="200">
+  <img src="./flow/advanced/buttons-only/6.webp" width="200">
+  <img src="./flow/advanced/buttons-only/7.webp" width="200">
+  <img src="./flow/advanced/buttons-only/8.webp" width="200">
+  <img src="./flow/advanced/buttons-only/9.webp" width="200">
+  <img src="./flow/advanced/buttons-only/10.webp" width="200">
+  <img src="./flow/advanced/buttons-only/11.webp" width="200">
+  <img src="./flow/advanced/buttons-only/12.webp" width="200">
+  <img src="./flow/advanced/buttons-only/13.webp" width="200">
+  <img src="./flow/advanced/buttons-only/14.webp" width="200">
+  <img src="./flow/advanced/buttons-only/15.webp" width="200">
+  <img src="./flow/advanced/buttons-only/16.webp" width="200">
+  <img src="./flow/advanced/buttons-only/17.webp" width="200">
+  <img src="./flow/advanced/buttons-only/18.webp" width="200">
+  <img src="./flow/advanced/buttons-only/19.webp" width="200">
+  <img src="./flow/advanced/buttons-only/20.webp" width="200">
 </div><br>
 
 After you calibrate a mode and target once, later runs go straight to image
