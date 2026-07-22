@@ -17,7 +17,6 @@ const advancedImages = [
   images.modeAdvanced1,
   images.modeAdvanced2,
   images.modeAdvanced3,
-  images.modeAdvanced4,
 ] as const;
 
 interface ModeOptionCardProps {

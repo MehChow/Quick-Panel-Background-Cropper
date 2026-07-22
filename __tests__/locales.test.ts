@@ -5,10 +5,10 @@ describe("customize locale strings", () => {
     const english = enLocale.translation.customize;
     const chinese = zhLocale.translation.customize;
     expect(english.imagePlacementBoundaryHelp).toBe(
-      "The full placement area is the region the image must cover. Zoom in if you need more room to move the image within it.",
+      "If you can’t move the image up or down enough, the area you want to display may not have enough space around it. Try zooming in, then try again.",
     );
     expect(chinese.imagePlacementBoundaryHelp).toBe(
-      "完整放置範圍是圖片必須覆蓋的區域。如需在範圍內有更多移動空間，請放大圖片。",
+      "如果圖片無法充分上下移動，可能是你想顯示的區域周圍沒有足夠空間。請嘗試放大圖片後再試一次。",
     );
     for (const locale of [english, chinese]) {
       expect(locale.imagePlacementHelpButton).toBeTruthy();

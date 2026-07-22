@@ -63,7 +63,7 @@ const zh = {
       imagePlacementHelpBody:
         "QuickStar 會為每個版面套用正方形圖片。較寬的版面只會顯示正方形中央的部分，因此隱藏區域也必須保持被圖片覆蓋。放大圖片即可騰出更多移動空間。",
       imagePlacementBoundaryHelp:
-        "完整放置範圍是圖片必須覆蓋的區域。如需在範圍內有更多移動空間，請放大圖片。",
+        "如果圖片無法充分上下移動，可能是你想顯示的區域周圍沒有足夠空間。請嘗試放大圖片後再試一次。",
       pickerTitle: "選擇背景圖片",
       pickerSubtitle: "支援 PNG、JPG 和 WEBP。",
       layoutPreview: "目前版面預覽",
