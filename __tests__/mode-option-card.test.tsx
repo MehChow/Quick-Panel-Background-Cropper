@@ -24,4 +24,28 @@ describe("ModeOptionCard", () => {
 
     expect(UNSAFE_getByType(FlatList).props.data).toEqual([1, 2, 3]);
   });
+
+  it("only enables carousel scrolling for the selected card", () => {
+    const { rerender, UNSAFE_getByType } = render(
+      <ModeOptionCard
+        isSelected={false}
+        label="Advanced"
+        mode="advanced"
+        onPress={jest.fn()}
+      />,
+    );
+
+    expect(UNSAFE_getByType(FlatList).props.scrollEnabled).toBe(false);
+
+    rerender(
+      <ModeOptionCard
+        isSelected
+        label="Advanced"
+        mode="advanced"
+        onPress={jest.fn()}
+      />,
+    );
+
+    expect(UNSAFE_getByType(FlatList).props.scrollEnabled).toBe(true);
+  });
 });
