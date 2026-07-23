@@ -21,6 +21,7 @@ export interface SliderProps
     React.ComponentPropsWithoutRef<typeof View>,
     VariantProps<typeof sliderVariants> {
   className?: string;
+  trackClassName?: string;
   value?: number;
   min?: number;
   max?: number;
@@ -38,6 +39,7 @@ export function Slider({
   size,
   onValueChange,
   className,
+  trackClassName,
   ...props
 }: SliderProps) {
   const [trackWidth, setTrackWidth] = useState(0);
@@ -83,7 +85,7 @@ export function Slider({
         }}
         {...props}
       >
-        <View className="h-1.5 w-full rounded-full bg-slate-600 overflow-hidden">
+        <View className={cn("h-1.5 w-full rounded-full bg-slate-600 overflow-hidden", trackClassName)}>
           <View
             className="h-full rounded-full bg-white"
             style={{ width: `${pct}%` }}

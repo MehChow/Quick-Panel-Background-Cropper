@@ -51,11 +51,11 @@ export function ButtonCustomizeControls({
   const { t } = useTranslation();
   return (
     <View
-      className="mt-4 w-full gap-3 rounded-2xl border border-white/10 bg-zinc-900/90 px-4 py-3"
+      className="mt-4 w-full gap-3 rounded-2xl border border-[#f3c992]/25 bg-zinc-950/95 px-4 py-3"
       onLayout={onLayout}
     >
       <View className="flex-row items-center gap-2">
-        <View className="min-h-11 flex-1 flex-row items-center justify-between rounded-xl border border-white/10 bg-zinc-800/70 px-3">
+        <View className="min-h-11 flex-1 flex-row items-center justify-between rounded-xl border border-white/20 bg-zinc-800/90 px-3">
           <Text className="flex-1 font-semibold text-white">
             {t("customize.showButtonIdentifiers")}
           </Text>
@@ -72,8 +72,10 @@ export function ButtonCustomizeControls({
           accessibilityLabel={t("customize.buttonIdentifierThemeToggle")}
           accessibilityRole="switch"
           accessibilityState={{ checked: buttonIdentifierTheme === "dark" }}
-          className={`h-11 w-11 items-center justify-center rounded-xl border border-white/10 ${
-            buttonIdentifierTheme === "light" ? "bg-white" : "bg-black"
+          className={`h-11 w-11 items-center justify-center rounded-xl border ${
+            buttonIdentifierTheme === "light"
+              ? "border-[#f3c992]/60 bg-[#f5d6aa]"
+              : "border-[#f3c992]/60 bg-[#2c2328]"
           }`}
           disabled={!showButtonIdentifiers}
           onPress={() => onButtonIdentifierThemeChange(
@@ -86,7 +88,7 @@ export function ButtonCustomizeControls({
           testID="button-identifier-theme-toggle"
         >
           <Lucide
-            color={buttonIdentifierTheme === "light" ? "#000000" : "#FFFFFF"}
+            color={buttonIdentifierTheme === "light" ? "#261e1e" : "#f5d6aa"}
             name={buttonIdentifierTheme === "light" ? "sun" : "moon"}
             size={20}
             testID="button-identifier-theme-icon"

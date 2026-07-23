@@ -85,13 +85,14 @@ export function ButtonAdjustmentTabs(props: ButtonAdjustmentTabsProps) {
       key={props.showButtonIdentifiers ? "identifiers-on" : "identifiers-off"}
       size="sm"
     >
-      <TabsList className="w-full bg-zinc-800/70">
+      <TabsList className="w-full border border-white/15 bg-zinc-800/95">
         {adjustments.map((adjustment) => (
           <TabsTrigger
             accessibilityLabel={adjustment.accessibilityLabel}
             disabled={adjustment.disabled}
             key={adjustment.valueKey}
             testID={adjustment.tabTestID}
+            textClassName="text-zinc-200"
             value={adjustment.valueKey}
           >
             {adjustment.tabLabel}

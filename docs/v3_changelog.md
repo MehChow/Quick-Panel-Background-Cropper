@@ -95,26 +95,29 @@ Buttons-only receives a compact adjustment panel designed to keep the live
 preview visible while editing. It includes:
 
 - **Button image intensity** for the background artwork.
-- **Show Button identifiers** to include or remove the app-rendered Button
-  identifiers from both preview and exported PNGs.
-- **Button identifier intensity** for the white identifier icon and text.
-- **Horizontal position** for long horizontal Button identifiers.
-- **Vertical position** for long vertical Button identifiers.
+- **Show labels** to include or remove the app-rendered Button icons and names
+  from both preview and exported PNGs.
+- **Label intensity** for the Button icon and text.
+- **Horizontal position** for long horizontal Button labels.
+- **Vertical position** for long vertical Button labels.
+- A separate light/dark icon-style toggle. Light uses a gray circle with a
+  white icon; dark uses a white circle with a dark icon. The toggle is disabled
+  when labels are hidden and provides pressed-state feedback.
 
-The Image, Identifier, Horiz., and Vert. tabs share one slider area. Orientation
-tabs appear only when the active Button layout needs them. Hiding identifiers
-disables identifier-related controls and returns the active adjustment to
-Image.
+The Image, Labels, Horiz., and Vert. tabs share one slider area. Orientation
+tabs appear only when the active Button layout needs them. Hiding labels
+disables label-related controls and returns the active adjustment to Image.
 
-Final branch behavior persists all five Buttons Customize settings across
+Final branch behavior persists all six Buttons Customize settings across
 screen visits and app restarts under `quick-panel.button-customize-settings`.
 The defaults for a fresh install are:
 
 - Button image intensity: `78%`
-- Button identifier intensity: `70%`
-- Show identifiers: enabled
-- Horizontal identifier position: `50%`
-- Vertical identifier position: `50%`
+- Label intensity: `70%`
+- Show labels: enabled
+- Horizontal label position: `50%`
+- Vertical label position: `50%`
+- Label icon style: Light
 
 This persistence is newer than the earlier v3 specs and README text that
 describe these values as screen-local; the final implementation is the source
@@ -122,17 +125,18 @@ of truth.
 
 ## Button identifiers
 
-Buttons-only can render stable white icons and labels above the selected image
-in both the live preview and final PNGs. Controls exports are unchanged.
+Buttons-only can render stable icons and labels above the selected image in both
+the live preview and final PNGs. The selected light or dark icon style is
+shared by preview and export. Controls exports are unchanged.
 
 Identifier content follows the calibrated grid span:
 
-| Button shape | Identifier layout | Position control |
-| --- | --- | --- |
-| `1 x N`, where `N > 1` | Icon and label in one centered row | Horizontal |
-| `N x 1`, where `N > 1` | Centered icon only | Vertical |
-| `1 x 1` | Centered icon only | None |
-| Other multi-row/multi-column shapes | Icon at top-left and label at bottom-right | None |
+| Button shape                        | Identifier layout                          | Position control |
+| ----------------------------------- | ------------------------------------------ | ---------------- |
+| `1 x N`, where `N > 1`              | Icon and label in one centered row         | Horizontal       |
+| `N x 1`, where `N > 1`              | Centered icon only                         | Vertical         |
+| `1 x 1`                             | Centered icon only                         | None             |
+| Other multi-row/multi-column shapes | Icon at top-left and label at bottom-right | None             |
 
 Identifier sizing is based on one shared calibrated grid-cell reference. This
 keeps icons, circles, and text at a consistent apparent size across differently

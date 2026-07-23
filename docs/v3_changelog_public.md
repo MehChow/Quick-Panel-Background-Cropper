@@ -22,14 +22,16 @@ your complete Samsung Quick Settings Button list.
 The Buttons preview now includes controls for:
 
 - background image intensity;
-- showing or hiding Button identifiers;
-- identifier intensity; and
-- identifier position on long horizontal or vertical Buttons.
+- showing or hiding Button labels;
+- label intensity;
+- label position on long horizontal or vertical Buttons; and
+- a light or dark style for the Button icons.
 
-Identifiers use a white icon and, when the Button shape allows it, its label.
-The app adapts their layout to square, horizontal, vertical, and larger custom
-Button shapes. Your Buttons appearance settings are remembered for the next
-time you use the app.
+Labels use an icon and, when the Button shape allows it, the Button name. The
+light style uses a gray icon circle with a white icon, while the dark style uses
+a white icon circle with a dark icon. The app adapts their layout to square,
+horizontal, vertical, and larger custom Button shapes. Your Buttons appearance
+settings are remembered for the next time you use the app.
 
 ## Improved Advanced calibration
 
@@ -68,4 +70,3 @@ separately for future use.
   Media player.
 - v3 does not combine Controls and Buttons in the same export run.
 - Exported PNGs are still applied manually through Samsung Good Lock QuickStar.
-

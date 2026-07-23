@@ -135,8 +135,9 @@ describe("ButtonCustomizeControls", () => {
       accessibilityRole: "switch",
       accessibilityState: { checked: false },
     });
-    expect(themeIcon.props).toMatchObject({ color: "#000000" });
-    expect(themeButton.props.className).toContain("bg-white");
+    expect(themeIcon.props).toMatchObject({ color: "#261e1e" });
+    expect(themeButton.props.className).toContain("bg-[#f5d6aa]");
+    expect(themeButton.props.className).toContain("border-[#f3c992]/60");
     expect(themeButton.props.className).toContain("h-11");
     expect(themeButton.props.className).toContain("w-11");
     expect(getButtonIdentifierThemeButtonStyle(true)).toEqual({ opacity: 0.6 });
@@ -146,16 +147,17 @@ describe("ButtonCustomizeControls", () => {
     expect(baseProps.onButtonIdentifierThemeChange).toHaveBeenCalledWith("dark");
   });
 
-  it("uses a black moon button for the dark label icon style", () => {
+  it("uses a warm contrasting moon button for the dark label icon style", () => {
     const screen = render(
       <ButtonCustomizeControls {...baseProps} buttonIdentifierTheme="dark" />,
     );
     const themeButton = screen.getByTestId("button-identifier-theme-toggle");
 
     expect(screen.getByTestId("button-identifier-theme-icon").props).toMatchObject({
-      color: "#FFFFFF",
+      color: "#f5d6aa",
     });
-    expect(themeButton.props.className).toContain("bg-black");
+    expect(themeButton.props.className).toContain("bg-[#2c2328]");
+    expect(themeButton.props.className).toContain("border-[#f3c992]/60");
     expect(getButtonIdentifierThemeButtonStyle(false, false)).toEqual({ opacity: 1 });
   });
 
