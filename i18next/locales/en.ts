@@ -96,15 +96,13 @@ const en = {
       outerSubtitle: "Wrap the full region you want to calibrate",
       panelSelectionSubtitle:
         "Turn off the unwanted panels that are missing from this region",
-      buttonSelectionSubtitle:
-        "Choose the Quick Panel Buttons in this region",
+      buttonSelectionSubtitle: "Choose the Quick Panel Buttons in this region",
       gridSubtitle: "Set the grid before aligning the enabled panel boxes",
       buttonGridSubtitle:
         "Set the grid before aligning the selected Button boxes",
       panelSubtitle: "Drag and resize the {{panel}} area",
       confirmSubtitle: "Review the enabled panel boxes before saving",
-      buttonConfirmSubtitle:
-        "Review the selected Button boxes before saving",
+      buttonConfirmSubtitle: "Review the selected Button boxes before saving",
       panelHelpTitle: "How to align this area",
       panelHelpBody:
         "Drag and resize the purple box so it sits exactly on the edges of this area. The grid dots should stay in the gaps around it, not under the purple border. When the box is aligned correctly, those dots help you judge the spacing and keep the overall layout even and accurate.",
@@ -263,6 +261,7 @@ const en = {
       invalidAdvancedPanels:
         "Keep selected panel boxes inside the outer area without overlapping.",
       selectAdvancedPanel: "Select at least one panel to continue.",
+      selectAdvancedButton: "Select at least one Button to continue.",
     },
   },
 };

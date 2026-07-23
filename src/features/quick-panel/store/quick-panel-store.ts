@@ -203,7 +203,7 @@ export const useQuickPanelStore = create<QuickPanelState>((set, get) => ({
     advancedButtonsDraft: state.advancedButtonsDraft
       ? { ...state.advancedButtonsDraft, buttons }
       : null,
-    error: buttons.length > 0 ? null : translate("errors.selectAdvancedPanel"),
+    error: buttons.length > 0 ? null : translate("errors.selectAdvancedButton"),
   })),
   setAdvancedButtonPanels: (panels) => set((state) => ({
     advancedButtonsDraft: state.advancedButtonsDraft

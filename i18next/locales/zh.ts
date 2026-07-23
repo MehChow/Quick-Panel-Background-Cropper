@@ -102,10 +102,8 @@ const zh = {
       panelHelpBad: "不要讓紫色邊框壓到格線圓點，或跑進版面周圍的留白。",
       buttonPanelHelpBody:
         "拖曳並調整藍色方框，讓它剛好貼齊這個按鈕的邊緣。格線圓點應該落在按鈕周圍的留白處，而不是被藍色邊框壓住。當方框對齊正確時，這些圓點能幫助你判斷間距，讓整體版面更平均、更準確。",
-      buttonPanelHelpGood:
-        "讓藍色方框貼齊按鈕邊緣，讓格線圓點留在周圍留白處。",
-      buttonPanelHelpBad:
-        "不要讓藍色邊框壓到格線圓點，或跑進按鈕周圍的留白。",
+      buttonPanelHelpGood: "讓藍色方框貼齊按鈕邊緣，讓格線圓點留在周圍留白處。",
+      buttonPanelHelpBad: "不要讓藍色邊框壓到格線圓點，或跑進按鈕周圍的留白。",
       reviewHelpTitle: "如何檢查校正結果",
       reviewHelpBody:
         "儲存前，請確認每個橘色方框都準確貼齊對應版面的邊緣，版面之間的間距看起來也平均一致。這一步檢查得越精準，匯出的裁切圖片在 Good Lock 裡就越容易對齊。",
@@ -249,6 +247,7 @@ const zh = {
       invalidAdvancedPanels:
         "請讓已選擇的版面方框保持在外層區域內，且不要互相重疊。",
       selectAdvancedPanel: "請至少選擇一個面板。",
+      selectAdvancedButton: "請至少選擇一個按鈕。",
     },
   },
 };
