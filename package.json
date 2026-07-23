@@ -76,7 +76,7 @@
     "convert-assets": "node ./convert-to-webp.js",
     "android": "node ./scripts/run-android-task.cjs dev",
     "build-apk": "node ./scripts/run-android-task.cjs apk",
-    "build-beta": "node ./scripts/run-android-task.cjs beta"
+    "build-release": "node ./scripts/build-release.cjs"
   },
   "jest": {
     "preset": "jest-expo",

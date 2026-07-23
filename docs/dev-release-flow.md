@@ -52,12 +52,15 @@ git push -u origin release/1.1.0
 
 Then:
 
-1. Set `expo.version` in `app.json`.
-2. Build AAB from release branch with `npm run build-beta`.
-3. Upload exact AAB to Play testing.
-4. Fix release blockers on release branch only.
-5. Use higher `versionCode` for every replacement AAB.
-6. Keep new, unrelated features on `dev` or new feature branches.
+1. Start from a clean release branch.
+2. Run `npm run build-release`.
+3. Choose `new` for the first Play candidate.
+4. Review the reported version, version code, AAB path, and SHA-256.
+5. Review and commit the generated `app.json` and build-flag changes.
+6. Upload the exact AAB to Internal testing.
+7. Fix release blockers on the release branch only.
+8. Run `build-release` with `new` for every replacement AAB uploaded to Play.
+9. Keep new, unrelated features on `dev` or new feature branches.
 
 After testing passes:
 
@@ -88,10 +91,13 @@ Urgent production bug:
 
 1. Create `hotfix/1.0.1` from `main`.
 2. Fix and test.
-3. Merge into `main`.
-4. Merge same fix into `dev`.
-5. Tag production commit `v1.0.1`.
-6. Delete hotfix branch.
+3. Run `npm run build-release`, choose `new`, and upload the candidate to
+   Internal testing.
+4. Test the exact candidate and commit its reviewed release metadata.
+5. Merge the hotfix into `main`.
+6. Promote the tested artifact and tag the production commit `v1.0.1`.
+7. Merge the hotfix back into `dev`.
+8. Delete the hotfix branch.
 
 ## Version rules
 
@@ -115,36 +121,92 @@ Use semantic versioning:
 AAB. Never lower or reuse uploaded value. Continue from highest uploaded value;
 this project uses range near `30000000`.
 
-`npm run build-beta` currently increments `versionCode`. It does not change
-`expo.version`.
+`npm run build-release` derives the user-visible version from the current
+branch:
+
+- `release/1.1.0` -> `1.1.0`
+- `hotfix/1.0.1` -> `1.0.1`
+
+The command never changes `package.json` version. For candidate builds:
+
+- `new` increments `versionCode` for a new Play upload;
+- `retry` keeps the current `versionCode` only when that code has not been
+  uploaded to Play.
+
+Android uses the higher `versionCode` to decide which build is newer. Never
+reuse an uploaded code, even when the user-visible version remains unchanged.
 
 ## Build rules
 
-Before changing release automation, inspect:
+The release command is:
 
-- `app.json`
-- `app.config.ts`
-- `package.json`
-- `scripts/run-android-task.cjs`
-- `scripts/prepare-android-build.cjs`
-- `scripts/configure-android-release-signing.cjs`
+```bash
+npm run build-release
+```
 
-Generated Android files can change during prebuild. Review `git diff` after
-version or build commands.
+It must run from a clean `release/<version>` or `hotfix/<version>` branch. It:
 
-Future `npm run build-release` should:
+1. Reads the semantic version from the branch name.
+2. Asks whether this is a `new` Play candidate or a local `retry`.
+3. Shows branch, base commit, package, version, and version-code changes before
+   writing.
+4. Requires confirmation that the proposed code is higher than every uploaded
+   Play build.
+5. Runs Jest, lint, and TypeScript.
+6. Updates `app.json` and keeps the intentional build-version label visible on
+   the Landing screen.
+7. Runs Expo Android prebuild with `APP_VARIANT=release`.
+8. Reapplies upload-key signing and builds the release AAB.
+9. Verifies the finished AAB uses the expected upload-certificate SHA1.
+10. Restores `app.json` and the build flag if prebuild, signing, Gradle, or
+    certificate verification fails.
+11. Prints the AAB path, size, SHA-256, upload SHA1, branch, base commit,
+    version, and version code. The base commit is the clean commit from which
+    the script applies the displayed, uncommitted release metadata.
 
-1. Prompt for `patch`, `minor`, or `major`.
-2. Update `expo.version`.
-3. Increment `versionCode` once.
-4. Ask before changing files or building.
-5. Run existing Android prebuild and signing setup.
-6. Build signed AAB.
-7. Print version, version code, branch, artifact path.
-8. Leave changes uncommitted for review. Never auto-commit or auto-push.
+The command never commits, pushes, uploads, or clears app data. Successful
+version changes remain uncommitted so they can be reviewed. Generated Android
+files can change during prebuild; review `git diff` after building.
 
-Avoid double version bumps between `build-release` and `build-beta`. One command
-must own each version change.
+`build-release` is the only Play AAB command. Do not reintroduce a second command
+that also changes `versionCode`.
+
+### Retry versus replacement
+
+- Build failed before producing an AAB: the script restores its file changes.
+  Run it again and choose `new`; the same next code will be proposed.
+- Build succeeded, but the AAB was lost and its code was never uploaded: after
+  committing the successful metadata, choose `retry` to reproduce that code.
+- AAB was uploaded to any Play track: the code is consumed. After a fix, choose
+  `new`, even though the branch remains `release/1.1.0`.
+
+## First v1.1.0 release walkthrough
+
+For the current v3 release:
+
+1. Keep `app.json` at production version `1.0.0` while feature work is on
+   `feature/*` and `dev`.
+2. Merge the completed v3 feature into `dev`.
+3. Run the full automated checks on `dev`.
+4. Create `release/1.1.0` from the tested `dev` commit.
+5. Make sure the release branch is clean.
+6. Run `npm run build-release`.
+7. Choose `new`. Starting from production code `30000021`, the expected first
+   candidate is `30000022`; verify this against Play Console before confirming.
+8. Wait for the tests and AAB build to finish.
+9. Record the printed AAB path and SHA-256. Review the `app.json` change to
+   `1.1.0`, the new version code, and the enabled Landing build label.
+10. Commit those reviewed release metadata changes on `release/1.1.0`.
+11. Upload the exact AAB to Play Console -> Internal testing and start the
+    rollout.
+12. Opt in on the S25+ with the same Google account used by Play Store, then
+    update the installed production v1.0.0 in place.
+13. Run `docs/production-manual-test-checklist.md`.
+14. If a blocker is found, fix and commit it on `release/1.1.0`, then run
+    `build-release` with `new` to create a higher-code v1.1.0 candidate.
+15. When a candidate passes, merge the release PR to `main`.
+16. Promote that exact Play artifact to Production without rebuilding it, tag
+    v1.1.0, then merge the release branch back into `dev`.
 
 ## Secrets and CI
 

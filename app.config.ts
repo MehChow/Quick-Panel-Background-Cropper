@@ -9,7 +9,7 @@ const DEV_APP_NAME = "QPBC dev";
 const DEV_APP_SCHEME = "quickpanelbackgroundcropper-dev";
 const APK_APP_VARIANT = "apk";
 const APK_GOOGLE_SERVICES_FILE = "./google-services/google-services-apk.json";
-const BETA_GOOGLE_SERVICES_FILE = "./google-services/google-services-open.json";
+const RELEASE_GOOGLE_SERVICES_FILE = "./google-services/google-services-open.json";
 const FIREBASE_PLUGINS = [
   "@react-native-firebase/app",
   "@react-native-firebase/crashlytics",
@@ -38,9 +38,9 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       ...baseConfig.android,
       ...(shouldConfigureFirebase
         ? {
-            googleServicesFile: isApkVariant
-              ? APK_GOOGLE_SERVICES_FILE
-              : BETA_GOOGLE_SERVICES_FILE,
+          googleServicesFile: isApkVariant
+            ? APK_GOOGLE_SERVICES_FILE
+            : RELEASE_GOOGLE_SERVICES_FILE,
           }
         : {}),
     },

@@ -1,7 +1,7 @@
 # Android Build Credential Setup
 
 This repo builds the Play upload `.aab` locally. A fresh machine needs a few
-local-only files and properties before `npm run build-beta` will work.
+local-only files and properties before `npm run build-release` will work.
 
 ## What this is for
 
@@ -22,11 +22,11 @@ These files are not fully source-controlled or are environment-specific:
 - `credentials/android/keystore.jks`
   - the actual upload keystore file
 - `google-services/google-services-open.json`
-  - Firebase config for the beta / Play package
+  - Firebase config for the release / Play package
 - `google-services/google-services-apk.json`
   - Firebase config for the local APK package
 
-If any of these are missing, beta or APK release builds may fail or produce the
+If any of these are missing, Play or APK release builds may fail or produce the
 wrong native setup.
 
 ## Expected build commands
@@ -39,11 +39,16 @@ wrong native setup.
   - local release APK
   - uses `APP_VARIANT=apk`
   - uses `google-services/google-services-apk.json`
-- `npm run build-beta`
+- `npm run build-release`
   - Play upload `.aab`
-  - uses `APP_VARIANT=beta`
+  - runs only from a clean `release/<version>` or `hotfix/<version>` branch
+  - derives `expo.version` from the branch name
+  - asks whether to increment or retry the current Android `versionCode`
+  - uses `APP_VARIANT=release`
   - uses `google-services/google-services-open.json`
-  - bumps Android `versionCode`
+  - keeps the intentional Landing build-version label visible
+  - runs tests, lint, TypeScript, prebuild, signing, Gradle, and upload-key
+    certificate verification
 
 ## One-time setup on a new machine
 
@@ -143,9 +148,10 @@ If the SHA1 does not match, do not upload the `.aab` to Play Console.
 Release signing is enforced by:
 
 - `scripts/configure-android-release-signing.cjs`
+- `scripts/build-release.cjs`
 - `scripts/run-android-task.cjs`
 
-Before `build-apk` or `build-beta` runs Gradle, the helper checks for:
+Before `build-apk` or `build-release` runs Gradle, the helper checks for:
 
 - `MYAPP_UPLOAD_STORE_FILE`
 - `MYAPP_UPLOAD_KEY_ALIAS`
@@ -181,7 +187,7 @@ npx expo prebuild -p android
 
 Notes:
 
-- `npm run build-beta` already runs Android prebuild before bundling
+- `npm run build-release` already runs Android prebuild before bundling
 - `npm run build-apk` also runs Android prebuild before assembling
 - `npm run android` runs a clean Android prebuild for the dev app
 
@@ -195,7 +201,7 @@ What to be careful about:
 - Firebase config must match the active package variant:
   - `dev` -> no Firebase wiring
   - `apk` -> `google-services-apk.json`
-  - `beta` -> `google-services-open.json`
+  - `release` -> `google-services-open.json`
 
 ## Recommended fresh-machine checklist
 
@@ -206,7 +212,10 @@ What to be careful about:
 5. Confirm the user-level Gradle properties file contains the four
    `MYAPP_UPLOAD_*` values.
 6. Verify the keystore SHA1 matches Play Console.
-7. Run `npm run build-beta`.
+7. Create or switch to the clean `release/<version>` branch.
+8. Run `npm run build-release`.
+9. Choose `new` for a new Play candidate, or `retry` only when the current code
+   has never been uploaded.
 
 ## Common failure patterns
 
@@ -231,7 +240,8 @@ Cause:
 Fix:
 
 - run `npx expo prebuild -p android`
-- rebuild with `npm run android`, `npm run build-apk`, or `npm run build-beta`
+- rebuild with `npm run android`, `npm run build-apk`, or
+  `npm run build-release`
 
 ### Firebase or Crashlytics breaks only on one build variant
 
@@ -242,6 +252,6 @@ Cause:
 Check:
 
 - `apk` must use `google-services-apk.json`
-- `beta` must use `google-services-open.json`
+- `release` must use `google-services-open.json`
 - `dev` should stay without Firebase wiring unless a matching Firebase app is
   added
