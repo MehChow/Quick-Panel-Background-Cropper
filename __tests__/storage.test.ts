@@ -65,6 +65,7 @@ describe("storage", () => {
   it("round-trips Buttons-only customization settings", () => {
     const settings: ButtonCustomizeSettings = {
       buttonIdentifierOpacity: 61,
+      buttonIdentifierTheme: "dark",
       buttonPanelOpacity: 84,
       horizontalIdentifierPosition: 23,
       showButtonIdentifiers: false,

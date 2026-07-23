@@ -7,6 +7,7 @@ export type PanelId = ControlPanelId | ButtonPanelId;
 export type PanelFamily = "control" | "button";
 export type CustomizationMode = "default" | "advanced";
 export type AdvancedTarget = "controls" | "buttons";
+export type ButtonIdentifierTheme = "light" | "dark";
 
 export interface PanelRect {
   x: number;

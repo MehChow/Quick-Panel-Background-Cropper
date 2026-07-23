@@ -28,20 +28,20 @@ describe("customize locale strings", () => {
 
   it("defines Button identifier controls in English and Chinese", () => {
     expect(enLocale.translation.customize.showButtonIdentifiers).toBe(
-      "Show Button identifiers",
+      "Show labels",
     );
     expect(enLocale.translation.customize.buttonIdentifierOpacity).toBe(
-      "Button identifier intensity",
+      "Label intensity",
     );
     expect(enLocale.translation.customize.horizontalIdentifierPosition).toBe(
-      "Horizontal identifier position",
+      "Horizontal label position",
     );
     expect(enLocale.translation.customize.verticalIdentifierPosition).toBe(
-      "Vertical identifier position",
+      "Vertical label position",
     );
     expect(enLocale.translation.customize.buttonAdjustmentImageTab).toBe("Image");
     expect(enLocale.translation.customize.buttonAdjustmentIdentifierTab).toBe(
-      "Identifier",
+      "Labels",
     );
     expect(enLocale.translation.customize.buttonAdjustmentHorizontalTab).toBe(
       "Horiz.",
@@ -57,7 +57,7 @@ describe("customize locale strings", () => {
     expect(zhLocale.translation.customize.verticalIdentifierPosition).toBeTruthy();
     expect(zhLocale.translation.customize.buttonAdjustmentImageTab).toBe("圖片");
     expect(zhLocale.translation.customize.buttonAdjustmentIdentifierTab).toBe(
-      "識別標記",
+      "標籤",
     );
     expect(zhLocale.translation.customize.buttonAdjustmentHorizontalTab).toBe(
       "水平",

@@ -1,4 +1,7 @@
-import { ButtonCustomizeControls } from "@/features/quick-panel/customize/components/ButtonCustomizeControls";
+import {
+  ButtonCustomizeControls,
+  getButtonIdentifierThemeButtonStyle,
+} from "@/features/quick-panel/customize/components/ButtonCustomizeControls";
 import { fireEvent, render } from "@testing-library/react-native";
 
 jest.mock("@/components/ani-ui/slider", () => {
@@ -13,9 +16,19 @@ jest.mock("react-i18next", () => ({
   useTranslation: () => ({ t: (key: string) => key }),
 }));
 
+jest.mock("@react-native-vector-icons/lucide", () => {
+  const React = jest.requireActual("react");
+  const { Text } = jest.requireActual("react-native");
+  return {
+    Lucide: ({ name, ...props }: { name: string }) =>
+      React.createElement(Text, { ...props, testID: "button-identifier-theme-icon" }, name),
+  };
+});
+
 const baseProps = {
   buttonIdentifierOpacity: 70,
   buttonPanelOpacity: 78,
+  buttonIdentifierTheme: "light" as const,
   hasHorizontalButtons: true,
   hasVerticalButtons: true,
   horizontalIdentifierPosition: 50,
@@ -23,6 +36,7 @@ const baseProps = {
   onButtonPanelOpacityChange: jest.fn(),
   onHorizontalIdentifierPositionChange: jest.fn(),
   onShowButtonIdentifiersChange: jest.fn(),
+  onButtonIdentifierThemeChange: jest.fn(),
   onVerticalIdentifierPositionChange: jest.fn(),
   showButtonIdentifiers: true,
   verticalIdentifierPosition: 50,
@@ -110,6 +124,54 @@ describe("ButtonCustomizeControls", () => {
       accessibilityState: { checked: true, disabled: undefined },
     });
     expect(screen.getByText("customize.buttonIdentifiersOn")).toBeTruthy();
+  });
+
+  it("uses a compact button to toggle the Button label icon style", () => {
+    const screen = render(<ButtonCustomizeControls {...baseProps} />);
+    const themeButton = screen.getByTestId("button-identifier-theme-toggle");
+    const themeIcon = screen.getByTestId("button-identifier-theme-icon");
+
+    expect(themeButton.props).toMatchObject({
+      accessibilityRole: "switch",
+      accessibilityState: { checked: false },
+    });
+    expect(themeIcon.props).toMatchObject({ color: "#000000" });
+    expect(themeButton.props.className).toContain("bg-white");
+    expect(themeButton.props.className).toContain("h-11");
+    expect(themeButton.props.className).toContain("w-11");
+    expect(getButtonIdentifierThemeButtonStyle(true)).toEqual({ opacity: 0.6 });
+
+    fireEvent.press(themeButton);
+
+    expect(baseProps.onButtonIdentifierThemeChange).toHaveBeenCalledWith("dark");
+  });
+
+  it("uses a black moon button for the dark label icon style", () => {
+    const screen = render(
+      <ButtonCustomizeControls {...baseProps} buttonIdentifierTheme="dark" />,
+    );
+    const themeButton = screen.getByTestId("button-identifier-theme-toggle");
+
+    expect(screen.getByTestId("button-identifier-theme-icon").props).toMatchObject({
+      color: "#FFFFFF",
+    });
+    expect(themeButton.props.className).toContain("bg-black");
+    expect(getButtonIdentifierThemeButtonStyle(false, false)).toEqual({ opacity: 1 });
+  });
+
+  it("disables the theme button when labels are hidden", () => {
+    const screen = render(
+      <ButtonCustomizeControls {...baseProps} showButtonIdentifiers={false} />,
+    );
+    const themeButton = screen.getByTestId("button-identifier-theme-toggle");
+
+    expect(themeButton.props).toMatchObject({
+      accessibilityState: { checked: false, disabled: true },
+    });
+    expect(getButtonIdentifierThemeButtonStyle(false, true)).toEqual({ opacity: 0.45 });
+
+    fireEvent.press(themeButton);
+    expect(baseProps.onButtonIdentifierThemeChange).not.toHaveBeenCalled();
   });
 
   it("returns to image when identifiers are hidden from a position tab", () => {

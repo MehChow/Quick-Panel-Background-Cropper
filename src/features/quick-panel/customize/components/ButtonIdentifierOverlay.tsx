@@ -6,7 +6,10 @@ import {
   type ButtonIdentifierBounds,
   type ButtonIdentifierPositions,
 } from "../../model/button-identifier-layout";
-import type { ButtonIdentifierDefinition } from "../../model/types";
+import type {
+  ButtonIdentifierDefinition,
+  ButtonIdentifierTheme,
+} from "../../model/types";
 import { buttonIdentifierStyles as styles } from "./button-identifier-content";
 import { ButtonIdentifierVisuals } from "./ButtonIdentifierVisuals";
 
@@ -23,6 +26,7 @@ interface ButtonIdentifierOverlayProps {
   opacity: number;
   positions: ButtonIdentifierPositions;
   referenceCellSize: number;
+  theme?: ButtonIdentifierTheme;
 }
 
 export function ButtonIdentifierOverlay({
@@ -33,6 +37,7 @@ export function ButtonIdentifierOverlay({
   opacity,
   positions,
   referenceCellSize,
+  theme = "light",
 }: ButtonIdentifierOverlayProps) {
   const layout = getButtonIdentifierLayout(bounds, identifier, referenceCellSize);
   const measurementKey = [
@@ -59,7 +64,12 @@ export function ButtonIdentifierOverlay({
       : { key: measurementKey, width });
   };
   const visuals = (
-    <ButtonIdentifierVisuals identifier={identifier} label={label} layout={layout} />
+    <ButtonIdentifierVisuals
+      identifier={identifier}
+      label={label}
+      layout={layout}
+      theme={theme}
+    />
   );
   let content;
 

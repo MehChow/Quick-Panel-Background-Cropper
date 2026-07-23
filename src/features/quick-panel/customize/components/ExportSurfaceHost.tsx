@@ -3,6 +3,7 @@ import { PixelRatio, View } from "react-native";
 import type { ButtonIdentifierPositions } from "../../model/button-identifier-layout";
 import { exportSidePixels } from "../../model/panel-geometry";
 import type {
+  ButtonIdentifierTheme,
   ImageTransform,
   PanelDefinition,
   PickedImage,
@@ -14,6 +15,7 @@ interface ExportSurfaceHostProps {
   activePanel: PanelDefinition;
   activeToken: ExportSurfaceToken;
   buttonIdentifierOpacity: number;
+  buttonIdentifierTheme?: ButtonIdentifierTheme;
   buttonPanelOpacity: number;
   exportRef: RefObject<View | null>;
   identifierPositions: ButtonIdentifierPositions;
@@ -28,6 +30,7 @@ export function ExportSurfaceHost({
   activePanel,
   activeToken,
   buttonIdentifierOpacity,
+  buttonIdentifierTheme = "light",
   buttonPanelOpacity,
   exportRef,
   identifierPositions,
@@ -55,6 +58,7 @@ export function ExportSurfaceHost({
     >
       <ExportSurface
         buttonIdentifierOpacity={buttonIdentifierOpacity}
+        buttonIdentifierTheme={buttonIdentifierTheme}
         buttonPanelOpacity={buttonPanelOpacity}
         image={image}
         identifierPositions={identifierPositions}

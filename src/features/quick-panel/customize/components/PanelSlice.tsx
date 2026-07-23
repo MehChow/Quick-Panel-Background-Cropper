@@ -7,6 +7,7 @@ import Animated, {
 import type { ButtonIdentifierPositions } from "../../model/button-identifier-layout";
 import type {
   CustomizationMode,
+  ButtonIdentifierTheme,
   ImageTransform,
   PanelDefinition,
   PickedImage,
@@ -18,6 +19,7 @@ import { ButtonIdentifierOverlay } from "./ButtonIdentifierOverlay";
 
 interface PanelSliceProps {
   buttonIdentifierOpacity: number;
+  buttonIdentifierTheme?: ButtonIdentifierTheme;
   buttonPanelOpacity: number;
   identifierPositions: ButtonIdentifierPositions;
   showButtonIdentifiers: boolean;
@@ -35,6 +37,7 @@ interface PanelSliceProps {
 
 export function PanelSlice({
   buttonIdentifierOpacity,
+  buttonIdentifierTheme = "light",
   buttonPanelOpacity,
   identifierPositions,
   showButtonIdentifiers,
@@ -103,6 +106,7 @@ export function PanelSlice({
           opacity={showButtonIdentifiers ? buttonIdentifierOpacity : 0}
           positions={identifierPositions}
           referenceCellSize={panel.buttonIdentifier.referenceCellSize * layoutScale}
+          theme={buttonIdentifierTheme}
         />
       ) : null}
       {showOverlay ? (

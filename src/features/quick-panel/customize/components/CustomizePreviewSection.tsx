@@ -45,6 +45,7 @@ export function CustomizePreviewSection({
       >
         <QuickPanelPreview
           buttonIdentifierOpacity={buttonControls.buttonIdentifierOpacity / 100}
+          buttonIdentifierTheme={buttonControls.buttonIdentifierTheme}
           buttonPanelOpacity={buttonControls.buttonPanelOpacity / 100}
           identifierPositions={buttonControls.identifierPositions}
           image={image}
@@ -60,11 +61,13 @@ export function CustomizePreviewSection({
       {hasButtonPanels ? (
         <ButtonCustomizeControls
           buttonIdentifierOpacity={buttonControls.buttonIdentifierOpacity}
+          buttonIdentifierTheme={buttonControls.buttonIdentifierTheme}
           buttonPanelOpacity={buttonControls.buttonPanelOpacity}
           hasHorizontalButtons={buttonControls.hasHorizontalButtons}
           hasVerticalButtons={buttonControls.hasVerticalButtons}
           horizontalIdentifierPosition={buttonControls.horizontalIdentifierPosition}
           onButtonIdentifierOpacityChange={buttonControls.setButtonIdentifierOpacity}
+          onButtonIdentifierThemeChange={buttonControls.setButtonIdentifierTheme}
           onButtonPanelOpacityChange={buttonControls.setButtonPanelOpacity}
           onHorizontalIdentifierPositionChange={buttonControls.setHorizontalIdentifierPosition}
           onShowButtonIdentifiersChange={buttonControls.setShowButtonIdentifiers}

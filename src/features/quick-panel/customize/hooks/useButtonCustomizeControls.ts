@@ -3,7 +3,7 @@ import {
   getButtonIdentifierLayoutKind,
   type ButtonIdentifierPositions,
 } from "../../model/button-identifier-layout";
-import type { QuickPanelPreset } from "../../model/types";
+import type { ButtonIdentifierTheme, QuickPanelPreset } from "../../model/types";
 import {
   loadButtonCustomizeSettings,
   saveButtonCustomizeSettings,
@@ -12,12 +12,14 @@ import {
 
 export interface ButtonCustomizeControlState {
   buttonIdentifierOpacity: number;
+  buttonIdentifierTheme: ButtonIdentifierTheme;
   buttonPanelOpacity: number;
   hasHorizontalButtons: boolean;
   hasVerticalButtons: boolean;
   horizontalIdentifierPosition: number;
   identifierPositions: ButtonIdentifierPositions;
   setButtonIdentifierOpacity: (value: number) => void;
+  setButtonIdentifierTheme: (value: ButtonIdentifierTheme) => void;
   setButtonPanelOpacity: (value: number) => void;
   setHorizontalIdentifierPosition: (value: number) => void;
   setShowButtonIdentifiers: (value: boolean) => void;
@@ -46,9 +48,11 @@ export function useButtonCustomizeControls(
     const identifier = preset.panels[id]?.buttonIdentifier;
     return identifier ? getButtonIdentifierLayoutKind(identifier) : null;
   });
+  const buttonIdentifierTheme = settings.buttonIdentifierTheme ?? "light";
 
   return {
     buttonIdentifierOpacity: settings.buttonIdentifierOpacity,
+    buttonIdentifierTheme,
     buttonPanelOpacity: settings.buttonPanelOpacity,
     hasHorizontalButtons: orientations.includes("horizontal"),
     hasVerticalButtons: orientations.includes("vertical"),
@@ -58,6 +62,7 @@ export function useButtonCustomizeControls(
       vertical: settings.verticalIdentifierPosition / 100,
     },
     setButtonIdentifierOpacity: (value) => updateSetting("buttonIdentifierOpacity", value),
+    setButtonIdentifierTheme: (value) => updateSetting("buttonIdentifierTheme", value),
     setButtonPanelOpacity: (value) => updateSetting("buttonPanelOpacity", value),
     setHorizontalIdentifierPosition: (value) => updateSetting("horizontalIdentifierPosition", value),
     setShowButtonIdentifiers: (value) => updateSetting("showButtonIdentifiers", value),

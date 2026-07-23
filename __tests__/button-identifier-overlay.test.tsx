@@ -59,6 +59,32 @@ describe("ButtonIdentifierOverlay", () => {
     expect(screen.queryByTestId("button-identifier-label")).toBeNull();
   });
 
+  it("renders the dark icon style with a white circle and dark glyph", () => {
+    const screen = render(
+      <ButtonIdentifierOverlay
+        bounds={bounds}
+        identifier={{
+          columnSpan: 1,
+          rowSpan: 1,
+          iconName: "wifi",
+          referenceCellSize: 50,
+        }}
+        label="Wi-Fi"
+        opacity={0.7}
+        positions={{ horizontal: 0.5, vertical: 0.5 }}
+        referenceCellSize={50}
+        theme="dark"
+      />,
+    );
+    const background = screen.getByTestId("button-identifier-icon-background");
+    const icon = screen.getByTestId("mock-lucide");
+
+    expect(StyleSheet.flatten(background.props.style)).toMatchObject({
+      backgroundColor: "#FFFFFF",
+    });
+    expect(icon.props.color).toBe("#333333");
+  });
+
   it("moves a one-column icon while preserving horizontal centering", () => {
     const screen = renderOverlay(1, 3, { horizontal: 0.5, vertical: 1 });
     const contentStyle = StyleSheet.flatten(

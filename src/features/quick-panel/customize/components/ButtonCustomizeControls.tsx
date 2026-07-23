@@ -1,16 +1,20 @@
 import { Switch } from "@/components/ani-ui/switch";
 import { Text } from "@/components/ani-ui/text";
+import { Lucide } from "@react-native-vector-icons/lucide";
 import { useTranslation } from "react-i18next";
-import { type LayoutChangeEvent, View } from "react-native";
+import { Pressable, type LayoutChangeEvent, View } from "react-native";
+import type { ButtonIdentifierTheme } from "../../model/types";
 import { ButtonAdjustmentTabs } from "./ButtonAdjustmentTabs";
 
 interface ButtonCustomizeControlsProps {
   buttonIdentifierOpacity: number;
+  buttonIdentifierTheme: ButtonIdentifierTheme;
   buttonPanelOpacity: number;
   hasHorizontalButtons: boolean;
   hasVerticalButtons: boolean;
   horizontalIdentifierPosition: number;
   onButtonIdentifierOpacityChange: (value: number) => void;
+  onButtonIdentifierThemeChange: (value: ButtonIdentifierTheme) => void;
   onButtonPanelOpacityChange: (value: number) => void;
   onHorizontalIdentifierPositionChange: (value: number) => void;
   onLayout?: (event: LayoutChangeEvent) => void;
@@ -20,13 +24,22 @@ interface ButtonCustomizeControlsProps {
   verticalIdentifierPosition: number;
 }
 
+export function getButtonIdentifierThemeButtonStyle(
+  pressed: boolean,
+  disabled = false,
+) {
+  return { opacity: disabled ? 0.45 : pressed ? 0.6 : 1 };
+}
+
 export function ButtonCustomizeControls({
   buttonIdentifierOpacity,
+  buttonIdentifierTheme,
   buttonPanelOpacity,
   hasHorizontalButtons,
   hasVerticalButtons,
   horizontalIdentifierPosition,
   onButtonIdentifierOpacityChange,
+  onButtonIdentifierThemeChange,
   onButtonPanelOpacityChange,
   onHorizontalIdentifierPositionChange,
   onLayout,
@@ -41,18 +54,44 @@ export function ButtonCustomizeControls({
       className="mt-4 w-full gap-3 rounded-2xl border border-white/10 bg-zinc-900/90 px-4 py-3"
       onLayout={onLayout}
     >
-      <View className="min-h-11 flex-row items-center justify-between rounded-xl border border-white/10 bg-zinc-800/70 px-3">
-        <Text className="font-semibold text-white">
-          {t("customize.showButtonIdentifiers")}
-        </Text>
-        <Switch
-          accessibilityLabel={t("customize.showButtonIdentifiers")}
-          offLabel={t("customize.buttonIdentifiersOff")}
-          onLabel={t("customize.buttonIdentifiersOn")}
-          onValueChange={onShowButtonIdentifiersChange}
-          testID="show-button-identifiers-toggle"
-          value={showButtonIdentifiers}
-        />
+      <View className="flex-row items-center gap-2">
+        <View className="min-h-11 flex-1 flex-row items-center justify-between rounded-xl border border-white/10 bg-zinc-800/70 px-3">
+          <Text className="flex-1 font-semibold text-white">
+            {t("customize.showButtonIdentifiers")}
+          </Text>
+          <Switch
+            accessibilityLabel={t("customize.showButtonIdentifiers")}
+            offLabel={t("customize.buttonIdentifiersOff")}
+            onLabel={t("customize.buttonIdentifiersOn")}
+            onValueChange={onShowButtonIdentifiersChange}
+            testID="show-button-identifiers-toggle"
+            value={showButtonIdentifiers}
+          />
+        </View>
+        <Pressable
+          accessibilityLabel={t("customize.buttonIdentifierThemeToggle")}
+          accessibilityRole="switch"
+          accessibilityState={{ checked: buttonIdentifierTheme === "dark" }}
+          className={`h-11 w-11 items-center justify-center rounded-xl border border-white/10 ${
+            buttonIdentifierTheme === "light" ? "bg-white" : "bg-black"
+          }`}
+          disabled={!showButtonIdentifiers}
+          onPress={() => onButtonIdentifierThemeChange(
+            buttonIdentifierTheme === "light" ? "dark" : "light",
+          )}
+          style={({ pressed }) => getButtonIdentifierThemeButtonStyle(
+            pressed,
+            !showButtonIdentifiers,
+          )}
+          testID="button-identifier-theme-toggle"
+        >
+          <Lucide
+            color={buttonIdentifierTheme === "light" ? "#000000" : "#FFFFFF"}
+            name={buttonIdentifierTheme === "light" ? "sun" : "moon"}
+            size={20}
+            testID="button-identifier-theme-icon"
+          />
+        </Pressable>
       </View>
       <ButtonAdjustmentTabs
         buttonIdentifierOpacity={buttonIdentifierOpacity}

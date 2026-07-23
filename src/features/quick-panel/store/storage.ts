@@ -6,6 +6,7 @@ import type {
   AdvancedTarget,
   ButtonCalibrationItem,
   ButtonPanelId,
+  ButtonIdentifierTheme,
   ControlPanelId,
   ControlPanelRects,
   CustomizationMode,
@@ -45,6 +46,7 @@ export interface SavedCalibrations {
 
 export interface ButtonCustomizeSettings {
   buttonIdentifierOpacity: number;
+  buttonIdentifierTheme?: ButtonIdentifierTheme;
   buttonPanelOpacity: number;
   horizontalIdentifierPosition: number;
   showButtonIdentifiers: boolean;
@@ -53,6 +55,7 @@ export interface ButtonCustomizeSettings {
 
 export const defaultButtonCustomizeSettings: ButtonCustomizeSettings = {
   buttonIdentifierOpacity: 70,
+  buttonIdentifierTheme: "light",
   buttonPanelOpacity: 78,
   horizontalIdentifierPosition: 50,
   showButtonIdentifiers: true,
@@ -173,6 +176,9 @@ function parseButtonCustomizeSettings(value: string | undefined): ButtonCustomiz
         parsed.buttonIdentifierOpacity,
         defaultButtonCustomizeSettings.buttonIdentifierOpacity,
       ),
+      buttonIdentifierTheme: parsed.buttonIdentifierTheme === "dark"
+        ? "dark"
+        : defaultButtonCustomizeSettings.buttonIdentifierTheme,
       buttonPanelOpacity: parsePercentage(
         parsed.buttonPanelOpacity,
         defaultButtonCustomizeSettings.buttonPanelOpacity,

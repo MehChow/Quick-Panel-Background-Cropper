@@ -110,6 +110,7 @@ export function CustomizeScreen() {
           activePanel={sequentialExport.activePanel}
           activeToken={sequentialExport.activeToken}
           buttonIdentifierOpacity={buttonControls.buttonIdentifierOpacity / 100}
+          buttonIdentifierTheme={buttonControls.buttonIdentifierTheme}
           buttonPanelOpacity={buttonControls.buttonPanelOpacity / 100}
           exportRef={sequentialExport.exportRef}
           identifierPositions={buttonControls.identifierPositions}

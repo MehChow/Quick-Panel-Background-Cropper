@@ -16,6 +16,7 @@ export const buttonIdentifierStyles = StyleSheet.create({
     backgroundColor: "#666666",
     justifyContent: "center",
   },
+  darkIconBackground: { backgroundColor: "#FFFFFF" },
   corner: {
     alignItems: "flex-start",
     flex: 1,

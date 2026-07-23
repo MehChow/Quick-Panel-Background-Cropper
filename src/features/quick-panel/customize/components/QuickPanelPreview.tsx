@@ -5,6 +5,7 @@ import { useWindowDimensions, View } from "react-native";
 import type { ButtonIdentifierPositions } from "../../model/button-identifier-layout";
 import type {
   ImageTransform,
+  ButtonIdentifierTheme,
   PickedImage,
   QuickPanelPreset,
 } from "../../model/types";
@@ -14,6 +15,7 @@ import { PanelSlice } from "./PanelSlice";
 
 interface QuickPanelPreviewProps {
   buttonIdentifierOpacity: number;
+  buttonIdentifierTheme: ButtonIdentifierTheme;
   buttonPanelOpacity: number;
   identifierPositions: ButtonIdentifierPositions;
   showButtonIdentifiers: boolean;
@@ -28,6 +30,7 @@ interface QuickPanelPreviewProps {
 
 export function QuickPanelPreview({
   buttonIdentifierOpacity,
+  buttonIdentifierTheme,
   buttonPanelOpacity,
   identifierPositions,
   image,
@@ -87,6 +90,7 @@ export function QuickPanelPreview({
               ? preset.visualOrder.map((id) => (
                   <PanelSlice
                     buttonIdentifierOpacity={buttonIdentifierOpacity}
+                    buttonIdentifierTheme={buttonIdentifierTheme}
                     buttonPanelOpacity={buttonPanelOpacity}
                     identifierPositions={identifierPositions}
                     image={image}

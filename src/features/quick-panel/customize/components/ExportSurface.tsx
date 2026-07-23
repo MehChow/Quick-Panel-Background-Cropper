@@ -8,6 +8,7 @@ import {
 } from "../../model/button-identifier-layout";
 import type {
   ImageTransform,
+  ButtonIdentifierTheme,
   PanelDefinition,
   PickedImage,
 } from "../../model/types";
@@ -15,6 +16,7 @@ import { ButtonIdentifierOverlay } from "./ButtonIdentifierOverlay";
 
 interface ExportSurfaceProps {
   buttonIdentifierOpacity: number;
+  buttonIdentifierTheme?: ButtonIdentifierTheme;
   buttonPanelOpacity: number;
   panel: PanelDefinition;
   image: PickedImage;
@@ -30,6 +32,7 @@ export const ExportSurface = forwardRef<View, ExportSurfaceProps>(
   function ExportSurface(
     {
       buttonIdentifierOpacity,
+      buttonIdentifierTheme = "light",
       buttonPanelOpacity,
       panel,
       image,
@@ -78,6 +81,7 @@ export const ExportSurface = forwardRef<View, ExportSurfaceProps>(
             opacity={buttonIdentifierOpacity}
             positions={identifierPositions}
             referenceCellSize={panel.buttonIdentifier.referenceCellSize * squareScale}
+            theme={buttonIdentifierTheme}
           />
         ) : null}
       </View>

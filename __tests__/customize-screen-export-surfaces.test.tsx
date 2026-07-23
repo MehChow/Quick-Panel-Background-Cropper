@@ -247,12 +247,14 @@ describe("CustomizeScreen export surfaces", () => {
       buttonIdentifierOpacity: 0.7,
       buttonPanelOpacity: 0.78,
       identifierPositions: { horizontal: 0.5, vertical: 0.5 },
+      buttonIdentifierTheme: "light",
       showButtonIdentifiers: true,
     });
     expect(mockExportProps).toMatchObject({
       buttonIdentifierOpacity: 0.7,
       buttonPanelOpacity: 0.78,
       identifierPositions: { horizontal: 0.5, vertical: 0.5 },
+      buttonIdentifierTheme: "light",
       showButtonIdentifiers: true,
     });
 
@@ -276,7 +278,7 @@ describe("CustomizeScreen export surfaces", () => {
     expect(mockPreviewProps).toMatchObject({ buttonPanelOpacity: 0.35 });
     expect(mockExportProps).toMatchObject({ buttonPanelOpacity: 0.35 });
 
-    fireEvent.press(screen.getByRole("switch"));
+    fireEvent.press(screen.getByTestId("show-button-identifiers-toggle"));
     expect(mockPreviewProps).toMatchObject({
       buttonIdentifierOpacity: 0.7,
       buttonPanelOpacity: 0.35,
@@ -288,7 +290,7 @@ describe("CustomizeScreen export surfaces", () => {
       showButtonIdentifiers: false,
     });
 
-    fireEvent.press(screen.getByRole("switch"));
+    fireEvent.press(screen.getByTestId("show-button-identifiers-toggle"));
     fireEvent.press(screen.getByTestId("button-adjustment-identifier-tab"));
     fireEvent.press(screen.getByTestId("button-identifier-opacity-slider"));
     expect(mockPreviewProps).toMatchObject({
@@ -297,6 +299,10 @@ describe("CustomizeScreen export surfaces", () => {
       identifierPositions: { horizontal: 0.35, vertical: 0.8 },
       showButtonIdentifiers: true,
     });
+
+    fireEvent.press(screen.getByTestId("button-identifier-theme-toggle"));
+    expect(mockPreviewProps).toMatchObject({ buttonIdentifierTheme: "dark" });
+    expect(mockExportProps).toMatchObject({ buttonIdentifierTheme: "dark" });
     expect(mockExportProps).toMatchObject({
       buttonIdentifierOpacity: 0.35,
       buttonPanelOpacity: 0.35,
@@ -311,6 +317,7 @@ describe("CustomizeScreen export surfaces", () => {
       buttonPanelOpacity: 0.35,
       identifierPositions: { horizontal: 0.35, vertical: 0.8 },
       showButtonIdentifiers: true,
+      buttonIdentifierTheme: "dark",
     });
   });
 });
