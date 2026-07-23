@@ -70,6 +70,7 @@ export function resizeRect(
   dx: number,
   dy: number,
 ): PanelRect {
+  "worklet";
   if (position === "top") {
     return { ...rect, y: rect.y + dy, height: rect.height - dy };
   }

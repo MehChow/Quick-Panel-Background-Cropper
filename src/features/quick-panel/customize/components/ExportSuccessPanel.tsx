@@ -2,7 +2,7 @@ import { Card } from "@/components/ani-ui/card";
 import { Text } from "@/components/ani-ui/text";
 import { Image } from "expo-image";
 import { useTranslation } from "react-i18next";
-import { View } from "react-native";
+import { ScrollView, View } from "react-native";
 import type { GeneratedExport } from "../../model/types";
 import { getResultPanelLayout } from "../../result/result-panel-layout";
 
@@ -49,39 +49,46 @@ export function ExportSuccessPanel({
       </Text>
 
       <View
-        className={isCompact ? "mt-6 w-full self-center px-3" : "mt-7 w-full self-center"}
+        className={isCompact ? "mt-6 w-full self-center" : "mt-7 w-full self-center"}
         style={{ maxWidth: panelLayout.gridMaxWidth }}
       >
-        <View
-          className={
-            isCompact
-              ? "w-full flex-row flex-wrap justify-between gap-y-4"
-              : "w-full flex-row flex-wrap justify-between gap-y-5"
-          }
+        <ScrollView
+          nestedScrollEnabled
+          scrollIndicatorInsets={{ right: panelLayout.exportGridIndicatorInset }}
+          showsVerticalScrollIndicator
+          style={{ maxHeight: panelLayout.exportGridViewportHeight }}
         >
-          {exports.map((item) => (
-            <View key={item.id} className="w-[47%] items-center">
-              <View className="aspect-square w-full overflow-hidden rounded-2xl border border-emerald-300/40">
-                <Image
-                  key={`${item.id}-${item.previewUri}`}
-                  cachePolicy="none"
-                  source={{ uri: item.previewUri }}
-                  contentFit="cover"
-                  style={{ height: "100%", width: "100%" }}
-                />
+          <View
+            className={
+              isCompact
+                ? "w-full flex-row flex-wrap justify-between gap-y-4"
+                : "w-full flex-row flex-wrap justify-between gap-y-5"
+            }
+          >
+            {exports.map((item) => (
+              <View key={item.id} className="w-[47%] items-center">
+                <View className="aspect-square w-full overflow-hidden rounded-2xl border border-emerald-300/40">
+                  <Image
+                    key={`${item.id}-${item.previewUri}`}
+                    cachePolicy="none"
+                    source={{ uri: item.previewUri }}
+                    contentFit="cover"
+                    style={{ height: "100%", width: "100%" }}
+                  />
+                </View>
+                <Text
+                  className={
+                    isCompact
+                      ? "mt-2 text-center text-sm font-medium text-emerald-100"
+                      : "mt-2 text-center text-sm font-medium text-emerald-100"
+                  }
+                >
+                  {item.label}
+                </Text>
               </View>
-              <Text
-                className={
-                  isCompact
-                    ? "mt-2 text-center text-sm font-medium text-emerald-100"
-                    : "mt-2 text-center text-sm font-medium text-emerald-100"
-                }
-              >
-                {item.label}
-              </Text>
-            </View>
-          ))}
-        </View>
+            ))}
+          </View>
+        </ScrollView>
       </View>
     </Card>
   );

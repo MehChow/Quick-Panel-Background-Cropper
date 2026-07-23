@@ -69,7 +69,7 @@ describe("getCalibrationFromDraft", () => {
     panels.buttonBox.width = 180.0000004;
     panels.volume.width = 180.0000004;
 
-    const result = getCalibrationFromDraft(createDraft(panels), grid);
+    const result = getCalibrationFromDraft(createDraft(panels), grid, true);
 
     expect(result).not.toBeNull();
   });
@@ -79,16 +79,45 @@ describe("getCalibrationFromDraft", () => {
       screenshot: { uri: "file:///screenshot.png", width: 100, height: 100 },
       outerRect: { x: 0, y: 0, width: 100, height: 100, radius: 0 },
       buttons: [],
-    }, grid);
+    }, grid, true);
     const valid = getButtonsCalibrationFromDraft({
       screenshot: { uri: "file:///screenshot.png", width: 100, height: 100 },
       outerRect: { x: 0, y: 0, width: 100, height: 100, radius: 0 },
       buttons: [
-        { id: "button-1", label: "Wi-Fi", rect: { x: 0, y: 0, width: 40, height: 40, radius: 0 } },
+        { id: "button-1", label: "Wi-Fi", customIconId: null, rect: { x: 0, y: 0, width: 40, height: 40, radius: 0 } },
       ],
-    }, grid);
+    }, grid, true);
 
     expect(empty).toBeNull();
     expect(valid?.buttons).toHaveLength(1);
+  });
+
+  it("stores the Controls snapping preference", () => {
+    const result = getCalibrationFromDraft(
+      createDraft(createPanels()),
+      grid,
+      false,
+    );
+
+    expect(result?.isGridEnabled).toBe(false);
+    expect(result?.grid).toEqual(grid);
+  });
+
+  it("stores the Buttons snapping preference", () => {
+    const result = getButtonsCalibrationFromDraft({
+      screenshot: { uri: "file:///screenshot.png", width: 100, height: 100 },
+      outerRect: { x: 0, y: 0, width: 100, height: 100, radius: 0 },
+      buttons: [
+        {
+          id: "button-1",
+          label: "Wi-Fi",
+          customIconId: null,
+          rect: { x: 0, y: 0, width: 40, height: 40, radius: 0 },
+        },
+      ],
+    }, grid, false);
+
+    expect(result?.isGridEnabled).toBe(false);
+    expect(result?.grid).toEqual(grid);
   });
 });

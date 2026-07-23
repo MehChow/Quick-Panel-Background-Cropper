@@ -1,12 +1,20 @@
-import type { PanelId } from "../model/types";
-
-export function createExportSurfaceReadiness(expectedIds: PanelId[]) {
-  const loadedIds = new Set<PanelId>();
+export function createExportSurfaceReadiness(
+  waitsForIdentifier: boolean,
+) {
+  let isImageReady = false;
+  let isIdentifierReady = !waitsForIdentifier;
 
   return {
-    markLoaded(id: PanelId) {
-      loadedIds.add(id);
-      return expectedIds.every((expectedId) => loadedIds.has(expectedId));
+    markIdentifierReady() {
+      if (!waitsForIdentifier) {
+        return false;
+      }
+      isIdentifierReady = true;
+      return isImageReady && isIdentifierReady;
+    },
+    markImageLoaded() {
+      isImageReady = true;
+      return isImageReady && isIdentifierReady;
     },
   };
 }

@@ -1,20 +1,19 @@
 import { Button } from "@/components/ani-ui/button";
-import { Slider } from "@/components/ani-ui/slider";
-import { Text } from "@/components/ani-ui/text";
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Pressable, View } from "react-native";
-import { GridHelpButton } from "./components/GridHelpButton";
+import { View } from "react-native";
+import { AdvancedGridControls } from "./components/AdvancedGridControls";
 
 interface Props {
   canGoBack: boolean;
   columns: number;
   isConfirmPhase: boolean;
+  isGridEnabled: boolean;
   isGridPhase: boolean;
   isNextDisabled: boolean;
   isOuterPhase: boolean;
   onBack: () => void;
   onColumnsChange: (value: number) => void;
+  onGridEnabledChange: (enabled: boolean) => void;
   onGridHelpPress: () => void;
   onImport: () => void;
   onNext: () => void;
@@ -27,11 +26,13 @@ export function AdvancedCalibrationControls({
   canGoBack,
   columns,
   isConfirmPhase,
+  isGridEnabled,
   isGridPhase,
   isNextDisabled,
   isOuterPhase,
   onBack,
   onColumnsChange,
+  onGridEnabledChange,
   onGridHelpPress,
   onImport,
   onNext,
@@ -39,45 +40,20 @@ export function AdvancedCalibrationControls({
   onSave,
   rows,
 }: Props) {
-  const { i18n, t } = useTranslation();
-  const [activeAxis, setActiveAxis] = useState<"columns" | "rows">("columns");
-  const isEnglish = i18n.resolvedLanguage === "en";
-  const columnsLabel = isEnglish ? "Col" : t("advancedCalibration.columns");
-  const rowsLabel = isEnglish ? "Row" : t("advancedCalibration.rows");
-  const isColumnsActive = activeAxis === "columns";
+  const { t } = useTranslation();
 
   return (
     <View className="gap-3 py-4">
       {isGridPhase ? (
-        <View className="gap-2 rounded-2xl border border-white/10 bg-zinc-900/90 px-3 py-2.5">
-          <View className="flex-row items-center justify-between">
-            <Text className="text-xs font-semibold uppercase tracking-[0.8px] text-zinc-400">
-              {t("advancedCalibration.gridControlsTitle")}
-            </Text>
-            <GridHelpButton
-              label={t("advancedCalibration.gridHelpButton")}
-              onPress={onGridHelpPress}
-            />
-          </View>
-          <View className="flex-row gap-2">
-            <AxisChip
-              isActive={isColumnsActive}
-              label={columnsLabel}
-              onPress={() => setActiveAxis("columns")}
-              value={columns}
-            />
-            <AxisChip
-              isActive={!isColumnsActive}
-              label={rowsLabel}
-              onPress={() => setActiveAxis("rows")}
-              value={rows}
-            />
-          </View>
-          <GridSlider
-            onValueChange={isColumnsActive ? onColumnsChange : onRowsChange}
-            value={isColumnsActive ? columns : rows}
-          />
-        </View>
+        <AdvancedGridControls
+          columns={columns}
+          isGridEnabled={isGridEnabled}
+          onColumnsChange={onColumnsChange}
+          onGridEnabledChange={onGridEnabledChange}
+          onGridHelpPress={onGridHelpPress}
+          onRowsChange={onRowsChange}
+          rows={rows}
+        />
       ) : null}
       {isOuterPhase ? (
         <View className="flex-row gap-3">
@@ -126,54 +102,6 @@ export function AdvancedCalibrationControls({
           )}
         </View>
       )}
-    </View>
-  );
-}
-
-interface AxisChipProps {
-  isActive: boolean;
-  label: string;
-  onPress: () => void;
-  value: number;
-}
-interface GridSliderProps {
-  onValueChange: (value: number) => void;
-  value: number;
-}
-
-function AxisChip({ isActive, label, onPress, value }: AxisChipProps) {
-  return (
-    <Pressable
-      className={`flex-1 rounded-xl px-3 py-2 ${isActive ? "bg-white/10" : "bg-zinc-800/60"}`}
-      onPress={onPress}
-    >
-      <View className="flex-row items-center justify-between">
-        <Text
-          className={`text-[10px] font-semibold uppercase tracking-[0.8px] ${isActive ? "text-white" : "text-zinc-400"}`}
-        >
-          {label}
-        </Text>
-        <Text
-          className={`text-sm font-semibold ${isActive ? "text-white" : "text-zinc-300"}`}
-        >
-          {value}
-        </Text>
-      </View>
-    </Pressable>
-  );
-}
-
-function GridSlider({ onValueChange, value }: GridSliderProps) {
-  return (
-    <View className="rounded-xl bg-zinc-800/70 px-3 py-2">
-      <Slider
-        max={8}
-        min={1}
-        onValueChange={onValueChange}
-        size="sm"
-        step={1}
-        value={value}
-      />
     </View>
   );
 }

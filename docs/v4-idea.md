@@ -214,7 +214,7 @@ perspective:
 Built-in labels from the Buttons-only system help users name exports, but
 screenshot geometry should drive the real positions and dimensions.
 
-## Button export readability concern
+## Controls and Buttons image intensity
 
 Controls and Buttons behave differently after Good Lock applies the exported
 background image.
@@ -226,21 +226,113 @@ Observed behavior:
 - Solid Buttons images can hide the original icon and make the button hard to
   read.
 
-This means Buttons exports probably need a different image treatment from
-Controls exports, even though the crop method is still square cropping.
+The current v3 Customize screen already treats the two families differently:
 
-Potential Buttons export treatment:
+- Controls preview surfaces use a fixed 10% black overlay as an unverified
+  visual approximation.
+- Controls PNG exports remain full intensity so Good Lock can apply its own
+  treatment.
+- Buttons preview and PNG exports use the local Button opacity slider, which
+  defaults to 78% and is not persisted.
 
-- Darken the exported button image.
-- Blur or desaturate the exported button image.
-- Add a readability overlay.
-- Protect likely icon/text zones with a mask.
-- Tune readability based on the Button box dimensions and aspect ratio.
+The current 10% Controls preview overlay is not representative of measured One
+UI behavior. The 78% Button value remains a reasonable stronger default for the
+Buttons-only branch, but it is not the value for matching Controls.
 
-Do not assume PNG alpha will solve this until it is verified on real Samsung
-devices and Good Lock. If alpha works reliably, transparent safe zones may be
-useful later. If not, the app should use solid-image treatments that preserve
-icon readability.
+### v4 intensity decision
+
+Controls should remain the baseline because One UI applies its own treatment to
+them after export.
+
+- Controls-only must not gain an intensity slider.
+- Controls PNG exports must remain full intensity to avoid applying the dimming
+  twice.
+- Controls + Buttons should expose one `Button image intensity` control.
+- The control should affect Buttons preview and exports only.
+- Controls + Buttons should default Button image intensity to 50%.
+- The slider should offer a `Match Controls` reset or preset that restores 50%.
+- Buttons-only may keep its current stronger 78% default because it has no
+  Controls surface to match.
+- Helper text should explain that users can adjust Buttons until they visually
+  match Controls.
+- The value should remain local to the Customize screen unless later testing
+  proves that persistence is necessary.
+- Controls preview surfaces should replace the current 10% black overlay with
+  an estimated 50% image-alpha treatment.
+- The mixed preview should clearly remain an estimate of the final Good Lock
+  result because its background cannot reproduce the device wallpaper blur.
+
+The user-facing term should be `Button image intensity` rather than raw
+`opacity`. It describes the user goal while PNG alpha remains the verified
+implementation mechanism.
+
+### Measured One UI 8.5 rendering behavior
+
+The One UI rendering test is complete. It used the lossless chart at
+`docs/testing-assets/one-ui-8-5-gray-patches.png` and system screenshots with
+Wi-Fi and Bluetooth as the representative Buttons panels.
+
+The chart is 1440 x 3120 and repeats eight exact neutral sRGB tiles:
+
+- RGB 16, 16, 16 (`#101010`)
+- RGB 48, 48, 48 (`#303030`)
+- RGB 80, 80, 80 (`#505050`)
+- RGB 112, 112, 112 (`#707070`)
+- RGB 144, 144, 144 (`#909090`)
+- RGB 176, 176, 176 (`#b0b0b0`)
+- RGB 208, 208, 208 (`#d0d0d0`)
+- RGB 240, 240, 240 (`#f0f0f0`)
+
+Each neighboring source tile changes by 32 RGB levels. Pixel sampling compared
+that known source step with the rendered step, avoiding icons, text, borders,
+slider fills, and tile edges.
+
+Measured results:
+
+| Rendering path | Retained source image contribution |
+| --- | ---: |
+| Buttons exported at 100% | 100% |
+| One UI Button box | 50% |
+| One UI Brightness | about 52% |
+| One UI Volume | about 49% |
+| One UI Media player | about 51% |
+| Buttons exported at 50% | 50% |
+
+In the final simultaneous screenshot, aggregated red, green, blue, and combined
+contrast were all exactly 50% for both families:
+
+- Buttons exported at 50%: 50% source contribution.
+- Controls processed automatically by One UI: 50% source contribution.
+
+Because the neutral gray source became tinted by the wallpaper beneath Controls,
+One UI is compositing the image over its blurred/tinted panel background rather
+than applying only a black dim layer. The practical model is:
+
+`rendered Controls = about 50% source image + 50% One UI panel background`
+
+Good Lock also honored Button PNG alpha linearly. A 50% Button export matched the
+Controls source contribution without additional brightness, contrast, blur, or
+dark-overlay processing. Keep the slider because later devices, software
+versions, themes, or user preference may still require adjustment.
+
+### Reproducing the measurement
+
+Use the same chart if the One UI or QuickStar rendering behavior needs to be
+revalidated:
+
+1. Import the chart without editing, filtering, or recompressing it.
+2. Export and apply it to all supported Controls panels at full intensity.
+3. Take a system screenshot of the fully expanded Quick Panel.
+4. Repeat with representative Buttons panels at 100% Button intensity.
+5. Record the phone model, One UI version, QuickStar version, theme mode, and
+   relevant blur/transparency settings.
+6. Compare source tiles with pixels sampled near the center of rendered tiles,
+   away from icons, text, borders, and tile edges.
+7. Repeat across Button box, Brightness, Volume, and Media player to determine
+   whether all Controls share the same rendering treatment.
+8. Export representative Buttons at 50%, keep the Controls chart applied, and
+   take one simultaneous screenshot to verify that both families retain the
+   same source contrast.
 
 ## Export behavior
 

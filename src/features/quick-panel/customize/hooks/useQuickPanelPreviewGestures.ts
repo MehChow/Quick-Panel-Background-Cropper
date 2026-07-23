@@ -7,14 +7,19 @@ import { getCoverScale } from "../../model/image-placement";
 import { getImagePlacementBounds } from "../../model/panel-geometry";
 import type {
   ImageTransform,
+  PanelRect,
   PickedImage,
   QuickPanelPreset,
 } from "../../model/types";
-import { clampTransformWorklet } from "../worklets/gesture-worklets";
+import {
+  clampTransformWorklet,
+  getPinchTransformWorklet,
+} from "../worklets/gesture-worklets";
 
 interface UseQuickPanelPreviewGesturesParams {
   image: PickedImage;
   preset: QuickPanelPreset;
+  previewFrame: PanelRect;
   transform: ImageTransform;
   onAdjustingChange: (isAdjusting: boolean) => void;
   onTransformChange: (transform: ImageTransform) => void;
@@ -23,16 +28,31 @@ interface UseQuickPanelPreviewGesturesParams {
 export function useQuickPanelPreviewGestures({
   image,
   preset,
+  previewFrame,
   transform,
   onAdjustingChange,
   onTransformChange,
 }: UseQuickPanelPreviewGesturesParams) {
-  const [layoutScale, setLayoutScale] = useState<number | null>(null);
+  const frameKey = [
+    previewFrame.x,
+    previewFrame.y,
+    previewFrame.width,
+    previewFrame.height,
+  ].join(":");
+  const [previewLayout, setPreviewLayout] = useState<PreviewLayout | null>(null);
+  const layoutScale = previewLayout?.frameKey === frameKey
+    ? previewLayout.scale
+    : null;
   const activeGestureCount = useSharedValue(0);
+  const hasPinchStarted = useSharedValue(false);
+  const isPinching = useSharedValue(false);
+  const shouldRebasePinch = useSharedValue(false);
+  const pinchStartGestureScale = useSharedValue(1);
+  const pinchStartFocalX = useSharedValue(0);
+  const pinchStartFocalY = useSharedValue(0);
+  const pinchStartTransform = useSharedValue(transform);
   const sharedScale = useSharedValue(1);
   const sharedTransform = useSharedValue(transform);
-  const startTransform = useSharedValue(transform);
-  const panelUnion = preset.customizationArea;
   const imageBounds = getImagePlacementBounds(preset);
   const minScale = getCoverScale(image, preset);
 
@@ -47,9 +67,9 @@ export function useQuickPanelPreviewGestures({
   }, [layoutScale, sharedScale]);
 
   const handleLayout = (event: LayoutChangeEvent) => {
-    const nextScale = event.nativeEvent.layout.width / panelUnion.width;
+    const nextScale = event.nativeEvent.layout.width / previewFrame.width;
     if (nextScale > 0) {
-      setLayoutScale(nextScale);
+      setPreviewLayout({ frameKey, scale: nextScale });
     }
   };
 
@@ -59,7 +79,6 @@ export function useQuickPanelPreviewGestures({
     if (nextCount === 1) {
       scheduleOnRN(onAdjustingChange, true);
     }
-    startTransform.set(sharedTransform.get());
   };
 
   const onGestureFinalize = () => {
@@ -72,14 +91,16 @@ export function useQuickPanelPreviewGestures({
 
   const pan = Gesture.Pan()
     .onBegin(onGestureBegin)
-    .onUpdate((event) => {
-      const start = startTransform.get();
+    .onChange((event) => {
+      if (isPinching.get()) {
+        return;
+      }
       const currentTransform = sharedTransform.get();
       const scale = sharedScale.get();
       sharedTransform.set(
         clampTransformWorklet(
-          start.x + event.translationX / scale,
-          start.y + event.translationY / scale,
+          currentTransform.x + event.changeX / scale,
+          currentTransform.y + event.changeY / scale,
           currentTransform.scale,
           image.width,
           image.height,
@@ -96,37 +117,79 @@ export function useQuickPanelPreviewGestures({
 
   const pinch = Gesture.Pinch()
     .onBegin(onGestureBegin)
-    .onUpdate((event) => {
-      const start = startTransform.get();
+    .onStart((event) => {
       const scaleFactor = sharedScale.get();
-      const focalX = panelUnion.x + event.focalX / scaleFactor;
-      const focalY = panelUnion.y + event.focalY / scaleFactor;
-      const scale = Math.max(minScale, Math.min(minScale * 8, start.scale * event.scale));
-      const ratio = scale / start.scale;
+      hasPinchStarted.set(true);
+      isPinching.set(true);
+      shouldRebasePinch.set(false);
+      pinchStartGestureScale.set(event.scale);
+      pinchStartTransform.set(sharedTransform.get());
+      pinchStartFocalX.set(previewFrame.x + event.focalX / scaleFactor);
+      pinchStartFocalY.set(previewFrame.y + event.focalY / scaleFactor);
+    })
+    .onTouchesDown((event) => {
+      if (hasPinchStarted.get() && event.numberOfTouches === 2) {
+        isPinching.set(true);
+        shouldRebasePinch.set(true);
+      }
+    })
+    .onTouchesUp((event) => {
+      if (event.numberOfTouches === 1) {
+        isPinching.set(false);
+        shouldRebasePinch.set(false);
+      }
+    })
+    .onUpdate((event) => {
+      if (!isPinching.get()) {
+        return;
+      }
+      const scaleFactor = sharedScale.get();
+      const focalX = previewFrame.x + event.focalX / scaleFactor;
+      const focalY = previewFrame.y + event.focalY / scaleFactor;
+      if (shouldRebasePinch.get()) {
+        shouldRebasePinch.set(false);
+        pinchStartGestureScale.set(event.scale);
+        pinchStartTransform.set(sharedTransform.get());
+        pinchStartFocalX.set(focalX);
+        pinchStartFocalY.set(focalY);
+        return;
+      }
       sharedTransform.set(
-        clampTransformWorklet(
-          focalX - (focalX - start.x) * ratio,
-          focalY - (focalY - start.y) * ratio,
-          scale,
-          image.width,
-          image.height,
+        getPinchTransformWorklet({
+          focalX,
+          focalY,
+          gestureScale: event.scale / pinchStartGestureScale.get(),
+          imageHeight: image.height,
+          imageWidth: image.width,
           minScale,
-          imageBounds.x,
-          imageBounds.y,
-          imageBounds.width,
-          imageBounds.height,
-        ),
+          startFocalX: pinchStartFocalX.get(),
+          startFocalY: pinchStartFocalY.get(),
+          startTransform: pinchStartTransform.get(),
+          unionHeight: imageBounds.height,
+          unionWidth: imageBounds.width,
+          unionX: imageBounds.x,
+          unionY: imageBounds.y,
+        }),
       );
     })
     .onEnd(() => scheduleOnRN(onTransformChange, sharedTransform.get()))
-    .onFinalize(onGestureFinalize);
+    .onFinalize(() => {
+      hasPinchStarted.set(false);
+      isPinching.set(false);
+      shouldRebasePinch.set(false);
+      onGestureFinalize();
+    });
 
   return {
     gesture: Gesture.Simultaneous(pan, pinch),
     handleLayout,
     layoutScale,
-    panelUnion,
     sharedScale,
     sharedTransform,
   };
+}
+
+interface PreviewLayout {
+  frameKey: string;
+  scale: number;
 }

@@ -25,16 +25,18 @@ export function CustomizeActions({
 
   return (
     <View className="mt-5 gap-3">
-      <Button
-        className="px-0 bg-white"
-        disabled={isBusy}
-        onPress={onPick}
-        textClassName="font-semibold w-full text-black"
-      >
-        {isProcessingImage
-          ? t("customize.optimizingImage")
-          : t("customize.chooseAnotherImage")}
-      </Button>
+      <View>
+        <Button
+          className="w-full bg-white px-0"
+          disabled={isBusy}
+          onPress={onPick}
+          textClassName="w-full font-semibold text-black"
+        >
+          {isProcessingImage
+            ? t("customize.optimizingImage")
+            : t("customize.chooseAnotherImage")}
+        </Button>
+      </View>
       <View className="flex-row gap-3 pb-4">
         <View className="basis-0 flex-1">
           <Button

@@ -10,7 +10,6 @@ export const zhLocale = {
     customize: {
       ...zh.translation.customize,
       optimizingImage: "最佳化圖片中...",
-      imageOptimized: "已優化所選圖片，拖曳調整會更順暢。",
     },
   },
 };

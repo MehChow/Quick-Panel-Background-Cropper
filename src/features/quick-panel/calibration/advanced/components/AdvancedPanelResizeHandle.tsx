@@ -1,13 +1,16 @@
 import { View } from "react-native";
-import type { PanelId, PanelRect } from "../../../model/types";
+import { GestureDetector } from "react-native-gesture-handler";
+import type { SharedValue } from "react-native-reanimated";
+import type { PanelRect } from "../../../model/types";
 import type { HandlePosition } from "../../shared/calibration-rect";
 import type { AdvancedSnapGrid } from "../advanced-grid";
-import { useAdvancedPanelResizeResponder } from "../hooks/useAdvancedPanelResizeResponder";
+import { useAdvancedPanelResizeGesture } from "../hooks/useAdvancedPanelResizeGesture";
 
 interface Props {
   color?: string;
+  draftRect: SharedValue<PanelRect>;
   grid: AdvancedSnapGrid;
-  label: PanelId;
+  isGridEnabled: boolean;
   outerRect: PanelRect;
   position: HandlePosition;
   rect: PanelRect;
@@ -16,20 +19,21 @@ interface Props {
 }
 
 export function AdvancedPanelResizeHandle(props: Props) {
-  const responder = useAdvancedPanelResizeResponder(props);
+  const gesture = useAdvancedPanelResizeGesture(props);
   return (
-    <View
-      {...responder.panHandlers}
-      className="absolute items-center justify-center"
-      style={{ ...getStyle(props.position), zIndex: 3 }}
-    >
-      {isCorner(props.position) ? (
-        <View
-          className="h-5 w-5 rounded-full border-2 border-white"
-          style={{ backgroundColor: props.color ?? "#f97316" }}
-        />
-      ) : null}
-    </View>
+    <GestureDetector gesture={gesture}>
+      <View
+        className="absolute items-center justify-center"
+        style={{ ...getStyle(props.position), zIndex: 3 }}
+      >
+        {isCorner(props.position) ? (
+          <View
+            className="h-5 w-5 rounded-full border-2 border-white"
+            style={{ backgroundColor: props.color ?? "#f97316" }}
+          />
+        ) : null}
+      </View>
+    </GestureDetector>
   );
 }
 

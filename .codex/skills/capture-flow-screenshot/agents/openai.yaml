@@ -1,0 +1,4 @@
+interface:
+  display_name: "Capture Flow Screenshot"
+  short_description: "Capture Android flow screenshots as WebP"
+  default_prompt: "Use $capture-flow-screenshot to replace flow/default-mode/4.webp from the connected Android device."

@@ -44,7 +44,6 @@ import {
   getTransformState,
 } from "./quick-panel-transitions";
 import {
-  saveCalibration,
   saveCalibrations,
   saveLastExportedAdvancedTarget,
   saveLastExportedMode,
@@ -74,9 +73,12 @@ export interface QuickPanelState extends QuickPanelStateData {
   setAdvancedPanels: (panels: ControlPanelRects) => void;
   setAdvancedButtons: (buttons: ButtonCalibrationItem[]) => void;
   setAdvancedButtonPanels: (panels: PanelRects) => void;
-  acceptAdvancedCalibration: (grid: AdvancedSnapGrid) => boolean;
+  acceptAdvancedCalibration: (
+    grid: AdvancedSnapGrid,
+    isGridEnabled: boolean,
+  ) => boolean;
   startImageProcessing: () => void;
-  finishImageProcessing: (image: PickedImage, noticeKey: string | null) => void;
+  finishImageProcessing: (image: PickedImage) => void;
   failImageProcessing: (message: string | null, errorKey: string | null) => void;
   setImage: (image: PickedImage) => void;
   setTransform: (transform: ImageTransform) => void;
@@ -125,9 +127,7 @@ export const useQuickPanelStore = create<QuickPanelState>((set, get) => ({
       return false;
     }
     const state = get();
-    saveCalibration(result.defaultCalibration.rect);
     saveCalibrations({
-      version: 3,
       default: result.defaultCalibration,
       advancedControls: state.advancedCalibration,
       advancedButtons: state.advancedButtonsCalibration,
@@ -203,7 +203,7 @@ export const useQuickPanelStore = create<QuickPanelState>((set, get) => ({
     advancedButtonsDraft: state.advancedButtonsDraft
       ? { ...state.advancedButtonsDraft, buttons }
       : null,
-    error: buttons.length > 0 ? null : translate("errors.selectAdvancedPanel"),
+    error: buttons.length > 0 ? null : translate("errors.selectAdvancedButton"),
   })),
   setAdvancedButtonPanels: (panels) => set((state) => ({
     advancedButtonsDraft: state.advancedButtonsDraft
@@ -217,16 +217,19 @@ export const useQuickPanelStore = create<QuickPanelState>((set, get) => ({
       : null,
     error: null,
   })),
-  acceptAdvancedCalibration: (grid) => {
+  acceptAdvancedCalibration: (grid, isGridEnabled) => {
     const state = get();
     if (state.selectedAdvancedTarget === "buttons") {
-      const calibration = getButtonsCalibrationFromDraft(state.advancedButtonsDraft, grid);
+      const calibration = getButtonsCalibrationFromDraft(
+        state.advancedButtonsDraft,
+        grid,
+        isGridEnabled,
+      );
       if (!calibration) {
         set({ error: translate("errors.invalidAdvancedPanels") });
         return false;
       }
       saveCalibrations({
-        version: 3,
         default: state.defaultCalibration,
         advancedControls: state.advancedCalibration,
         advancedButtons: calibration,
@@ -234,13 +237,16 @@ export const useQuickPanelStore = create<QuickPanelState>((set, get) => ({
       set(getAcceptAdvancedButtonsCalibrationResult(calibration));
       return true;
     }
-    const calibration = getCalibrationFromDraft(state.advancedDraft, grid);
+    const calibration = getCalibrationFromDraft(
+      state.advancedDraft,
+      grid,
+      isGridEnabled,
+    );
     if (!calibration) {
       set({ error: translate("errors.invalidAdvancedPanels") });
       return false;
     }
     saveCalibrations({
-      version: 3,
       default: state.defaultCalibration,
       advancedControls: calibration,
       advancedButtons: state.advancedButtonsCalibration,
@@ -249,8 +255,8 @@ export const useQuickPanelStore = create<QuickPanelState>((set, get) => ({
     return true;
   },
   startImageProcessing: () => set(getStartImageProcessingState()),
-  finishImageProcessing: (image, noticeKey) =>
-    set(getFinishImageProcessingState(image, get().activePreset, noticeKey)),
+  finishImageProcessing: (image) =>
+    set(getFinishImageProcessingState(image, get().activePreset)),
   failImageProcessing: (message, errorKey) =>
     set(getFailImageProcessingState(message, errorKey)),
   setImage: (image) => set(getImageState(image, get().activePreset)),

@@ -1,52 +1,40 @@
-import { Text } from "@/components/ani-ui/text";
 import { Button } from "@/components/ani-ui/button";
-import { Slider } from "@/components/ani-ui/slider";
 import { QuickPanelScreenShell } from "@/features/quick-panel/shared/QuickPanelScreenShell";
 import { SubPageHeader } from "@/features/quick-panel/shared/SubPageHeader";
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { type Href, useRouter } from "expo-router";
-import { ScrollView, View } from "react-native";
+import { useState } from "react";
+import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { CustomizeActions } from "./components/CustomizeActions";
-import { ExportSurfaces } from "./components/ExportSurfaces";
+import { CustomizeImagePlacementHelpSheet } from "./components/CustomizeImagePlacementHelpSheet";
+import { CustomizePreviewSection } from "./components/CustomizePreviewSection";
+import { ExportSurfaceHost } from "./components/ExportSurfaceHost";
 import { ImagePickerCard } from "./components/ImagePickerCard";
-import { QuickPanelPreview } from "./components/QuickPanelPreview";
+import { useButtonCustomizeControls } from "./hooks/useButtonCustomizeControls";
+import { useCustomizePreviewImage } from "./hooks/useCustomizePreviewImage";
 import { useCustomizeScreen } from "./hooks/useCustomizeScreen";
-
-const DEFAULT_BUTTON_PANEL_OPACITY = 78;
-
+import { useSequentialExport } from "./hooks/useSequentialExport";
+import { markHelpSeen } from "../store/storage";
 export function CustomizeScreen() {
   const { t } = useTranslation();
   const router = useRouter();
-  const [buttonPanelOpacity, setButtonPanelOpacity] = useState(
-    DEFAULT_BUTTON_PANEL_OPACITY,
-  );
+  const [isHelpOpen, setIsHelpOpen] = useState(false);
   const {
-    selectedMode,
-    activePreset,
-    image,
-    transform,
-    setTransform,
-    isExporting,
-    isProcessingImage,
-    noticeKey,
-    errorKey,
-    error,
-    refs,
-    isPreviewAdjusting,
+    selectedMode, activePreset, image, transform, setTransform,
+    isExporting, isProcessingImage,
     setIsPreviewAdjusting,
-    exportImages,
-    exportLoadToken,
-    pickImage,
-    resetFit,
-    canReset,
-    setIsExportSurfaceReady,
-    shouldRenderExportSurfaces,
-    goToCalibration,
-    goToAdvancedCalibration,
+    pickImage, resetFit, canReset,
+    goToCalibration, goToAdvancedCalibration,
   } = useCustomizeScreen();
-
+  const buttonControls = useButtonCustomizeControls(activePreset);
+  const previewImage = useCustomizePreviewImage(image);
+  const sequentialExport = useSequentialExport({
+    image,
+    isProcessingImage,
+    preset: activePreset,
+    showButtonIdentifiers: buttonControls.showButtonIdentifiers,
+  });
   const recalibrate = () => {
     if (selectedMode === "advanced") {
       goToAdvancedCalibration();
@@ -56,9 +44,10 @@ export function CustomizeScreen() {
     goToCalibration();
     router.push("/calibration");
   };
-  const hasButtonPanels = activePreset.visualOrder.some(
-    (id) => activePreset.panels[id]?.family === "button",
-  );
+  const openHelp = () => {
+    markHelpSeen("customize-image-placement");
+    setIsHelpOpen(true);
+  };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -68,7 +57,7 @@ export function CustomizeScreen() {
             <CustomizeActions
               isExporting={isExporting}
               isProcessingImage={isProcessingImage}
-              onExport={exportImages}
+              onExport={sequentialExport.startExport}
               onPick={pickImage}
               onReset={resetFit}
               canReset={canReset}
@@ -81,94 +70,58 @@ export function CustomizeScreen() {
               onPress={pickImage}
               textClassName="font-semibold text-zinc-900"
             >
-              {isProcessingImage
-                ? t("customize.optimizingImage")
-                : t("calibration.chooseFromAlbum")}
+              {isProcessingImage ? t("customize.optimizingImage") : t("calibration.chooseFromAlbum")}
             </Button>
           )
         }
         header={
           <SubPageHeader
-            title={t("customize.title")}
+            actionAccessibilityLabel={t("customize.imagePlacementHelpButton")}
+            actionHelpId="customize-image-placement"
+            actionVariant="helper-balanced"
+            onActionPress={openHelp}
             subtitle={t("customize.subtitle")}
+            title={t("customize.title")}
           />
         }
       >
-        <ScrollView
-          className="flex-1"
-          contentContainerClassName="grow justify-center pb-4"
-          scrollEnabled={!isPreviewAdjusting}
-          overScrollMode="never"
-          showsVerticalScrollIndicator={false}
+        <View
+          className="flex-1 overflow-hidden"
+          testID="customize-middle-area"
+          pointerEvents={isExporting ? "none" : "auto"}
         >
           {image ? (
-            <View className="items-center">
-              <QuickPanelPreview
-                buttonPanelOpacity={buttonPanelOpacity / 100}
-                image={image}
-                preset={activePreset}
-                onAdjustingChange={setIsPreviewAdjusting}
-                transform={transform}
-                onTransformChange={setTransform}
-              />
-              {hasButtonPanels ? (
-                <View className="mt-4 w-full max-w-md gap-2 rounded-2xl border border-white/10 bg-zinc-900/90 px-4 py-3">
-                  <View className="flex-row items-center justify-between">
-                    <Text className="text-xs font-semibold uppercase tracking-[0.8px] text-zinc-400">
-                      {t("customize.buttonPanelOpacity")}
-                    </Text>
-                    <Text className="text-sm font-semibold text-white">
-                      {buttonPanelOpacity}%
-                    </Text>
-                  </View>
-                  <View className="rounded-xl bg-zinc-800/70 px-3 py-2">
-                    <Slider
-                      max={100}
-                      min={0}
-                      onValueChange={setButtonPanelOpacity}
-                      size="sm"
-                      step={1}
-                      value={buttonPanelOpacity}
-                    />
-                  </View>
-                </View>
-              ) : null}
-            </View>
-          ) : (
-            <ImagePickerCard
-              mode={selectedMode ?? "default"}
-              onRecalibrate={recalibrate}
+            <CustomizePreviewSection
+              buttonControls={buttonControls}
+              image={image}
+              onAdjustingChange={setIsPreviewAdjusting}
+              onTransformChange={setTransform}
               preset={activePreset}
+              previewUri={previewImage.previewUri}
+              transform={transform}
             />
+          ) : (
+            <ImagePickerCard mode={selectedMode ?? "default"} onRecalibrate={recalibrate} preset={activePreset} />
           )}
-          {noticeKey ? (
-            <Text className="mt-4 rounded-md bg-green-500/15 p-3 text-sm text-green-100">
-              {t(noticeKey)}
-            </Text>
-          ) : null}
-          {error ? (
-            <Text className="mt-4 rounded-md bg-red-500/15 p-3 text-sm text-red-100">
-              {error}
-            </Text>
-          ) : null}
-          {errorKey ? (
-            <Text className="mt-4 rounded-md bg-red-500/15 p-3 text-sm text-red-100">
-              {t(errorKey)}
-            </Text>
-          ) : null}
-        </ScrollView>
+        </View>
       </QuickPanelScreenShell>
-      {image && shouldRenderExportSurfaces ? (
-        <ExportSurfaces
-          buttonPanelOpacity={buttonPanelOpacity / 100}
+      {image && sequentialExport.activePanel && sequentialExport.activeToken ? (
+        <ExportSurfaceHost
+          activePanel={sequentialExport.activePanel}
+          activeToken={sequentialExport.activeToken}
+          buttonIdentifierOpacity={buttonControls.buttonIdentifierOpacity / 100}
+          buttonIdentifierTheme={buttonControls.buttonIdentifierTheme}
+          buttonPanelOpacity={buttonControls.buttonPanelOpacity / 100}
+          exportRef={sequentialExport.exportRef}
+          identifierPositions={buttonControls.identifierPositions}
           image={image}
-          loadToken={exportLoadToken}
-          onReady={setIsExportSurfaceReady}
+          markIdentifierReady={sequentialExport.markIdentifierReady}
+          markImageReady={sequentialExport.markImageReady}
           transform={transform}
-          preset={activePreset}
-          refs={refs}
+          showButtonIdentifiers={buttonControls.showButtonIdentifiers}
         />
       ) : null}
+      {isHelpOpen ? <CustomizeImagePlacementHelpSheet onClose={() => setIsHelpOpen(false)} /> : null}
     </SafeAreaView>
   );
 }

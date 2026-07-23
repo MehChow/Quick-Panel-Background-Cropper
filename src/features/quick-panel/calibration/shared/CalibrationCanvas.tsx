@@ -1,29 +1,10 @@
-import { Button } from "@/components/ani-ui/button";
-import { Card } from "@/components/ani-ui/card";
-import { Text } from "@/components/ani-ui/text";
-import { images } from "@/data/images";
-import { Lucide } from "@react-native-vector-icons/lucide";
-import { Image } from "expo-image";
 import { type ReactNode, useState } from "react";
-import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import type { PanelRect, PickedImage } from "../../model/types";
+import { CalibrationImageSurface } from "./CalibrationImageSurface";
+import { CalibrationImportCard } from "./CalibrationImportCard";
 
-const exampleImageAspectRatio = 9 / 19.5;
 const canvasPadding = 12;
-const screenshotFrameStyle = {
-  borderColor: "rgba(255, 255, 255, 0.92)",
-  borderWidth: 1.5,
-  elevation: 8,
-  shadowColor: "#000",
-  shadowOffset: { width: 0, height: 8 },
-  shadowOpacity: 0.24,
-  shadowRadius: 18,
-} as const;
-const screenshotInnerFrameStyle = {
-  borderColor: "rgba(0, 0, 0, 0.22)",
-  borderWidth: 1,
-} as const;
 
 interface CalibrationCanvasProps {
   controls?: ReactNode;
@@ -33,16 +14,6 @@ interface CalibrationCanvasProps {
   onImport: () => void;
   showControls?: boolean;
   showImportButton?: boolean;
-}
-
-interface ImportScreenshotCardProps {
-  onImport?: () => void;
-}
-
-interface ExamplePanelImageProps {
-  icon: "check" | "x";
-  iconColor: string;
-  source: number;
 }
 
 export function CalibrationCanvas({
@@ -59,7 +30,7 @@ export function CalibrationCanvas({
   if (!screenshot || !rect) {
     return (
       <View className="flex-1 justify-center">
-        <ImportScreenshotCard
+        <CalibrationImportCard
           onImport={showImportButton ? onImport : undefined}
         />
       </View>
@@ -84,98 +55,15 @@ export function CalibrationCanvas({
         })
       }
     >
-      <View
-        className="self-center overflow-hidden rounded-[28px] bg-black"
-        style={{
-          height: canvasHeight,
-          ...screenshotFrameStyle,
-          width: canvasWidth,
-        }}
-      >
-        <Image
-          source={{ uri: screenshot.uri }}
-          contentFit="fill"
-          style={{ height: "100%", width: "100%" }}
-        />
-        <View
-          pointerEvents="none"
-          className="absolute inset-0 rounded-[28px]"
-          style={screenshotInnerFrameStyle}
-        />
-        {renderOverlay(scale)}
-      </View>
+      <CalibrationImageSurface
+        canvasHeight={canvasHeight}
+        canvasWidth={canvasWidth}
+        renderOverlay={renderOverlay}
+        scale={scale}
+        screenshot={screenshot}
+      />
 
       {showControls ? <View className="mt-4">{controls}</View> : null}
-    </View>
-  );
-}
-
-function ImportScreenshotCard({ onImport }: ImportScreenshotCardProps) {
-  const { t } = useTranslation();
-
-  return (
-    <Card className="w-full max-w-107.5 gap-4 self-center rounded-2xl border-zinc-800 bg-zinc-900 min-[480px]:max-w-115 min-[600px]:max-w-130">
-      <View>
-        <Text className="text-center text-lg font-semibold text-white">
-          {t("calibration.importTitle")}
-        </Text>
-        <Text className="text-center text-sm leading-5 text-zinc-400">
-          {t("calibration.importSubtitle")}
-        </Text>
-      </View>
-
-      <View className="w-full">
-        <Text className="text-center font-bold text-orange-400">
-          {t("landing.example")}
-        </Text>
-
-        <View className="w-full max-w-95 self-center">
-          <View className="flex-row gap-4">
-            <ExamplePanelImage
-              icon="check"
-              iconColor="green"
-              source={images.tutorialCorrect}
-            />
-            <ExamplePanelImage
-              icon="x"
-              iconColor="red"
-              source={images.tutorialIncorrect}
-            />
-          </View>
-        </View>
-      </View>
-
-      {onImport ? (
-        <Button
-          className="w-full"
-          onPress={onImport}
-          textClassName="font-semibold"
-        >
-          {t("calibration.chooseFromAlbum")}
-        </Button>
-      ) : null}
-    </Card>
-  );
-}
-
-function ExamplePanelImage({
-  icon,
-  iconColor,
-  source,
-}: ExamplePanelImageProps) {
-  return (
-    <View className="flex-1 items-center gap-2">
-      <Lucide name={icon} size={24} color={iconColor} />
-      <View
-        className="w-full overflow-hidden rounded-2xl border border-white"
-        style={{ aspectRatio: exampleImageAspectRatio }}
-      >
-        <Image
-          source={source}
-          style={{ height: "100%", width: "100%" }}
-          contentFit="cover"
-        />
-      </View>
     </View>
   );
 }

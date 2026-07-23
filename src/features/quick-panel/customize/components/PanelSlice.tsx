@@ -4,18 +4,25 @@ import Animated, {
   type SharedValue,
   useAnimatedStyle,
 } from "react-native-reanimated";
+import type { ButtonIdentifierPositions } from "../../model/button-identifier-layout";
 import type {
   CustomizationMode,
+  ButtonIdentifierTheme,
   ImageTransform,
   PanelDefinition,
   PickedImage,
 } from "../../model/types";
+import { getPanelImageTransform } from "../panel-image-transform";
+import { getPreviewPanelRadius } from "../preview-geometry";
 import { PanelOverlay } from "./PanelOverlay";
-
-const AnimatedImage = Animated.createAnimatedComponent(Image);
+import { ButtonIdentifierOverlay } from "./ButtonIdentifierOverlay";
 
 interface PanelSliceProps {
+  buttonIdentifierOpacity: number;
+  buttonIdentifierTheme?: ButtonIdentifierTheme;
   buttonPanelOpacity: number;
+  identifierPositions: ButtonIdentifierPositions;
+  showButtonIdentifiers: boolean;
   showOverlay: boolean;
   mode: CustomizationMode;
   panel: PanelDefinition;
@@ -24,11 +31,16 @@ interface PanelSliceProps {
   originX: number;
   originY: number;
   previewScale: SharedValue<number>;
+  previewUri: string;
   transform: SharedValue<ImageTransform>;
 }
 
 export function PanelSlice({
+  buttonIdentifierOpacity,
+  buttonIdentifierTheme = "light",
   buttonPanelOpacity,
+  identifierPositions,
+  showButtonIdentifiers,
   showOverlay,
   mode,
   panel,
@@ -37,38 +49,66 @@ export function PanelSlice({
   originX,
   originY,
   previewScale,
+  previewUri,
   transform,
 }: PanelSliceProps) {
-  const imageStyle = useAnimatedStyle(() => ({
-    height: image.height * transform.value.scale * previewScale.value,
-    left: (transform.value.x - panel.rect.x) * previewScale.value,
-    top: (transform.value.y - panel.rect.y) * previewScale.value,
-    width: image.width * transform.value.scale * previewScale.value,
-  }));
+  const panelRadius = getPreviewPanelRadius(panel.rect, layoutScale);
+  const imageStyle = useAnimatedStyle(() => {
+    const placement = getPanelImageTransform({
+      panelX: panel.rect.x,
+      panelY: panel.rect.y,
+      previewScale: previewScale.get(),
+      transform: transform.get(),
+    });
+    return {
+      transform: [
+        { translateX: placement.translateX },
+        { translateY: placement.translateY },
+        { scale: placement.scale },
+      ],
+    };
+  });
 
   return (
     <View
       className="absolute overflow-hidden bg-white/10"
       style={{
-        borderColor: "rgba(255,255,255,0.9)",
-        borderWidth: 1,
-        borderRadius: 32,
+        borderRadius: panelRadius,
         height: panel.rect.height * layoutScale,
         left: (panel.rect.x - originX) * layoutScale,
         top: (panel.rect.y - originY) * layoutScale,
         width: panel.rect.width * layoutScale,
       }}
+      testID={`panel-slice-${panel.id}`}
     >
-      <AnimatedImage
-        source={{ uri: image.uri }}
-        contentFit="fill"
-        style={[
-          StyleSheet.absoluteFill,
-          imageStyle,
-          panel.family === "button" ? { opacity: buttonPanelOpacity } : null,
-        ]}
-      />
-      {panel.family === "button" ? null : <View className="absolute inset-0 bg-black/10" />}
+      <Animated.View style={[styles.image, imageStyle]}>
+        <Image
+          cachePolicy="memory-disk"
+          contentFit="fill"
+          source={{ uri: previewUri }}
+          style={{
+            height: image.height,
+            opacity: panel.family === "button" ? buttonPanelOpacity : 0.5,
+            width: image.width,
+          }}
+        />
+      </Animated.View>
+      {panel.family === "button" && panel.buttonIdentifier ? (
+        <ButtonIdentifierOverlay
+          bounds={{
+            x: 0,
+            y: 0,
+            width: panel.rect.width * layoutScale,
+            height: panel.rect.height * layoutScale,
+          }}
+          identifier={panel.buttonIdentifier}
+          label={panel.label}
+          opacity={showButtonIdentifiers ? buttonIdentifierOpacity : 0}
+          positions={identifierPositions}
+          referenceCellSize={panel.buttonIdentifier.referenceCellSize * layoutScale}
+          theme={buttonIdentifierTheme}
+        />
+      ) : null}
       {showOverlay ? (
         <PanelOverlay
           height={panel.rect.height * layoutScale}
@@ -77,6 +117,25 @@ export function PanelSlice({
           width={panel.rect.width * layoutScale}
         />
       ) : null}
+      <View
+        className="absolute inset-0"
+        pointerEvents="none"
+        style={{
+          borderColor: "rgba(255,255,255,0.9)",
+          borderRadius: panelRadius,
+          borderWidth: 1,
+        }}
+        testID={`panel-slice-frame-${panel.id}`}
+      />
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  image: {
+    left: 0,
+    position: "absolute",
+    top: 0,
+    transformOrigin: [0, 0, 0],
+  },
+});

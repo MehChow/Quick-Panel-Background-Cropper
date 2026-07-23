@@ -1,5 +1,5 @@
 import { useRouter } from "expo-router";
-import { useEffect, useState } from "react";
+import { useEffect, useEffectEvent, useState } from "react";
 import { BackHandler } from "react-native";
 import { useShallow } from "zustand/react/shallow";
 import {
@@ -37,6 +37,7 @@ export function useAdvancedCalibrationScreen() {
     selectedAdvancedTarget,
     errorKey,
     error,
+    setError,
     setAdvancedScreenshot,
     setAdvancedOuterRect,
     confirmAdvancedOuterRect,
@@ -47,9 +48,15 @@ export function useAdvancedCalibrationScreen() {
     acceptAdvancedCalibration,
     failImageProcessing,
   } = useQuickPanelStore(useShallow(quickPanelSelectors.advancedCalibrationScreen));
+  const savedCalibration = selectedAdvancedTarget === "buttons"
+    ? advancedButtonsCalibration
+    : advancedCalibration;
   const [phase, setPhase] = useState<AdvancedCalibrationPhase>("outer");
   const [grid, setGrid] = useState<AdvancedSnapGrid>(() =>
-    (selectedAdvancedTarget === "buttons" ? advancedButtonsCalibration?.grid : advancedCalibration?.grid) ?? { columns: 4, rows: 5 }
+    savedCalibration?.grid ?? { columns: 4, rows: 5 }
+  );
+  const [isGridEnabled, setIsGridEnabled] = useState(
+    () => savedCalibration?.isGridEnabled ?? true,
   );
   const [leavingDraft, setLeavingDraft] = useState<AdvancedCalibrationDraft | null>(null);
   const [leavingPhase, setLeavingPhase] = useState<AdvancedCalibrationPhase | null>(null);
@@ -64,7 +71,8 @@ export function useAdvancedCalibrationScreen() {
 
       const suggestedRect = getSuggestedCalibrationRect(screenshot);
       setAdvancedScreenshot(screenshot, suggestedRect);
-      setGrid((selectedAdvancedTarget === "buttons" ? advancedButtonsCalibration?.grid : advancedCalibration?.grid) ?? getDefaultAdvancedSnapGrid(suggestedRect));
+      setGrid(savedCalibration?.grid ?? getDefaultAdvancedSnapGrid(suggestedRect));
+      setIsGridEnabled(savedCalibration?.isGridEnabled ?? true);
       setLeavingDraft(null);
       setLeavingPhase(null);
       setPhase("outer");
@@ -91,7 +99,11 @@ export function useAdvancedCalibrationScreen() {
       setLeavingDraft(advancedDraft);
       setLeavingPhase(phase);
     }
-    if (draftForSave?.screenshot && draftForSave.outerRect && acceptAdvancedCalibration(grid)) {
+    if (
+      draftForSave?.screenshot &&
+      draftForSave.outerRect &&
+      acceptAdvancedCalibration(grid, isGridEnabled)
+    ) {
       router.dismissTo("/customize");
     }
   };
@@ -134,19 +146,22 @@ export function useAdvancedCalibrationScreen() {
     return true;
   };
 
+  const handleHardwareBack = useEffectEvent(requestLeaveCalibration);
+
   useEffect(() => {
     const subscription = BackHandler.addEventListener(
       "hardwareBackPress",
-      requestLeaveCalibration,
+      () => handleHardwareBack(),
     );
 
     return () => subscription.remove();
-  });
+  }, []);
 
   const goBack = () => {
     if (!previousPhase) {
       return;
     }
+    setError(null);
     if (previousPhase === "outer") {
       setResumePhase(displayedPhase === "outer" ? null : displayedPhase);
     }
@@ -208,6 +223,7 @@ export function useAdvancedCalibrationScreen() {
     errorKey,
     error,
     grid,
+    isGridEnabled,
     phase: displayedPhase,
     canGoBack: previousPhase !== null,
     closeLeaveDialog,
@@ -229,6 +245,7 @@ export function useAdvancedCalibrationScreen() {
     saveCalibration,
     setColumns: (columns: number) => setGrid((current) => ({ ...current, columns })),
     setRows: (rows: number) => setGrid((current) => ({ ...current, rows })),
+    setIsGridEnabled,
     setAdvancedEnabledPanels: updateEnabledPanels,
     setAdvancedButtons: updateButtons,
     setAdvancedOuterRect,

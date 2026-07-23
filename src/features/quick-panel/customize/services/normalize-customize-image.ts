@@ -12,7 +12,6 @@ interface CustomizeImageAsset {
 
 interface NormalizeCustomizeImageResult {
   image: PickedImage;
-  noticeKey: string | null;
 }
 
 const maxUnchangedLongEdge = 3072;
@@ -28,7 +27,7 @@ export async function normalizeCustomizeImage(
   }
 
   if (getLongEdge(asset) <= maxUnchangedLongEdge) {
-    return { image: toPickedImage(asset), noticeKey: null };
+    return { image: toPickedImage(asset) };
   }
 
   const context = ImageManipulator.manipulate(asset.uri);
@@ -51,7 +50,6 @@ export async function normalizeCustomizeImage(
       wasOptimized: true,
       width: result.width,
     },
-    noticeKey: "customize.imageOptimized",
   };
 }
 
