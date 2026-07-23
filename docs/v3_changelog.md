@@ -190,6 +190,13 @@ correct those coordinates was not stored.
 The current app stores accurate Default, Advanced Controls, and Advanced
 Buttons calibrations together under the stable `quick-panel.calibrations` key.
 
+On first launch after the v3 update, the app shows a one-time release
+announcement explaining the new workflow and recalibration requirement. Its
+acknowledgement is stored separately from calibration and preferences. The
+panel uses concise bullet points and a single acknowledgement button; the
+recalibration requirement is presented as a reminder rather than an automatic
+redirect.
+
 ### Data that remains preserved
 
 The recalibration boundary does not clear unrelated preferences. Existing

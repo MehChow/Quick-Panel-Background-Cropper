@@ -623,3 +623,10 @@ The advanced calibration help sheets regressed during the Fold/wide-screen respo
   image clipping surface, so eye toggles preserve the exact image position.
 - The helper explains the preview-only amber movement boundary in its own
   localized paragraph.
+
+### Reusable release announcement
+
+- `docs/release-announcement-guideline.md` is the source of truth for future startup announcements.
+- Use a stable reason-based ID such as `v1.1.0-release-announcement`; do not use the Expo version or Android version code.
+- Store acknowledgement separately from calibration and preserve all unrelated MMKV keys.
+- Keep the shared dialog styled like `AdvancedCalibrationLeaveDialog`; change only localized content and the active descriptor for future releases. The standard CTA only acknowledges and closes the panel.

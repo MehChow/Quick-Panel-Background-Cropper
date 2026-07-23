@@ -1,5 +1,7 @@
 import {
   hasSeenHelp,
+  acknowledgeReleaseAnnouncement,
+  loadAcknowledgedReleaseAnnouncement,
   loadCalibrations,
   loadLastExportedAdvancedTarget,
   loadLastExportedMode,
@@ -62,6 +64,25 @@ const currentCalibrations = {
 } satisfies SavedCalibrations;
 
 describe("storage", () => {
+  it("stores the acknowledged release announcement independently", () => {
+    const mmkvStore = (globalThis as typeof globalThis & MmkvTestGlobal)
+      .__mmkvStore;
+    mmkvStore?.delete("quick-panel.acknowledged-release-announcement");
+
+    expect(loadAcknowledgedReleaseAnnouncement()).toBeNull();
+
+    acknowledgeReleaseAnnouncement("v1.1.0-release-announcement");
+
+    expect(loadAcknowledgedReleaseAnnouncement()).toBe(
+      "v1.1.0-release-announcement",
+    );
+    expect(loadCalibrations()).toEqual({
+      default: null,
+      advancedControls: null,
+      advancedButtons: null,
+    });
+  });
+
   it("round-trips Buttons-only customization settings", () => {
     const settings: ButtonCustomizeSettings = {
       buttonIdentifierOpacity: 61,

@@ -1,3 +1,4 @@
+import { ReleaseAnnouncementHost } from "@/features/quick-panel/release/ReleaseAnnouncementHost";
 import { AppGradientBackground } from "@/features/quick-panel/shared/AppGradientBackground";
 import { FloatingLanguageSwitchButton } from "@/features/quick-panel/shared/LanguageSwitchButton";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
@@ -29,6 +30,7 @@ export default function RootLayout() {
               }}
             />
           </View>
+          <ReleaseAnnouncementHost />
           {__DEV__ ? <FloatingLanguageSwitchButton /> : null}
         </BottomSheetModalProvider>
       </SafeAreaProvider>

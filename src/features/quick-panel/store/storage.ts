@@ -24,6 +24,9 @@ const buttonCustomizeSettingsKey = "quick-panel.button-customize-settings";
 const lastExportedModeKey = "quick-panel.last-exported-mode";
 const lastExportedAdvancedTargetKey = "quick-panel.last-exported-advanced-target";
 const seenHelpKey = "quick-panel.seen-help";
+const releaseAnnouncementKey = "quick-panel.acknowledged-release-announcement";
+
+export const activeReleaseAnnouncementId = "v1.1.0-release-announcement";
 
 export const supportedLanguages = ["en", "zh"] as const;
 export type SupportedLanguage = (typeof supportedLanguages)[number];
@@ -100,6 +103,14 @@ export function loadLastExportedAdvancedTarget(): AdvancedTarget | null {
 
 export function saveLastExportedAdvancedTarget(target: AdvancedTarget) {
   storage.set(lastExportedAdvancedTargetKey, target);
+}
+
+export function loadAcknowledgedReleaseAnnouncement(): string | null {
+  return storage.getString(releaseAnnouncementKey) ?? null;
+}
+
+export function acknowledgeReleaseAnnouncement(id: string) {
+  storage.set(releaseAnnouncementKey, id);
 }
 
 export function loadSeenHelp(): SavedSeenHelp {

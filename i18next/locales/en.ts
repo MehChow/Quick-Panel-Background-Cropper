@@ -10,6 +10,13 @@ const en = {
       subtitle:
         "Split one image seamlessly across your Quick Panel Controls area",
     },
+    releaseAnnouncement: {
+      v1_1_0: {
+        title: "v1.1.0 Major Updates 🌟\n",
+        body: "• New Buttons layout customization\n• Added snapping grid toggle\n• Improved Customize page performance\n\nReminder: After updating, please recalibrate once for the best experience.",
+        gotIt: "Got it",
+      },
+    },
     landing: {
       startCustomizing: "Start customizing",
       calibrated: "Calibrated.",

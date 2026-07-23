@@ -9,6 +9,13 @@ const zh = {
       title: "Quick Panel 背景裁切工具",
       subtitle: "將一張圖片無縫延伸到你的 Quick Panel 控制版面",
     },
+    releaseAnnouncement: {
+      v1_1_0: {
+        title: "v1.1.0 主要更新內容 🌟\n",
+        body: "• 新增「按鈕版面」自訂功能\n• 新增對齊格線開關功能\n• 優化自訂頁面效能\n\n提醒：更新後，請在重新校正一次以達最佳體驗。",
+        gotIt: "知道了",
+      },
+    },
     landing: {
       startCustomizing: "開始自訂",
       calibrated: "已校正。",
