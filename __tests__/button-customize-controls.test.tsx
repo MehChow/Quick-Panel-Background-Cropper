@@ -53,6 +53,12 @@ describe("ButtonCustomizeControls", () => {
     expect(
       screen.getByTestId("button-adjustment-image-tab").props.accessibilityState,
     ).toEqual({ disabled: false, selected: true });
+    expect(
+      screen.getByTestId("button-adjustment-image-tab").props.className,
+    ).toContain("bg-black");
+    expect(
+      screen.getByText("customize.buttonAdjustmentImageTab").props.className,
+    ).toContain("text-white");
     expect(screen.getByTestId("button-panel-opacity-slider").props).toMatchObject({
       disabled: false,
       value: 78,
@@ -64,6 +70,11 @@ describe("ButtonCustomizeControls", () => {
     expect(
       screen.queryByTestId("vertical-identifier-position-slider"),
     ).toBeNull();
+
+    fireEvent.press(screen.getByTestId("button-adjustment-identifier-tab"));
+    expect(
+      screen.getByTestId("button-adjustment-image-tab").props.className,
+    ).not.toContain("bg-black");
   });
 
   it("routes the shared slider through each selected adjustment tab", () => {

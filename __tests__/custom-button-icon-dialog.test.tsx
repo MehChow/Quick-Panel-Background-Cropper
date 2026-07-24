@@ -27,6 +27,10 @@ describe("CustomButtonIconDialog", () => {
       />,
     );
 
+    expect(screen.getByText("Choose an icon").props.className).toContain(
+      "text-white",
+    );
+
     fireEvent.press(screen.getByLabelText("Zap"));
 
     expect(onSelect).toHaveBeenCalledWith("zap");

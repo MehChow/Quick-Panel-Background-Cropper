@@ -8,6 +8,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ani-ui/alert-dialog";
 import { useTranslation } from "react-i18next";
+import { Text } from "react-native";
 import type { ReleaseAnnouncementDescriptor } from "./ReleaseAnnouncementContent";
 
 interface ReleaseAnnouncementDialogProps {
@@ -33,8 +34,10 @@ export function ReleaseAnnouncementDialog({
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogAction onPress={onDismiss}>
-            {t(descriptor.actionKey)}
+          <AlertDialogAction onPress={onDismiss} className="bg-white">
+            <Text className="text-sm font-medium text-black">
+              {t(descriptor.actionKey)}
+            </Text>
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
