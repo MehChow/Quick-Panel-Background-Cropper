@@ -2,13 +2,13 @@
   "expo": {
     "name": "Quick Panel Background Cropper",
     "slug": "quick-panel-background-cropper",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "orientation": "portrait",
     "icon": "./assets/images/appicon.png",
     "scheme": "quickpanelbackgroundcropper",
     "userInterfaceStyle": "automatic",
     "android": {
-      "versionCode": 30000021,
+      "versionCode": 30000023,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/appicon.png",
         "backgroundColor": "#FFFFFF",
