@@ -70,6 +70,8 @@ const triggerTextSize = cva("will-change-variable font-medium", {
 });
 
 export interface TabsTriggerProps extends React.ComponentPropsWithoutRef<typeof Pressable> {
+  activeClassName?: string;
+  activeTextClassName?: string;
   className?: string;
   textClassName?: string;
   value: string;
@@ -79,7 +81,15 @@ export interface TabsTriggerProps extends React.ComponentPropsWithoutRef<typeof 
 }
 
 export function TabsTrigger({
-  value, disabled = false, icon, className, textClassName, children, ...props
+  value,
+  activeClassName,
+  activeTextClassName,
+  disabled = false,
+  icon,
+  className,
+  textClassName,
+  children,
+  ...props
 }: TabsTriggerProps) {
   const { value: selected, onValueChange, variant, size, orientation } = useContext(TabsCtx);
   const isActive = selected === value;
@@ -91,6 +101,7 @@ export function TabsTrigger({
         orientation === "horizontal" ? "flex-1" : "self-stretch",
         variant === "filled" && "rounded-md",
         variant === "filled" && isActive && "bg-background shadow-sm",
+        variant === "filled" && isActive && activeClassName,
         variant === "line" && isActive && (orientation === "horizontal" ? "border-b-2 border-primary" : "border-e-2 border-primary"),
         disabled && "opacity-40",
         className
@@ -105,7 +116,7 @@ export function TabsTrigger({
       <View className="flex-row items-center gap-1.5">
         {icon}
         {typeof children === "string" ? (
-          <Text className={cn(triggerTextSize({ size }), isActive ? "text-foreground" : "text-muted-foreground", textClassName)}>
+          <Text className={cn(triggerTextSize({ size }), isActive ? "text-foreground" : "text-muted-foreground", textClassName, isActive && activeTextClassName)}>
             {children}
           </Text>
         ) : children}

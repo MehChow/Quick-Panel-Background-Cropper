@@ -89,10 +89,12 @@ export function ButtonAdjustmentTabs(props: ButtonAdjustmentTabsProps) {
         {adjustments.map((adjustment) => (
           <TabsTrigger
             accessibilityLabel={adjustment.accessibilityLabel}
+            activeClassName="bg-black"
+            activeTextClassName="text-white"
             disabled={adjustment.disabled}
             key={adjustment.valueKey}
             testID={adjustment.tabTestID}
-            textClassName="text-zinc-200"
+            textClassName="text-white"
             value={adjustment.valueKey}
           >
             {adjustment.tabLabel}

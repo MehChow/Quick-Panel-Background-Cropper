@@ -28,6 +28,17 @@ describe("release announcement", () => {
 
     expect(screen.getByText("releaseAnnouncement.v1_1_0.title")).toBeTruthy();
     expect(screen.getByText("releaseAnnouncement.v1_1_0.body")).toBeTruthy();
+    expect(
+      screen.getByText("releaseAnnouncement.v1_1_0.title").props.className,
+    ).toContain("text-white");
+    expect(
+      screen.getByText("releaseAnnouncement.v1_1_0.gotIt").props.className,
+    ).toContain("text-black");
+    expect(
+      screen.getByRole("button", {
+        name: "releaseAnnouncement.v1_1_0.gotIt",
+      }).props.className,
+    ).toContain("bg-white");
 
     fireEvent.press(screen.getByText("releaseAnnouncement.v1_1_0.gotIt"));
 
