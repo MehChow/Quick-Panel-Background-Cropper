@@ -1,0 +1,384 @@
+# Production Manual Test Journeys
+
+Reusable production sign-off for Quick Panel Background Cropper (QPBC).
+The current baseline is v3 / app version `1.1.0`.
+
+## Test strategy
+
+Run five combined journeys on a Galaxy S25+ with One UI 8.5, then one focused
+responsive journey on a Galaxy Z Fold7. The S25+ pass should take about 75
+minutes; the Fold7 pass should take about 15-20 minutes.
+
+Each journey combines several features so setup work is not repeated. Complete
+the journeys in order because the update, persistence, and clean-install cases
+depend on the state created by earlier journeys.
+
+For future releases:
+
+1. Keep these core journeys.
+2. Update the release delta and expected behavior when the product changes.
+3. Run only the targeted regression modules relevant to that release.
+4. Test the exact AAB from the Play testing track and promote the same artifact.
+
+A crash, data loss, calibration mismatch, blocked primary flow, partial/corrupt
+export, unrecoverable permission state, or material preview/QuickStar mismatch
+is a production blocker.
+
+## Release record
+
+- Release/version: `________________`
+- Android version code: `________________`
+- Branch and commit: `________________`
+- AAB filename and SHA-256: `________________`
+- Play testing track: `________________`
+- Tester and date: `________________`
+- S25+ build number: `________________`
+- Z Fold7 build number: `________________`
+- Good Lock / QuickStar versions: `________________`
+- Final result: `[ ] GO  [ ] NO-GO`
+- Open blockers: `________________`
+
+## Current release delta: v3
+
+- Default and Advanced Controls remain supported.
+- Advanced adds a separate Buttons-only target.
+- Updating from v1.0.0/v2 requires one recalibration; unrelated preferences
+  remain preserved.
+- A one-time release announcement explains Buttons-only and recalibration.
+- Buttons-only includes 30 built-in labels, eight custom icons, optional
+  snapping, persisted Customize settings, light/dark label styles, and
+  sequential `1024 x 1024` PNG export.
+- Mixed Controls + Buttons export remains outside v3.
+
+## Shared fixtures
+
+Prepare once:
+
+- Current production v1.0.0 installed on the S25+.
+- Fully expanded Quick Panel screenshots for Controls and Buttons.
+- A Controls screenshot with at least one supported panel missing.
+- A normal image and a detailed image with a long edge above 1080 pixels.
+- Good Lock and QuickStar installed and ready for real application.
+- A known/countable `Quick Panel Exports` album.
+
+Use these Button shapes in Journey 3:
+
+- `1x4`: Wi-Fi
+- `3x1`: Bluetooth
+- `1x1`: any built-in Button
+- `3x3`: Shazam or another corner-layout Button
+- one custom label with a generic icon
+
+## Automated and artifact preflight
+
+- [ ] `npm test -- --runInBand`, `npm run lint`, and `npx tsc --noEmit` pass.
+- [ ] `git diff --check` passes and the release diff contains only intended
+  changes.
+- [ ] `app.json` has the intended public version and a new Android version code.
+- [ ] The candidate uses package
+  `com.meh_chow.quickpanelbackgroundcropper`, without `.dev` or `.apk`.
+- [ ] Record the AAB SHA-256, upload it to Play testing, and install it from
+  Play. The installed version/code match the release record.
+- [ ] The installed app has the production name, signing, and Firebase config;
+  no development menu or Metro connection is required.
+
+## Journey 1: v2 upgrade -> announcement -> Default -> QuickStar
+
+**Target:** S25+  
+**Time:** about 15 minutes  
+**Covers:** update safety, migration boundary, announcement, language/help
+persistence, Default calibration, image gestures, export, and Good Lock.
+
+### Prepare v2
+
+- [ ] In production v1.0.0, select Traditional Chinese, open one helper sheet,
+  save Default and Advanced Controls calibrations, and complete an Advanced
+  export so the last-used mode is known.
+- [ ] Record the existing calibration choices and `Quick Panel Exports` album
+  count.
+
+### Upgrade and run Default
+
+- [ ] Update in place from the Play testing track without clearing app data.
+  Launch has no crash, blank screen, or storage error.
+- [ ] The v3 announcement appears once in Traditional Chinese, explains the new
+  workflow and recalibration, and closes without navigation when acknowledged.
+- [ ] Relaunch once: the announcement stays dismissed, Traditional Chinese and
+  seen-helper state remain, and Advanced remains the preselected main mode.
+- [ ] Choose Default. The old calibration is not silently reused; perform the
+  required new calibration with the green rectangle around the full Controls
+  union.
+- [ ] Confirm the saved crop matches the visible green rectangle exactly, with
+  no border offset, top-left compression, gap, or overlap.
+- [ ] Choose the large detailed image. Pan, pinch, lift one finger, continue
+  panning, add the second finger again, and reset position. There is no flash,
+  jump, empty panel area, or gesture discontinuity.
+- [ ] Export all four Controls. Result names/order are Button box, Brightness,
+  Volume, and Media player; the album receives the complete set.
+- [ ] Apply the set in QuickStar. Boundaries, image continuity, and perceived
+  result match the app preview.
+- [ ] Return to Default: it now reuses the new calibration. Confirm the older
+  Advanced Controls calibration is still treated according to the v3
+  recalibration boundary and no unrelated preference/media data was deleted.
+
+**Journey 1 result:** `[ ] Pass  [ ] Fail`
+
+## Journey 2: Advanced Controls subset -> grid modes -> persistence
+
+**Target:** S25+  
+**Time:** about 15 minutes  
+**Covers:** Advanced target navigation, panel subset, preview eye, grid edge
+cases, snapping/free movement, haptics, leave guard, independent storage, and
+subset export.
+
+- [ ] From Select Mode, choose Advanced -> Controls only. Both selection steps
+  remain visible and Back returns through them correctly.
+- [ ] Recalibrate using the screenshot with a missing Control. Confirm the outer
+  area, use the eye control to verify the exact crop, and disable the missing
+  panel.
+- [ ] Set a single-axis grid (`4 x 1` or `1 x 4`). Separator dots remain useful;
+  `1 x 1` shows no misleading dots.
+- [ ] With snapping on, move/resize a panel and confirm predictable snapping,
+  changed-target haptics, outer-bound constraints, and no release-time jump.
+- [ ] Turn snapping off. Dots disappear, grid controls disable, haptics stop,
+  movement becomes free, and boxes still cannot leave the outer area.
+- [ ] Turn snapping on again. Previous row/column values and behavior return.
+- [ ] After confirming the outer area, test header Back and Android Back: both
+  warn about unsaved work. Cancel keeps the draft; the footer Back changes phase
+  without showing the route-leave warning.
+- [ ] Complete panels in Button box, Brightness, Volume, Media player order,
+  with the disabled panel skipped. Active/completed states remain clear.
+- [ ] Save with snapping in a known state, force-close, relaunch, and return.
+  Calibration, subset, and snapping state persist independently from Default.
+- [ ] Choose an image and export. Only enabled Controls appear, in the correct
+  relative order, with geometry matching preview and QuickStar.
+- [ ] After success, Advanced and Controls-only are preselected but neither
+  visible selection step is automatically skipped.
+
+**Journey 2 result:** `[ ] Pass  [ ] Fail`
+
+## Journey 3: Advanced Buttons complete golden path
+
+**Target:** S25+  
+**Time:** about 25 minutes  
+**Covers:** Buttons catalog/search/custom labels, mixed geometry, snapping
+independence, continuous image composition, all Customize controls, persistence,
+sequential export, filenames, Result, and real QuickStar output.
+
+### Select and calibrate
+
+- [ ] Choose Advanced -> Buttons only and confirm an outer rectangle around the
+  Buttons region. The preview eye shows the exact region without changing it.
+- [ ] Confirm the catalog has 30 complete built-in rows. Search once in
+  Traditional Chinese and once by canonical English; both find the intended
+  built-in label.
+- [ ] Select the shared fixture Buttons. Count/chips update immediately,
+  built-ins are green, and selected order remains stable.
+- [ ] Try to continue with zero selected Buttons, then restore the fixture. The
+  warning blocks progress without losing state.
+- [ ] Add one custom label. The dialog offers Zap, Star, Sparkles, Circle,
+  Music, Gamepad, Globe, and Sliders; cancelling adds nothing, while confirming
+  creates an amber chip with the chosen icon.
+- [ ] Use the opposite snapping state from Journey 2 and confirm the two Advanced
+  targets retain independent grid preferences.
+- [ ] Align `1x4`, `3x1`, `1x1`, `3x3`, and custom boxes. All stay inside the
+  outer area; active boxes are blue, completed boxes orange, and review shows
+  every selected Button once in order.
+- [ ] Save, leave, and return. Buttons calibration is reused without changing
+  either Controls calibration.
+
+### Customize
+
+- [ ] Choose the large detailed image. Adjacent Buttons reveal one continuous
+  source composition and pan/pinch remains smooth across the full fixture.
+- [ ] On fresh settings, confirm `78%` image intensity, `70%` label intensity,
+  labels on, horizontal/vertical `50%`, and Light style.
+- [ ] Confirm Horiz. appears for `1xN`, Vert. for `Nx1`, and both use the shared
+  compact slider area with Image and Labels.
+- [ ] Change all six settings. Image intensity changes only artwork; label
+  intensity changes only identifiers; Light/Dark styles match their intended
+  circle/icon treatment.
+- [ ] Turn labels off while a label tab is active. Identifiers disappear, label
+  controls/style disable, and active adjustment returns to Image. Turn labels
+  on and confirm the previous values return.
+- [ ] Verify identifier layouts:
+  - `1xN`: icon + localized text, moved only by Horizontal;
+  - `Nx1`: centered icon, moved only by Vertical;
+  - `1x1`: centered icon, unaffected by position controls;
+  - other `NxM`: top-left icon and bottom-right text, unaffected by position
+    controls.
+- [ ] At position extremes, long labels remain inside visible Button bounds.
+  Glyph/circle/text size stays cell-relative across all fixture shapes.
+- [ ] Leave Customize, reopen it, then force-close/relaunch once. All six
+  Customize settings persist.
+
+### Export and apply
+
+- [ ] Export the fixture set. Progress stays responsive and every selected
+  Button produces exactly one valid `1024 x 1024` PNG.
+- [ ] Result order matches selection/Good Lock order. Cards show real localized
+  or custom labels, not raw IDs or translation keys.
+- [ ] Filenames use stable canonical labels. If two labels normalize to the same
+  filename, a suffix prevents overwrite.
+- [ ] Preview and files match for image placement, intensity, label
+  visibility/intensity, positions, and Light/Dark style.
+- [ ] Apply all files in QuickStar. Continuous image placement and identifier
+  sizing match the app preview and appear consistent with default Quick Panel
+  identifiers.
+- [ ] Return to Select Mode: Advanced and Buttons-only are preselected without
+  skipping either selection step.
+
+**Journey 3 result:** `[ ] Pass  [ ] Fail`
+
+## Journey 4: Recovery, interruption, and repeated use
+
+**Target:** S25+  
+**Time:** about 10 minutes  
+**Covers:** permission recovery, picker cancellation/activity recreation,
+offline use, backgrounding, export interruption, stale callbacks, repeated
+exports, and session stability.
+
+- [ ] Disable network access. Reopen a saved Buttons flow, select an image,
+  customize, and export successfully; core processing remains local.
+- [ ] Cancel the screenshot picker and background-image picker once. Each returns
+  to the same usable screen without losing prior state.
+- [ ] Deny media-library save permission. Export shows a localized recoverable
+  error, creates no partial final set, and does not navigate to false success.
+- [ ] Grant permission in Android settings and retry without clearing app data.
+  The complete export succeeds.
+- [ ] Background/foreground and lock/unlock during calibration and Customize.
+  Current route, box geometry, transform, and settings remain usable.
+- [ ] Background the app during export and return. It either completes correctly
+  or fails cleanly; an immediate retry cannot capture the wrong panel/run.
+- [ ] Change Android navigation mode or another activity-recreating setting,
+  then use the image picker. If Android invalidates its launcher, the app shows
+  localized restart guidance instead of crashing; relaunch restores picking.
+- [ ] Export the full Buttons fixture three times in the session. File counts,
+  order, content, and app responsiveness remain stable with no stuck loading or
+  worsening lag.
+- [ ] Confirm induced Crashlytics events contain no selected-image contents,
+  filenames, or local paths.
+
+**Journey 4 result:** `[ ] Pass  [ ] Fail`
+
+## Journey 5: Clean install -> first-run and presentation smoke
+
+**Target:** S25+  
+**Time:** about 10 minutes  
+**Covers:** clean startup, fresh defaults, announcement, theme/localization,
+helpers/reduced motion, accessibility smoke, and minimum end-to-end export.
+
+- [ ] After recording prior journeys, clear data/uninstall and install the same
+  Play candidate. Splash/startup has no blank or flashing frame.
+- [ ] The v3 announcement appears on first launch, closes without navigation,
+  and stays dismissed after restart.
+- [ ] Landing and Select Mode contain no stale calibration, mode, image, or
+  export state.
+- [ ] Switch English/Traditional Chinese and light/dark themes. Main screens,
+  dialogs, tabs, chips, and Result contain no raw keys, clipping, overlap, or
+  unreadable states.
+- [ ] With reduced motion enabled, helper attention is static. Opening one
+  helper marks only that context seen; sheets fit, scroll, and dismiss reliably.
+- [ ] With TalkBack, verify the primary navigation buttons, target choices,
+  switches, dialog action, and label-style toggle announce meaningful
+  roles/states.
+- [ ] At a practical larger font size, primary footer actions remain reachable
+  and the normal S25+ layout remains usable.
+- [ ] Complete a minimal one-Button Buttons-only calibration, Customize, export,
+  and Result flow. Fresh Customize defaults are correct and the PNG opens as
+  `1024 x 1024`.
+- [ ] Open Good Lock from Result. If unavailable, the fallback dialog and
+  Samsung Store action are understandable and functional.
+
+**Journey 5 result:** `[ ] Pass  [ ] Fail`
+
+## Journey 6: Z Fold7 responsive journey
+
+**Target:** Z Fold7, folded and unfolded in portrait  
+**Time:** about 15-20 minutes  
+**Covers:** wide-screen layout, coordinate alignment, bottom sheets, fixed
+footers, Customize sizing, Result fitting, fold-state recreation, and one real
+export. DeX/external displays are out of scope.
+
+- [ ] Launch folded, then inspect Landing, Select Mode, and Advanced target
+  selection. Content is centered/readable; Default and Advanced remain a usable
+  row; primary footers stay visible.
+- [ ] Open calibration helpers. Sheets fit and vertical scrolling works without
+  gesture conflict.
+- [ ] Complete an Advanced Buttons calibration folded using one horizontal and
+  one vertical Button. Screenshot, green rectangle, outer preview, grid, boxes,
+  and review share exact coordinates.
+- [ ] Customize folded. Preview sizes from the centered content column; pan,
+  pinch, sliders, and footer remain reachable.
+- [ ] Background the app, unfold, and return. Current route recovers without a
+  blank screen, shifted geometry, overlapping footer, or unexpected image jump.
+- [ ] Inspect the same Customize and Result screens unfolded. Content does not
+  stretch excessively or collide with hinge/cutout/system areas.
+- [ ] Export both Buttons. Files remain `1024 x 1024`, Result cards fit/scroll,
+  and QuickStar output matches preview.
+- [ ] Repeat the fold/unfold recreation around image picking. If Android
+  invalidates the picker launcher, restart guidance and relaunch recovery work.
+
+**Journey 6 result:** `[ ] Pass  [ ] Fail`
+
+## Targeted regression add-ons
+
+Run these only when the release touches the corresponding area.
+
+### Storage, migration, or startup announcement
+
+- [ ] Test both clean install and in-place update with old stored data.
+- [ ] Verify changed keys migrate/reset exactly as documented and unrelated keys
+  survive.
+- [ ] Verify the active announcement ID shows once for the intended audience.
+
+### Calibration geometry, gestures, or grid
+
+- [ ] Repeat small edge boxes, `1x1`, `1xN`, and `Nx1` grids with snapping on/off.
+- [ ] Compare the visible green outer rectangle with saved preview and export.
+- [ ] Cancel a move/resize gesture and confirm visible/stored geometry agree.
+
+### Customize gestures, image proxy, or identifiers
+
+- [ ] Repeat the large-image two-to-one finger transition sequence.
+- [ ] Compare all four identifier layout kinds at position extremes.
+- [ ] Compare preview against exported PNG and applied QuickStar result.
+
+### Export, files, permissions, or media library
+
+- [ ] Test one panel, the full fixture, denied permission, interrupted capture,
+  retry, filename collision, and existing album contents.
+- [ ] Confirm all-or-nothing Result/media behavior and exact PNG dimensions.
+
+### Localization, theme, or component styling
+
+- [ ] Run every changed screen in English/Traditional Chinese and light/dark.
+- [ ] Check larger font size, TalkBack roles/states, pressed/disabled states,
+  system bars, and fixed footer visibility.
+
+### Responsive layout
+
+- [ ] Run changed screens on S25+ plus Fold7 folded/unfolded.
+- [ ] Check screenshot/overlay coordinates, bottom sheets, Customize stage,
+  Result fitting, and fold-state recreation.
+
+## Final smoke and sign-off
+
+After any release-candidate fix, rerun the affected journey/add-on and then:
+
+- [ ] Cold-launch the exact Play-installed candidate.
+- [ ] Complete one saved S25+ Buttons-only image selection -> Customize ->
+  export -> Result path.
+- [ ] Open one exported PNG and confirm `1024 x 1024`.
+- [ ] Confirm no open crash, data-loss, geometry, export-integrity, or
+  blocked-flow defect remains.
+- [ ] Confirm the recorded AAB hash matches the Play artifact to be promoted.
+- [ ] Record the decision and accepted non-blocking issues.
+
+### Decision
+
+- `[ ] GO`
+- `[ ] NO-GO`
+- Approver/date: `________________`
+- Accepted non-blocking issues: `________________`
+- Follow-up owner/date: `________________`

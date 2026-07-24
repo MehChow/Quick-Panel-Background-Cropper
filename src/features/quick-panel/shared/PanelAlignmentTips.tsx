@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { useWindowDimensions, View } from "react-native";
 import { HelpSheetZoomImage } from "./HelpSheetZoomImage";
 import { getHelpSheetMediaLayout } from "./help-sheet-media-layout";
+import type { AdvancedTarget } from "../model/types";
 
 const panelAlignmentGoodAspectRatio = 1080 / 1291;
 const panelAlignmentBadAspectRatio = 1080 / 1293;
@@ -18,7 +19,11 @@ interface TipCardProps {
   source: number;
 }
 
-export function PanelAlignmentTips() {
+interface PanelAlignmentTipsProps {
+  target: AdvancedTarget;
+}
+
+export function PanelAlignmentTips({ target }: PanelAlignmentTipsProps) {
   const { t } = useTranslation();
   const { height, width } = useWindowDimensions();
   const layout = getHelpSheetMediaLayout(width, height);
@@ -32,7 +37,11 @@ export function PanelAlignmentTips() {
       <View className="flex-row">
         <TipCard
           aspectRatio={panelAlignmentGoodAspectRatio}
-          description={t("advancedCalibration.panelHelpGood")}
+          description={t(
+            target === "buttons"
+              ? "advancedCalibration.buttonPanelHelpGood"
+              : "advancedCalibration.panelHelpGood",
+          )}
           icon="check"
           iconColor="#16a34a"
           maxWidth={layout.panelExampleWidth}
@@ -40,7 +49,11 @@ export function PanelAlignmentTips() {
         />
         <TipCard
           aspectRatio={panelAlignmentBadAspectRatio}
-          description={t("advancedCalibration.panelHelpBad")}
+          description={t(
+            target === "buttons"
+              ? "advancedCalibration.buttonPanelHelpBad"
+              : "advancedCalibration.panelHelpBad",
+          )}
           icon="x"
           iconColor="#dc2626"
           maxWidth={layout.panelExampleWidth}

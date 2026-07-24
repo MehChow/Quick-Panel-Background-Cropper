@@ -3,12 +3,10 @@ const path = require("path");
 
 const mode = process.argv[2];
 const showVersionArg = process.argv[3];
-const incrementModes = new Set(["apk-bump", "internal", "beta"]);
-const supportedModes = new Set(["apk", ...incrementModes]);
 
-if (!supportedModes.has(mode)) {
+if (mode !== "apk") {
   console.error(
-    "Usage: node scripts/prepare-android-build.cjs <apk|apk-bump|internal|beta> <true|false>",
+    "Usage: node scripts/prepare-android-build.cjs apk <true|false>",
   );
   process.exit(1);
 }
@@ -74,10 +72,7 @@ if (!Number.isInteger(configVersionCode) || configVersionCode < 1) {
 
 const { content: gradleContent, versionCode: gradleVersionCode } =
   readGradleVersionCode(gradlePath);
-const currentVersionCode = Math.max(configVersionCode, gradleVersionCode);
-const nextVersionCode = incrementModes.has(mode)
-  ? currentVersionCode + 1
-  : currentVersionCode;
+const nextVersionCode = Math.max(configVersionCode, gradleVersionCode);
 const shouldShowBuildVersion = showVersionArg === "true";
 
 appJson.expo.android.versionCode = nextVersionCode;
@@ -90,7 +85,6 @@ const nextGradleContent = updateGradleVersionCode(
 fs.writeFileSync(gradlePath, nextGradleContent);
 writeBuildFlags(buildFlagsPath, shouldShowBuildVersion);
 
-const action = incrementModes.has(mode) ? "incremented" : "kept";
 console.log(
-  `[prepare-android-build] ${mode} build ${action} android versionCode at ${nextVersionCode}; show version: ${shouldShowBuildVersion}.`,
+  `[prepare-android-build] ${mode} build kept android versionCode at ${nextVersionCode}; show version: ${shouldShowBuildVersion}.`,
 );

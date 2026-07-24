@@ -1,28 +1,32 @@
 import { createExportSurfaceReadiness } from "@/features/quick-panel/customize/export-surface-readiness";
 
 describe("createExportSurfaceReadiness", () => {
-  it("only reports ready after every expected panel loads", () => {
-    const readiness = createExportSurfaceReadiness([
-      "buttonBox",
-      "mediaPlayer",
-      "brightness",
-      "volume",
-    ]);
+  it("reports ready when an image-only surface loads", () => {
+    const readiness = createExportSurfaceReadiness(false);
 
-    expect(readiness.markLoaded("buttonBox")).toBe(false);
-    expect(readiness.markLoaded("mediaPlayer")).toBe(false);
-    expect(readiness.markLoaded("brightness")).toBe(false);
-    expect(readiness.markLoaded("volume")).toBe(true);
+    expect(readiness.markIdentifierReady()).toBe(false);
+    expect(readiness.markImageLoaded()).toBe(true);
   });
 
-  it("ignores duplicate load events", () => {
-    const readiness = createExportSurfaceReadiness([
-      "buttonBox",
-      "mediaPlayer",
-    ]);
+  it("waits for a visible horizontal identifier measurement", () => {
+    const readiness = createExportSurfaceReadiness(true);
 
-    expect(readiness.markLoaded("buttonBox")).toBe(false);
-    expect(readiness.markLoaded("buttonBox")).toBe(false);
-    expect(readiness.markLoaded("mediaPlayer")).toBe(true);
+    expect(readiness.markImageLoaded()).toBe(false);
+    expect(readiness.markIdentifierReady()).toBe(true);
+  });
+
+  it("waits for the image when the identifier arrives first", () => {
+    const readiness = createExportSurfaceReadiness(true);
+
+    expect(readiness.markIdentifierReady()).toBe(false);
+    expect(readiness.markImageLoaded()).toBe(true);
+  });
+
+  it("keeps duplicate events idempotent", () => {
+    const readiness = createExportSurfaceReadiness(true);
+
+    expect(readiness.markImageLoaded()).toBe(false);
+    expect(readiness.markImageLoaded()).toBe(false);
+    expect(readiness.markIdentifierReady()).toBe(true);
   });
 });

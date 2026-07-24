@@ -3,6 +3,7 @@ import type { HandlePosition } from "../shared/calibration-rect";
 import { getResizeEdges } from "./advanced-resize-edges";
 
 export function clampPanelRect(rect: PanelRect, outer: PanelRect): PanelRect {
+  "worklet";
   const minSize = Math.min(outer.width, outer.height) * 0.05;
   const width = Math.max(minSize, Math.min(outer.width, rect.width));
   const height = Math.max(minSize, Math.min(outer.height, rect.height));
@@ -21,6 +22,7 @@ export function clampResizedPanelRect(
   outer: PanelRect,
   position: HandlePosition,
 ): PanelRect {
+  "worklet";
   const minSize = Math.min(outer.width, outer.height) * 0.05;
   const edges = getResizeEdges(position);
   let left = rect.x;

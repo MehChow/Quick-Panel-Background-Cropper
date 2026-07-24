@@ -4,6 +4,7 @@ import * as ReactNative from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { CalibrationHelpSheet } from "@/features/quick-panel/shared/CalibrationHelpSheet";
 import { AdvancedGridSheet } from "@/features/quick-panel/calibration/advanced/AdvancedGridSheet";
+import { PanelAlignmentHelpSheet } from "@/features/quick-panel/shared/PanelAlignmentHelpSheet";
 
 const mockBottomSheet = jest.fn();
 const mockBottomSheetScrollView = jest.fn();
@@ -105,7 +106,9 @@ describe("help sheet sizing", () => {
   });
 
   it("uses content-fit sizing for the row and column help sheet", () => {
-    renderWithSafeArea(<AdvancedGridSheet onClose={jest.fn()} />);
+    renderWithSafeArea(
+      <AdvancedGridSheet onClose={jest.fn()} target="controls" />,
+    );
 
     expect(mockBottomSheet).toHaveBeenCalledTimes(1);
     const props = mockBottomSheet.mock.calls[0]?.[0];
@@ -113,6 +116,42 @@ describe("help sheet sizing", () => {
     expect(props?.enableDynamicSizing).toBe(true);
     expect(props?.maxDynamicContentSize).toBe(720);
     expect(props?.snapPoints).toBeUndefined();
+  });
+
+  it("uses Button-specific grid guidance for the Buttons target", () => {
+    const ButtonsGridSheet = AdvancedGridSheet as React.ComponentType<{
+      onClose: () => void;
+      target: "buttons";
+    }>;
+
+    renderWithSafeArea(
+      <ButtonsGridSheet onClose={jest.fn()} target="buttons" />,
+    );
+
+    expect(
+      screen.getByText("advancedCalibration.buttonGridSheetSubtitle"),
+    ).toBeTruthy();
+  });
+
+  it("uses Button-specific panel guidance for the Buttons target", () => {
+    const ButtonsPanelHelpSheet = PanelAlignmentHelpSheet as React.ComponentType<{
+      onClose: () => void;
+      target: "buttons";
+    }>;
+
+    renderWithSafeArea(
+      <ButtonsPanelHelpSheet onClose={jest.fn()} target="buttons" />,
+    );
+
+    expect(
+      screen.getByText("advancedCalibration.buttonPanelHelpBody"),
+    ).toBeTruthy();
+    expect(
+      screen.getByText("advancedCalibration.buttonPanelHelpGood"),
+    ).toBeTruthy();
+    expect(
+      screen.getByText("advancedCalibration.buttonPanelHelpBad"),
+    ).toBeTruthy();
   });
 });
 

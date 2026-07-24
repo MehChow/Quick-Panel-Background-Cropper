@@ -13,5 +13,6 @@ const resizeEdgesByHandle: Record<HandlePosition, SnapEdge[]> = {
 };
 
 export function getResizeEdges(position: HandlePosition) {
+  "worklet";
   return resizeEdgesByHandle[position];
 }

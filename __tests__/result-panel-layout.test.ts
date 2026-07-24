@@ -9,6 +9,8 @@ describe("getResultPanelLayout", () => {
       }),
     ).toEqual({
       cardMaxWidth: 436,
+      exportGridIndicatorInset: 11,
+      exportGridViewportHeight: 440,
       gridMaxWidth: 388,
       isCompact: true,
     });
@@ -22,6 +24,8 @@ describe("getResultPanelLayout", () => {
       }),
     ).toEqual({
       cardMaxWidth: 322,
+      exportGridIndicatorInset: 8,
+      exportGridViewportHeight: 333,
       gridMaxWidth: 274,
       isCompact: true,
     });
@@ -35,8 +39,19 @@ describe("getResultPanelLayout", () => {
       }),
     ).toEqual({
       cardMaxWidth: 336,
+      exportGridIndicatorInset: 8,
+      exportGridViewportHeight: 346,
       gridMaxWidth: 288,
       isCompact: true,
     });
+  });
+
+  it("provides a viewport height for four exported images", () => {
+    expect(
+      getResultPanelLayout({
+        availableHeight: 700,
+        availableWidth: 460,
+      }).exportGridViewportHeight,
+    ).toBe(440);
   });
 });

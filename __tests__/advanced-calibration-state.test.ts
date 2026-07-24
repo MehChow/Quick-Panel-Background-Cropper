@@ -1,14 +1,17 @@
-import { getCalibrationFromDraft } from "@/features/quick-panel/store/advanced-calibration-state";
+import {
+  getButtonsCalibrationFromDraft,
+  getCalibrationFromDraft,
+} from "@/features/quick-panel/store/advanced-calibration-state";
 import type {
   AdvancedCalibrationDraft,
   AdvancedSnapGrid,
-  PanelRects,
+  ControlPanelRects,
 } from "@/features/quick-panel/model/types";
 import { visualOrder } from "@/features/quick-panel/model/preset";
 
 const grid: AdvancedSnapGrid = { columns: 4, rows: 5 };
 
-function createPanels(): PanelRects {
+function createPanels(): ControlPanelRects {
   return {
     mediaPlayer: {
       x: 0,
@@ -41,7 +44,7 @@ function createPanels(): PanelRects {
   };
 }
 
-function createDraft(panels: PanelRects): AdvancedCalibrationDraft {
+function createDraft(panels: ControlPanelRects): AdvancedCalibrationDraft {
   return {
     screenshot: {
       uri: "file:///screenshot.png",
@@ -66,8 +69,55 @@ describe("getCalibrationFromDraft", () => {
     panels.buttonBox.width = 180.0000004;
     panels.volume.width = 180.0000004;
 
-    const result = getCalibrationFromDraft(createDraft(panels), grid);
+    const result = getCalibrationFromDraft(createDraft(panels), grid, true);
 
     expect(result).not.toBeNull();
+  });
+
+  it("requires at least one valid button", () => {
+    const empty = getButtonsCalibrationFromDraft({
+      screenshot: { uri: "file:///screenshot.png", width: 100, height: 100 },
+      outerRect: { x: 0, y: 0, width: 100, height: 100, radius: 0 },
+      buttons: [],
+    }, grid, true);
+    const valid = getButtonsCalibrationFromDraft({
+      screenshot: { uri: "file:///screenshot.png", width: 100, height: 100 },
+      outerRect: { x: 0, y: 0, width: 100, height: 100, radius: 0 },
+      buttons: [
+        { id: "button-1", label: "Wi-Fi", customIconId: null, rect: { x: 0, y: 0, width: 40, height: 40, radius: 0 } },
+      ],
+    }, grid, true);
+
+    expect(empty).toBeNull();
+    expect(valid?.buttons).toHaveLength(1);
+  });
+
+  it("stores the Controls snapping preference", () => {
+    const result = getCalibrationFromDraft(
+      createDraft(createPanels()),
+      grid,
+      false,
+    );
+
+    expect(result?.isGridEnabled).toBe(false);
+    expect(result?.grid).toEqual(grid);
+  });
+
+  it("stores the Buttons snapping preference", () => {
+    const result = getButtonsCalibrationFromDraft({
+      screenshot: { uri: "file:///screenshot.png", width: 100, height: 100 },
+      outerRect: { x: 0, y: 0, width: 100, height: 100, radius: 0 },
+      buttons: [
+        {
+          id: "button-1",
+          label: "Wi-Fi",
+          customIconId: null,
+          rect: { x: 0, y: 0, width: 40, height: 40, radius: 0 },
+        },
+      ],
+    }, grid, false);
+
+    expect(result?.isGridEnabled).toBe(false);
+    expect(result?.grid).toEqual(grid);
   });
 });

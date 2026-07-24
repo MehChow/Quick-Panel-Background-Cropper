@@ -19,11 +19,74 @@ export interface SnapValueResult {
   value: number;
 }
 
+function getOriginCandidate(value: number, axis: SnapAxis) {
+  "worklet";
+  let bestCandidate: number | null = null;
+  let bestDistance = axis.captureThreshold + 1;
+
+  for (const candidate of axis.candidates) {
+    const distance = Math.abs(candidate - value);
+    if (distance <= axis.captureThreshold && distance < bestDistance) {
+      bestCandidate = candidate;
+      bestDistance = distance;
+    }
+  }
+
+  return bestCandidate;
+}
+
+function getNearestCandidate(
+  value: number,
+  originValue: number,
+  axis: SnapAxis,
+) {
+  "worklet";
+  const originCandidate = getOriginCandidate(originValue, axis);
+  let bestCandidate: number | null = null;
+  let bestDistance = axis.captureThreshold + 1;
+
+  for (const line of axis.candidates) {
+    if (
+      originCandidate !== null &&
+      Math.abs(line - originCandidate) < 0.01 &&
+      Math.abs(value - originCandidate) > axis.releaseThreshold
+    ) {
+      continue;
+    }
+    const offset = line - value;
+    const distance = Math.abs(offset);
+    if (distance <= axis.captureThreshold && distance < bestDistance) {
+      bestCandidate = line;
+      bestDistance = distance;
+    }
+  }
+
+  return bestCandidate;
+}
+
+function getNearestMatch(
+  value: number,
+  originValue: number,
+  axis: SnapAxis,
+  edge: SnapEdge,
+): SnapMatch | null {
+  "worklet";
+  const candidate = getNearestCandidate(value, originValue, axis);
+  return candidate === null
+    ? null
+    : {
+        edge,
+        offset: candidate - value,
+        value: candidate,
+      };
+}
+
 export function createSnapAxis(
   start: number,
   length: number,
   segments: number,
 ): SnapAxis {
+  "worklet";
   const step = length / segments;
   const gap = Math.max(4, Math.min(12, step * 0.12));
   const gapOffset = gap / 2;
@@ -55,6 +118,7 @@ export function getBestMoveMatch(
   startEdge: SnapEdge,
   endEdge: SnapEdge,
 ): SnapMatch | null {
+  "worklet";
   const startMatch = getNearestMatch(start, startOrigin, axis, startEdge);
   const endMatch = getNearestMatch(end, endOrigin, axis, endEdge);
 
@@ -75,6 +139,7 @@ export function maybeSnap(
   axis: SnapAxis,
   edge: SnapEdge,
 ): SnapValueResult {
+  "worklet";
   const candidate = getNearestCandidate(value, originValue, axis);
   return {
     match:
@@ -87,63 +152,4 @@ export function maybeSnap(
           },
     value: candidate ?? value,
   };
-}
-
-function getNearestMatch(
-  value: number,
-  originValue: number,
-  axis: SnapAxis,
-  edge: SnapEdge,
-): SnapMatch | null {
-  const candidate = getNearestCandidate(value, originValue, axis);
-  return candidate === null
-    ? null
-    : {
-        edge,
-        offset: candidate - value,
-        value: candidate,
-      };
-}
-
-function getNearestCandidate(
-  value: number,
-  originValue: number,
-  axis: SnapAxis,
-) {
-  const originCandidate = getOriginCandidate(originValue, axis);
-  let bestCandidate: number | null = null;
-  let bestDistance = axis.captureThreshold + 1;
-
-  for (const line of axis.candidates) {
-    if (
-      originCandidate !== null &&
-      Math.abs(line - originCandidate) < 0.01 &&
-      Math.abs(value - originCandidate) > axis.releaseThreshold
-    ) {
-      continue;
-    }
-    const offset = line - value;
-    const distance = Math.abs(offset);
-    if (distance <= axis.captureThreshold && distance < bestDistance) {
-      bestCandidate = line;
-      bestDistance = distance;
-    }
-  }
-
-  return bestCandidate;
-}
-
-function getOriginCandidate(value: number, axis: SnapAxis) {
-  let bestCandidate: number | null = null;
-  let bestDistance = axis.captureThreshold + 1;
-
-  for (const candidate of axis.candidates) {
-    const distance = Math.abs(candidate - value);
-    if (distance <= axis.captureThreshold && distance < bestDistance) {
-      bestCandidate = candidate;
-      bestDistance = distance;
-    }
-  }
-
-  return bestCandidate;
 }

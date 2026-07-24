@@ -17,7 +17,12 @@ const tasks = {
     },
     {
       command: npxCommand,
-      args: ["expo", "run:android"],
+      args: [
+        "expo",
+        "run:android",
+        "--app-id",
+        "com.meh_chow.quickpanelbackgroundcropper.dev",
+      ],
       env: { APP_VARIANT: "dev" },
     },
   ],
@@ -40,27 +45,6 @@ const tasks = {
       args: ["app:assembleRelease"],
       cwd: androidDir,
       env: { APP_VARIANT: "apk" },
-    },
-  ],
-  beta: [
-    {
-      command: process.execPath,
-      args: ["./scripts/prepare-android-build.cjs", "beta", "true"],
-    },
-    {
-      command: npxCommand,
-      args: ["expo", "prebuild", "--platform", "android"],
-      env: { APP_VARIANT: "beta" },
-    },
-    {
-      command: process.execPath,
-      args: ["./scripts/configure-android-release-signing.cjs"],
-    },
-    {
-      command: gradleCommand,
-      args: ["app:bundleRelease"],
-      cwd: androidDir,
-      env: { APP_VARIANT: "beta" },
     },
   ],
 };
@@ -86,7 +70,7 @@ function runStep(step) {
 }
 
 if (!tasks[mode]) {
-  console.error("Usage: node scripts/run-android-task.cjs <dev|apk|beta>");
+  console.error("Usage: node scripts/run-android-task.cjs <dev|apk>");
   process.exit(1);
 }
 

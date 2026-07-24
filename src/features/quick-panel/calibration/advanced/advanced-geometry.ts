@@ -4,33 +4,46 @@ import { goodLockOrder, visualOrder } from "../../model/preset";
 import { getPanelLabel, translate } from "../../model/i18n";
 import type {
   AdvancedCalibration,
-  PanelId,
+  ControlPanelId,
+  ControlPanelRects,
   PanelRect,
   PanelRects,
   QuickPanelPreset,
 } from "../../model/types";
 
-export function getInitialAdvancedPanels(outerRect: PanelRect): PanelRects {
+export function getInitialAdvancedPanels(outerRect: PanelRect): ControlPanelRects {
   const preset = getCalibratedPreset(outerRect);
   return mapPanelRects(preset);
 }
 
 export function scalePanelsToOuter(
-  panels: PanelRects,
+  panels: Record<string, PanelRect>,
   sourceOuter: PanelRect,
   targetOuter: PanelRect,
 ): PanelRects {
   const scaleX = targetOuter.width / sourceOuter.width;
   const scaleY = targetOuter.height / sourceOuter.height;
 
+  return Object.fromEntries(Object.entries(panels).map(([id, rect]) => [id, {
+    x: targetOuter.x + (rect.x - sourceOuter.x) * scaleX,
+    y: targetOuter.y + (rect.y - sourceOuter.y) * scaleY,
+    width: rect.width * scaleX,
+    height: rect.height * scaleY,
+    radius: 0,
+  }]));
+}
+
+export function scaleControlPanelsToOuter(
+  panels: ControlPanelRects,
+  sourceOuter: PanelRect,
+  targetOuter: PanelRect,
+): ControlPanelRects {
+  const scaled = scalePanelsToOuter(panels, sourceOuter, targetOuter);
   return mapPanels((id) => {
     const rect = panels[id];
     return {
-      x: targetOuter.x + (rect.x - sourceOuter.x) * scaleX,
-      y: targetOuter.y + (rect.y - sourceOuter.y) * scaleY,
-      width: rect.width * scaleX,
-      height: rect.height * scaleY,
-      radius: 0,
+      ...scaled[id],
+      radius: rect.radius,
     };
   });
 }
@@ -64,11 +77,12 @@ export function createAdvancedPreset(
   };
 }
 
-export function getPanelRectUnion(panels: PanelRects): PanelRect {
+export function getPanelRectUnion(panels: ControlPanelRects): PanelRect {
   return getPanelUnion(createAdvancedPreset({
     screenshotHeight: 1,
     screenshotWidth: 1,
     grid: { columns: 4, rows: 5 },
+    isGridEnabled: true,
     outerRect: { x: 0, y: 0, width: 1, height: 1, radius: 0 },
     enabledPanels: visualOrder,
     panels,
@@ -76,8 +90,8 @@ export function getPanelRectUnion(panels: PanelRects): PanelRect {
 }
 
 export function hasOverlappingPanels(
-  panels: PanelRects,
-  enabledPanels: PanelId[],
+  panels: Record<string, PanelRect>,
+  enabledPanels: string[],
 ): boolean {
   return enabledPanels.some((id, index) =>
     enabledPanels.slice(index + 1).some((otherId) =>
@@ -87,9 +101,9 @@ export function hasOverlappingPanels(
 }
 
 export function arePanelsValid(
-  panels: PanelRects,
+  panels: Record<string, PanelRect>,
   outerRect: PanelRect,
-  enabledPanels: PanelId[],
+  enabledPanels: string[],
 ) {
   return enabledPanels.length > 0 &&
     enabledPanels.every((id) => isRectInside(panels[id], outerRect)) &&
@@ -119,11 +133,11 @@ function isRectInside(rect: PanelRect, outer: PanelRect) {
   );
 }
 
-function mapPanelRects(preset: QuickPanelPreset): PanelRects {
+function mapPanelRects(preset: QuickPanelPreset): ControlPanelRects {
   return mapPanels((id) => ({ ...preset.panels[id].rect, radius: 0 }));
 }
 
-function mapPanels<T>(create: (id: PanelId) => T): Record<PanelId, T> {
+function mapPanels<T>(create: (id: ControlPanelId) => T): Record<ControlPanelId, T> {
   return {
     buttonBox: create("buttonBox"),
     brightness: create("brightness"),

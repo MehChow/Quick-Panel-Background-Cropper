@@ -55,12 +55,11 @@ describe("normalizeCustomizeImage", () => {
         uri: "file:///original.jpg",
         width: 1536,
       },
-      noticeKey: null,
     });
     expect(mockManipulate).not.toHaveBeenCalled();
   });
 
-  it("optimizes large images locally and reports a notice", async () => {
+  it("optimizes large images locally without changing the user-facing flow", async () => {
     const result = await normalizeCustomizeImage({
       fileName: "wallpaper.jpg",
       fileSize: 9_000_000,
@@ -89,7 +88,6 @@ describe("normalizeCustomizeImage", () => {
         wasOptimized: true,
         width: 2048,
       },
-      noticeKey: "customize.imageOptimized",
     });
   });
 

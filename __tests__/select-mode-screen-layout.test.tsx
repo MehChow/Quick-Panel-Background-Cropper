@@ -46,8 +46,10 @@ jest.mock("@/features/quick-panel/select-mode/ModeOptionCard", () => ({
 
 jest.mock("@/features/quick-panel/store/quick-panel-store", () => ({
   useQuickPanelStore: () => ({
+    lastExportedAdvancedTarget: null,
     lastExportedMode: null,
     selectMode: jest.fn(),
+    selectAdvancedTarget: jest.fn(),
   }),
 }));
 

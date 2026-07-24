@@ -1,16 +1,13 @@
-import type { PanelId } from "../../model/types";
+import type { ControlPanelId, PanelId } from "../../model/types";
 
 export type AdvancedCalibrationPhase =
   | "outer"
   | "panelSelection"
   | "grid"
-  | "buttonBox"
-  | "brightness"
-  | "volume"
-  | "mediaPlayer"
+  | PanelId
   | "confirm";
 
-export const advancedPanelPhases: PanelId[] = [
+export const advancedPanelPhases: ControlPanelId[] = [
   "buttonBox",
   "brightness",
   "volume",
@@ -20,7 +17,8 @@ export const advancedPanelPhases: PanelId[] = [
 export function isPanelPhase(
   phase: AdvancedCalibrationPhase,
 ): phase is PanelId {
-  return advancedPanelPhases.includes(phase as PanelId);
+  return typeof phase === "string" &&
+    !["outer", "panelSelection", "grid", "confirm"].includes(phase);
 }
 
 export function getNextPhase(
@@ -58,8 +56,8 @@ export function getVisiblePanelIds(
 export function getPhaseOrder(
   enabledPanels: PanelId[],
 ): AdvancedCalibrationPhase[] {
-  const panelPhases = advancedPanelPhases.filter((id) =>
-    enabledPanels.includes(id),
-  );
+  const panelPhases = enabledPanels.every((id) => advancedPanelPhases.includes(id as ControlPanelId))
+    ? advancedPanelPhases.filter((id) => enabledPanels.includes(id))
+    : enabledPanels;
   return ["outer", "panelSelection", "grid", ...panelPhases, "confirm"];
 }

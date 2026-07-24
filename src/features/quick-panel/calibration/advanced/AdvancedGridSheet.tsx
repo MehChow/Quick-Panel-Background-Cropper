@@ -6,12 +6,14 @@ import { useWindowDimensions, View } from "react-native";
 import { HelpSheetZoomImage } from "@/features/quick-panel/shared/HelpSheetZoomImage";
 import { getHelpSheetMediaLayout } from "@/features/quick-panel/shared/help-sheet-media-layout";
 import { useBottomSheetInsets } from "@/features/quick-panel/shared/useBottomSheetInsets";
+import type { AdvancedTarget } from "../../model/types";
 
 interface Props {
   onClose: () => void;
+  target: AdvancedTarget;
 }
 
-export function AdvancedGridSheet({ onClose }: Props) {
+export function AdvancedGridSheet({ onClose, target }: Props) {
   const { i18n, t } = useTranslation();
   const { height, width } = useWindowDimensions();
   const layout = getHelpSheetMediaLayout(width, height);
@@ -65,7 +67,11 @@ export function AdvancedGridSheet({ onClose }: Props) {
               {t("advancedCalibration.gridSheetTitle")}
             </Text>
             <Text className="text-sm leading-6 text-zinc-300">
-              {t("advancedCalibration.gridSheetSubtitle")}
+              {t(
+                target === "buttons"
+                  ? "advancedCalibration.buttonGridSheetSubtitle"
+                  : "advancedCalibration.gridSheetSubtitle",
+              )}
             </Text>
           </View>
 

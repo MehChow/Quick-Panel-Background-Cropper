@@ -109,6 +109,7 @@ export function ModeOptionCard({
               decelerationRate="fast"
               disableIntervalMomentum
               keyExtractor={(_, index) => `${index}`}
+              scrollEnabled={isSelected}
               snapToAlignment="start"
               snapToInterval={carouselWidth || undefined}
               showsHorizontalScrollIndicator={false}

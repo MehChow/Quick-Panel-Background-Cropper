@@ -35,7 +35,7 @@ export function AlertDialogHeader({ className, ...props }: React.ComponentPropsW
 }
 
 export function AlertDialogTitle({ className, ...props }: React.ComponentPropsWithoutRef<typeof Text> & { className?: string }) {
-  return <Text className={cn("text-lg font-semibold text-card-foreground", className)} {...props} />;
+  return <Text className={cn("text-lg font-semibold text-white", className)} {...props} />;
 }
 
 export function AlertDialogDescription({ className, ...props }: React.ComponentPropsWithoutRef<typeof Text> & { className?: string }) {
