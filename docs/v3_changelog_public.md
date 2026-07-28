@@ -38,8 +38,9 @@ settings are remembered for the next time you use the app.
 - Advanced now has separate **Controls only** and **Buttons only** targets.
 - Each target keeps its own saved calibration.
 - You can preview the screenshot area you selected before aligning panels.
-- The snapping grid can be turned off for free movement and resizing, and the
-  choice is remembered separately for Controls and Buttons.
+- The snapping grid remains active while aligning Controls and Buttons so panel
+  boxes and Button layout sizing consistently follow the selected rows and
+  columns.
 - The app remembers your last successfully exported mode and Advanced target.
 
 ## Smoother preview and export

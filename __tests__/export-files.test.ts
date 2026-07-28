@@ -187,7 +187,6 @@ describe("export files", () => {
         screenshotWidth: 100,
         screenshotHeight: 100,
         grid: { columns: 1, rows: 1 },
-        isGridEnabled: true,
         outerRect: { x: 0, y: 0, width: 100, height: 50, radius: 0 },
         buttons: [{
           id: "button-1",
@@ -217,7 +216,6 @@ describe("export files", () => {
       screenshotWidth: 100,
       screenshotHeight: 100,
       grid: { columns: 2, rows: 1 },
-      isGridEnabled: true,
       outerRect: { x: 0, y: 0, width: 100, height: 50, radius: 0 },
       buttons: [
         { id: "button-1", label: "Wi-Fi", customIconId: null, rect: { x: 0, y: 0, width: 40, height: 40, radius: 0 } },

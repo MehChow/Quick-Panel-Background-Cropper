@@ -50,9 +50,10 @@ Buttons-only adds an end-to-end path matching the established app flow:
 8. Customize Button image and identifier appearance.
 9. Export one square PNG for every selected Button in the shown order.
 
-Buttons are screenshot-driven, user-sized rectangles. They are not restricted
-to preset shapes, and the app does not attempt to read Samsung's active Quick
-Settings Button list through unsupported APIs.
+Buttons are screenshot-driven, grid-aligned rectangles. Their row and column
+spans come from the configured grid, which keeps supported Button sizing and
+Customize identifier layout consistent. The app does not attempt to read
+Samsung's active Quick Settings Button list through unsupported APIs.
 
 ## Button selection and labels
 
@@ -80,14 +81,12 @@ Settings Button list through unsupported APIs.
   data.
 - Buttons use blue boxes while being edited and orange boxes after completion,
   matching the established Advanced review semantics.
-- Snapping can now be disabled in Advanced Controls or Advanced Buttons.
-  Turning it off hides the grid, disables grid-size controls and snap haptics,
-  and allows free movement and resizing while keeping every box inside the
+- The snapping grid is required in Advanced Controls and Advanced Buttons. Row
+  and column controls remain available, every editable box snaps to the
+  configured grid with haptic feedback, and boxes remain constrained to the
   confirmed outer area.
-- The previous row and column values are retained when snapping is turned off,
-  then restored when it is enabled again.
-- Grid-enabled state is saved independently for Advanced Controls and Advanced
-  Buttons. Existing saved payloads without the flag default to enabled.
+- Controls and Buttons retain independent grid counts with their separate saved
+  calibrations.
 
 ## Buttons Customize controls
 
@@ -211,8 +210,7 @@ redirect.
 The recalibration boundary does not clear unrelated preferences. Existing
 language and seen-help state remain intact, as does the last successfully
 exported main mode. v3 adds independent persistence for the last Advanced
-target, each target's snapping-grid choice, custom Button icons, and Buttons
-Customize settings.
+target, custom Button icons, and Buttons Customize settings.
 
 After users create the new calibrations and settings, they are expected to
 survive normal future app updates.
