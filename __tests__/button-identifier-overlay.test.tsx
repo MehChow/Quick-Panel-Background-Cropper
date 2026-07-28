@@ -112,6 +112,37 @@ describe("ButtonIdentifierOverlay", () => {
     expect(screen.getByTestId("mock-lucide").props.color).toBe("#000000");
   });
 
+  it.each([
+    ["light", "#FFFFFF"],
+    ["dark", "#666666"],
+  ] as const)(
+    "keeps the %s label on its fixed theme when the glyph color changes",
+    (backgroundTheme, expectedLabelColor) => {
+      const screen = render(
+        <ButtonIdentifierOverlay
+          backgroundTheme={backgroundTheme}
+          bounds={bounds}
+          color="#E3FFF6"
+          identifier={{
+            columnSpan: 4,
+            rowSpan: 1,
+            iconName: "wifi",
+            referenceCellSize: 50,
+          }}
+          label="Wi-Fi"
+          opacity={0.7}
+          positions={{ horizontal: 0.5, vertical: 0.5 }}
+          referenceCellSize={50}
+        />,
+      );
+
+      expect(screen.getByTestId("mock-lucide").props.color).toBe("#E3FFF6");
+      expect(StyleSheet.flatten(
+        screen.getByTestId("button-identifier-label").props.style,
+      )).toMatchObject({ color: expectedLabelColor });
+    },
+  );
+
   it("moves a one-column icon while preserving horizontal centering", () => {
     const screen = renderOverlay(1, 3, { horizontal: 0.5, vertical: 1 });
     const contentStyle = StyleSheet.flatten(

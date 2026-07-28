@@ -26,7 +26,9 @@ export function AnimatedButtonIdentifierVisuals({
   const circleStyle = useAnimatedStyle(() => ({
     backgroundColor: appearance.circleColor.get(),
   }));
-  const labelStyle = useAnimatedStyle(() => ({ color: appearance.color.get() }));
+  const labelStyle = useAnimatedStyle(() => ({
+    color: appearance.circleColor.get(),
+  }));
   return (
     <>
       <Animated.View
