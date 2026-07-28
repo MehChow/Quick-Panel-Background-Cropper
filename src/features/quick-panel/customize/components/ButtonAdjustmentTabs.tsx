@@ -11,12 +11,10 @@ import {
 } from "./ButtonAdjustmentSlider";
 
 interface ButtonAdjustmentTabsProps {
-  buttonIdentifierOpacity: number;
   buttonPanelOpacity: number;
   hasHorizontalButtons: boolean;
   hasVerticalButtons: boolean;
   horizontalIdentifierPosition: number;
-  onButtonIdentifierOpacityChange: (value: number) => void;
   onButtonPanelOpacityChange: (value: number) => void;
   onHorizontalIdentifierPositionChange: (value: number) => void;
   onVerticalIdentifierPositionChange: (value: number) => void;
@@ -38,17 +36,6 @@ export function ButtonAdjustmentTabs(props: ButtonAdjustmentTabsProps) {
       tabTestID: "button-adjustment-image-tab",
       value: props.buttonPanelOpacity,
       valueKey: "image",
-    },
-    {
-      accessibilityLabel: t("customize.buttonIdentifierOpacity"),
-      disabled: identifierDisabled,
-      label: t("customize.buttonIdentifierOpacity"),
-      onValueChange: props.onButtonIdentifierOpacityChange,
-      sliderTestID: "button-identifier-opacity-slider",
-      tabLabel: t("customize.buttonAdjustmentIdentifierTab"),
-      tabTestID: "button-adjustment-identifier-tab",
-      value: props.buttonIdentifierOpacity,
-      valueKey: "identifier",
     },
   ];
 

@@ -40,9 +40,20 @@ describe("customize locale strings", () => {
       "Vertical label position",
     );
     expect(enLocale.translation.customize.buttonAdjustmentImageTab).toBe("Image");
-    expect(enLocale.translation.customize.buttonAdjustmentIdentifierTab).toBe(
-      "Labels",
+    expect(enLocale.translation.customize.buttonIdentifierAppearance).toBeTruthy();
+    expect(enLocale.translation.customize.chooseButtonIdentifierColor).toBeTruthy();
+    expect(enLocale.translation.customize.buttonIdentifierIntensity).toBe(
+      "Intensity",
     );
+    expect(enLocale.translation.customize.buttonIdentifierBackgroundLight).toBe(
+      "Light",
+    );
+    expect(enLocale.translation.customize.buttonIdentifierBackgroundDark).toBe(
+      "Dark",
+    );
+    expect(
+      enLocale.translation.customize.buttonIdentifierBackgroundThemeChoice,
+    ).toBeTruthy();
     expect(enLocale.translation.customize.buttonAdjustmentHorizontalTab).toBe(
       "Horiz.",
     );
@@ -56,9 +67,18 @@ describe("customize locale strings", () => {
     expect(zhLocale.translation.customize.horizontalIdentifierPosition).toBeTruthy();
     expect(zhLocale.translation.customize.verticalIdentifierPosition).toBeTruthy();
     expect(zhLocale.translation.customize.buttonAdjustmentImageTab).toBe("圖片");
-    expect(zhLocale.translation.customize.buttonAdjustmentIdentifierTab).toBe(
-      "標籤",
-    );
+    expect(zhLocale.translation.customize.buttonIdentifierAppearance).toBeTruthy();
+    expect(zhLocale.translation.customize.chooseButtonIdentifierColor).toBeTruthy();
+    expect(zhLocale.translation.customize.buttonIdentifierIntensity).toBeTruthy();
+    expect(
+      zhLocale.translation.customize.buttonIdentifierBackgroundLight,
+    ).toBeTruthy();
+    expect(
+      zhLocale.translation.customize.buttonIdentifierBackgroundDark,
+    ).toBeTruthy();
+    expect(
+      zhLocale.translation.customize.buttonIdentifierBackgroundThemeChoice,
+    ).toBeTruthy();
     expect(zhLocale.translation.customize.buttonAdjustmentHorizontalTab).toBe(
       "水平",
     );

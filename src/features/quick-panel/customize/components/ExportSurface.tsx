@@ -8,15 +8,16 @@ import {
 } from "../../model/button-identifier-layout";
 import type {
   ImageTransform,
-  ButtonIdentifierTheme,
   PanelDefinition,
   PickedImage,
 } from "../../model/types";
+import type { ButtonIdentifierBackgroundTheme } from "../button-identifier-color";
 import { ButtonIdentifierOverlay } from "./ButtonIdentifierOverlay";
 
 interface ExportSurfaceProps {
+  buttonIdentifierBackgroundTheme?: ButtonIdentifierBackgroundTheme;
+  buttonIdentifierColor?: string;
   buttonIdentifierOpacity: number;
-  buttonIdentifierTheme?: ButtonIdentifierTheme;
   buttonPanelOpacity: number;
   panel: PanelDefinition;
   image: PickedImage;
@@ -31,8 +32,9 @@ interface ExportSurfaceProps {
 export const ExportSurface = forwardRef<View, ExportSurfaceProps>(
   function ExportSurface(
     {
+      buttonIdentifierBackgroundTheme = "dark",
+      buttonIdentifierColor = "#FFFFFF",
       buttonIdentifierOpacity,
-      buttonIdentifierTheme = "light",
       buttonPanelOpacity,
       panel,
       image,
@@ -74,14 +76,15 @@ export const ExportSurface = forwardRef<View, ExportSurfaceProps>(
         />
         {showButtonIdentifiers && panel.family === "button" && panel.buttonIdentifier ? (
           <ButtonIdentifierOverlay
+            backgroundTheme={buttonIdentifierBackgroundTheme}
             bounds={getButtonExportBounds(panel, side)}
+            color={buttonIdentifierColor}
             identifier={panel.buttonIdentifier}
             label={panel.label}
             onPositionReady={onIdentifierPositionReady}
             opacity={buttonIdentifierOpacity}
             positions={identifierPositions}
             referenceCellSize={panel.buttonIdentifier.referenceCellSize * squareScale}
-            theme={buttonIdentifierTheme}
           />
         ) : null}
       </View>

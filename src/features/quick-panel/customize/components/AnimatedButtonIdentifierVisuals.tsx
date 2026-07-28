@@ -1,65 +1,62 @@
 import { Text } from "@/components/ani-ui/text";
 import { Lucide } from "@react-native-vector-icons/lucide";
-import { View } from "react-native";
+import Animated, { useAnimatedProps, useAnimatedStyle } from "react-native-reanimated";
 import type { ButtonIdentifierLayout } from "../../model/button-identifier-layout";
 import type { ButtonIdentifierDefinition } from "../../model/types";
-import {
-  getButtonIdentifierBackgroundColor,
-  type ButtonIdentifierBackgroundTheme,
-} from "../button-identifier-color";
+import type { AnimatedButtonIdentifierAppearance } from "./button-identifier-animated-appearance";
 import { buttonIdentifierStyles as styles } from "./button-identifier-content";
 
-interface ButtonIdentifierVisualsProps {
-  backgroundTheme: ButtonIdentifierBackgroundTheme;
-  color: string;
+const AnimatedLucide = Animated.createAnimatedComponent(Lucide);
+const AnimatedText = Animated.createAnimatedComponent(Text);
+
+interface AnimatedButtonIdentifierVisualsProps {
+  appearance: AnimatedButtonIdentifierAppearance;
   identifier: ButtonIdentifierDefinition;
   label: string;
   layout: ButtonIdentifierLayout;
 }
 
-export function ButtonIdentifierVisuals({
-  backgroundTheme,
-  color,
+export function AnimatedButtonIdentifierVisuals({
+  appearance,
   identifier,
   label,
   layout,
-}: ButtonIdentifierVisualsProps) {
-  const circleColor = getButtonIdentifierBackgroundColor(backgroundTheme);
+}: AnimatedButtonIdentifierVisualsProps) {
+  const iconProps = useAnimatedProps(() => ({ color: appearance.color.get() }));
+  const circleStyle = useAnimatedStyle(() => ({
+    backgroundColor: appearance.circleColor.get(),
+  }));
+  const labelStyle = useAnimatedStyle(() => ({ color: appearance.color.get() }));
   return (
     <>
-      <View
+      <Animated.View
+        style={[styles.iconBackground, circleStyle, {
+          borderRadius: layout.iconBackgroundSize / 2,
+          height: layout.iconBackgroundSize,
+          width: layout.iconBackgroundSize,
+        }]}
         testID="button-identifier-icon-background"
-        style={[
-          styles.iconBackground,
-          {
-            backgroundColor: circleColor,
-            borderRadius: layout.iconBackgroundSize / 2,
-            height: layout.iconBackgroundSize,
-            width: layout.iconBackgroundSize,
-          },
-        ]}
       >
-        <Lucide
-          color={color}
+        <AnimatedLucide
+          animatedProps={iconProps}
           name={identifier.iconName}
           size={layout.iconSize}
           style={styles.shadow}
         />
-      </View>
+      </Animated.View>
       {layout.showLabel ? (
-        <Text
+        <AnimatedText
           adjustsFontSizeToFit
           allowFontScaling={false}
           ellipsizeMode="tail"
           minimumFontScale={layout.minimumFontScale}
           numberOfLines={1}
-          testID="button-identifier-label"
           style={[
             styles.label,
             styles.shadow,
+            labelStyle,
             {
               fontSize: layout.fontSize,
-              color,
               lineHeight: layout.fontSize * 1.2,
               maxWidth: layout.maxLabelWidth,
             },
@@ -73,7 +70,7 @@ export function ButtonIdentifierVisuals({
           ]}
         >
           {label}
-        </Text>
+        </AnimatedText>
       ) : null}
     </>
   );

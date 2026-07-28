@@ -1,27 +1,31 @@
 import { GestureDetector } from "react-native-gesture-handler";
-import Animated from "react-native-reanimated";
 import { useState } from "react";
 import { useWindowDimensions, View } from "react-native";
 import type { ButtonIdentifierPositions } from "../../model/button-identifier-layout";
 import type {
   ImageTransform,
-  ButtonIdentifierTheme,
   PickedImage,
   QuickPanelPreset,
 } from "../../model/types";
 import { useQuickPanelPreviewGestures } from "../hooks/useQuickPanelPreviewGestures";
 import { getCustomizePreviewDisplayFrame } from "../preview-geometry";
-import { PanelSlice } from "./PanelSlice";
+import type { AnimatedButtonIdentifierAppearance } from "./button-identifier-animated-appearance";
+import { QuickPanelPreviewStage } from "./QuickPanelPreviewStage";
+import type { ButtonIdentifierBackgroundTheme } from "../button-identifier-color";
 
 interface QuickPanelPreviewProps {
+  animatedButtonIdentifierAppearance?: AnimatedButtonIdentifierAppearance;
+  buttonIdentifierBackgroundTheme: ButtonIdentifierBackgroundTheme;
+  buttonIdentifierColor: string;
   buttonIdentifierOpacity: number;
-  buttonIdentifierTheme: ButtonIdentifierTheme;
   buttonPanelOpacity: number;
   identifierPositions: ButtonIdentifierPositions;
+  interactive?: boolean;
   showButtonIdentifiers: boolean;
   image: PickedImage;
   previewUri: string;
   preset: QuickPanelPreset;
+  showAppGradientBackground?: boolean;
   transform: ImageTransform;
   onAdjustingChange: (isAdjusting: boolean) => void;
   onTransformChange: (transform: ImageTransform) => void;
@@ -29,16 +33,20 @@ interface QuickPanelPreviewProps {
 }
 
 export function QuickPanelPreview({
+  animatedButtonIdentifierAppearance,
+  buttonIdentifierBackgroundTheme,
+  buttonIdentifierColor,
   buttonIdentifierOpacity,
-  buttonIdentifierTheme,
   buttonPanelOpacity,
   identifierPositions,
+  interactive = true,
   image,
   previewUri,
   onAdjustingChange,
   transform,
   onTransformChange,
   preset,
+  showAppGradientBackground = false,
   showButtonIdentifiers,
   maxHeight,
 }: QuickPanelPreviewProps) {
@@ -69,47 +77,35 @@ export function QuickPanelPreview({
     previewHeightBudget * previewRatio,
   );
 
+  const stage = (
+    <QuickPanelPreviewStage
+      animatedButtonIdentifierAppearance={animatedButtonIdentifierAppearance}
+      buttonIdentifierBackgroundTheme={buttonIdentifierBackgroundTheme}
+      buttonIdentifierColor={buttonIdentifierColor}
+      buttonIdentifierOpacity={buttonIdentifierOpacity}
+      buttonPanelOpacity={buttonPanelOpacity}
+      handleLayout={handleLayout}
+      identifierPositions={identifierPositions}
+      image={image}
+      layoutScale={layoutScale}
+      preset={preset}
+      previewFrame={previewFrame}
+      previewRatio={previewRatio}
+      previewScale={sharedScale}
+      previewUri={previewUri}
+      previewWidth={previewWidth}
+      showAppGradientBackground={showAppGradientBackground}
+      showButtonIdentifiers={showButtonIdentifiers}
+      transform={sharedTransform}
+    />
+  );
   return (
     <View
       className="w-full items-center"
       onLayout={(event) => setContainerWidth(event.nativeEvent.layout.width)}
     >
       <View style={{ width: previewWidth }}>
-        <GestureDetector gesture={gesture}>
-          <Animated.View
-            onLayout={handleLayout}
-            style={{
-              aspectRatio: previewRatio,
-              opacity: 0.9,
-              overflow: "hidden",
-              width: previewWidth,
-            }}
-            testID="quick-panel-preview-stage"
-          >
-            {layoutScale
-              ? preset.visualOrder.map((id) => (
-                  <PanelSlice
-                    buttonIdentifierOpacity={buttonIdentifierOpacity}
-                    buttonIdentifierTheme={buttonIdentifierTheme}
-                    buttonPanelOpacity={buttonPanelOpacity}
-                    identifierPositions={identifierPositions}
-                    image={image}
-                    key={id}
-                    layoutScale={layoutScale}
-                    mode={preset.mode}
-                    originX={previewFrame.x}
-                    originY={previewFrame.y}
-                    panel={preset.panels[id]}
-                    previewScale={sharedScale}
-                    previewUri={previewUri}
-                    showButtonIdentifiers={showButtonIdentifiers}
-                    showOverlay
-                    transform={sharedTransform}
-                  />
-                ))
-              : null}
-          </Animated.View>
-        </GestureDetector>
+        {interactive ? <GestureDetector gesture={gesture}>{stage}</GestureDetector> : stage}
       </View>
     </View>
   );

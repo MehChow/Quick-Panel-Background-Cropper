@@ -3,18 +3,20 @@ import { Text } from "@/components/ani-ui/text";
 import { Lucide } from "@react-native-vector-icons/lucide";
 import { useTranslation } from "react-i18next";
 import { Pressable, type LayoutChangeEvent, View } from "react-native";
-import type { ButtonIdentifierTheme } from "../../model/types";
+import {
+  getButtonIdentifierBackgroundColor,
+  type ButtonIdentifierBackgroundTheme,
+} from "../button-identifier-color";
 import { ButtonAdjustmentTabs } from "./ButtonAdjustmentTabs";
 
 interface ButtonCustomizeControlsProps {
-  buttonIdentifierOpacity: number;
-  buttonIdentifierTheme: ButtonIdentifierTheme;
+  buttonIdentifierBackgroundTheme: ButtonIdentifierBackgroundTheme;
+  buttonIdentifierColor: string;
   buttonPanelOpacity: number;
   hasHorizontalButtons: boolean;
   hasVerticalButtons: boolean;
   horizontalIdentifierPosition: number;
-  onButtonIdentifierOpacityChange: (value: number) => void;
-  onButtonIdentifierThemeChange: (value: ButtonIdentifierTheme) => void;
+  onOpenButtonIdentifierAppearance: () => void;
   onButtonPanelOpacityChange: (value: number) => void;
   onHorizontalIdentifierPositionChange: (value: number) => void;
   onLayout?: (event: LayoutChangeEvent) => void;
@@ -24,7 +26,7 @@ interface ButtonCustomizeControlsProps {
   verticalIdentifierPosition: number;
 }
 
-export function getButtonIdentifierThemeButtonStyle(
+export function getButtonIdentifierColorButtonStyle(
   pressed: boolean,
   disabled = false,
 ) {
@@ -32,14 +34,13 @@ export function getButtonIdentifierThemeButtonStyle(
 }
 
 export function ButtonCustomizeControls({
-  buttonIdentifierOpacity,
-  buttonIdentifierTheme,
+  buttonIdentifierBackgroundTheme,
+  buttonIdentifierColor,
   buttonPanelOpacity,
   hasHorizontalButtons,
   hasVerticalButtons,
   horizontalIdentifierPosition,
-  onButtonIdentifierOpacityChange,
-  onButtonIdentifierThemeChange,
+  onOpenButtonIdentifierAppearance,
   onButtonPanelOpacityChange,
   onHorizontalIdentifierPositionChange,
   onLayout,
@@ -69,39 +70,35 @@ export function ButtonCustomizeControls({
           />
         </View>
         <Pressable
-          accessibilityLabel={t("customize.buttonIdentifierThemeToggle")}
-          accessibilityRole="switch"
-          accessibilityState={{ checked: buttonIdentifierTheme === "dark" }}
-          className={`h-11 w-11 items-center justify-center rounded-xl border ${
-            buttonIdentifierTheme === "light"
-              ? "border-[#f3c992]/60 bg-[#f5d6aa]"
-              : "border-[#f3c992]/60 bg-[#2c2328]"
-          }`}
+          accessibilityLabel={t("customize.chooseButtonIdentifierColor", {
+            color: buttonIdentifierColor,
+          })}
+          accessibilityRole="button"
+          accessibilityState={{ disabled: !showButtonIdentifiers }}
+          className="h-11 w-11 items-center justify-center rounded-xl border border-white/40"
           disabled={!showButtonIdentifiers}
-          onPress={() => onButtonIdentifierThemeChange(
-            buttonIdentifierTheme === "light" ? "dark" : "light",
-          )}
-          style={({ pressed }) => getButtonIdentifierThemeButtonStyle(
-            pressed,
-            !showButtonIdentifiers,
-          )}
-          testID="button-identifier-theme-toggle"
+          onPress={onOpenButtonIdentifierAppearance}
+          style={({ pressed }) => [
+            { backgroundColor: buttonIdentifierColor },
+            getButtonIdentifierColorButtonStyle(pressed, !showButtonIdentifiers),
+          ]}
+          testID="button-identifier-color-trigger"
         >
           <Lucide
-            color={buttonIdentifierTheme === "light" ? "#261e1e" : "#f5d6aa"}
-            name={buttonIdentifierTheme === "light" ? "sun" : "moon"}
+            color={getButtonIdentifierBackgroundColor(
+              buttonIdentifierBackgroundTheme,
+            )}
+            name="palette"
             size={20}
-            testID="button-identifier-theme-icon"
+            testID="button-identifier-color-icon"
           />
         </Pressable>
       </View>
       <ButtonAdjustmentTabs
-        buttonIdentifierOpacity={buttonIdentifierOpacity}
         buttonPanelOpacity={buttonPanelOpacity}
         hasHorizontalButtons={hasHorizontalButtons}
         hasVerticalButtons={hasVerticalButtons}
         horizontalIdentifierPosition={horizontalIdentifierPosition}
-        onButtonIdentifierOpacityChange={onButtonIdentifierOpacityChange}
         onButtonPanelOpacityChange={onButtonPanelOpacityChange}
         onHorizontalIdentifierPositionChange={onHorizontalIdentifierPositionChange}
         onVerticalIdentifierPositionChange={onVerticalIdentifierPositionChange}

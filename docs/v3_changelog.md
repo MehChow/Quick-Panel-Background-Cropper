@@ -97,18 +97,25 @@ preview visible while editing. It includes:
 - **Button image intensity** for the background artwork.
 - **Show labels** to include or remove the app-rendered Button icons and names
   from both preview and exported PNGs.
-- **Label intensity** for the Button icon and text.
 - **Horizontal position** for long horizontal Button labels.
 - **Vertical position** for long vertical Button labels.
-- A separate light/dark icon-style toggle. Light uses a gray circle with a
-  white icon; dark uses a white circle with a dark icon. The toggle is disabled
-  when labels are hidden and provides pressed-state feedback.
+- A color swatch opens a transactional Label appearance dialog with a
+  hue/saturation wheel, one shared Brightness/Intensity tabbed slider card, and
+  exact six-digit HEX input. One color applies to every glyph and visible label.
+- A Light/Dark toggle beside the HEX field controls only the neutral icon-circle
+  background: Light uses `#FFFFFF`, Dark uses `#666666`.
+- The dialog uses the release-announcement surface treatment, compact picker
+  tracks, a high-contrast white Cancel action, and keyboard-aware scrolling so
+  the HEX field remains reachable while editing.
 
-The Image, Labels, Horiz., and Vert. tabs share one slider area. Orientation
-tabs appear only when the active Button layout needs them. Hiding labels
-disables label-related controls and returns the active adjustment to Image.
+The Image, Horiz., and Vert. tabs share one slider area. Orientation tabs
+appear only when the active Button layout needs them. Hiding labels disables
+the swatch and position controls and returns the active adjustment to Image.
+The dialog reuses the full composition as a read-only real-time preview.
+Cancel discards its draft; Confirm atomically updates the main preview and
+committed-only export path.
 
-Final branch behavior persists all six Buttons Customize settings across
+Final branch behavior persists all Buttons Customize settings across
 screen visits and app restarts under `quick-panel.button-customize-settings`.
 The defaults for a fresh install are:
 
@@ -117,7 +124,8 @@ The defaults for a fresh install are:
 - Show labels: enabled
 - Horizontal label position: `50%`
 - Vertical label position: `50%`
-- Label icon style: Light
+- Shared glyph-and-label color: `#FFFFFF`
+- Icon-circle background: Dark (`#666666`)
 
 This persistence is newer than the earlier v3 specs and README text that
 describe these values as screen-local; the final implementation is the source
@@ -126,8 +134,9 @@ of truth.
 ## Button identifiers
 
 Buttons-only can render stable icons and labels above the selected image in both
-the live preview and final PNGs. The selected light or dark icon style is
-shared by preview and export. Controls exports are unchanged.
+the live preview and final PNGs. The confirmed HEX color, opacity, and manual
+Light/Dark circle background are shared by preview and export. Changing HEX
+never changes the selected circle background. Controls exports are unchanged.
 
 Identifier content follows the calibrated grid span:
 
@@ -148,7 +157,7 @@ bounds, so long identifiers remain inside the visible rounded Button area.
 - All selected Buttons share one source image and one pan/zoom transform, so
   adjacent Buttons reveal continuous portions of the same composition.
 - Preview and export project the same source-coordinate rectangles, image
-  transform, opacity, identifier visibility, identifier intensity, and
+  transform, opacity, identifier visibility, identifier color/intensity, and
   identifier positions.
 - Every Button export is an original-quality `1024 x 1024` PNG.
 - Non-square Buttons are represented by a centered square export area, leaving

@@ -3,7 +3,15 @@ import {
   getButtonIdentifierLayoutKind,
   type ButtonIdentifierPositions,
 } from "../../model/button-identifier-layout";
-import type { ButtonIdentifierTheme, QuickPanelPreset } from "../../model/types";
+import type { QuickPanelPreset } from "../../model/types";
+import {
+  defaultButtonIdentifierBackgroundTheme,
+  defaultButtonIdentifierColor,
+  normalizeButtonIdentifierBackgroundTheme,
+  normalizeButtonIdentifierColor,
+  type ButtonIdentifierAppearance,
+  type ButtonIdentifierBackgroundTheme,
+} from "../button-identifier-color";
 import {
   loadButtonCustomizeSettings,
   saveButtonCustomizeSettings,
@@ -11,15 +19,15 @@ import {
 } from "../../store/storage";
 
 export interface ButtonCustomizeControlState {
+  buttonIdentifierBackgroundTheme: ButtonIdentifierBackgroundTheme;
+  buttonIdentifierColor: string;
   buttonIdentifierOpacity: number;
-  buttonIdentifierTheme: ButtonIdentifierTheme;
   buttonPanelOpacity: number;
   hasHorizontalButtons: boolean;
   hasVerticalButtons: boolean;
   horizontalIdentifierPosition: number;
   identifierPositions: ButtonIdentifierPositions;
-  setButtonIdentifierOpacity: (value: number) => void;
-  setButtonIdentifierTheme: (value: ButtonIdentifierTheme) => void;
+  setButtonIdentifierAppearance: (appearance: ButtonIdentifierAppearance) => void;
   setButtonPanelOpacity: (value: number) => void;
   setHorizontalIdentifierPosition: (value: number) => void;
   setShowButtonIdentifiers: (value: boolean) => void;
@@ -48,11 +56,10 @@ export function useButtonCustomizeControls(
     const identifier = preset.panels[id]?.buttonIdentifier;
     return identifier ? getButtonIdentifierLayoutKind(identifier) : null;
   });
-  const buttonIdentifierTheme = settings.buttonIdentifierTheme ?? "light";
-
   return {
+    buttonIdentifierBackgroundTheme: settings.buttonIdentifierBackgroundTheme,
+    buttonIdentifierColor: settings.buttonIdentifierColor,
     buttonIdentifierOpacity: settings.buttonIdentifierOpacity,
-    buttonIdentifierTheme,
     buttonPanelOpacity: settings.buttonPanelOpacity,
     hasHorizontalButtons: orientations.includes("horizontal"),
     hasVerticalButtons: orientations.includes("vertical"),
@@ -61,8 +68,21 @@ export function useButtonCustomizeControls(
       horizontal: settings.horizontalIdentifierPosition / 100,
       vertical: settings.verticalIdentifierPosition / 100,
     },
-    setButtonIdentifierOpacity: (value) => updateSetting("buttonIdentifierOpacity", value),
-    setButtonIdentifierTheme: (value) => updateSetting("buttonIdentifierTheme", value),
+    setButtonIdentifierAppearance: ({ backgroundTheme, color, opacity }) => {
+      setSettings((current) => {
+        const next = {
+          ...current,
+          buttonIdentifierBackgroundTheme:
+            normalizeButtonIdentifierBackgroundTheme(backgroundTheme)
+            ?? defaultButtonIdentifierBackgroundTheme,
+          buttonIdentifierColor:
+            normalizeButtonIdentifierColor(color) ?? defaultButtonIdentifierColor,
+          buttonIdentifierOpacity: Math.min(100, Math.max(0, opacity)),
+        };
+        saveButtonCustomizeSettings(next);
+        return next;
+      });
+    },
     setButtonPanelOpacity: (value) => updateSetting("buttonPanelOpacity", value),
     setHorizontalIdentifierPosition: (value) => updateSetting("horizontalIdentifierPosition", value),
     setShowButtonIdentifiers: (value) => updateSetting("showButtonIdentifiers", value),

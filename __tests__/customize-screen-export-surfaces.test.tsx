@@ -244,17 +244,19 @@ describe("CustomizeScreen export surfaces", () => {
     const mounted = render(<CustomizeScreen />);
 
     expect(mockPreviewProps).toMatchObject({
+      buttonIdentifierBackgroundTheme: "dark",
       buttonIdentifierOpacity: 0.7,
       buttonPanelOpacity: 0.78,
       identifierPositions: { horizontal: 0.5, vertical: 0.5 },
-      buttonIdentifierTheme: "light",
+      buttonIdentifierColor: "#FFFFFF",
       showButtonIdentifiers: true,
     });
     expect(mockExportProps).toMatchObject({
+      buttonIdentifierBackgroundTheme: "dark",
       buttonIdentifierOpacity: 0.7,
       buttonPanelOpacity: 0.78,
       identifierPositions: { horizontal: 0.5, vertical: 0.5 },
-      buttonIdentifierTheme: "light",
+      buttonIdentifierColor: "#FFFFFF",
       showButtonIdentifiers: true,
     });
 
@@ -291,20 +293,10 @@ describe("CustomizeScreen export surfaces", () => {
     });
 
     fireEvent.press(screen.getByTestId("show-button-identifiers-toggle"));
-    fireEvent.press(screen.getByTestId("button-adjustment-identifier-tab"));
-    fireEvent.press(screen.getByTestId("button-identifier-opacity-slider"));
-    expect(mockPreviewProps).toMatchObject({
-      buttonIdentifierOpacity: 0.35,
-      buttonPanelOpacity: 0.35,
-      identifierPositions: { horizontal: 0.35, vertical: 0.8 },
-      showButtonIdentifiers: true,
-    });
-
-    fireEvent.press(screen.getByTestId("button-identifier-theme-toggle"));
-    expect(mockPreviewProps).toMatchObject({ buttonIdentifierTheme: "dark" });
-    expect(mockExportProps).toMatchObject({ buttonIdentifierTheme: "dark" });
     expect(mockExportProps).toMatchObject({
-      buttonIdentifierOpacity: 0.35,
+      buttonIdentifierBackgroundTheme: "dark",
+      buttonIdentifierColor: "#FFFFFF",
+      buttonIdentifierOpacity: 0.7,
       buttonPanelOpacity: 0.35,
       identifierPositions: { horizontal: 0.35, vertical: 0.8 },
       showButtonIdentifiers: true,
@@ -313,11 +305,12 @@ describe("CustomizeScreen export surfaces", () => {
     mounted.unmount();
     render(<CustomizeScreen />);
     expect(mockPreviewProps).toMatchObject({
-      buttonIdentifierOpacity: 0.35,
+      buttonIdentifierBackgroundTheme: "dark",
+      buttonIdentifierColor: "#FFFFFF",
+      buttonIdentifierOpacity: 0.7,
       buttonPanelOpacity: 0.35,
       identifierPositions: { horizontal: 0.35, vertical: 0.8 },
       showButtonIdentifiers: true,
-      buttonIdentifierTheme: "dark",
     });
   });
 });

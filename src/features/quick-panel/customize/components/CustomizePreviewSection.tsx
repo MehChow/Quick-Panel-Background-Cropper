@@ -7,6 +7,7 @@ import type {
 } from "../../model/types";
 import type { ButtonCustomizeControlState } from "../hooks/useButtonCustomizeControls";
 import { ButtonCustomizeControls } from "./ButtonCustomizeControls";
+import { ButtonLabelAppearanceDialog } from "./ButtonLabelAppearanceDialog";
 import { QuickPanelPreview } from "./QuickPanelPreview";
 
 interface CustomizePreviewSectionProps {
@@ -29,6 +30,7 @@ export function CustomizePreviewSection({
   transform,
 }: CustomizePreviewSectionProps) {
   const [previewSlotHeight, setPreviewSlotHeight] = useState(0);
+  const [isAppearanceDialogOpen, setAppearanceDialogOpen] = useState(false);
   const hasButtonPanels = preset.visualOrder.some(
     (id) => preset.panels[id]?.family === "button",
   );
@@ -44,8 +46,9 @@ export function CustomizePreviewSection({
         onLayout={(event) => setPreviewSlotHeight(event.nativeEvent.layout.height)}
       >
         <QuickPanelPreview
+          buttonIdentifierBackgroundTheme={buttonControls.buttonIdentifierBackgroundTheme}
+          buttonIdentifierColor={buttonControls.buttonIdentifierColor}
           buttonIdentifierOpacity={buttonControls.buttonIdentifierOpacity / 100}
-          buttonIdentifierTheme={buttonControls.buttonIdentifierTheme}
           buttonPanelOpacity={buttonControls.buttonPanelOpacity / 100}
           identifierPositions={buttonControls.identifierPositions}
           image={image}
@@ -60,20 +63,39 @@ export function CustomizePreviewSection({
       </View>
       {hasButtonPanels ? (
         <ButtonCustomizeControls
-          buttonIdentifierOpacity={buttonControls.buttonIdentifierOpacity}
-          buttonIdentifierTheme={buttonControls.buttonIdentifierTheme}
+          buttonIdentifierBackgroundTheme={buttonControls.buttonIdentifierBackgroundTheme}
+          buttonIdentifierColor={buttonControls.buttonIdentifierColor}
           buttonPanelOpacity={buttonControls.buttonPanelOpacity}
           hasHorizontalButtons={buttonControls.hasHorizontalButtons}
           hasVerticalButtons={buttonControls.hasVerticalButtons}
           horizontalIdentifierPosition={buttonControls.horizontalIdentifierPosition}
-          onButtonIdentifierOpacityChange={buttonControls.setButtonIdentifierOpacity}
-          onButtonIdentifierThemeChange={buttonControls.setButtonIdentifierTheme}
           onButtonPanelOpacityChange={buttonControls.setButtonPanelOpacity}
           onHorizontalIdentifierPositionChange={buttonControls.setHorizontalIdentifierPosition}
+          onOpenButtonIdentifierAppearance={() => setAppearanceDialogOpen(true)}
           onShowButtonIdentifiersChange={buttonControls.setShowButtonIdentifiers}
           onVerticalIdentifierPositionChange={buttonControls.setVerticalIdentifierPosition}
           showButtonIdentifiers={buttonControls.showButtonIdentifiers}
           verticalIdentifierPosition={buttonControls.verticalIdentifierPosition}
+        />
+      ) : null}
+      {hasButtonPanels && isAppearanceDialogOpen ? (
+        <ButtonLabelAppearanceDialog
+          backgroundTheme={buttonControls.buttonIdentifierBackgroundTheme}
+          color={buttonControls.buttonIdentifierColor}
+          identifierPositions={buttonControls.identifierPositions}
+          image={image}
+          imageOpacity={buttonControls.buttonPanelOpacity / 100}
+          onCancel={() => setAppearanceDialogOpen(false)}
+          onConfirm={(appearance) => {
+            buttonControls.setButtonIdentifierAppearance(appearance);
+            setAppearanceDialogOpen(false);
+          }}
+          opacity={buttonControls.buttonIdentifierOpacity}
+          open
+          preset={preset}
+          previewUri={previewUri}
+          showButtonIdentifiers={buttonControls.showButtonIdentifiers}
+          transform={transform}
         />
       ) : null}
     </View>

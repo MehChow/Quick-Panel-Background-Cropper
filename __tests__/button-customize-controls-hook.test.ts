@@ -6,6 +6,8 @@ import { useButtonCustomizeControls } from "@/features/quick-panel/customize/hoo
 describe("useButtonCustomizeControls", () => {
   it("restores saved slider and identifier settings and persists changes", () => {
     saveButtonCustomizeSettings({
+      buttonIdentifierBackgroundTheme: "light",
+      buttonIdentifierColor: "#1A2B3C",
       buttonIdentifierOpacity: 61,
       buttonPanelOpacity: 84,
       horizontalIdentifierPosition: 23,
@@ -16,6 +18,8 @@ describe("useButtonCustomizeControls", () => {
     const hook = renderHook(() => useButtonCustomizeControls(s25PlusOneUi85Preset));
 
     expect(hook.result.current).toMatchObject({
+      buttonIdentifierBackgroundTheme: "light",
+      buttonIdentifierColor: "#1A2B3C",
       buttonIdentifierOpacity: 61,
       buttonPanelOpacity: 84,
       horizontalIdentifierPosition: 23,
@@ -24,13 +28,19 @@ describe("useButtonCustomizeControls", () => {
     });
 
     act(() => {
-      hook.result.current.setButtonPanelOpacity(92);
-      hook.result.current.setShowButtonIdentifiers(true);
+      hook.result.current.setButtonIdentifierAppearance({
+        backgroundTheme: "dark",
+        color: "#336699",
+        opacity: 142,
+      });
     });
 
     expect(loadButtonCustomizeSettings()).toMatchObject({
-      buttonPanelOpacity: 92,
-      showButtonIdentifiers: true,
+      buttonIdentifierBackgroundTheme: "dark",
+      buttonIdentifierColor: "#336699",
+      buttonIdentifierOpacity: 100,
+      buttonPanelOpacity: 84,
+      showButtonIdentifiers: false,
     });
   });
 });
