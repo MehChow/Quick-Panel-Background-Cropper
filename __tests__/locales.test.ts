@@ -1,5 +1,23 @@
 import { enLocale, zhLocale } from "../i18next/resources";
 
+describe("release announcement locale strings", () => {
+  it("defines the v1.2.0 updates in English and Traditional Chinese", () => {
+    expect(enLocale.translation.releaseAnnouncement.v1_2_0).toEqual({
+      title: "v1.2.0 Major Updates 🌟",
+      body: "• New feature - added icon color customization in Buttons-only mode\n• Removed snapping grid toggling feature",
+      gotIt: "Got it",
+      mediaAccessibilityLabel:
+        "Icon color customization in Buttons-only mode",
+    });
+    expect(zhLocale.translation.releaseAnnouncement.v1_2_0).toEqual({
+      title: "v1.2.0 主要更新內容 🌟",
+      body: "• 新功能－僅按鈕模式新增圖示顏色自訂功能\n• 已移除吸附網格開關功能",
+      gotIt: "知道了",
+      mediaAccessibilityLabel: "僅按鈕模式的圖示顏色自訂功能",
+    });
+  });
+});
+
 describe("customize locale strings", () => {
   it("defines Customize image-placement help in English and Chinese", () => {
     const english = enLocale.translation.customize;

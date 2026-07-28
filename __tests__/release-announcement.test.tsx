@@ -1,10 +1,19 @@
 import { fireEvent, render, screen } from "@testing-library/react-native";
-import { Modal } from "react-native";
+import type { ComponentProps } from "react";
+import { Modal, View } from "react-native";
 import {
   acknowledgeReleaseAnnouncement,
   loadAcknowledgedReleaseAnnouncement,
 } from "@/features/quick-panel/store/storage";
 import { ReleaseAnnouncementHost } from "@/features/quick-panel/release/ReleaseAnnouncementHost";
+
+jest.mock("expo-image", () => {
+  const { View: MockImage } = jest.requireActual("react-native");
+
+  return {
+    Image: (props: ComponentProps<typeof View>) => <MockImage {...props} />,
+  };
+});
 
 jest.mock("react-i18next", () => ({
   useTranslation: () => ({
@@ -26,44 +35,49 @@ describe("release announcement", () => {
   it("shows an unacknowledged announcement and dismisses it", () => {
     render(<ReleaseAnnouncementHost />);
 
-    expect(screen.getByText("releaseAnnouncement.v1_1_0.title")).toBeTruthy();
-    expect(screen.getByText("releaseAnnouncement.v1_1_0.body")).toBeTruthy();
+    expect(screen.getByText("releaseAnnouncement.v1_2_0.title")).toBeTruthy();
+    expect(screen.getByText("releaseAnnouncement.v1_2_0.body")).toBeTruthy();
     expect(
-      screen.getByText("releaseAnnouncement.v1_1_0.title").props.className,
+      screen.getByText("releaseAnnouncement.v1_2_0.title").props.className,
     ).toContain("text-white");
     expect(
-      screen.getByText("releaseAnnouncement.v1_1_0.gotIt").props.className,
+      screen.getByText("releaseAnnouncement.v1_2_0.gotIt").props.className,
     ).toContain("text-black");
     expect(
       screen.getByRole("button", {
-        name: "releaseAnnouncement.v1_1_0.gotIt",
+        name: "releaseAnnouncement.v1_2_0.gotIt",
       }).props.className,
     ).toContain("bg-white");
+    expect(
+      screen.getByLabelText(
+        "releaseAnnouncement.v1_2_0.mediaAccessibilityLabel",
+      ).props.contentFit,
+    ).toBe("contain");
 
-    fireEvent.press(screen.getByText("releaseAnnouncement.v1_1_0.gotIt"));
+    fireEvent.press(screen.getByText("releaseAnnouncement.v1_2_0.gotIt"));
 
     expect(loadAcknowledgedReleaseAnnouncement()).toBe(
-      "v1.1.0-release-announcement",
+      "v1.2.0-buttons-icon-color-announcement",
     );
-    expect(screen.queryByText("releaseAnnouncement.v1_1_0.title")).toBeNull();
+    expect(screen.queryByText("releaseAnnouncement.v1_2_0.title")).toBeNull();
   });
 
   it("only dismisses when the user acknowledges the announcement", () => {
     render(<ReleaseAnnouncementHost />);
 
-    fireEvent.press(screen.getByText("releaseAnnouncement.v1_1_0.gotIt"));
+    fireEvent.press(screen.getByText("releaseAnnouncement.v1_2_0.gotIt"));
 
     expect(loadAcknowledgedReleaseAnnouncement()).toBe(
-      "v1.1.0-release-announcement",
+      "v1.2.0-buttons-icon-color-announcement",
     );
   });
 
   it("does not show an already acknowledged announcement", () => {
-    acknowledgeReleaseAnnouncement("v1.1.0-release-announcement");
+    acknowledgeReleaseAnnouncement("v1.2.0-buttons-icon-color-announcement");
 
     render(<ReleaseAnnouncementHost />);
 
-    expect(screen.queryByText("releaseAnnouncement.v1_1_0.title")).toBeNull();
+    expect(screen.queryByText("releaseAnnouncement.v1_2_0.title")).toBeNull();
   });
 
   it("acknowledges when the dialog is dismissed by the platform", () => {
@@ -72,7 +86,7 @@ describe("release announcement", () => {
     fireEvent(rendered.UNSAFE_getByType(Modal), "requestClose");
 
     expect(loadAcknowledgedReleaseAnnouncement()).toBe(
-      "v1.1.0-release-announcement",
+      "v1.2.0-buttons-icon-color-announcement",
     );
   });
 });

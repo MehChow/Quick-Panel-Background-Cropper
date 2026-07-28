@@ -7,6 +7,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ani-ui/alert-dialog";
+import { Image } from "expo-image";
 import { useTranslation } from "react-i18next";
 import { Text } from "react-native";
 import type { ReleaseAnnouncementDescriptor } from "./ReleaseAnnouncementContent";
@@ -33,6 +34,19 @@ export function ReleaseAnnouncementDialog({
             {t(descriptor.bodyKey)}
           </AlertDialogDescription>
         </AlertDialogHeader>
+        {descriptor.mediaSource ? (
+          <Image
+            accessibilityLabel={
+              descriptor.mediaAccessibilityKey
+                ? t(descriptor.mediaAccessibilityKey)
+                : undefined
+            }
+            accessible={Boolean(descriptor.mediaAccessibilityKey)}
+            contentFit="contain"
+            source={descriptor.mediaSource}
+            style={{ alignSelf: "center", height: 240, width: 121 }}
+          />
+        ) : null}
         <AlertDialogFooter>
           <AlertDialogAction onPress={onDismiss} className="bg-white">
             <Text className="text-sm font-medium text-black">

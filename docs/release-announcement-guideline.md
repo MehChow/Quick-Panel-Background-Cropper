@@ -88,12 +88,24 @@ export const activeReleaseAnnouncement: ReleaseAnnouncementDescriptor = {
   id: activeReleaseAnnouncementId,
   actionKey: "releaseAnnouncement.v4.action",
   bodyKey: "releaseAnnouncement.v4.body",
-  dismissKey: "releaseAnnouncement.v4.dismiss",
   titleKey: "releaseAnnouncement.v4.title",
 };
 ```
 
 The dialog component should normally not change. If a future release needs a different layout, create a separate dialog variant rather than adding release-specific conditionals to the shared shell.
+
+For an announcement with supporting media, add optional media metadata to the
+descriptor. Static bundled GIFs remain animated when rendered through
+`expo-image`:
+
+```ts
+mediaAccessibilityKey: "releaseAnnouncement.v4.mediaAccessibilityLabel",
+mediaSource: require("path/to/announcement.gif"),
+```
+
+The shared shell renders descriptor media after the body and before the footer.
+Keep it compact, use `contentFit="contain"`, and provide a localized
+accessibility label. Announcements without media omit both fields.
 
 ### 4. Update the acknowledgement CTA
 
@@ -147,6 +159,10 @@ For a release candidate, also test manually with a clean app data state and an u
 - Do not assume an announcement performs a calibration migration. Validate calibration compatibility independently.
 - Do not remove old acknowledgement IDs from the storage format; changing the active ID is enough.
 
-## v3 reference
+## Current reference
 
-The current announcement ID is `v1.1.0-release-announcement`. It uses concise bullet points, ends with a recalibration reminder, and has a single `Got it`/`知道了` acknowledgement CTA. Its acknowledgement is independent from `quick-panel.calibrations`.
+The current announcement ID is
+`v1.2.0-buttons-icon-color-announcement`. It announces Buttons-only icon color
+customization and removal of snapping-grid toggling, includes the icon color
+picker GIF, and has a single `Got it`/`知道了` acknowledgement CTA. Its
+acknowledgement is independent from `quick-panel.calibrations`.

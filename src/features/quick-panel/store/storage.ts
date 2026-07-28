@@ -32,7 +32,8 @@ const lastExportedAdvancedTargetKey = "quick-panel.last-exported-advanced-target
 const seenHelpKey = "quick-panel.seen-help";
 const releaseAnnouncementKey = "quick-panel.acknowledged-release-announcement";
 
-export const activeReleaseAnnouncementId = "v1.1.0-release-announcement";
+export const activeReleaseAnnouncementId =
+  "v1.2.0-buttons-icon-color-announcement";
 
 export const supportedLanguages = ["en", "zh"] as const;
 export type SupportedLanguage = (typeof supportedLanguages)[number];
