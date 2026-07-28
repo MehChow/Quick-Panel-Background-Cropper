@@ -11,9 +11,10 @@ import { useQuickPanelPreviewGestures } from "../hooks/useQuickPanelPreviewGestu
 import { getCustomizePreviewDisplayFrame } from "../preview-geometry";
 import type { AnimatedButtonIdentifierAppearance } from "./button-identifier-animated-appearance";
 import { QuickPanelPreviewStage } from "./QuickPanelPreviewStage";
+import { StaticQuickPanelPreview } from "./StaticQuickPanelPreview";
 import type { ButtonIdentifierBackgroundTheme } from "../button-identifier-color";
 
-interface QuickPanelPreviewProps {
+export interface QuickPanelPreviewProps {
   animatedButtonIdentifierAppearance?: AnimatedButtonIdentifierAppearance;
   buttonIdentifierBackgroundTheme: ButtonIdentifierBackgroundTheme;
   buttonIdentifierColor: string;
@@ -33,13 +34,21 @@ interface QuickPanelPreviewProps {
 }
 
 export function QuickPanelPreview({
+  interactive = true,
+  ...props
+}: QuickPanelPreviewProps) {
+  return interactive
+    ? <InteractiveQuickPanelPreview {...props} />
+    : <StaticQuickPanelPreview {...props} />;
+}
+
+function InteractiveQuickPanelPreview({
   animatedButtonIdentifierAppearance,
   buttonIdentifierBackgroundTheme,
   buttonIdentifierColor,
   buttonIdentifierOpacity,
   buttonPanelOpacity,
   identifierPositions,
-  interactive = true,
   image,
   previewUri,
   onAdjustingChange,
@@ -49,7 +58,7 @@ export function QuickPanelPreview({
   showAppGradientBackground = false,
   showButtonIdentifiers,
   maxHeight,
-}: QuickPanelPreviewProps) {
+}: Omit<QuickPanelPreviewProps, "interactive">) {
   const { width: windowWidth, height: windowHeight } = useWindowDimensions();
   const [containerWidth, setContainerWidth] = useState(0);
   const previewFrame = getCustomizePreviewDisplayFrame(preset);
@@ -57,7 +66,6 @@ export function QuickPanelPreview({
     gesture,
     handleLayout,
     layoutScale,
-    sharedScale,
     sharedTransform,
   } = useQuickPanelPreviewGestures({
     image,
@@ -91,7 +99,7 @@ export function QuickPanelPreview({
       preset={preset}
       previewFrame={previewFrame}
       previewRatio={previewRatio}
-      previewScale={sharedScale}
+      previewScale={layoutScale ?? 0}
       previewUri={previewUri}
       previewWidth={previewWidth}
       showAppGradientBackground={showAppGradientBackground}
@@ -105,7 +113,7 @@ export function QuickPanelPreview({
       onLayout={(event) => setContainerWidth(event.nativeEvent.layout.width)}
     >
       <View style={{ width: previewWidth }}>
-        {interactive ? <GestureDetector gesture={gesture}>{stage}</GestureDetector> : stage}
+        <GestureDetector gesture={gesture}>{stage}</GestureDetector>
       </View>
     </View>
   );

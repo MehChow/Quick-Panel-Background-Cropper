@@ -36,9 +36,9 @@ interface PanelSliceProps {
   layoutScale: number;
   originX: number;
   originY: number;
-  previewScale: SharedValue<number>;
+  previewScale: SharedValue<number> | number;
   previewUri: string;
-  transform: SharedValue<ImageTransform>;
+  transform: SharedValue<ImageTransform> | ImageTransform;
 }
 
 export function PanelSlice({
@@ -62,11 +62,17 @@ export function PanelSlice({
 }: PanelSliceProps) {
   const panelRadius = getPreviewPanelRadius(panel.rect, layoutScale);
   const imageStyle = useAnimatedStyle(() => {
+    const currentPreviewScale = typeof previewScale === "number"
+      ? previewScale
+      : previewScale.get();
+    const currentTransform = "get" in transform
+      ? transform.get()
+      : transform;
     const placement = getPanelImageTransform({
       panelX: panel.rect.x,
       panelY: panel.rect.y,
-      previewScale: previewScale.get(),
-      transform: transform.get(),
+      previewScale: currentPreviewScale,
+      transform: currentTransform,
     });
     return {
       transform: [

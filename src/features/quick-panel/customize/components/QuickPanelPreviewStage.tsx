@@ -25,13 +25,13 @@ interface QuickPanelPreviewStageProps {
   layoutScale: number | null;
   previewFrame: PanelRect;
   previewRatio: number;
-  previewScale: SharedValue<number>;
+  previewScale: SharedValue<number> | number;
   previewUri: string;
   previewWidth: number;
   preset: QuickPanelPreset;
   showAppGradientBackground?: boolean;
   showButtonIdentifiers: boolean;
-  transform: SharedValue<ImageTransform>;
+  transform: SharedValue<ImageTransform> | ImageTransform;
 }
 
 export function QuickPanelPreviewStage(props: QuickPanelPreviewStageProps) {
