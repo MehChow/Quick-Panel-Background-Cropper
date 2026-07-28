@@ -18,9 +18,7 @@ jest.mock("react-i18next", () => ({
 
 const baseProps = {
   columns: 4,
-  isGridEnabled: false,
   onColumnsChange: jest.fn(),
-  onGridEnabledChange: jest.fn(),
   onGridHelpPress: jest.fn(),
   onRowsChange: jest.fn(),
   rows: 5,
@@ -31,33 +29,30 @@ describe("AdvancedGridControls", () => {
     jest.clearAllMocks();
   });
 
-  it("keeps help available while disabling grid dimensions", () => {
+  it("keeps the grid controls and help available without a toggle", () => {
     render(<AdvancedGridControls {...baseProps} />);
 
-    expect(
-      screen.getByTestId("advanced-grid-columns-chip").props.accessibilityState,
-    ).toEqual(expect.objectContaining({ disabled: true }));
-    expect(
-      screen.getByTestId("advanced-grid-rows-chip").props.accessibilityState,
-    ).toEqual(expect.objectContaining({ disabled: true }));
-    expect(screen.getByTestId("advanced-grid-slider").props.accessibilityState)
-      .toEqual(expect.objectContaining({ disabled: true }));
-    expect(
-      screen.getByLabelText("advancedCalibration.gridHelpButton"),
-    ).toBeTruthy();
+    expect(screen.queryByTestId("advanced-grid-toggle")).toBeNull();
+    expect(screen.getByTestId("advanced-grid-columns-chip").props.disabled)
+      .toBeFalsy();
+    expect(screen.getByTestId("advanced-grid-rows-chip").props.disabled)
+      .toBeFalsy();
+    expect(screen.getByTestId("advanced-grid-slider").props.disabled)
+      .toBeFalsy();
     expect(screen.getByTestId("advanced-grid-help")).toBeTruthy();
   });
 
-  it("requests enabling from the accessible switch", () => {
+  it("changes the active grid axis and forwards slider values", () => {
     render(<AdvancedGridControls {...baseProps} />);
 
-    const toggle = screen.getByTestId("advanced-grid-toggle");
-    expect(toggle.props.accessibilityLabel).toBe(
-      "advancedCalibration.gridToggleLabel",
+    fireEvent.press(screen.getByTestId("advanced-grid-rows-chip"));
+    fireEvent(
+      screen.getByTestId("advanced-grid-slider"),
+      "valueChange",
+      6,
     );
 
-    fireEvent(toggle, "valueChange", true);
-
-    expect(baseProps.onGridEnabledChange).toHaveBeenCalledWith(true);
+    expect(baseProps.onRowsChange).toHaveBeenCalledWith(6);
+    expect(baseProps.onColumnsChange).not.toHaveBeenCalled();
   });
 });

@@ -44,21 +44,21 @@ describe("AdvancedPanelCanvas snapping grid", () => {
     mockAdvancedSnapGridOverlay.mockClear();
   });
 
-  it("hides the overlay and disables snapping for panel boxes", () => {
-    render(<AdvancedPanelCanvas {...props} isGridEnabled={false} />);
-
-    expect(mockAdvancedSnapGridOverlay).not.toHaveBeenCalled();
-    expect(mockAdvancedPanelBox).toHaveBeenCalledWith(
-      expect.objectContaining({ isGridEnabled: false }),
-    );
-  });
-
-  it("shows the overlay and enables snapping for panel boxes", () => {
-    render(<AdvancedPanelCanvas {...props} isGridEnabled={true} />);
+  it("always shows the overlay and gives panel boxes the grid", () => {
+    render(<AdvancedPanelCanvas {...props} />);
 
     expect(mockAdvancedSnapGridOverlay).toHaveBeenCalledTimes(1);
     expect(mockAdvancedPanelBox).toHaveBeenCalledWith(
-      expect.objectContaining({ isGridEnabled: true }),
+      expect.objectContaining({ grid: props.grid }),
     );
+    expect(mockAdvancedPanelBox.mock.calls[0][0]).not.toHaveProperty(
+      "isGridEnabled",
+    );
+  });
+
+  it("hides the overlay only during confirmation", () => {
+    render(<AdvancedPanelCanvas {...props} phase="confirm" />);
+
+    expect(mockAdvancedSnapGridOverlay).not.toHaveBeenCalled();
   });
 });

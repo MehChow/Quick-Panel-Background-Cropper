@@ -13,7 +13,7 @@ const en = {
     releaseAnnouncement: {
       v1_1_0: {
         title: "v1.1.0 Major Updates 🌟\n",
-        body: "• New Buttons layout customization\n• Added snapping grid toggle\n• Improved Customize page performance\n\nReminder: After updating, please recalibrate once for the best experience.",
+        body: "• New Buttons layout customization\n• Improved Customize page performance\n\nReminder: After updating, please recalibrate once for the best experience.",
         gotIt: "Got it",
       },
     },
@@ -148,9 +148,6 @@ const en = {
       next: "Next",
       gridHelpButton: "Grid help",
       gridControlsTitle: "Set the snapping grid",
-      gridToggleLabel: "Enable snapping grid",
-      gridToggleOn: "On",
-      gridToggleOff: "Off",
       panelSelectionTitle: "Which panels are in this region?",
       panelSelectionBody:
         "Turn off any unwanted Controls panel that is missing from this region. Disabled panels will not be aligned or exported.",

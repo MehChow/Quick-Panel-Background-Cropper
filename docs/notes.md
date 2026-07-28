@@ -661,3 +661,15 @@ The advanced calibration help sheets regressed during the Fold/wide-screen respo
 - Use a stable reason-based ID such as `v1.1.0-release-announcement`; do not use the Expo version or Android version code.
 - Store acknowledgement separately from calibration and preserve all unrelated MMKV keys.
 - Keep the shared dialog styled like `AdvancedCalibrationLeaveDialog`; change only localized content and the active descriptor for future releases. The standard CTA only acknowledges and closes the panel.
+
+### 2026-07-28: Required Advanced snapping grid
+
+- Removed the snapping toggle from Advanced Controls-only and Buttons-only.
+- Grid controls, snapping, snap haptics, and outer-area clamping are always
+  active.
+- Existing calibrations preserve their rectangles and grid counts; obsolete
+  `isGridEnabled` values are ignored and omitted from future saves.
+- Buttons continue deriving identifier layout and reference sizing from their
+  configured grid.
+- The enlarged green-area preview strip remains a separate coordinate-alignment
+  investigation.

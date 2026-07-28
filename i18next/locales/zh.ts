@@ -12,7 +12,7 @@ const zh = {
     releaseAnnouncement: {
       v1_1_0: {
         title: "v1.1.0 主要更新內容 🌟\n",
-        body: "• 新增「按鈕版面」自訂功能\n• 新增對齊格線開關功能\n• 優化自訂頁面效能\n\n提醒：更新後，請在重新校正一次以達最佳體驗。",
+        body: "• 新增「按鈕版面」自訂功能\n• 優化自訂頁面效能\n\n提醒：更新後，請再重新校正一次以達最佳體驗。",
         gotIt: "知道了",
       },
     },
@@ -134,9 +134,6 @@ const zh = {
       next: "下一步",
       gridHelpButton: "格線說明",
       gridControlsTitle: "設定對齊格線",
-      gridToggleLabel: "啟用對齊格線",
-      gridToggleOn: "開",
-      gridToggleOff: "關",
       panelSelectionTitle: "這個區域包含哪些版面？",
       panelSelectionBody:
         "關閉這個區域中沒有的控制版面。已關閉的版面不需要校準，也不會匯出。",

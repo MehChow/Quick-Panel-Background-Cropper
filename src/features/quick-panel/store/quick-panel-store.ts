@@ -73,10 +73,7 @@ export interface QuickPanelState extends QuickPanelStateData {
   setAdvancedPanels: (panels: ControlPanelRects) => void;
   setAdvancedButtons: (buttons: ButtonCalibrationItem[]) => void;
   setAdvancedButtonPanels: (panels: PanelRects) => void;
-  acceptAdvancedCalibration: (
-    grid: AdvancedSnapGrid,
-    isGridEnabled: boolean,
-  ) => boolean;
+  acceptAdvancedCalibration: (grid: AdvancedSnapGrid) => boolean;
   startImageProcessing: () => void;
   finishImageProcessing: (image: PickedImage) => void;
   failImageProcessing: (message: string | null, errorKey: string | null) => void;
@@ -217,13 +214,12 @@ export const useQuickPanelStore = create<QuickPanelState>((set, get) => ({
       : null,
     error: null,
   })),
-  acceptAdvancedCalibration: (grid, isGridEnabled) => {
+  acceptAdvancedCalibration: (grid) => {
     const state = get();
     if (state.selectedAdvancedTarget === "buttons") {
       const calibration = getButtonsCalibrationFromDraft(
         state.advancedButtonsDraft,
         grid,
-        isGridEnabled,
       );
       if (!calibration) {
         set({ error: translate("errors.invalidAdvancedPanels") });
@@ -240,7 +236,6 @@ export const useQuickPanelStore = create<QuickPanelState>((set, get) => ({
     const calibration = getCalibrationFromDraft(
       state.advancedDraft,
       grid,
-      isGridEnabled,
     );
     if (!calibration) {
       set({ error: translate("errors.invalidAdvancedPanels") });

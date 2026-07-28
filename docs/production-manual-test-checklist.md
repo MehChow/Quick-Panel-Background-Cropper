@@ -123,12 +123,12 @@ persistence, Default calibration, image gestures, export, and Good Lock.
 
 **Journey 1 result:** `[ ] Pass  [ ] Fail`
 
-## Journey 2: Advanced Controls subset -> grid modes -> persistence
+## Journey 2: Advanced Controls subset -> required grid -> persistence
 
 **Target:** S25+  
 **Time:** about 15 minutes  
 **Covers:** Advanced target navigation, panel subset, preview eye, grid edge
-cases, snapping/free movement, haptics, leave guard, independent storage, and
+cases, snapping, haptics, leave guard, independent storage, and
 subset export.
 
 - [ ] From Select Mode, choose Advanced -> Controls only. Both selection steps
@@ -138,18 +138,17 @@ subset export.
   panel.
 - [ ] Set a single-axis grid (`4 x 1` or `1 x 4`). Separator dots remain useful;
   `1 x 1` shows no misleading dots.
-- [ ] With snapping on, move/resize a panel and confirm predictable snapping,
-  changed-target haptics, outer-bound constraints, and no release-time jump.
-- [ ] Turn snapping off. Dots disappear, grid controls disable, haptics stop,
-  movement becomes free, and boxes still cannot leave the outer area.
-- [ ] Turn snapping on again. Previous row/column values and behavior return.
+- [ ] Move/resize a panel and confirm the grid remains visible, row/column
+  controls remain enabled, snapping and changed-target haptics stay active,
+  boxes remain inside the outer area, and there is no release-time jump.
 - [ ] After confirming the outer area, test header Back and Android Back: both
   warn about unsaved work. Cancel keeps the draft; the footer Back changes phase
   without showing the route-leave warning.
 - [ ] Complete panels in Button box, Brightness, Volume, Media player order,
   with the disabled panel skipped. Active/completed states remain clear.
-- [ ] Save with snapping in a known state, force-close, relaunch, and return.
-  Calibration, subset, and snapping state persist independently from Default.
+- [ ] Save with known grid counts, force-close, relaunch, and return.
+  Calibration, subset, and grid counts persist independently from Default and
+  Advanced Buttons.
 - [ ] Choose an image and export. Only enabled Controls appear, in the correct
   relative order, with geometry matching preview and QuickStar.
 - [ ] After success, Advanced and Controls-only are preselected but neither
@@ -161,9 +160,9 @@ subset export.
 
 **Target:** S25+  
 **Time:** about 25 minutes  
-**Covers:** Buttons catalog/search/custom labels, mixed geometry, snapping
-independence, continuous image composition, all Customize controls, persistence,
-sequential export, filenames, Result, and real QuickStar output.
+**Covers:** Buttons catalog/search/custom labels, mixed geometry, independent
+grid persistence, continuous image composition, all Customize controls,
+persistence, sequential export, filenames, Result, and real QuickStar output.
 
 ### Select and calibrate
 
@@ -179,8 +178,8 @@ sequential export, filenames, Result, and real QuickStar output.
 - [ ] Add one custom label. The dialog offers Zap, Star, Sparkles, Circle,
   Music, Gamepad, Globe, and Sliders; cancelling adds nothing, while confirming
   creates an amber chip with the chosen icon.
-- [ ] Use the opposite snapping state from Journey 2 and confirm the two Advanced
-  targets retain independent grid preferences.
+- [ ] Set different grid counts from Journey 2 and confirm the two Advanced
+  targets retain independent grid values.
 - [ ] Align `1x4`, `3x1`, `1x1`, `3x3`, and custom boxes. All stay inside the
   outer area; active boxes are blue, completed boxes orange, and review shows
   every selected Button once in order.
@@ -334,7 +333,8 @@ Run these only when the release touches the corresponding area.
 
 ### Calibration geometry, gestures, or grid
 
-- [ ] Repeat small edge boxes, `1x1`, `1xN`, and `Nx1` grids with snapping on/off.
+- [ ] Repeat small edge boxes, `1x1`, `1xN`, and `Nx1` grids. Confirm snapping,
+  haptics, and outer-area clamping remain active throughout adjustment.
 - [ ] Compare the visible green outer rectangle with saved preview and export.
 - [ ] Cancel a move/resize gesture and confirm visible/stored geometry agree.
 

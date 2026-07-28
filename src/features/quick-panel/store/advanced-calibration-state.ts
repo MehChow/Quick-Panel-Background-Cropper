@@ -44,7 +44,6 @@ export function createAdvancedDraft(
 export function getCalibrationFromDraft(
   draft: AdvancedCalibrationDraft | null,
   grid: AdvancedSnapGrid,
-  isGridEnabled: boolean,
 ): AdvancedCalibration | null {
   if (
     !draft?.screenshot ||
@@ -58,7 +57,6 @@ export function getCalibrationFromDraft(
     screenshotWidth: draft.screenshot.width,
     screenshotHeight: draft.screenshot.height,
     grid,
-    isGridEnabled,
     outerRect: draft.outerRect,
     enabledPanels: draft.enabledPanels,
     panels: draft.panels,
@@ -95,7 +93,6 @@ export function createAdvancedButtonsDraft(
 export function getButtonsCalibrationFromDraft(
   draft: AdvancedButtonsDraft | null,
   grid: AdvancedSnapGrid,
-  isGridEnabled: boolean,
 ): AdvancedButtonsCalibration | null {
   if (
     !draft?.screenshot ||
@@ -108,7 +105,6 @@ export function getButtonsCalibrationFromDraft(
     screenshotWidth: draft.screenshot.width,
     screenshotHeight: draft.screenshot.height,
     grid,
-    isGridEnabled,
     outerRect: draft.outerRect,
     buttons: draft.buttons,
   };

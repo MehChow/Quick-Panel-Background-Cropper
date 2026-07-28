@@ -97,7 +97,6 @@ function createScreenState() {
     importScreenshot: jest.fn(),
     isConfirmPhase: false,
     isGridPhase: false,
-    isGridEnabled: false,
     isLeaveDialogOpen: false,
     isOuterPhase: true,
     isPanelSelectionPhase: false,
@@ -112,7 +111,6 @@ function createScreenState() {
     setAdvancedOuterRect: jest.fn(),
     setAdvancedPanels: jest.fn(),
     setColumns: jest.fn(),
-    setIsGridEnabled: jest.fn(),
     setRows: jest.fn(),
     selectedAdvancedTarget: "controls",
   };
@@ -156,7 +154,7 @@ describe("AdvancedCalibrationScreen empty state", () => {
     ).toBeTruthy();
   });
 
-  it("passes the snapping preference to the panel canvas", () => {
+  it("passes the configured grid to the panel canvas", () => {
     mockUseAdvancedCalibrationScreen.mockReturnValue({
       ...createScreenState(),
       advancedDraft: {
@@ -180,11 +178,14 @@ describe("AdvancedCalibrationScreen empty state", () => {
     render(<AdvancedCalibrationScreen />);
 
     expect(mockAdvancedPanelCanvas.mock.calls[0][0]).toEqual(
-      expect.objectContaining({ isGridEnabled: false }),
+      expect.objectContaining({ grid: { columns: 4, rows: 5 } }),
+    );
+    expect(mockAdvancedPanelCanvas.mock.calls[0][0]).not.toHaveProperty(
+      "isGridEnabled",
     );
   });
 
-  it("passes the snapping preference and handler to grid controls", () => {
+  it("passes the configured grid to grid controls without a toggle handler", () => {
     const screenState = {
       ...createScreenState(),
       advancedDraft: {
@@ -207,9 +208,13 @@ describe("AdvancedCalibrationScreen empty state", () => {
 
     expect(mockAdvancedCalibrationControls.mock.calls[0][0]).toEqual(
       expect.objectContaining({
-        isGridEnabled: false,
-        onGridEnabledChange: screenState.setIsGridEnabled,
+        columns: 4,
+        rows: 5,
       }),
     );
+    expect(mockAdvancedCalibrationControls.mock.calls[0][0])
+      .not.toHaveProperty("isGridEnabled");
+    expect(mockAdvancedCalibrationControls.mock.calls[0][0])
+      .not.toHaveProperty("onGridEnabledChange");
   });
 });

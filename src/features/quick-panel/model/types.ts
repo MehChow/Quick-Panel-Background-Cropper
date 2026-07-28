@@ -60,7 +60,6 @@ export interface AdvancedCalibration {
   screenshotWidth: number;
   screenshotHeight: number;
   grid: AdvancedSnapGrid;
-  isGridEnabled: boolean;
   outerRect: PanelRect;
   enabledPanels: ControlPanelId[];
   panels: ControlPanelRects;
@@ -90,7 +89,6 @@ export interface AdvancedButtonsCalibration {
   screenshotWidth: number;
   screenshotHeight: number;
   grid: AdvancedSnapGrid;
-  isGridEnabled: boolean;
   outerRect: PanelRect;
   buttons: ButtonCalibrationItem[];
 }

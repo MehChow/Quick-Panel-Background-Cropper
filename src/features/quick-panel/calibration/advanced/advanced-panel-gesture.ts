@@ -6,16 +6,11 @@ import {
   type AdvancedSnapGrid,
   type SnapResult,
 } from "./advanced-grid";
-import {
-  clampPanelRect,
-  clampResizedPanelRect,
-} from "./panel-constraints";
 
 export interface AdvancedPanelMoveInput {
   dx: number;
   dy: number;
   grid: AdvancedSnapGrid;
-  isGridEnabled: boolean;
   outerRect: PanelRect;
   scale: number;
   startRect: PanelRect;
@@ -29,7 +24,6 @@ export function getAdvancedPanelMoveResult({
   dx,
   dy,
   grid,
-  isGridEnabled,
   outerRect,
   scale,
   startRect,
@@ -40,12 +34,6 @@ export function getAdvancedPanelMoveResult({
     x: startRect.x + dx / scale,
     y: startRect.y + dy / scale,
   };
-  if (!isGridEnabled) {
-    return {
-      rect: clampPanelRect(movedRect, outerRect),
-      snapKey: null,
-    };
-  }
   return snapMovedPanelRect(movedRect, startRect, outerRect, grid);
 }
 
@@ -53,7 +41,6 @@ export function getAdvancedPanelResizeResult({
   dx,
   dy,
   grid,
-  isGridEnabled,
   outerRect,
   position,
   scale,
@@ -66,12 +53,6 @@ export function getAdvancedPanelResizeResult({
     dx / scale,
     dy / scale,
   );
-  if (!isGridEnabled) {
-    return {
-      rect: clampResizedPanelRect(resizedRect, outerRect, position),
-      snapKey: null,
-    };
-  }
   return snapResizedPanelRect(
     resizedRect,
     startRect,
