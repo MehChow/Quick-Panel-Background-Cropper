@@ -12,6 +12,37 @@ This file is a running project note log for implementation details that are easy
 
 ## Entries
 
+### 2026-07-27: Transactional Buttons label color
+
+- Buttons label appearance uses exactly `reanimated-color-picker@5.1.2`.
+- Brightness and Intensity share one tabbed slider card. Only the active slider
+  is mounted, and its live percentage is rendered from picker shared values
+  without continuous React state updates.
+- The 44-point Light/Dark control beside the HEX input changes only the neutral
+  icon-circle background: Light is `#FFFFFF`, Dark is `#666666`, and missing or
+  invalid saved values default to Dark.
+- The app owns the controlled six-digit HEX field because the picker
+  `InputWidget` cannot preserve invalid or incomplete raw input for inline
+  validation.
+- Continuous picker movement updates only Reanimated shared values in the
+  dialog's read-only composition preview. It does not call React state per
+  frame and never reaches export.
+- Cancel, backdrop dismissal, and Android Back discard the draft. Confirm
+  persists the shared glyph-and-label color, complete-overlay opacity, and
+  circle-background theme in one settings update.
+- The animated dialog renderer must retain the static renderer's complete text
+  fitting and corner-label styles; NxM labels stay anchored at bottom-right.
+- The modal follows the release-announcement slate surface and uses keyboard
+  avoidance around its scrollable content. Keep the picker tracks compact and
+  the Cancel action white with black text.
+- The old glyph light/dark theme is not migrated. A missing or malformed
+  replacement color defaults to `#FFFFFF`; the new circle-background setting
+  is parsed independently while unrelated settings remain intact.
+- Automated verification covers normalization/storage, compact controls,
+  static preview/export parity, dialog validation, and transactional actions.
+  Connected-device acceptance and the final flow screenshot are recorded
+  separately when hardware is available.
+
 ### 2026-07-22: Buttons Customize preview and aligned PNG export
 
 This entry supersedes the older identifier sizing/classification details below.

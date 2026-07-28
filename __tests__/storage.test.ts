@@ -85,8 +85,9 @@ describe("storage", () => {
 
   it("round-trips Buttons-only customization settings", () => {
     const settings: ButtonCustomizeSettings = {
+      buttonIdentifierBackgroundTheme: "light",
+      buttonIdentifierColor: "#1A2B3C",
       buttonIdentifierOpacity: 61,
-      buttonIdentifierTheme: "dark",
       buttonPanelOpacity: 84,
       horizontalIdentifierPosition: 23,
       showButtonIdentifiers: false,
@@ -96,6 +97,51 @@ describe("storage", () => {
     saveButtonCustomizeSettings(settings);
 
     expect(loadButtonCustomizeSettings()).toEqual(settings);
+  });
+
+  it.each([
+    [
+      {
+        buttonIdentifierBackgroundTheme: "light",
+        buttonIdentifierColor: "#1a2b3c",
+        buttonPanelOpacity: 84,
+      },
+      "#1A2B3C",
+      "light",
+      84,
+    ],
+    [
+      {
+        buttonIdentifierBackgroundTheme: "auto",
+        buttonIdentifierColor: "bad",
+        buttonPanelOpacity: 84,
+      },
+      "#FFFFFF",
+      "dark",
+      84,
+    ],
+    [
+      {
+        buttonIdentifierTheme: "light",
+        buttonPanelOpacity: 84,
+      },
+      "#FFFFFF",
+      "dark",
+      84,
+    ],
+  ])("normalizes replacement appearance without migrating legacy theme", (
+    saved,
+    color,
+    backgroundTheme,
+    opacity,
+  ) => {
+    const mmkvStore = (globalThis as typeof globalThis & MmkvTestGlobal).__mmkvStore;
+    mmkvStore?.set("quick-panel.button-customize-settings", JSON.stringify(saved));
+    expect(loadButtonCustomizeSettings()).toMatchObject({
+      buttonIdentifierBackgroundTheme: backgroundTheme,
+      buttonIdentifierColor: color,
+      buttonPanelOpacity: opacity,
+    });
   });
 
   it("ignores every old calibration format but preserves other preferences", () => {

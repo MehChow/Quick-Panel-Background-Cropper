@@ -7,19 +7,25 @@ import Animated, {
 import type { ButtonIdentifierPositions } from "../../model/button-identifier-layout";
 import type {
   CustomizationMode,
-  ButtonIdentifierTheme,
   ImageTransform,
   PanelDefinition,
   PickedImage,
 } from "../../model/types";
 import { getPanelImageTransform } from "../panel-image-transform";
-import { getPreviewPanelRadius } from "../preview-geometry";
+import {
+  getPreviewPanelFrameStyle,
+  getPreviewPanelRadius,
+} from "../preview-geometry";
+import type { ButtonIdentifierBackgroundTheme } from "../button-identifier-color";
 import { PanelOverlay } from "./PanelOverlay";
 import { ButtonIdentifierOverlay } from "./ButtonIdentifierOverlay";
+import type { AnimatedButtonIdentifierAppearance } from "./button-identifier-animated-appearance";
 
 interface PanelSliceProps {
+  animatedButtonIdentifierAppearance?: AnimatedButtonIdentifierAppearance;
+  buttonIdentifierBackgroundTheme?: ButtonIdentifierBackgroundTheme;
+  buttonIdentifierColor?: string;
   buttonIdentifierOpacity: number;
-  buttonIdentifierTheme?: ButtonIdentifierTheme;
   buttonPanelOpacity: number;
   identifierPositions: ButtonIdentifierPositions;
   showButtonIdentifiers: boolean;
@@ -30,14 +36,16 @@ interface PanelSliceProps {
   layoutScale: number;
   originX: number;
   originY: number;
-  previewScale: SharedValue<number>;
+  previewScale: SharedValue<number> | number;
   previewUri: string;
-  transform: SharedValue<ImageTransform>;
+  transform: SharedValue<ImageTransform> | ImageTransform;
 }
 
 export function PanelSlice({
+  animatedButtonIdentifierAppearance,
+  buttonIdentifierBackgroundTheme = "dark",
+  buttonIdentifierColor = "#FFFFFF",
   buttonIdentifierOpacity,
-  buttonIdentifierTheme = "light",
   buttonPanelOpacity,
   identifierPositions,
   showButtonIdentifiers,
@@ -54,11 +62,17 @@ export function PanelSlice({
 }: PanelSliceProps) {
   const panelRadius = getPreviewPanelRadius(panel.rect, layoutScale);
   const imageStyle = useAnimatedStyle(() => {
+    const currentPreviewScale = typeof previewScale === "number"
+      ? previewScale
+      : previewScale.get();
+    const currentTransform = "get" in transform
+      ? transform.get()
+      : transform;
     const placement = getPanelImageTransform({
       panelX: panel.rect.x,
       panelY: panel.rect.y,
-      previewScale: previewScale.get(),
-      transform: transform.get(),
+      previewScale: currentPreviewScale,
+      transform: currentTransform,
     });
     return {
       transform: [
@@ -72,13 +86,12 @@ export function PanelSlice({
   return (
     <View
       className="absolute overflow-hidden bg-white/10"
-      style={{
-        borderRadius: panelRadius,
-        height: panel.rect.height * layoutScale,
-        left: (panel.rect.x - originX) * layoutScale,
-        top: (panel.rect.y - originY) * layoutScale,
-        width: panel.rect.width * layoutScale,
-      }}
+      style={getPreviewPanelFrameStyle(
+        panel.rect,
+        layoutScale,
+        originX,
+        originY,
+      )}
       testID={`panel-slice-${panel.id}`}
     >
       <Animated.View style={[styles.image, imageStyle]}>
@@ -95,18 +108,20 @@ export function PanelSlice({
       </Animated.View>
       {panel.family === "button" && panel.buttonIdentifier ? (
         <ButtonIdentifierOverlay
+          animatedAppearance={animatedButtonIdentifierAppearance}
+          backgroundTheme={buttonIdentifierBackgroundTheme}
           bounds={{
             x: 0,
             y: 0,
             width: panel.rect.width * layoutScale,
             height: panel.rect.height * layoutScale,
           }}
+          color={buttonIdentifierColor}
           identifier={panel.buttonIdentifier}
           label={panel.label}
           opacity={showButtonIdentifiers ? buttonIdentifierOpacity : 0}
           positions={identifierPositions}
           referenceCellSize={panel.buttonIdentifier.referenceCellSize * layoutScale}
-          theme={buttonIdentifierTheme}
         />
       ) : null}
       {showOverlay ? (

@@ -6,13 +6,19 @@ import type {
   AdvancedTarget,
   ButtonCalibrationItem,
   ButtonPanelId,
-  ButtonIdentifierTheme,
   ControlPanelId,
   ControlPanelRects,
   CustomizationMode,
   DefaultCalibration,
   PanelRect,
 } from "../model/types";
+import {
+  defaultButtonIdentifierBackgroundTheme,
+  defaultButtonIdentifierColor,
+  normalizeButtonIdentifierBackgroundTheme,
+  normalizeButtonIdentifierColor,
+  type ButtonIdentifierBackgroundTheme,
+} from "../customize/button-identifier-color";
 import { panelIds } from "../model/panel-ids";
 import {
   getBuiltInButtonLabel,
@@ -48,8 +54,9 @@ export interface SavedCalibrations {
 }
 
 export interface ButtonCustomizeSettings {
+  buttonIdentifierBackgroundTheme: ButtonIdentifierBackgroundTheme;
+  buttonIdentifierColor: string;
   buttonIdentifierOpacity: number;
-  buttonIdentifierTheme?: ButtonIdentifierTheme;
   buttonPanelOpacity: number;
   horizontalIdentifierPosition: number;
   showButtonIdentifiers: boolean;
@@ -57,8 +64,9 @@ export interface ButtonCustomizeSettings {
 }
 
 export const defaultButtonCustomizeSettings: ButtonCustomizeSettings = {
+  buttonIdentifierBackgroundTheme: defaultButtonIdentifierBackgroundTheme,
+  buttonIdentifierColor: defaultButtonIdentifierColor,
   buttonIdentifierOpacity: 70,
-  buttonIdentifierTheme: "light",
   buttonPanelOpacity: 78,
   horizontalIdentifierPosition: 50,
   showButtonIdentifiers: true,
@@ -183,13 +191,17 @@ function parseButtonCustomizeSettings(value: string | undefined): ButtonCustomiz
       return defaultButtonCustomizeSettings;
     }
     return {
+      buttonIdentifierBackgroundTheme:
+        normalizeButtonIdentifierBackgroundTheme(
+          parsed.buttonIdentifierBackgroundTheme,
+        ) ?? defaultButtonIdentifierBackgroundTheme,
+      buttonIdentifierColor:
+        normalizeButtonIdentifierColor(parsed.buttonIdentifierColor)
+        ?? defaultButtonIdentifierColor,
       buttonIdentifierOpacity: parsePercentage(
         parsed.buttonIdentifierOpacity,
         defaultButtonCustomizeSettings.buttonIdentifierOpacity,
       ),
-      buttonIdentifierTheme: parsed.buttonIdentifierTheme === "dark"
-        ? "dark"
-        : defaultButtonCustomizeSettings.buttonIdentifierTheme,
       buttonPanelOpacity: parsePercentage(
         parsed.buttonPanelOpacity,
         defaultButtonCustomizeSettings.buttonPanelOpacity,

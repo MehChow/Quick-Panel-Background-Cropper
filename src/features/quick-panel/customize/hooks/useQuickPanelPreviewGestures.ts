@@ -184,7 +184,6 @@ export function useQuickPanelPreviewGestures({
     gesture: Gesture.Simultaneous(pan, pinch),
     handleLayout,
     layoutScale,
-    sharedScale,
     sharedTransform,
   };
 }
