@@ -100,9 +100,9 @@ preview visible while editing. It includes:
 - **Vertical position** for long vertical Button labels.
 - A color swatch opens a transactional Label appearance dialog with a
   hue/saturation wheel, one shared Brightness/Intensity tabbed slider card, and
-  exact six-digit HEX input. One color applies to every glyph and visible label.
-- A Light/Dark toggle beside the HEX field controls only the neutral icon-circle
-  background: Light uses `#FFFFFF`, Dark uses `#666666`.
+  exact six-digit HEX input. One color applies to every glyph.
+- A Light/Dark toggle beside the HEX field controls the neutral icon-circle
+  background and label together: Light uses `#FFFFFF`, Dark uses `#666666`.
 - The dialog uses the release-announcement surface treatment, compact picker
   tracks, a high-contrast white Cancel action, and keyboard-aware scrolling so
   the HEX field remains reachable while editing.
@@ -123,8 +123,8 @@ The defaults for a fresh install are:
 - Show labels: enabled
 - Horizontal label position: `50%`
 - Vertical label position: `50%`
-- Shared glyph-and-label color: `#FFFFFF`
-- Icon-circle background: Dark (`#666666`)
+- Shared glyph color: `#FFFFFF`
+- Icon-circle and label theme: Dark (`#666666`)
 
 This persistence is newer than the earlier v3 specs and README text that
 describe these values as screen-local; the final implementation is the source
@@ -133,9 +133,10 @@ of truth.
 ## Button identifiers
 
 Buttons-only can render stable icons and labels above the selected image in both
-the live preview and final PNGs. The confirmed HEX color, opacity, and manual
-Light/Dark circle background are shared by preview and export. Changing HEX
-never changes the selected circle background. Controls exports are unchanged.
+the live preview and final PNGs. The confirmed glyph HEX color, opacity, and
+manual Light/Dark circle-and-label theme are shared by preview and export.
+Changing HEX never changes the selected circle or label theme. Controls exports
+are unchanged.
 
 Identifier content follows the calibrated grid span:
 

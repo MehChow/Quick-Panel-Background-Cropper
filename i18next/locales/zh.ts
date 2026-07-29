@@ -10,10 +10,11 @@ const zh = {
       subtitle: "將一張圖片無縫延伸到你的 Quick Panel 控制版面",
     },
     releaseAnnouncement: {
-      v1_1_0: {
-        title: "v1.1.0 主要更新內容 🌟\n",
-        body: "• 新增「按鈕版面」自訂功能\n• 優化自訂頁面效能\n\n提醒：更新後，請再重新校正一次以達最佳體驗。",
+      v1_2_0: {
+        title: "v1.2.0 主要更新內容 🌟\n",
+        body: "• 新功能－僅按鈕模式新增圖示顏色自訂功能\n• 已移除吸附網格開關功能",
         gotIt: "知道了",
+        mediaAccessibilityLabel: "僅按鈕模式的圖示顏色自訂功能",
       },
     },
     landing: {

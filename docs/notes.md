@@ -12,15 +12,24 @@ This file is a running project note log for implementation details that are easy
 
 ## Entries
 
+### 2026-07-28: Buttons label color follows the neutral theme
+
+- The color picker and Brightness slider affect only the Button icon glyph.
+- The visible label follows the same fixed neutral value as the icon circle:
+  Light is `#FFFFFF` and Dark is `#666666`.
+- Keep this rule identical in the animated dialog preview, main preview, and
+  exported PNGs. Intensity continues to apply to the complete identifier
+  overlay.
+
 ### 2026-07-27: Transactional Buttons label color
 
 - Buttons label appearance uses exactly `reanimated-color-picker@5.1.2`.
 - Brightness and Intensity share one tabbed slider card. Only the active slider
   is mounted, and its live percentage is rendered from picker shared values
   without continuous React state updates.
-- The 44-point Light/Dark control beside the HEX input changes only the neutral
-  icon-circle background: Light is `#FFFFFF`, Dark is `#666666`, and missing or
-  invalid saved values default to Dark.
+- The 44-point Light/Dark control beside the HEX input changes the neutral icon
+  circle and label together: Light is `#FFFFFF`, Dark is `#666666`, and missing
+  or invalid saved values default to Dark.
 - The app owns the controlled six-digit HEX field because the picker
   `InputWidget` cannot preserve invalid or incomplete raw input for inline
   validation.
@@ -28,8 +37,8 @@ This file is a running project note log for implementation details that are easy
   dialog's read-only composition preview. It does not call React state per
   frame and never reaches export.
 - Cancel, backdrop dismissal, and Android Back discard the draft. Confirm
-  persists the shared glyph-and-label color, complete-overlay opacity, and
-  circle-background theme in one settings update.
+  persists the glyph color, complete-overlay opacity, and shared
+  circle-and-label theme in one settings update.
 - The animated dialog renderer must retain the static renderer's complete text
   fitting and corner-label styles; NxM labels stay anchored at bottom-right.
 - The modal follows the release-announcement slate surface and uses keyboard

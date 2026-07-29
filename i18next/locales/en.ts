@@ -11,10 +11,12 @@ const en = {
         "Split one image seamlessly across your Quick Panel Controls area",
     },
     releaseAnnouncement: {
-      v1_1_0: {
-        title: "v1.1.0 Major Updates 🌟\n",
-        body: "• New Buttons layout customization\n• Improved Customize page performance\n\nReminder: After updating, please recalibrate once for the best experience.",
+      v1_2_0: {
+        title: "v1.2.0 Major Updates 🌟\n",
+        body: "• New feature - added icon color customization in Buttons-only mode\n• Removed snapping grid toggling feature",
         gotIt: "Got it",
+        mediaAccessibilityLabel:
+          "Icon color customization in Buttons-only mode",
       },
     },
     landing: {
