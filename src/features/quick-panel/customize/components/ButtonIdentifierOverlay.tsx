@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
 import { type LayoutChangeEvent, View } from "react-native";
 import {
-  getConstrainedAxisOffset,
   getButtonIdentifierLayout,
   type ButtonIdentifierBounds,
   type ButtonIdentifierPositions,
 } from "../../model/button-identifier-layout";
-import type {
-  ButtonIdentifierDefinition,
-  ButtonIdentifierTheme,
-} from "../../model/types";
-import { buttonIdentifierStyles as styles } from "./button-identifier-content";
+import type { ButtonIdentifierDefinition } from "../../model/types";
+import type { ButtonIdentifierBackgroundTheme } from "../button-identifier-color";
 import { ButtonIdentifierVisuals } from "./ButtonIdentifierVisuals";
+import { AnimatedButtonIdentifierFrame } from "./AnimatedButtonIdentifierFrame";
+import { AnimatedButtonIdentifierVisuals } from "./AnimatedButtonIdentifierVisuals";
+import type { AnimatedButtonIdentifierAppearance } from "./button-identifier-animated-appearance";
+import { ButtonIdentifierPositionedContent } from "./ButtonIdentifierPositionedContent";
 
 interface HorizontalMeasurement {
   key: string;
@@ -19,25 +19,29 @@ interface HorizontalMeasurement {
 }
 
 interface ButtonIdentifierOverlayProps {
+  animatedAppearance?: AnimatedButtonIdentifierAppearance;
+  backgroundTheme?: ButtonIdentifierBackgroundTheme;
   bounds: ButtonIdentifierBounds;
+  color?: string;
   identifier: ButtonIdentifierDefinition;
   label: string;
   onPositionReady?: () => void;
   opacity: number;
   positions: ButtonIdentifierPositions;
   referenceCellSize: number;
-  theme?: ButtonIdentifierTheme;
 }
 
 export function ButtonIdentifierOverlay({
+  animatedAppearance,
+  backgroundTheme = "dark",
   bounds,
+  color = "#FFFFFF",
   identifier,
   label,
   onPositionReady,
   opacity,
   positions,
   referenceCellSize,
-  theme = "light",
 }: ButtonIdentifierOverlayProps) {
   const layout = getButtonIdentifierLayout(bounds, identifier, referenceCellSize);
   const measurementKey = [
@@ -63,80 +67,55 @@ export function ButtonIdentifierOverlay({
       ? current
       : { key: measurementKey, width });
   };
-  const visuals = (
-    <ButtonIdentifierVisuals
+  const visuals = animatedAppearance ? (
+    <AnimatedButtonIdentifierVisuals
+      appearance={animatedAppearance}
       identifier={identifier}
       label={label}
       layout={layout}
-      theme={theme}
+    />
+  ) : (
+    <ButtonIdentifierVisuals
+      backgroundTheme={backgroundTheme}
+      color={color}
+      identifier={identifier}
+      label={label}
+      layout={layout}
     />
   );
-  let content;
+  const content = (
+    <ButtonIdentifierPositionedContent
+      bounds={bounds}
+      layout={layout}
+      measuredWidth={measuredWidth}
+      onHorizontalLayout={handleHorizontalLayout}
+      positions={positions}
+    >
+      {visuals}
+    </ButtonIdentifierPositionedContent>
+  );
 
-  if (layout.kind === "horizontal") {
-    const maxWidth = Math.max(0, bounds.width - layout.inset * 2);
-    const left = getConstrainedAxisOffset({
-      axisLength: bounds.width,
-      contentLength: measuredWidth ?? maxWidth,
-      inset: layout.inset,
-      position: positions.horizontal,
-    });
-    content = (
-      <View
-        onLayout={handleHorizontalLayout}
-        testID="button-identifier-movable-content"
-        style={[styles.horizontal, { gap: layout.gap, left, maxWidth }]}
-      >
-        {visuals}
-      </View>
-    );
-  } else if (layout.kind === "vertical") {
-    const top = getConstrainedAxisOffset({
-      axisLength: bounds.height,
-      contentLength: layout.iconBackgroundSize,
-      inset: layout.inset,
-      position: positions.vertical,
-    });
-    content = (
-      <View
-        testID="button-identifier-movable-content"
-        style={[
-          styles.vertical,
-          { height: layout.iconBackgroundSize, top, width: bounds.width },
-        ]}
-      >
-        {visuals}
-      </View>
-    );
-  } else {
-    const contentStyle = layout.kind === "single"
-      ? styles.center
-      : [
-        styles.corner,
-        {
-          paddingHorizontal: layout.cornerPadding,
-          paddingVertical: layout.cornerPadding,
-        },
-      ];
-    content = (
-      <View testID="button-identifier-content" style={[styles.content, contentStyle]}>
-        {visuals}
-      </View>
-    );
-  }
-
-  return (
+  const baseStyle = {
+    height: bounds.height,
+    left: bounds.x,
+    position: "absolute" as const,
+    top: bounds.y,
+    width: bounds.width,
+  };
+  const hidden = layout.kind === "horizontal" && measuredWidth === null;
+  return animatedAppearance ? (
+    <AnimatedButtonIdentifierFrame
+      baseStyle={baseStyle}
+      hidden={hidden}
+      opacity={animatedAppearance.opacity}
+    >
+      {content}
+    </AnimatedButtonIdentifierFrame>
+  ) : (
     <View
       pointerEvents="none"
       testID="button-identifier-overlay"
-      style={{
-        height: bounds.height,
-        left: bounds.x,
-        opacity: layout.kind === "horizontal" && measuredWidth === null ? 0 : opacity,
-        position: "absolute",
-        top: bounds.y,
-        width: bounds.width,
-      }}
+      style={[baseStyle, { opacity: hidden ? 0 : opacity }]}
     >
       {content}
     </View>

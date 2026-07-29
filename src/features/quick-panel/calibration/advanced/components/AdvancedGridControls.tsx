@@ -1,5 +1,4 @@
 import { Slider } from "@/components/ani-ui/slider";
-import { Switch } from "@/components/ani-ui/switch";
 import { Text } from "@/components/ani-ui/text";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -8,9 +7,7 @@ import { GridHelpButton } from "./GridHelpButton";
 
 interface Props {
   columns: number;
-  isGridEnabled: boolean;
   onColumnsChange: (value: number) => void;
-  onGridEnabledChange: (enabled: boolean) => void;
   onGridHelpPress: () => void;
   onRowsChange: (value: number) => void;
   rows: number;
@@ -18,9 +15,7 @@ interface Props {
 
 export function AdvancedGridControls({
   columns,
-  isGridEnabled,
   onColumnsChange,
-  onGridEnabledChange,
   onGridHelpPress,
   onRowsChange,
   rows,
@@ -38,25 +33,14 @@ export function AdvancedGridControls({
         <Text className="text-xs font-semibold uppercase tracking-[0.8px] text-zinc-400">
           {t("advancedCalibration.gridControlsTitle")}
         </Text>
-        <View className="flex-row items-center gap-2">
-          <GridHelpButton
-            label={t("advancedCalibration.gridHelpButton")}
-            onPress={onGridHelpPress}
-            testID="advanced-grid-help"
-          />
-          <Switch
-            accessibilityLabel={t("advancedCalibration.gridToggleLabel")}
-            offLabel={t("advancedCalibration.gridToggleOff")}
-            onLabel={t("advancedCalibration.gridToggleOn")}
-            onValueChange={onGridEnabledChange}
-            testID="advanced-grid-toggle"
-            value={isGridEnabled}
-          />
-        </View>
+        <GridHelpButton
+          label={t("advancedCalibration.gridHelpButton")}
+          onPress={onGridHelpPress}
+          testID="advanced-grid-help"
+        />
       </View>
       <View className="flex-row gap-2">
         <AxisChip
-          disabled={!isGridEnabled}
           isActive={isColumnsActive}
           label={columnsLabel}
           onPress={() => setActiveAxis("columns")}
@@ -64,7 +48,6 @@ export function AdvancedGridControls({
           value={columns}
         />
         <AxisChip
-          disabled={!isGridEnabled}
           isActive={!isColumnsActive}
           label={rowsLabel}
           onPress={() => setActiveAxis("rows")}
@@ -73,7 +56,6 @@ export function AdvancedGridControls({
         />
       </View>
       <GridSlider
-        disabled={!isGridEnabled}
         onValueChange={isColumnsActive ? onColumnsChange : onRowsChange}
         value={isColumnsActive ? columns : rows}
       />
@@ -82,7 +64,6 @@ export function AdvancedGridControls({
 }
 
 interface AxisChipProps {
-  disabled: boolean;
   isActive: boolean;
   label: string;
   onPress: () => void;
@@ -90,12 +71,10 @@ interface AxisChipProps {
   value: number;
 }
 
-function AxisChip({ disabled, isActive, label, onPress, testID, value }: AxisChipProps) {
+function AxisChip({ isActive, label, onPress, testID, value }: AxisChipProps) {
   return (
     <Pressable
-      accessibilityState={{ disabled }}
-      className={`flex-1 rounded-xl px-3 py-2 ${isActive ? "bg-white/10" : "bg-zinc-800/60"} ${disabled ? "opacity-50" : ""}`}
-      disabled={disabled}
+      className={`flex-1 rounded-xl px-3 py-2 ${isActive ? "bg-white/10" : "bg-zinc-800/60"}`}
       onPress={onPress}
       testID={testID}
     >
@@ -112,17 +91,14 @@ function AxisChip({ disabled, isActive, label, onPress, testID, value }: AxisChi
 }
 
 interface GridSliderProps {
-  disabled: boolean;
   onValueChange: (value: number) => void;
   value: number;
 }
 
-function GridSlider({ disabled, onValueChange, value }: GridSliderProps) {
+function GridSlider({ onValueChange, value }: GridSliderProps) {
   return (
     <View className="rounded-xl bg-zinc-800/70 px-3 py-2">
       <Slider
-        accessibilityState={{ disabled }}
-        disabled={disabled}
         max={8}
         min={1}
         onValueChange={onValueChange}

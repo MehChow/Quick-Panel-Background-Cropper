@@ -2,31 +2,37 @@ import { Text } from "@/components/ani-ui/text";
 import { Lucide } from "@react-native-vector-icons/lucide";
 import { View } from "react-native";
 import type { ButtonIdentifierLayout } from "../../model/button-identifier-layout";
-import type { ButtonIdentifierDefinition, ButtonIdentifierTheme } from "../../model/types";
+import type { ButtonIdentifierDefinition } from "../../model/types";
+import {
+  getButtonIdentifierBackgroundColor,
+  type ButtonIdentifierBackgroundTheme,
+} from "../button-identifier-color";
 import { buttonIdentifierStyles as styles } from "./button-identifier-content";
 
 interface ButtonIdentifierVisualsProps {
+  backgroundTheme: ButtonIdentifierBackgroundTheme;
+  color: string;
   identifier: ButtonIdentifierDefinition;
   label: string;
   layout: ButtonIdentifierLayout;
-  theme: ButtonIdentifierTheme;
 }
 
 export function ButtonIdentifierVisuals({
+  backgroundTheme,
+  color,
   identifier,
   label,
   layout,
-  theme,
 }: ButtonIdentifierVisualsProps) {
-  const isDark = theme === "dark";
+  const circleColor = getButtonIdentifierBackgroundColor(backgroundTheme);
   return (
     <>
       <View
         testID="button-identifier-icon-background"
         style={[
           styles.iconBackground,
-          isDark && styles.darkIconBackground,
           {
+            backgroundColor: circleColor,
             borderRadius: layout.iconBackgroundSize / 2,
             height: layout.iconBackgroundSize,
             width: layout.iconBackgroundSize,
@@ -34,10 +40,10 @@ export function ButtonIdentifierVisuals({
         ]}
       >
         <Lucide
-          color={isDark ? "#333333" : "#FFFFFF"}
+          color={color}
           name={identifier.iconName}
           size={layout.iconSize}
-          style={isDark ? undefined : styles.shadow}
+          style={styles.shadow}
         />
       </View>
       {layout.showLabel ? (
@@ -53,6 +59,7 @@ export function ButtonIdentifierVisuals({
             styles.shadow,
             {
               fontSize: layout.fontSize,
+              color: circleColor,
               lineHeight: layout.fontSize * 1.2,
               maxWidth: layout.maxLabelWidth,
             },

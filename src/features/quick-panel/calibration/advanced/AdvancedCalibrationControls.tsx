@@ -7,13 +7,11 @@ interface Props {
   canGoBack: boolean;
   columns: number;
   isConfirmPhase: boolean;
-  isGridEnabled: boolean;
   isGridPhase: boolean;
   isNextDisabled: boolean;
   isOuterPhase: boolean;
   onBack: () => void;
   onColumnsChange: (value: number) => void;
-  onGridEnabledChange: (enabled: boolean) => void;
   onGridHelpPress: () => void;
   onImport: () => void;
   onNext: () => void;
@@ -26,13 +24,11 @@ export function AdvancedCalibrationControls({
   canGoBack,
   columns,
   isConfirmPhase,
-  isGridEnabled,
   isGridPhase,
   isNextDisabled,
   isOuterPhase,
   onBack,
   onColumnsChange,
-  onGridEnabledChange,
   onGridHelpPress,
   onImport,
   onNext,
@@ -47,9 +43,7 @@ export function AdvancedCalibrationControls({
       {isGridPhase ? (
         <AdvancedGridControls
           columns={columns}
-          isGridEnabled={isGridEnabled}
           onColumnsChange={onColumnsChange}
-          onGridEnabledChange={onGridEnabledChange}
           onGridHelpPress={onGridHelpPress}
           onRowsChange={onRowsChange}
           rows={rows}

@@ -7,7 +7,6 @@ export type PanelId = ControlPanelId | ButtonPanelId;
 export type PanelFamily = "control" | "button";
 export type CustomizationMode = "default" | "advanced";
 export type AdvancedTarget = "controls" | "buttons";
-export type ButtonIdentifierTheme = "light" | "dark";
 
 export interface PanelRect {
   x: number;
@@ -61,7 +60,6 @@ export interface AdvancedCalibration {
   screenshotWidth: number;
   screenshotHeight: number;
   grid: AdvancedSnapGrid;
-  isGridEnabled: boolean;
   outerRect: PanelRect;
   enabledPanels: ControlPanelId[];
   panels: ControlPanelRects;
@@ -91,7 +89,6 @@ export interface AdvancedButtonsCalibration {
   screenshotWidth: number;
   screenshotHeight: number;
   grid: AdvancedSnapGrid;
-  isGridEnabled: boolean;
   outerRect: PanelRect;
   buttons: ButtonCalibrationItem[];
 }

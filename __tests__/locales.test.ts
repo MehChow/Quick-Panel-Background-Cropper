@@ -1,5 +1,22 @@
 import { enLocale, zhLocale } from "../i18next/resources";
 
+describe("release announcement locale strings", () => {
+  it("defines the v1.2.0 updates in English and Traditional Chinese", () => {
+    expect(enLocale.translation.releaseAnnouncement.v1_2_0).toEqual({
+      title: "v1.2.0 Major Updates 🌟\n",
+      body: "• New feature - added icon color customization in Buttons-only mode\n• Removed snapping grid toggling feature",
+      gotIt: "Got it",
+      mediaAccessibilityLabel: "Icon color customization in Buttons-only mode",
+    });
+    expect(zhLocale.translation.releaseAnnouncement.v1_2_0).toEqual({
+      title: "v1.2.0 主要更新內容 🌟\n",
+      body: "• 新功能－僅按鈕模式新增圖示顏色自訂功能\n• 已移除吸附網格開關功能",
+      gotIt: "知道了",
+      mediaAccessibilityLabel: "僅按鈕模式的圖示顏色自訂功能",
+    });
+  });
+});
+
 describe("customize locale strings", () => {
   it("defines Customize image-placement help in English and Chinese", () => {
     const english = enLocale.translation.customize;
@@ -39,10 +56,27 @@ describe("customize locale strings", () => {
     expect(enLocale.translation.customize.verticalIdentifierPosition).toBe(
       "Vertical label position",
     );
-    expect(enLocale.translation.customize.buttonAdjustmentImageTab).toBe("Image");
-    expect(enLocale.translation.customize.buttonAdjustmentIdentifierTab).toBe(
-      "Labels",
+    expect(enLocale.translation.customize.buttonAdjustmentImageTab).toBe(
+      "Image",
     );
+    expect(
+      enLocale.translation.customize.buttonIdentifierAppearance,
+    ).toBeTruthy();
+    expect(
+      enLocale.translation.customize.chooseButtonIdentifierColor,
+    ).toBeTruthy();
+    expect(enLocale.translation.customize.buttonIdentifierIntensity).toBe(
+      "Intensity",
+    );
+    expect(enLocale.translation.customize.buttonIdentifierBackgroundLight).toBe(
+      "Light",
+    );
+    expect(enLocale.translation.customize.buttonIdentifierBackgroundDark).toBe(
+      "Dark",
+    );
+    expect(
+      enLocale.translation.customize.buttonIdentifierBackgroundThemeChoice,
+    ).toBeTruthy();
     expect(enLocale.translation.customize.buttonAdjustmentHorizontalTab).toBe(
       "Horiz.",
     );
@@ -53,12 +87,33 @@ describe("customize locale strings", () => {
     expect(enLocale.translation.customize.buttonIdentifiersOff).toBe("Off");
     expect(zhLocale.translation.customize.showButtonIdentifiers).toBeTruthy();
     expect(zhLocale.translation.customize.buttonIdentifierOpacity).toBeTruthy();
-    expect(zhLocale.translation.customize.horizontalIdentifierPosition).toBeTruthy();
-    expect(zhLocale.translation.customize.verticalIdentifierPosition).toBeTruthy();
-    expect(zhLocale.translation.customize.buttonAdjustmentImageTab).toBe("圖片");
-    expect(zhLocale.translation.customize.buttonAdjustmentIdentifierTab).toBe(
-      "標籤",
+    expect(
+      zhLocale.translation.customize.horizontalIdentifierPosition,
+    ).toBeTruthy();
+    expect(
+      zhLocale.translation.customize.verticalIdentifierPosition,
+    ).toBeTruthy();
+    expect(zhLocale.translation.customize.buttonAdjustmentImageTab).toBe(
+      "圖片",
     );
+    expect(
+      zhLocale.translation.customize.buttonIdentifierAppearance,
+    ).toBeTruthy();
+    expect(
+      zhLocale.translation.customize.chooseButtonIdentifierColor,
+    ).toBeTruthy();
+    expect(
+      zhLocale.translation.customize.buttonIdentifierIntensity,
+    ).toBeTruthy();
+    expect(
+      zhLocale.translation.customize.buttonIdentifierBackgroundLight,
+    ).toBeTruthy();
+    expect(
+      zhLocale.translation.customize.buttonIdentifierBackgroundDark,
+    ).toBeTruthy();
+    expect(
+      zhLocale.translation.customize.buttonIdentifierBackgroundThemeChoice,
+    ).toBeTruthy();
     expect(zhLocale.translation.customize.buttonAdjustmentHorizontalTab).toBe(
       "水平",
     );

@@ -10,13 +10,11 @@ export const buttonIdentifierStyles = StyleSheet.create({
     position: "absolute",
     top: 0,
   },
-  label: { color: "#FFFFFF", fontWeight: "600" },
+  label: { fontWeight: "600" },
   iconBackground: {
     alignItems: "center",
-    backgroundColor: "#666666",
     justifyContent: "center",
   },
-  darkIconBackground: { backgroundColor: "#FFFFFF" },
   corner: {
     alignItems: "flex-start",
     flex: 1,

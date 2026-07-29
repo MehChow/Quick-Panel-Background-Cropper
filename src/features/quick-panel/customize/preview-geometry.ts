@@ -1,5 +1,6 @@
 import { getImagePlacementBounds, getPanelUnion } from "../model/panel-geometry";
 import type { PanelRect, QuickPanelPreset } from "../model/types";
+import type { ViewStyle } from "react-native";
 
 const previewPanelRadius = 32;
 
@@ -26,4 +27,20 @@ export function getPreviewPanelRadius(
     (rect.width * layoutScale) / 2,
     (rect.height * layoutScale) / 2,
   );
+}
+
+export function getPreviewPanelFrameStyle(
+  rect: PanelRect,
+  layoutScale: number,
+  originX: number,
+  originY: number,
+): ViewStyle {
+  return {
+    borderRadius: getPreviewPanelRadius(rect, layoutScale),
+    height: rect.height * layoutScale,
+    left: (rect.x - originX) * layoutScale,
+    position: "absolute",
+    top: (rect.y - originY) * layoutScale,
+    width: rect.width * layoutScale,
+  };
 }

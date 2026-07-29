@@ -50,9 +50,10 @@ Buttons-only adds an end-to-end path matching the established app flow:
 8. Customize Button image and identifier appearance.
 9. Export one square PNG for every selected Button in the shown order.
 
-Buttons are screenshot-driven, user-sized rectangles. They are not restricted
-to preset shapes, and the app does not attempt to read Samsung's active Quick
-Settings Button list through unsupported APIs.
+Buttons are screenshot-driven, grid-aligned rectangles. Their row and column
+spans come from the configured grid, which keeps supported Button sizing and
+Customize identifier layout consistent. The app does not attempt to read
+Samsung's active Quick Settings Button list through unsupported APIs.
 
 ## Button selection and labels
 
@@ -80,14 +81,12 @@ Settings Button list through unsupported APIs.
   data.
 - Buttons use blue boxes while being edited and orange boxes after completion,
   matching the established Advanced review semantics.
-- Snapping can now be disabled in Advanced Controls or Advanced Buttons.
-  Turning it off hides the grid, disables grid-size controls and snap haptics,
-  and allows free movement and resizing while keeping every box inside the
+- The snapping grid is required in Advanced Controls and Advanced Buttons. Row
+  and column controls remain available, every editable box snaps to the
+  configured grid with haptic feedback, and boxes remain constrained to the
   confirmed outer area.
-- The previous row and column values are retained when snapping is turned off,
-  then restored when it is enabled again.
-- Grid-enabled state is saved independently for Advanced Controls and Advanced
-  Buttons. Existing saved payloads without the flag default to enabled.
+- Controls and Buttons retain independent grid counts with their separate saved
+  calibrations.
 
 ## Buttons Customize controls
 
@@ -97,18 +96,25 @@ preview visible while editing. It includes:
 - **Button image intensity** for the background artwork.
 - **Show labels** to include or remove the app-rendered Button icons and names
   from both preview and exported PNGs.
-- **Label intensity** for the Button icon and text.
 - **Horizontal position** for long horizontal Button labels.
 - **Vertical position** for long vertical Button labels.
-- A separate light/dark icon-style toggle. Light uses a gray circle with a
-  white icon; dark uses a white circle with a dark icon. The toggle is disabled
-  when labels are hidden and provides pressed-state feedback.
+- A color swatch opens a transactional Label appearance dialog with a
+  hue/saturation wheel, one shared Brightness/Intensity tabbed slider card, and
+  exact six-digit HEX input. One color applies to every glyph.
+- A Light/Dark toggle beside the HEX field controls the neutral icon-circle
+  background and label together: Light uses `#FFFFFF`, Dark uses `#666666`.
+- The dialog uses the release-announcement surface treatment, compact picker
+  tracks, a high-contrast white Cancel action, and keyboard-aware scrolling so
+  the HEX field remains reachable while editing.
 
-The Image, Labels, Horiz., and Vert. tabs share one slider area. Orientation
-tabs appear only when the active Button layout needs them. Hiding labels
-disables label-related controls and returns the active adjustment to Image.
+The Image, Horiz., and Vert. tabs share one slider area. Orientation tabs
+appear only when the active Button layout needs them. Hiding labels disables
+the swatch and position controls and returns the active adjustment to Image.
+The dialog reuses the full composition as a read-only real-time preview.
+Cancel discards its draft; Confirm atomically updates the main preview and
+committed-only export path.
 
-Final branch behavior persists all six Buttons Customize settings across
+Final branch behavior persists all Buttons Customize settings across
 screen visits and app restarts under `quick-panel.button-customize-settings`.
 The defaults for a fresh install are:
 
@@ -117,7 +123,8 @@ The defaults for a fresh install are:
 - Show labels: enabled
 - Horizontal label position: `50%`
 - Vertical label position: `50%`
-- Label icon style: Light
+- Shared glyph color: `#FFFFFF`
+- Icon-circle and label theme: Dark (`#666666`)
 
 This persistence is newer than the earlier v3 specs and README text that
 describe these values as screen-local; the final implementation is the source
@@ -126,8 +133,10 @@ of truth.
 ## Button identifiers
 
 Buttons-only can render stable icons and labels above the selected image in both
-the live preview and final PNGs. The selected light or dark icon style is
-shared by preview and export. Controls exports are unchanged.
+the live preview and final PNGs. The confirmed glyph HEX color, opacity, and
+manual Light/Dark circle-and-label theme are shared by preview and export.
+Changing HEX never changes the selected circle or label theme. Controls exports
+are unchanged.
 
 Identifier content follows the calibrated grid span:
 
@@ -148,7 +157,7 @@ bounds, so long identifiers remain inside the visible rounded Button area.
 - All selected Buttons share one source image and one pan/zoom transform, so
   adjacent Buttons reveal continuous portions of the same composition.
 - Preview and export project the same source-coordinate rectangles, image
-  transform, opacity, identifier visibility, identifier intensity, and
+  transform, opacity, identifier visibility, identifier color/intensity, and
   identifier positions.
 - Every Button export is an original-quality `1024 x 1024` PNG.
 - Non-square Buttons are represented by a centered square export area, leaving
@@ -202,8 +211,7 @@ redirect.
 The recalibration boundary does not clear unrelated preferences. Existing
 language and seen-help state remain intact, as does the last successfully
 exported main mode. v3 adds independent persistence for the last Advanced
-target, each target's snapping-grid choice, custom Button icons, and Buttons
-Customize settings.
+target, custom Button icons, and Buttons Customize settings.
 
 After users create the new calibrations and settings, they are expected to
 survive normal future app updates.

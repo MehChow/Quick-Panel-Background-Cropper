@@ -10,7 +10,6 @@ import { triggerSnapHaptic } from "../snap-haptics";
 interface Params {
   draftRect: SharedValue<PanelRect>;
   grid: AdvancedSnapGrid;
-  isGridEnabled: boolean;
   outerRect: PanelRect;
   position: HandlePosition;
   scale: number;
@@ -20,7 +19,6 @@ interface Params {
 export function useAdvancedPanelResizeGesture({
   draftRect,
   grid,
-  isGridEnabled,
   outerRect,
   position,
   scale,
@@ -51,7 +49,6 @@ export function useAdvancedPanelResizeGesture({
         dx: event.translationX,
         dy: event.translationY,
         grid,
-        isGridEnabled,
         outerRect,
         position,
         scale,

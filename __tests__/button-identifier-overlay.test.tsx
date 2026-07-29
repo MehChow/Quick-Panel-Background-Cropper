@@ -22,6 +22,7 @@ function renderOverlay(
 ) {
   return render(
     <ButtonIdentifierOverlay
+      backgroundTheme="dark"
       bounds={overlayBounds}
       identifier={{
         columnSpan,
@@ -59,9 +60,10 @@ describe("ButtonIdentifierOverlay", () => {
     expect(screen.queryByTestId("button-identifier-label")).toBeNull();
   });
 
-  it("renders the dark icon style with a white circle and dark glyph", () => {
+  it("uses the selected light circle without changing the black glyph", () => {
     const screen = render(
       <ButtonIdentifierOverlay
+        backgroundTheme="light"
         bounds={bounds}
         identifier={{
           columnSpan: 1,
@@ -73,7 +75,7 @@ describe("ButtonIdentifierOverlay", () => {
         opacity={0.7}
         positions={{ horizontal: 0.5, vertical: 0.5 }}
         referenceCellSize={50}
-        theme="dark"
+        color="#000000"
       />,
     );
     const background = screen.getByTestId("button-identifier-icon-background");
@@ -82,8 +84,64 @@ describe("ButtonIdentifierOverlay", () => {
     expect(StyleSheet.flatten(background.props.style)).toMatchObject({
       backgroundColor: "#FFFFFF",
     });
-    expect(icon.props.color).toBe("#333333");
+    expect(icon.props.color).toBe("#000000");
   });
+
+  it("keeps a dark circle when the HEX color changes", () => {
+    const screen = render(
+      <ButtonIdentifierOverlay
+        backgroundTheme="dark"
+        bounds={bounds}
+        color="#000000"
+        identifier={{
+          columnSpan: 1,
+          rowSpan: 1,
+          iconName: "wifi",
+          referenceCellSize: 50,
+        }}
+        label="Wi-Fi"
+        opacity={0.7}
+        positions={{ horizontal: 0.5, vertical: 0.5 }}
+        referenceCellSize={50}
+      />,
+    );
+
+    expect(StyleSheet.flatten(
+      screen.getByTestId("button-identifier-icon-background").props.style,
+    )).toMatchObject({ backgroundColor: "#666666" });
+    expect(screen.getByTestId("mock-lucide").props.color).toBe("#000000");
+  });
+
+  it.each([
+    ["light", "#FFFFFF"],
+    ["dark", "#666666"],
+  ] as const)(
+    "keeps the %s label on its fixed theme when the glyph color changes",
+    (backgroundTheme, expectedLabelColor) => {
+      const screen = render(
+        <ButtonIdentifierOverlay
+          backgroundTheme={backgroundTheme}
+          bounds={bounds}
+          color="#E3FFF6"
+          identifier={{
+            columnSpan: 4,
+            rowSpan: 1,
+            iconName: "wifi",
+            referenceCellSize: 50,
+          }}
+          label="Wi-Fi"
+          opacity={0.7}
+          positions={{ horizontal: 0.5, vertical: 0.5 }}
+          referenceCellSize={50}
+        />,
+      );
+
+      expect(screen.getByTestId("mock-lucide").props.color).toBe("#E3FFF6");
+      expect(StyleSheet.flatten(
+        screen.getByTestId("button-identifier-label").props.style,
+      )).toMatchObject({ color: expectedLabelColor });
+    },
+  );
 
   it("moves a one-column icon while preserving horizontal centering", () => {
     const screen = renderOverlay(1, 3, { horizontal: 0.5, vertical: 1 });

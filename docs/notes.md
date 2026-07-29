@@ -12,6 +12,46 @@ This file is a running project note log for implementation details that are easy
 
 ## Entries
 
+### 2026-07-28: Buttons label color follows the neutral theme
+
+- The color picker and Brightness slider affect only the Button icon glyph.
+- The visible label follows the same fixed neutral value as the icon circle:
+  Light is `#FFFFFF` and Dark is `#666666`.
+- Keep this rule identical in the animated dialog preview, main preview, and
+  exported PNGs. Intensity continues to apply to the complete identifier
+  overlay.
+
+### 2026-07-27: Transactional Buttons label color
+
+- Buttons label appearance uses exactly `reanimated-color-picker@5.1.2`.
+- Brightness and Intensity share one tabbed slider card. Only the active slider
+  is mounted, and its live percentage is rendered from picker shared values
+  without continuous React state updates.
+- The 44-point Light/Dark control beside the HEX input changes the neutral icon
+  circle and label together: Light is `#FFFFFF`, Dark is `#666666`, and missing
+  or invalid saved values default to Dark.
+- The app owns the controlled six-digit HEX field because the picker
+  `InputWidget` cannot preserve invalid or incomplete raw input for inline
+  validation.
+- Continuous picker movement updates only Reanimated shared values in the
+  dialog's read-only composition preview. It does not call React state per
+  frame and never reaches export.
+- Cancel, backdrop dismissal, and Android Back discard the draft. Confirm
+  persists the glyph color, complete-overlay opacity, and shared
+  circle-and-label theme in one settings update.
+- The animated dialog renderer must retain the static renderer's complete text
+  fitting and corner-label styles; NxM labels stay anchored at bottom-right.
+- The modal follows the release-announcement slate surface and uses keyboard
+  avoidance around its scrollable content. Keep the picker tracks compact and
+  the Cancel action white with black text.
+- The old glyph light/dark theme is not migrated. A missing or malformed
+  replacement color defaults to `#FFFFFF`; the new circle-background setting
+  is parsed independently while unrelated settings remain intact.
+- Automated verification covers normalization/storage, compact controls,
+  static preview/export parity, dialog validation, and transactional actions.
+  Connected-device acceptance and the final flow screenshot are recorded
+  separately when hardware is available.
+
 ### 2026-07-22: Buttons Customize preview and aligned PNG export
 
 This entry supersedes the older identifier sizing/classification details below.
@@ -630,3 +670,15 @@ The advanced calibration help sheets regressed during the Fold/wide-screen respo
 - Use a stable reason-based ID such as `v1.1.0-release-announcement`; do not use the Expo version or Android version code.
 - Store acknowledgement separately from calibration and preserve all unrelated MMKV keys.
 - Keep the shared dialog styled like `AdvancedCalibrationLeaveDialog`; change only localized content and the active descriptor for future releases. The standard CTA only acknowledges and closes the panel.
+
+### 2026-07-28: Required Advanced snapping grid
+
+- Removed the snapping toggle from Advanced Controls-only and Buttons-only.
+- Grid controls, snapping, snap haptics, and outer-area clamping are always
+  active.
+- Existing calibrations preserve their rectangles and grid counts; obsolete
+  `isGridEnabled` values are ignored and omitted from future saves.
+- Buttons continue deriving identifier layout and reference sizing from their
+  configured grid.
+- The enlarged green-area preview strip remains a separate coordinate-alignment
+  investigation.

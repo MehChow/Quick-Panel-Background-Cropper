@@ -9,6 +9,8 @@ Simple Git, Play testing, versioning guide.
 - `feature/<name>`: new work from `dev`. Merge back into `dev`.
 - `release/<version>`: frozen candidate from `dev`. Testing and release fixes only.
 - `hotfix/<version>`: urgent production fix from `main`.
+- `sync/<version>-to-dev`: temporary fallback for copying a clean production
+  tree into `dev` when historical-secret checks block the normal back-merge.
 
 Keep only `main` and `dev` permanently. Delete merged temporary branches. Never
 force-push `main` or `dev`.
@@ -46,8 +48,8 @@ Cut release only when intended version is complete in `dev`:
 ```bash
 git switch dev
 git pull --ff-only origin dev
-git switch -c release/1.1.0
-git push -u origin release/1.1.0
+git switch -c release/1.2.0
+git push -u origin release/1.2.0
 ```
 
 Then:
@@ -64,11 +66,13 @@ Then:
 
 After testing passes:
 
-1. Open PR from `release/1.1.0` to `main`.
+1. Open PR from `release/1.2.0` to `main`.
 2. Merge release PR.
 3. Promote exact tested AAB to production. Avoid unnecessary rebuild.
 4. Tag production commit.
-5. Merge release branch back into `dev`. This preserves release-only fixes.
+5. Merge the release branch back into `dev`. This preserves release-only fixes.
+   If a historical-secret check blocks that PR, use the clean sync fallback
+   below instead of bypassing the check.
 6. Delete release branch locally and remotely.
 
 Do not merge `dev` into `main` after release branch was cut. `dev` may already
@@ -79,23 +83,50 @@ Tag production commit:
 ```bash
 git switch main
 git pull --ff-only origin main
-git tag -a v1.1.0 -m "Release v1.1.0"
-git push origin v1.1.0
+git tag -a v1.2.0 -m "Release v1.2.0"
+git push origin v1.2.0
 ```
 
-Optional release-candidate tag: `v1.1.0-rc.1`.
+Optional release-candidate tag: `v1.2.0-rc.1`.
+
+### Clean sync fallback
+
+Use this only when the release-to-`dev` PR is blocked because its commit range
+contains an old secret-bearing commit that is already part of `main`.
+
+Do not mark a real secret as a false positive, rewrite a released/tagged branch,
+or merge the blocked PR. Close it, then copy only the current safe production
+tree into a new branch from `dev`:
+
+```bash
+git fetch origin
+git switch dev
+git pull --ff-only origin dev
+git switch -c sync/v1.2.0-to-dev
+git merge --squash origin/main
+git status
+git diff --cached --name-status
+git diff --cached --check
+```
+
+Confirm no credential, keystore, or service-account file is staged. Run the
+full checks, commit the staged production changes, push the sync branch, and
+open a PR to `dev`. Delete both temporary branches after the clean PR merges.
+
+This fallback copies tree content without importing the old secret-bearing
+history. It does not replace the normal release-to-`dev` merge.
 
 ## Hotfix
 
 Urgent production bug:
 
-1. Create `hotfix/1.0.1` from `main`.
+1. Create `hotfix/1.1.1` from `main`.
 2. Fix and test.
 3. Run `npm run build-release`, choose `new`, and upload the candidate to
    Internal testing.
 4. Test the exact candidate and commit its reviewed release metadata.
 5. Merge the hotfix into `main`.
-6. Promote the tested artifact and tag the production commit `v1.0.1`.
+6. Promote the tested artifact and tag the production commit `v1.1.1`.
 7. Merge the hotfix back into `dev`.
 8. Delete the hotfix branch.
 
@@ -113,8 +144,8 @@ Urgent production bug:
 
 Use semantic versioning:
 
-- bug fix: `1.0.0` to `1.0.1`
-- feature update: `1.0.1` to `1.1.0`
+- bug fix: `1.1.0` to `1.1.1`
+- feature update: `1.1.0` to `1.2.0`
 - breaking update: `1.1.0` to `2.0.0`
 
 `expo.android.versionCode` is Play build number. Increase for every uploaded
@@ -124,8 +155,8 @@ this project uses range near `30000000`.
 `npm run build-release` derives the user-visible version from the current
 branch:
 
-- `release/1.1.0` -> `1.1.0`
-- `hotfix/1.0.1` -> `1.0.1`
+- `release/1.2.0` -> `1.2.0`
+- `hotfix/1.1.1` -> `1.1.1`
 
 The command never changes `package.json` version. For candidate builds:
 
@@ -178,35 +209,28 @@ that also changes `versionCode`.
 - Build succeeded, but the AAB was lost and its code was never uploaded: after
   committing the successful metadata, choose `retry` to reproduce that code.
 - AAB was uploaded to any Play track: the code is consumed. After a fix, choose
-  `new`, even though the branch remains `release/1.1.0`.
+  `new`, even though the branch remains `release/1.2.0`.
 
-## First v1.1.0 release walkthrough
+## Reusable release walkthrough
 
-For the current v3 release:
-
-1. Keep `app.json` at production version `1.0.0` while feature work is on
-   `feature/*` and `dev`.
-2. Merge the completed v3 feature into `dev`.
-3. Run the full automated checks on `dev`.
-4. Create `release/1.1.0` from the tested `dev` commit.
-5. Make sure the release branch is clean.
-6. Run `npm run build-release`.
-7. Choose `new`. Starting from production code `30000021`, the expected first
-   candidate is `30000022`; verify this against Play Console before confirming.
-8. Wait for the tests and AAB build to finish.
-9. Record the printed AAB path and SHA-256. Review the `app.json` change to
-   `1.1.0`, the new version code, and the enabled Landing build label.
-10. Commit those reviewed release metadata changes on `release/1.1.0`.
-11. Upload the exact AAB to Play Console -> Internal testing and start the
-    rollout.
-12. Opt in on the S25+ with the same Google account used by Play Store, then
-    update the installed production v1.0.0 in place.
-13. Run `docs/production-manual-test-checklist.md`.
-14. If a blocker is found, fix and commit it on `release/1.1.0`, then run
-    `build-release` with `new` to create a higher-code v1.1.0 candidate.
-15. When a candidate passes, merge the release PR to `main`.
-16. Promote that exact Play artifact to Production without rebuilding it, tag
-    v1.1.0, then merge the release branch back into `dev`.
+1. Merge completed features into `dev` and run the full automated checks.
+2. Create `release/<version>` from the tested `dev` commit.
+3. From a clean release branch, run `npm run build-release` and choose `new`.
+4. Verify the proposed version code is higher than every code already uploaded
+   to Play.
+5. Record the AAB path and SHA-256. Review and commit the generated release
+   metadata.
+6. Upload that exact AAB to Internal testing.
+7. Test both an in-place production update and the reusable manual checklist in
+   `docs/production-manual-test-checklist.md`.
+8. For every replacement uploaded to Play, fix the release branch and run
+   `build-release` with `new`.
+9. Merge the passing release into `main`, promote the exact tested artifact,
+   and tag the production commit.
+10. Back-merge release fixes into `dev`, using the clean sync fallback only if a
+    historical-secret check blocks the normal PR.
+11. Delete merged feature, release, and sync branches. Keep only `main` and
+    `dev` permanently.
 
 ## Secrets and CI
 
@@ -222,6 +246,21 @@ Never commit:
 
 Store CI secrets in GitHub Actions or environment secrets.
 
+Before committing, inspect staged filenames. Before opening a PR, inspect the
+complete file and commit range that is new to its target branch:
+
+```bash
+git diff --cached --name-only
+git diff --name-only origin/dev...HEAD
+git log origin/dev..HEAD -- credentials.json
+```
+
+Use `origin/main` instead of `origin/dev` when the PR targets `main`. No output
+from the `git log` command is expected. Deleting a secret in a later commit does
+not remove it from the PR history. If a real secret was committed, rotate it
+immediately and replace the secret-bearing PR history; do not bypass the
+security finding.
+
 ## Safety rules
 
 - Use `git pull --ff-only` for normal sync.
@@ -230,3 +269,5 @@ Store CI secrets in GitHub Actions or environment secrets.
 - Test exact artifact intended for production.
 - Promote tested AAB when possible. Avoid different production rebuild.
 - Review working tree after build and version commands.
+- Keep only `main` and `dev` after merged temporary branches are no longer
+  needed.

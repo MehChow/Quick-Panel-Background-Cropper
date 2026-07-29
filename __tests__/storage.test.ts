@@ -30,7 +30,6 @@ const currentCalibrations = {
     screenshotWidth: 1080,
     screenshotHeight: 2340,
     grid: { columns: 5, rows: 6 },
-    isGridEnabled: true,
     outerRect: rect,
     panels: {
       buttonBox: { x: 20, y: 40, width: 100, height: 120, radius: 0 },
@@ -44,7 +43,6 @@ const currentCalibrations = {
     screenshotWidth: 1080,
     screenshotHeight: 2340,
     grid: { columns: 2, rows: 2 },
-    isGridEnabled: false,
     outerRect: rect,
     buttons: [
       {
@@ -71,10 +69,10 @@ describe("storage", () => {
 
     expect(loadAcknowledgedReleaseAnnouncement()).toBeNull();
 
-    acknowledgeReleaseAnnouncement("v1.1.0-release-announcement");
+    acknowledgeReleaseAnnouncement("v1.2.0-buttons-icon-color-announcement");
 
     expect(loadAcknowledgedReleaseAnnouncement()).toBe(
-      "v1.1.0-release-announcement",
+      "v1.2.0-buttons-icon-color-announcement",
     );
     expect(loadCalibrations()).toEqual({
       default: null,
@@ -85,8 +83,9 @@ describe("storage", () => {
 
   it("round-trips Buttons-only customization settings", () => {
     const settings: ButtonCustomizeSettings = {
+      buttonIdentifierBackgroundTheme: "light",
+      buttonIdentifierColor: "#1A2B3C",
       buttonIdentifierOpacity: 61,
-      buttonIdentifierTheme: "dark",
       buttonPanelOpacity: 84,
       horizontalIdentifierPosition: 23,
       showButtonIdentifiers: false,
@@ -96,6 +95,51 @@ describe("storage", () => {
     saveButtonCustomizeSettings(settings);
 
     expect(loadButtonCustomizeSettings()).toEqual(settings);
+  });
+
+  it.each([
+    [
+      {
+        buttonIdentifierBackgroundTheme: "light",
+        buttonIdentifierColor: "#1a2b3c",
+        buttonPanelOpacity: 84,
+      },
+      "#1A2B3C",
+      "light",
+      84,
+    ],
+    [
+      {
+        buttonIdentifierBackgroundTheme: "auto",
+        buttonIdentifierColor: "bad",
+        buttonPanelOpacity: 84,
+      },
+      "#FFFFFF",
+      "dark",
+      84,
+    ],
+    [
+      {
+        buttonIdentifierTheme: "light",
+        buttonPanelOpacity: 84,
+      },
+      "#FFFFFF",
+      "dark",
+      84,
+    ],
+  ])("normalizes replacement appearance without migrating legacy theme", (
+    saved,
+    color,
+    backgroundTheme,
+    opacity,
+  ) => {
+    const mmkvStore = (globalThis as typeof globalThis & MmkvTestGlobal).__mmkvStore;
+    mmkvStore?.set("quick-panel.button-customize-settings", JSON.stringify(saved));
+    expect(loadButtonCustomizeSettings()).toMatchObject({
+      buttonIdentifierBackgroundTheme: backgroundTheme,
+      buttonIdentifierColor: color,
+      buttonPanelOpacity: opacity,
+    });
   });
 
   it("ignores every old calibration format but preserves other preferences", () => {
@@ -148,28 +192,35 @@ describe("storage", () => {
     expect(loadCalibrations()).toEqual(currentCalibrations);
   });
 
-  it("defaults missing or invalid snapping preferences to enabled", () => {
+  it("ignores retired snapping preferences without losing calibration data", () => {
     const mmkvStore = (globalThis as typeof globalThis & MmkvTestGlobal)
       .__mmkvStore;
-    const legacyControls = { ...currentCalibrations.advancedControls };
-    const legacyButtons: Record<string, unknown> = {
-      ...currentCalibrations.advancedButtons,
-      isGridEnabled: "off",
-    };
-    delete (legacyControls as Partial<typeof legacyControls>).isGridEnabled;
-
     mmkvStore?.set(
       "quick-panel.calibrations",
       JSON.stringify({
-        default: null,
-        advancedControls: legacyControls,
-        advancedButtons: legacyButtons,
+        ...currentCalibrations,
+        advancedControls: {
+          ...currentCalibrations.advancedControls,
+          isGridEnabled: false,
+        },
+        advancedButtons: {
+          ...currentCalibrations.advancedButtons,
+          isGridEnabled: true,
+        },
       }),
     );
 
     const loaded = loadCalibrations();
-    expect(loaded.advancedControls?.isGridEnabled).toBe(true);
-    expect(loaded.advancedButtons?.isGridEnabled).toBe(true);
+    expect(loaded).toEqual(currentCalibrations);
+    expect(loaded.advancedControls).not.toHaveProperty("isGridEnabled");
+    expect(loaded.advancedButtons).not.toHaveProperty("isGridEnabled");
+
+    saveCalibrations(loaded);
+    const serialized = JSON.parse(
+      mmkvStore?.get("quick-panel.calibrations") as string,
+    ) as Record<string, Record<string, unknown>>;
+    expect(serialized.advancedControls).not.toHaveProperty("isGridEnabled");
+    expect(serialized.advancedButtons).not.toHaveProperty("isGridEnabled");
   });
 
   it("keeps valid branches and rejects invalid branches in the current payload", () => {

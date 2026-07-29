@@ -55,9 +55,6 @@ export function useAdvancedCalibrationScreen() {
   const [grid, setGrid] = useState<AdvancedSnapGrid>(() =>
     savedCalibration?.grid ?? { columns: 4, rows: 5 }
   );
-  const [isGridEnabled, setIsGridEnabled] = useState(
-    () => savedCalibration?.isGridEnabled ?? true,
-  );
   const [leavingDraft, setLeavingDraft] = useState<AdvancedCalibrationDraft | null>(null);
   const [leavingPhase, setLeavingPhase] = useState<AdvancedCalibrationPhase | null>(null);
   const [resumePhase, setResumePhase] = useState<AdvancedCalibrationPhase | null>(null);
@@ -72,7 +69,6 @@ export function useAdvancedCalibrationScreen() {
       const suggestedRect = getSuggestedCalibrationRect(screenshot);
       setAdvancedScreenshot(screenshot, suggestedRect);
       setGrid(savedCalibration?.grid ?? getDefaultAdvancedSnapGrid(suggestedRect));
-      setIsGridEnabled(savedCalibration?.isGridEnabled ?? true);
       setLeavingDraft(null);
       setLeavingPhase(null);
       setPhase("outer");
@@ -102,7 +98,7 @@ export function useAdvancedCalibrationScreen() {
     if (
       draftForSave?.screenshot &&
       draftForSave.outerRect &&
-      acceptAdvancedCalibration(grid, isGridEnabled)
+      acceptAdvancedCalibration(grid)
     ) {
       router.dismissTo("/customize");
     }
@@ -223,7 +219,6 @@ export function useAdvancedCalibrationScreen() {
     errorKey,
     error,
     grid,
-    isGridEnabled,
     phase: displayedPhase,
     canGoBack: previousPhase !== null,
     closeLeaveDialog,
@@ -245,7 +240,6 @@ export function useAdvancedCalibrationScreen() {
     saveCalibration,
     setColumns: (columns: number) => setGrid((current) => ({ ...current, columns })),
     setRows: (rows: number) => setGrid((current) => ({ ...current, rows })),
-    setIsGridEnabled,
     setAdvancedEnabledPanels: updateEnabledPanels,
     setAdvancedButtons: updateButtons,
     setAdvancedOuterRect,

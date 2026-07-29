@@ -29,7 +29,7 @@ const tasks = {
   apk: [
     {
       command: process.execPath,
-      args: ["./scripts/prepare-android-build.cjs", "apk", "false"],
+      args: ["./scripts/prepare-android-build.cjs", "apk", "true"],
     },
     {
       command: npxCommand,

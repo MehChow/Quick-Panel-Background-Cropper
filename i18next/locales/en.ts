@@ -11,10 +11,12 @@ const en = {
         "Split one image seamlessly across your Quick Panel Controls area",
     },
     releaseAnnouncement: {
-      v1_1_0: {
-        title: "v1.1.0 Major Updates 🌟\n",
-        body: "• New Buttons layout customization\n• Added snapping grid toggle\n• Improved Customize page performance\n\nReminder: After updating, please recalibrate once for the best experience.",
+      v1_2_0: {
+        title: "v1.2.0 Major Updates 🌟\n",
+        body: "• New feature - added icon color customization in Buttons-only mode\n• Removed snapping grid toggling feature",
         gotIt: "Got it",
+        mediaAccessibilityLabel:
+          "Icon color customization in Buttons-only mode",
       },
     },
     landing: {
@@ -82,7 +84,6 @@ const en = {
       layoutPreview: "Current layout preview",
       buttonPanelOpacity: "Button image intensity",
       buttonAdjustmentImageTab: "Image",
-      buttonAdjustmentIdentifierTab: "Labels",
       buttonAdjustmentHorizontalTab: "Horiz.",
       buttonAdjustmentVerticalTab: "Vert.",
       showButtonIdentifiers: "Show labels",
@@ -91,7 +92,20 @@ const en = {
       verticalIdentifierPosition: "Vertical label position",
       buttonIdentifiersOn: "On",
       buttonIdentifiersOff: "Off",
-      buttonIdentifierThemeToggle: "Switch Button label icon style",
+      buttonIdentifierAppearance: "Label appearance",
+      chooseButtonIdentifierColor: "Choose label color, current {{color}}",
+      buttonIdentifierBrightness: "Brightness",
+      buttonIdentifierIntensity: "Intensity",
+      buttonIdentifierHex: "HEX color",
+      buttonIdentifierBackgroundLight: "Light",
+      buttonIdentifierBackgroundDark: "Dark",
+      buttonIdentifierBackgroundThemeChoice:
+        "Icon background, current choice {{theme}}",
+      toggleButtonIdentifierBackgroundTheme:
+        "Switch between Light and Dark icon backgrounds",
+      invalidButtonIdentifierHex: "Enter a valid six-digit HEX color.",
+      buttonIdentifierColorWheel: "Label color wheel",
+      cancelButtonIdentifierAppearance: "Cancel label appearance changes",
       chooseAnotherImage: "Choose another image",
       resetPosition: "Reset position",
       exportPngs: "Export PNGs",
@@ -136,9 +150,6 @@ const en = {
       next: "Next",
       gridHelpButton: "Grid help",
       gridControlsTitle: "Set the snapping grid",
-      gridToggleLabel: "Enable snapping grid",
-      gridToggleOn: "On",
-      gridToggleOff: "Off",
       panelSelectionTitle: "Which panels are in this region?",
       panelSelectionBody:
         "Turn off any unwanted Controls panel that is missing from this region. Disabled panels will not be aligned or exported.",

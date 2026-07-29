@@ -3,19 +3,20 @@ import { PixelRatio, View } from "react-native";
 import type { ButtonIdentifierPositions } from "../../model/button-identifier-layout";
 import { exportSidePixels } from "../../model/panel-geometry";
 import type {
-  ButtonIdentifierTheme,
   ImageTransform,
   PanelDefinition,
   PickedImage,
 } from "../../model/types";
 import type { ExportSurfaceToken } from "../hooks/useSequentialExport";
 import { ExportSurface } from "./ExportSurface";
+import type { ButtonIdentifierBackgroundTheme } from "../button-identifier-color";
 
 interface ExportSurfaceHostProps {
   activePanel: PanelDefinition;
   activeToken: ExportSurfaceToken;
+  buttonIdentifierBackgroundTheme?: ButtonIdentifierBackgroundTheme;
+  buttonIdentifierColor?: string;
   buttonIdentifierOpacity: number;
-  buttonIdentifierTheme?: ButtonIdentifierTheme;
   buttonPanelOpacity: number;
   exportRef: RefObject<View | null>;
   identifierPositions: ButtonIdentifierPositions;
@@ -29,8 +30,9 @@ interface ExportSurfaceHostProps {
 export function ExportSurfaceHost({
   activePanel,
   activeToken,
+  buttonIdentifierBackgroundTheme = "dark",
+  buttonIdentifierColor = "#FFFFFF",
   buttonIdentifierOpacity,
-  buttonIdentifierTheme = "light",
   buttonPanelOpacity,
   exportRef,
   identifierPositions,
@@ -57,8 +59,9 @@ export function ExportSurfaceHost({
       }}
     >
       <ExportSurface
+        buttonIdentifierBackgroundTheme={buttonIdentifierBackgroundTheme}
+        buttonIdentifierColor={buttonIdentifierColor}
         buttonIdentifierOpacity={buttonIdentifierOpacity}
-        buttonIdentifierTheme={buttonIdentifierTheme}
         buttonPanelOpacity={buttonPanelOpacity}
         image={image}
         identifierPositions={identifierPositions}
