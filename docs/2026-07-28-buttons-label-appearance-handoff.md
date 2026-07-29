@@ -1,12 +1,12 @@
 # Buttons label appearance handoff
 
-Date: 2026-07-28  
+Date: 2026-07-28
 Branch: `feature/customize-icon-color`
 
 ## Implemented
 
 - Added a transactional **Label appearance** dialog for Buttons-only Customize.
-- Added shared glyph/label color using a picker plus validated six-digit HEX
+- Added glyph color using a picker plus validated six-digit HEX
   input.
 - Added Brightness and Intensity tabs in one compact slider card.
 - Added a manual icon-circle theme: Light `#FFFFFF` or Dark `#666666`.
