@@ -9,8 +9,8 @@ Simple Git, Play testing, versioning guide.
 - `feature/<name>`: new work from `dev`. Merge back into `dev`.
 - `release/<version>`: frozen candidate from `dev`. Testing and release fixes only.
 - `hotfix/<version>`: urgent production fix from `main`.
-- `sync/<version>-to-dev`: temporary fallback for copying a clean production
-  tree into `dev` when historical-secret checks block the normal back-merge.
+- `sync/<version>-to-dev`: legacy fallback for copying a clean production tree
+  into `dev` without importing secret-bearing history.
 
 Keep only `main` and `dev` permanently. Delete merged temporary branches. Never
 force-push `main` or `dev`.
@@ -41,18 +41,53 @@ git push -u origin feature/buttons-followup
 
 Merge PR after checks pass. Delete feature branch locally and remotely.
 
-## Release candidate
+## One-time history bridge after v1.2.0
 
-Cut release only when intended version is complete in `dev`:
+PR #27 safely copied the v1.2.0 production tree into `dev`, but its squash commit
+did not connect the `main` and `dev` histories. Run this repair once after this
+documentation update is merged into `dev`.
+
+Create the bridge from current `main`, then merge the clean `dev` history into
+it:
 
 ```bash
-git switch dev
-git pull --ff-only origin dev
-git switch -c release/1.2.0
-git push -u origin release/1.2.0
+git fetch origin main dev
+git switch -c maintenance/connect-dev-main-history origin/main
+git merge --no-ff origin/dev -m "merge: connect clean dev history to main"
+git diff --check origin/main...HEAD
+git log origin/main..HEAD -- credentials.json
+git push -u origin maintenance/connect-dev-main-history
 ```
 
-Then:
+The credential-history command must print nothing. Open a PR from
+`maintenance/connect-dev-main-history` to `main`. This PR carries the
+documentation change and records `dev` as an ancestor of `main` without copying
+the old secret into `dev`.
+
+After it merges, verify the repair before new feature work advances `dev`:
+
+```bash
+git fetch origin main dev
+git merge-base --is-ancestor origin/dev origin/main
+```
+
+Exit code `0` confirms the bridge. Delete the maintenance branch. Do not merge
+the maintenance branch back into `dev`; `dev` is already its clean parent.
+
+## Example: release v1.3.0
+
+Complete intended v1.3.0 features through normal feature PRs into `dev`. When
+`dev` is ready to freeze:
+
+```bash
+git fetch origin main dev
+git switch dev
+git pull --ff-only origin dev
+git switch -c release/1.3.0
+git push -u origin release/1.3.0
+```
+
+Build and test the candidate:
 
 1. Start from a clean release branch.
 2. Run `npm run build-release`.
@@ -66,68 +101,89 @@ Then:
 
 After testing passes:
 
-1. Open PR from `release/1.2.0` to `main`.
-2. Merge release PR.
-3. Promote exact tested AAB to production. Avoid unnecessary rebuild.
-4. Tag production commit.
-5. Merge the release branch back into `dev`. This preserves release-only fixes.
-   If a historical-secret check blocks that PR, use the clean sync fallback
-   below instead of bypassing the check.
-6. Delete release branch locally and remotely.
+1. Fetch `main` to refresh the remote reference, but do not merge it into the
+   release branch.
+2. Open PR from `release/1.3.0` to `main`.
+3. If GitHub reports a conflict, stop and inspect the ancestry repair. Do not
+   solve it by merging `main` into `release/1.3.0`, because that would import the
+   old secret-bearing history.
+4. Merge the release PR.
+5. Promote the exact tested AAB to production. Avoid unnecessary rebuild.
+6. Tag the production commit as `v1.3.0`.
+7. Open a PR from the original `release/1.3.0` branch to `dev`. This brings back
+   only release commits and release-only fixes; it does not contain `main`.
+8. Delete the release branch locally and remotely after both PRs merge.
 
-Do not merge `dev` into `main` after release branch was cut. `dev` may already
-contain unfinished next-version work.
+The important direction is:
 
-Tag production commit:
+```text
+dev -> release/1.3.0 -> main
+          |
+          +------------> dev
+```
+
+Never use `main -> release/1.3.0`. `dev` may also advance with v1.4.0 work after
+the release branch is cut; the tested release branch remains frozen except for
+release fixes.
+
+Tag production:
 
 ```bash
 git switch main
 git pull --ff-only origin main
-git tag -a v1.2.0 -m "Release v1.2.0"
-git push origin v1.2.0
+git tag -a v1.3.0 -m "Release v1.3.0"
+git push origin v1.3.0
 ```
 
-Optional release-candidate tag: `v1.2.0-rc.1`.
+Optional release-candidate tag: `v1.3.0-rc.1`.
 
-### Clean sync fallback
+Do not use `main -> release/1.3.0` or `main -> dev`. Those directions expose
+`dev` to the historical `credentials.json` commit.
 
-Use this only when the release-to-`dev` PR is blocked because its commit range
-contains an old secret-bearing commit that is already part of `main`.
+## Legacy clean sync fallback
+
+Use this only before the one-time bridge is complete, or when a main-based
+hotfix/legacy branch would import old secret-bearing commits into `dev`. A
+normal dev-based release after the bridge should not need this fallback.
 
 Do not mark a real secret as a false positive, rewrite a released/tagged branch,
 or merge the blocked PR. Close it, then copy only the current safe production
 tree into a new branch from `dev`:
 
 ```bash
-git fetch origin
+git fetch origin main dev
 git switch dev
 git pull --ff-only origin dev
-git switch -c sync/v1.2.0-to-dev
+git switch -c sync/1.2.1-to-dev
 git merge --squash origin/main
 git status
 git diff --cached --name-status
 git diff --cached --check
 ```
 
+Always fetch `origin/main` before the squash. A stale `origin/main` can merge old
+production code and recreate already-resolved conflicts.
+
 Confirm no credential, keystore, or service-account file is staged. Run the
 full checks, commit the staged production changes, push the sync branch, and
-open a PR to `dev`. Delete both temporary branches after the clean PR merges.
+open a PR to `dev`. Delete temporary branches after the clean PR merges.
 
 This fallback copies tree content without importing the old secret-bearing
-history. It does not replace the normal release-to-`dev` merge.
+history. It is not the normal v1.3.0 release flow.
 
 ## Hotfix
 
 Urgent production bug:
 
-1. Create `hotfix/1.1.1` from `main`.
+1. Create `hotfix/1.2.1` from `main`.
 2. Fix and test.
 3. Run `npm run build-release`, choose `new`, and upload the candidate to
    Internal testing.
 4. Test the exact candidate and commit its reviewed release metadata.
 5. Merge the hotfix into `main`.
-6. Promote the tested artifact and tag the production commit `v1.1.1`.
-7. Merge the hotfix back into `dev`.
+6. Promote the tested artifact and tag the production commit `v1.2.1`.
+7. Sync the final production tree into `dev` using the legacy clean fallback if
+   GitGuardian blocks a direct hotfix back-merge.
 8. Delete the hotfix branch.
 
 ## Version rules
@@ -137,16 +193,16 @@ Urgent production bug:
 ```json
 {
   "expo": {
-    "version": "1.1.0"
+    "version": "1.2.0"
   }
 }
 ```
 
 Use semantic versioning:
 
-- bug fix: `1.1.0` to `1.1.1`
-- feature update: `1.1.0` to `1.2.0`
-- breaking update: `1.1.0` to `2.0.0`
+- bug fix: `1.2.0` to `1.2.1`
+- feature update: `1.2.0` to `1.3.0`
+- breaking update: `1.2.0` to `2.0.0`
 
 `expo.android.versionCode` is Play build number. Increase for every uploaded
 AAB. Never lower or reuse uploaded value. Continue from highest uploaded value;
@@ -155,8 +211,8 @@ this project uses range near `30000000`.
 `npm run build-release` derives the user-visible version from the current
 branch:
 
-- `release/1.2.0` -> `1.2.0`
-- `hotfix/1.1.1` -> `1.1.1`
+- `release/1.3.0` -> `1.3.0`
+- `hotfix/1.2.1` -> `1.2.1`
 
 The command never changes `package.json` version. For candidate builds:
 
@@ -209,7 +265,7 @@ that also changes `versionCode`.
 - Build succeeded, but the AAB was lost and its code was never uploaded: after
   committing the successful metadata, choose `retry` to reproduce that code.
 - AAB was uploaded to any Play track: the code is consumed. After a fix, choose
-  `new`, even though the branch remains `release/1.2.0`.
+  `new`, even though the branch remains `release/1.3.0`.
 
 ## Reusable release walkthrough
 
@@ -225,10 +281,9 @@ that also changes `versionCode`.
    `docs/production-manual-test-checklist.md`.
 8. For every replacement uploaded to Play, fix the release branch and run
    `build-release` with `new`.
-9. Merge the passing release into `main`, promote the exact tested artifact,
-   and tag the production commit.
-10. Back-merge release fixes into `dev`, using the clean sync fallback only if a
-    historical-secret check blocks the normal PR.
+9. Merge the passing release into `main` without merging `main` into the release
+   branch, promote the exact tested artifact, and tag the production commit.
+10. Merge the original release branch into `dev` to return release-only fixes.
 11. Delete merged feature, release, and sync branches. Keep only `main` and
     `dev` permanently.
 
