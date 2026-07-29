@@ -43,10 +43,35 @@ describe("ButtonCustomizeControls", () => {
 
   it("shows Image and available position tabs without Labels", () => {
     const screen = render(<ButtonCustomizeControls {...baseProps} />);
-    expect(screen.getByTestId("button-adjustment-image-tab")).toBeTruthy();
+
+    expect(
+      screen.getByTestId("button-adjustment-image-tab").props.accessibilityState,
+    ).toEqual({ disabled: false, selected: true });
+    expect(
+      screen.getByTestId("button-adjustment-image-tab").props.className,
+    ).toContain("bg-black");
+    expect(
+      screen.getByText("customize.buttonAdjustmentImageTab").props.className,
+    ).toContain("text-white");
+    expect(screen.getByTestId("button-panel-opacity-slider").props).toMatchObject({
+      disabled: false,
+      value: 78,
+    });
+    expect(screen.queryByTestId("button-identifier-opacity-slider")).toBeNull();
+    expect(
+      screen.queryByTestId("horizontal-identifier-position-slider"),
+    ).toBeNull();
+    expect(
+      screen.queryByTestId("vertical-identifier-position-slider"),
+    ).toBeNull();
     expect(screen.getByTestId("button-adjustment-horizontal-tab")).toBeTruthy();
     expect(screen.getByTestId("button-adjustment-vertical-tab")).toBeTruthy();
     expect(screen.queryByTestId("button-adjustment-identifier-tab")).toBeNull();
+
+    fireEvent.press(screen.getByTestId("button-adjustment-horizontal-tab"));
+    expect(
+      screen.getByTestId("button-adjustment-image-tab").props.className,
+    ).not.toContain("bg-black");
   });
 
   it("opens appearance from a committed-color swatch", () => {

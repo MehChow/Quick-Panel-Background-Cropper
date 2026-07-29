@@ -7,9 +7,9 @@
 
 Buttons-only Customize currently offers one light/dark identifier style and a
 separate Label intensity tab. Expand identifier appearance into a transactional
-color editor where users can choose any shared icon-and-label color, adjust its
-brightness and opacity, choose a light or dark neutral icon-circle background,
-enter an exact HEX value, and see immediate feedback in the current Quick Panel
+color editor where users can choose any icon glyph color, adjust its brightness
+and opacity, choose a light or dark neutral icon-circle and label theme, enter
+an exact HEX value, and see immediate feedback in the current Quick Panel
 composition.
 
 ## Scope
@@ -20,8 +20,8 @@ exports. It includes:
 - a compact color-swatch trigger replacing the light/dark style toggle;
 - a dimmed dialog with a read-only Quick Panel preview;
 - hue/saturation, tabbed brightness/intensity, and HEX controls;
-- shared color for Button icon glyphs and label text;
-- a user-selected light or dark neutral icon circle;
+- a shared color for Button icon glyphs;
+- a user-selected light or dark neutral icon-circle and label theme;
 - transactional Cancel and Confirm behavior;
 - persisted color as a replacement for the existing light/dark setting; and
 - matching preview and export output.
@@ -106,7 +106,7 @@ Pressing the swatch opens a centered, dimmed dialog:
   intensity.
 - Keep the dialog preview read-only. Pan and pinch gestures remain available
   only on the main Customize preview.
-- Update icon glyphs, label text, icon-circle theme, and opacity in real time
+- Update icon glyphs, label theme, icon-circle theme, and opacity in real time
   as any picker control changes.
 - Use `Panel3` because it controls hue and saturation without duplicating the
   separate brightness slider.
@@ -146,15 +146,13 @@ theme into a draft.
 
 ## Color and Icon Background Rules
 
-- One color applies to every selected Button's Lucide glyph and visible label
-  text.
+- One color applies to every selected Button's Lucide glyph.
 - Preserve the existing text shadow for legibility over artwork.
 - Icon circles remain neutral rather than inheriting the selected color.
-- The background-theme toggle changes only the icon circle:
-  - Light uses `#FFFFFF`.
-  - Dark uses `#666666`.
-- The selected HEX continues to control the glyph and visible label regardless
-  of background theme.
+- The background-theme toggle changes the icon circle and visible label:
+  - Light uses `#FFFFFF` for both.
+  - Dark uses `#666666` for both.
+- The selected HEX controls only the glyph regardless of background theme.
 - Dialog preview, main preview, and export resolve the same confirmed theme.
 - Opacity applies to the complete identifier overlay, including icon circle,
   glyph, label, and shadow, matching the current Label intensity behavior.
@@ -175,9 +173,9 @@ buttonIdentifierBackgroundTheme: "light" | "dark";
 ```
 
 Keep `buttonIdentifierOpacity` as the persisted `0...100` opacity value.
-Default a missing or invalid background theme to `dark`, preserving the current
-white-label appearance. This is a new unreleased field, not a migration from
-the removed legacy glyph theme.
+Default a missing or invalid background theme to `dark`, applying the dark
+neutral value to the icon circle and label. This is a new unreleased field, not
+a migration from the removed legacy glyph theme.
 
 Treat color as a direct replacement:
 
@@ -275,8 +273,8 @@ Add focused coverage for:
 7. invalid HEX behavior and disabled Confirm;
 8. Cancel, Android Back, and backdrop dismissal discarding the draft;
 9. Confirm atomically saving color, opacity, and background theme;
-10. color applying to both glyphs and label text;
-11. manual light/dark circle resolution;
+10. color applying only to glyphs;
+11. manual light/dark circle and label resolution;
 12. main preview and export receiving identical committed values;
 13. exports ignoring unconfirmed draft values;
 14. Controls previews and exports remaining unchanged; and
@@ -305,7 +303,7 @@ real-time preview uses a per-frame React `setState` path.
 
 ## Acceptance Criteria
 
-- Users can choose any shared icon-and-label color from a wheel or exact HEX.
+- Users can choose any shared icon glyph color from a wheel or exact HEX.
 - Brightness and intensity share one tabbed slider box.
 - The previous Labels slider tab is removed without losing its persisted value.
 - Dialog feedback is continuous and visually matches confirmed preview/export
@@ -313,7 +311,7 @@ real-time preview uses a per-frame React `setState` path.
 - Cancel paths never mutate committed settings.
 - Confirm persists color, opacity, and icon-background theme across screen
   visits and app restarts.
-- The light/dark icon-background toggle changes only the neutral circle.
+- The light/dark theme toggle changes the neutral circle and label together.
 - Unrelated preferences remain intact.
 - Icon circles use the user's confirmed Light or Dark background theme.
 - Android rapid dragging remains responsive and stable.

@@ -59,7 +59,7 @@ export function ButtonIdentifierVisuals({
             styles.shadow,
             {
               fontSize: layout.fontSize,
-              color,
+              color: circleColor,
               lineHeight: layout.fontSize * 1.2,
               maxWidth: layout.maxLabelWidth,
             },

@@ -54,6 +54,9 @@ quick-panel-background-cropper-6040e62063a2.json
 # google services
 google-services/
 
+# superpowers skills
+docs/superpowers
+
 # eas credentials
 credentials.json
 credentials/

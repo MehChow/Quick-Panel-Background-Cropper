@@ -14,7 +14,7 @@ jest.mock("@react-native-vector-icons/lucide", () => {
 
 function CornerVisuals() {
   const circleColor = useSharedValue("#666666");
-  const color = useSharedValue("#FFFFFF");
+  const color = useSharedValue("#E3FFF6");
   const opacity = useSharedValue(0.7);
   return (
     <AnimatedButtonIdentifierVisuals
@@ -52,8 +52,15 @@ describe("AnimatedButtonIdentifierVisuals", () => {
       screen.getByTestId("button-identifier-icon-background").props.style,
     )).toMatchObject({ backgroundColor: "#666666" });
     expect(screen.getByTestId("mock-lucide").props.animatedProps).toMatchObject({
-      color: "#FFFFFF",
+      color: "#E3FFF6",
     });
+  });
+
+  it("keeps the label on the animated background theme color", () => {
+    const screen = render(<CornerVisuals />);
+
+    expect(StyleSheet.flatten(screen.getByText("Shazam").props.style))
+      .toMatchObject({ color: "#666666" });
   });
 
   it("keeps NxM labels fitted and anchored at the bottom-right", () => {
