@@ -54,6 +54,15 @@ describe("release announcement", () => {
       ).props.contentFit,
     ).toBe("cover");
     expect(
+      screen.getByLabelText(
+        "releaseAnnouncement.v1_3_0.mediaAccessibilityLabel",
+      ).props.source,
+    ).toEqual(
+      expect.objectContaining({
+        testUri: expect.stringContaining("advanced_4.webp"),
+      }),
+    );
+    expect(
       screen.getByTestId("release-announcement-media-wrapper").props.style,
     ).toEqual(
       expect.objectContaining({ borderRadius: 16 }),

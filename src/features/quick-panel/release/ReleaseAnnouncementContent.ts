@@ -16,6 +16,6 @@ export const activeReleaseAnnouncement: ReleaseAnnouncementDescriptor = {
   id: activeReleaseAnnouncementId,
   mediaAccessibilityKey:
     "releaseAnnouncement.v1_3_0.mediaAccessibilityLabel",
-  mediaSource: require("../../../../flow/advanced/combined/19.webp"),
+  mediaSource: require("../../../../assets/mode/advanced_4.webp"),
   titleKey: "releaseAnnouncement.v1_3_0.title",
 };

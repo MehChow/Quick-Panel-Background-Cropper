@@ -7,12 +7,13 @@ jest.mock("@/data/images", () => ({
     modeAdvanced1: 1,
     modeAdvanced2: 2,
     modeAdvanced3: 3,
+    modeAdvanced4: 4,
     modeDefault: 5,
   },
 }));
 
 describe("ModeOptionCard", () => {
-  it("shows all three advanced mode example slides", () => {
+  it("shows all four advanced mode example slides", () => {
     const { UNSAFE_getByType } = render(
       <ModeOptionCard
         isSelected
@@ -22,7 +23,7 @@ describe("ModeOptionCard", () => {
       />,
     );
 
-    expect(UNSAFE_getByType(FlatList).props.data).toEqual([1, 2, 3]);
+    expect(UNSAFE_getByType(FlatList).props.data).toEqual([1, 2, 3, 4]);
   });
 
   it("only enables carousel scrolling for the selected card", () => {
