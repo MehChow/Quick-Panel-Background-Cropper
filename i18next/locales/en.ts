@@ -11,12 +11,12 @@ const en = {
         "Split one image seamlessly across your Quick Panel Controls area",
     },
     releaseAnnouncement: {
-      v1_2_0: {
-        title: "v1.2.0 Major Updates 🌟\n",
-        body: "• New feature - added icon color customization in Buttons-only mode\n• Removed snapping grid toggling feature",
+      v1_3_0: {
+        title: "v1.3.0 Major Updates 🌟\n",
+        body: "• New: Advanced Controls + Buttons lets one image flow continuously across both Quick Panel families.",
         gotIt: "Got it",
         mediaAccessibilityLabel:
-          "Icon color customization in Buttons-only mode",
+          "Advanced Controls and Buttons using one continuous image",
       },
     },
     landing: {

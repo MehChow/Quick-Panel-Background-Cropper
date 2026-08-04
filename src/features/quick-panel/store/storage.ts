@@ -36,7 +36,7 @@ const combinedButtonImageIntensityKey =
   "quick-panel.combined-button-image-intensity";
 
 export const activeReleaseAnnouncementId =
-  "v1.2.0-buttons-icon-color-announcement";
+  "v1.3.0-advanced-combined-mode-announcement";
 
 export const supportedLanguages = ["en", "zh"] as const;
 export type SupportedLanguage = (typeof supportedLanguages)[number];

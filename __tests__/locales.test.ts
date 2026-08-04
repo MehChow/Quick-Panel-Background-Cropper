@@ -1,18 +1,19 @@
 import { enLocale, zhLocale } from "../i18next/resources";
 
 describe("release announcement locale strings", () => {
-  it("defines the v1.2.0 updates in English and Traditional Chinese", () => {
-    expect(enLocale.translation.releaseAnnouncement.v1_2_0).toEqual({
-      title: "v1.2.0 Major Updates 🌟\n",
-      body: "• New feature - added icon color customization in Buttons-only mode\n• Removed snapping grid toggling feature",
+  it("defines the v1.3.0 updates in English and Traditional Chinese", () => {
+    expect(enLocale.translation.releaseAnnouncement.v1_3_0).toEqual({
+      title: "v1.3.0 Major Updates 🌟\n",
+      body: "• New: Advanced Controls + Buttons lets one image flow continuously across both Quick Panel families.",
       gotIt: "Got it",
-      mediaAccessibilityLabel: "Icon color customization in Buttons-only mode",
+      mediaAccessibilityLabel:
+        "Advanced Controls and Buttons using one continuous image",
     });
-    expect(zhLocale.translation.releaseAnnouncement.v1_2_0).toEqual({
-      title: "v1.2.0 主要更新內容 🌟\n",
-      body: "• 新功能－僅按鈕模式新增圖示顏色自訂功能\n• 已移除吸附網格開關功能",
+    expect(zhLocale.translation.releaseAnnouncement.v1_3_0).toEqual({
+      title: "v1.3.0 主要更新內容 🌟\n",
+      body: "• 新功能：進階「控制版面 + 按鈕」模式，讓同一張圖片無縫延伸到兩種 Quick Panel 版面。",
       gotIt: "知道了",
-      mediaAccessibilityLabel: "僅按鈕模式的圖示顏色自訂功能",
+      mediaAccessibilityLabel: "進階控制版面與按鈕使用同一張連續圖片",
     });
   });
 });

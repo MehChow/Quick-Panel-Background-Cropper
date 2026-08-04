@@ -11,11 +11,11 @@ export interface ReleaseAnnouncementDescriptor {
 }
 
 export const activeReleaseAnnouncement: ReleaseAnnouncementDescriptor = {
-  actionKey: "releaseAnnouncement.v1_2_0.gotIt",
-  bodyKey: "releaseAnnouncement.v1_2_0.body",
+  actionKey: "releaseAnnouncement.v1_3_0.gotIt",
+  bodyKey: "releaseAnnouncement.v1_3_0.body",
   id: activeReleaseAnnouncementId,
   mediaAccessibilityKey:
-    "releaseAnnouncement.v1_2_0.mediaAccessibilityLabel",
-  mediaSource: require("../../../../assets/announcement/icon-color-picker.gif"),
-  titleKey: "releaseAnnouncement.v1_2_0.title",
+    "releaseAnnouncement.v1_3_0.mediaAccessibilityLabel",
+  mediaSource: require("../../../../flow/advanced/combined/19.webp"),
+  titleKey: "releaseAnnouncement.v1_3_0.title",
 };

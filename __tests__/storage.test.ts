@@ -89,10 +89,10 @@ describe("storage", () => {
 
     expect(loadAcknowledgedReleaseAnnouncement()).toBeNull();
 
-    acknowledgeReleaseAnnouncement("v1.2.0-buttons-icon-color-announcement");
+    acknowledgeReleaseAnnouncement("v1.3.0-advanced-combined-mode-announcement");
 
     expect(loadAcknowledgedReleaseAnnouncement()).toBe(
-      "v1.2.0-buttons-icon-color-announcement",
+      "v1.3.0-advanced-combined-mode-announcement",
     );
     expect(loadCalibrations()).toEqual({
       default: null,
