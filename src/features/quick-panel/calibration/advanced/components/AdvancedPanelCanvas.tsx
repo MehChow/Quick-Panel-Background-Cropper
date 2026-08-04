@@ -21,7 +21,10 @@ interface Props {
   grid: AdvancedSnapGrid;
   panelItems: EditablePanelItem[];
   outerRect: PanelRect;
-  phase: AdvancedCalibrationPhase;
+  activePanelId?: PanelId | null;
+  isReview?: boolean;
+  visiblePanelIds?: PanelId[];
+  phase?: AdvancedCalibrationPhase;
   panels: PanelRects;
   screenshot: PickedImage;
   onPanelsChange: (panels: PanelRects) => void;
@@ -32,6 +35,9 @@ export function AdvancedPanelCanvas({
   panelItems,
   outerRect,
   phase,
+  activePanelId: explicitActivePanelId,
+  isReview: explicitIsReview,
+  visiblePanelIds: explicitVisiblePanelIds,
   panels,
   screenshot,
   onPanelsChange,
@@ -45,9 +51,10 @@ export function AdvancedPanelCanvas({
     scale,
     width: canvasWidth,
   } = fitCalibrationArea(viewportRect, maxWidth, maxHeight);
-  const activeId = isPanelPhase(phase) ? phase : null;
+  const activeId = explicitActivePanelId ?? (phase && isPanelPhase(phase) ? phase : null);
   const panelIds = panelItems.map((item) => item.id);
-  const visibleIds = getVisiblePanelIds(phase, panelIds);
+  const visibleIds = explicitVisiblePanelIds ?? (phase ? getVisiblePanelIds(phase, panelIds) : []);
+  const isReview = explicitIsReview ?? phase === "confirm";
   const localOuterRect = toLocalRect(outerRect, viewportRect);
   const labels = Object.fromEntries(panelItems.map((item) => [item.id, item]));
 
@@ -86,7 +93,7 @@ export function AdvancedPanelCanvas({
           pointerEvents="none"
           className="absolute inset-0 border-2 border-emerald-300 bg-emerald-300/5"
         />
-        {phase !== "confirm" ? (
+        {!isReview ? (
           <AdvancedSnapGridOverlay
             grid={grid}
             outerRect={localOuterRect}

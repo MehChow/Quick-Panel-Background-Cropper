@@ -1,11 +1,13 @@
 import { createAdvancedPreset } from "../calibration/advanced/advanced-geometry";
 import { createButtonsPreset } from "../calibration/advanced/buttons-geometry";
+import { createCombinedPreset } from "../calibration/advanced/combined/combined-preset";
 import { getCalibratedPreset } from "../calibration/shared/calibration-preset";
 import { clampTransform, getFitTransform } from "../model/image-placement";
 import { translate } from "../model/i18n";
 import type {
   AdvancedCalibration,
   AdvancedButtonsCalibration,
+  AdvancedCombinedCalibration,
   AdvancedTarget,
   CustomizationMode,
   DefaultCalibration,
@@ -25,11 +27,11 @@ import {
 type QuickPanelStatePatch = Partial<QuickPanelStateData>;
 
 export function getLandingState(): QuickPanelStatePatch {
-  return { step: "landing", selectedMode: null, selectedAdvancedTarget: null, screenshot: null, advancedDraft: null, advancedButtonsDraft: null, ...createResetWorkState(), error: null };
+  return { step: "landing", selectedMode: null, selectedAdvancedTarget: null, screenshot: null, advancedDraft: null, advancedButtonsDraft: null, advancedCombinedDraft: null, ...createResetWorkState(), error: null };
 }
 
 export function getModeSelectionState(): QuickPanelStatePatch {
-  return { step: "selectMode", selectedMode: null, selectedAdvancedTarget: null, screenshot: null, advancedDraft: null, advancedButtonsDraft: null, ...createResetWorkState(), error: null };
+  return { step: "selectMode", selectedMode: null, selectedAdvancedTarget: null, screenshot: null, advancedDraft: null, advancedButtonsDraft: null, advancedCombinedDraft: null, ...createResetWorkState(), error: null };
 }
 
 export function getModeState(
@@ -37,17 +39,20 @@ export function getModeState(
   defaultCalibration: DefaultCalibration | null,
   advancedCalibration: AdvancedCalibration | null,
   advancedButtonsCalibration: AdvancedButtonsCalibration | null,
+  advancedCombinedCalibration: AdvancedCombinedCalibration | null,
   advancedTarget: AdvancedTarget | null,
 ): QuickPanelStatePatch {
   const hasCalibration = mode === "default"
     ? Boolean(defaultCalibration)
     : advancedTarget === "buttons"
       ? Boolean(advancedButtonsCalibration)
-      : Boolean(advancedCalibration);
+      : advancedTarget === "combined"
+        ? Boolean(advancedCombinedCalibration)
+        : Boolean(advancedCalibration);
   return {
     selectedMode: mode,
     selectedAdvancedTarget: mode === "advanced" ? advancedTarget : null,
-    activePreset: getPresetForMode(mode, defaultCalibration, advancedCalibration, advancedButtonsCalibration, advancedTarget),
+    activePreset: getPresetForMode(mode, defaultCalibration, advancedCalibration, advancedButtonsCalibration, advancedCombinedCalibration, advancedTarget),
     step: mode === "advanced" && !advancedTarget
       ? "advancedTargetSelection"
       : hasCalibration ? "imageSelection" : mode === "default" ? "calibration" : "advancedCalibration",
@@ -55,6 +60,7 @@ export function getModeState(
     calibrationRect: mode === "default" ? defaultCalibration?.rect ?? null : null,
     advancedDraft: null,
     advancedButtonsDraft: null,
+    advancedCombinedDraft: null,
     ...createResetWorkState(),
     error: null,
   };
@@ -88,6 +94,7 @@ export function getAdvancedCalibrationState(
       panels: advancedCalibration?.panels ?? null,
     },
     advancedButtonsDraft: null,
+    advancedCombinedDraft: null,
     ...createResetWorkState(),
     error: null,
   };
@@ -101,10 +108,32 @@ export function getAdvancedButtonsCalibrationState(
     selectedAdvancedTarget: "buttons",
     step: "advancedCalibration",
     advancedDraft: null,
+    advancedCombinedDraft: null,
     advancedButtonsDraft: {
       screenshot: null,
       outerRect: advancedButtonsCalibration?.outerRect ?? null,
       buttons: advancedButtonsCalibration?.buttons ?? [],
+    },
+    ...createResetWorkState(),
+    error: null,
+  };
+}
+
+export function getAdvancedCombinedCalibrationState(
+  calibration: AdvancedCombinedCalibration | null,
+): QuickPanelStatePatch {
+  return {
+    selectedMode: "advanced",
+    selectedAdvancedTarget: "combined",
+    step: "advancedCalibration",
+    advancedDraft: null,
+    advancedButtonsDraft: null,
+    advancedCombinedDraft: {
+      screenshot: null,
+      outerRect: calibration?.outerRect ?? null,
+      enabledControls: calibration?.enabledControls ?? [...panelIds],
+      controlPanels: calibration?.controlPanels ?? null,
+      buttons: calibration?.buttons ?? [],
     },
     ...createResetWorkState(),
     error: null,
@@ -147,6 +176,17 @@ export function getAcceptAdvancedButtonsCalibrationResult(calibration: AdvancedB
     activePreset: createButtonsPreset(calibration),
     advancedButtonsCalibration: calibration,
     advancedButtonsDraft: null,
+    step: "imageSelection",
+    ...createResetWorkState(),
+    error: null,
+  } satisfies QuickPanelStatePatch;
+}
+
+export function getAcceptAdvancedCombinedCalibrationResult(calibration: AdvancedCombinedCalibration) {
+  return {
+    activePreset: createCombinedPreset(calibration),
+    advancedCombinedCalibration: calibration,
+    advancedCombinedDraft: null,
     step: "imageSelection",
     ...createResetWorkState(),
     error: null,

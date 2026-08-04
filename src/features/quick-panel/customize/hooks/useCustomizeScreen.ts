@@ -9,6 +9,7 @@ export function useCustomizeScreen() {
   const [isPreviewAdjusting, setIsPreviewAdjusting] = useState(false);
   const {
     selectedMode,
+    selectedAdvancedTarget,
     activePreset,
     image,
     transform,
@@ -27,6 +28,7 @@ export function useCustomizeScreen() {
 
   return {
     selectedMode,
+    selectedAdvancedTarget,
     activePreset,
     image,
     transform,

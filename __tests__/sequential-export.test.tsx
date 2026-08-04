@@ -113,14 +113,78 @@ const buttonsPreset = {
   goodLockOrder: ["button-1", "button-2", "button-3"],
 } satisfies QuickPanelPreset;
 
+const mixedPreset = {
+  id: "sequential-combined",
+  label: "Sequential Combined",
+  mode: "advanced",
+  width: 300,
+  height: 500,
+  customizationArea: { x: 0, y: 0, width: 300, height: 500, radius: 0 },
+  panels: {
+    buttonBox: {
+      id: "buttonBox",
+      label: "Button box",
+      fileName: "01-control-button-box.png",
+      family: "control",
+      rect: { x: 0, y: 0, width: 300, height: 100, radius: 0 },
+    },
+    mediaPlayer: {
+      id: "mediaPlayer",
+      label: "Media player",
+      fileName: "02-control-media-player.png",
+      family: "control",
+      rect: { x: 0, y: 100, width: 300, height: 100, radius: 0 },
+    },
+    brightness: {
+      id: "brightness",
+      label: "Brightness",
+      fileName: "03-control-brightness.png",
+      family: "control",
+      rect: { x: 0, y: 200, width: 300, height: 100, radius: 0 },
+    },
+    "button-1": {
+      id: "button-1",
+      label: "Wi-Fi",
+      fileName: "04-button-wi-fi.png",
+      family: "button",
+      rect: { x: 0, y: 300, width: 200, height: 100, radius: 0 },
+      buttonIdentifier: {
+        columnSpan: 2,
+        rowSpan: 1,
+        iconName: "wifi",
+        referenceCellSize: 100,
+      },
+    },
+    "button-2": {
+      id: "button-2",
+      label: "Bluetooth",
+      fileName: "05-button-bluetooth.png",
+      family: "button",
+      rect: { x: 0, y: 400, width: 100, height: 100, radius: 0 },
+      buttonIdentifier: {
+        columnSpan: 1,
+        rowSpan: 1,
+        iconName: "bluetooth",
+        referenceCellSize: 100,
+      },
+    },
+  },
+  visualOrder: ["buttonBox", "mediaPlayer", "brightness", "button-1", "button-2"],
+  goodLockOrder: ["buttonBox", "mediaPlayer", "brightness", "button-1", "button-2"],
+} satisfies QuickPanelPreset;
+
 const image = { height: 1080, uri: "file:///normalized.png", width: 1920 };
 const transform = { scale: 1, x: 0, y: 0 };
 
-function SequentialExportHarness() {
+function SequentialExportHarness({
+  preset = buttonsPreset,
+}: {
+  preset?: QuickPanelPreset;
+}) {
   const controller = useSequentialExport({
     image,
     isProcessingImage: false,
-    preset: buttonsPreset,
+    preset,
     showButtonIdentifiers: true,
   });
   mockController = controller;
@@ -269,5 +333,84 @@ describe("sequential export", () => {
     expect(mockCleanupCapturedExports.mock.calls[0][0]).toHaveLength(3);
     expect(mockReplace).not.toHaveBeenCalled();
     expect(useQuickPanelStore.getState().isExporting).toBe(false);
+  });
+
+  it("keeps mixed exports in Controls-first Good Lock order with family names", async () => {
+    render(<SequentialExportHarness preset={mixedPreset} />);
+    fireEvent.press(screen.getByText("start"));
+
+    await screen.findByTestId("export-surface-buttonBox");
+    signalReady("buttonBox", false);
+    await screen.findByTestId("export-surface-mediaPlayer");
+    signalReady("mediaPlayer", false);
+    await screen.findByTestId("export-surface-brightness");
+    signalReady("brightness", false);
+    await screen.findByTestId("export-surface-button-1");
+    signalReady("button-1", true);
+    await screen.findByTestId("export-surface-button-2");
+    signalReady("button-2", false);
+
+    await waitFor(() => expect(mockSaveCapturedExports).toHaveBeenCalledTimes(1));
+    expect(mockCapturePanelExport.mock.calls.map((call) => call[1].id)).toEqual([
+      "buttonBox",
+      "mediaPlayer",
+      "brightness",
+      "button-1",
+      "button-2",
+    ]);
+    expect(mockCapturePanelExport.mock.calls.map((call) => call[1].fileName)).toEqual([
+      "01-control-button-box.png",
+      "02-control-media-player.png",
+      "03-control-brightness.png",
+      "04-button-wi-fi.png",
+      "05-button-bluetooth.png",
+    ]);
+    expect(mockSaveCapturedExports.mock.calls[0][0].map(
+      (file: { fileName: string }) => file.fileName,
+    )).toEqual([
+      "01-control-button-box.png",
+      "02-control-media-player.png",
+      "03-control-brightness.png",
+      "04-button-wi-fi.png",
+      "05-button-bluetooth.png",
+    ]);
+  });
+
+  it("cleans completed Controls when the first Button capture fails", async () => {
+    mockCapturePanelExport.mockImplementation(
+      async (_ref: unknown, panel: { fileName: string; id: string; label: string }) => {
+        if (panel.id === "button-1") {
+          throw new Error("button capture failed");
+        }
+        return {
+          fileName: panel.fileName,
+          id: panel.id,
+          label: panel.label,
+          previewUri: `file:///cache/${panel.fileName}`,
+          uri: `file:///cache/${panel.fileName}`,
+        };
+      },
+    );
+    render(<SequentialExportHarness preset={mixedPreset} />);
+    fireEvent.press(screen.getByText("start"));
+
+    await screen.findByTestId("export-surface-buttonBox");
+    signalReady("buttonBox", false);
+    await screen.findByTestId("export-surface-mediaPlayer");
+    signalReady("mediaPlayer", false);
+    await screen.findByTestId("export-surface-brightness");
+    signalReady("brightness", false);
+    await screen.findByTestId("export-surface-button-1");
+    signalReady("button-1", true);
+
+    await waitFor(() => expect(useQuickPanelStore.getState().isExporting).toBe(false));
+    expect(mockCleanupCapturedExports).toHaveBeenCalledWith([
+      expect.objectContaining({ id: "buttonBox" }),
+      expect.objectContaining({ id: "mediaPlayer" }),
+      expect.objectContaining({ id: "brightness" }),
+    ]);
+    expect(mockSaveCapturedExports).not.toHaveBeenCalled();
+    expect(mockReplace).not.toHaveBeenCalled();
+    expect(useQuickPanelStore.getState().exports).toEqual([]);
   });
 });

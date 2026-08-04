@@ -35,49 +35,59 @@ describe("release announcement", () => {
   it("shows an unacknowledged announcement and dismisses it", () => {
     render(<ReleaseAnnouncementHost />);
 
-    expect(screen.getByText("releaseAnnouncement.v1_2_0.title")).toBeTruthy();
-    expect(screen.getByText("releaseAnnouncement.v1_2_0.body")).toBeTruthy();
+    expect(screen.getByText("releaseAnnouncement.v1_3_0.title")).toBeTruthy();
+    expect(screen.getByText("releaseAnnouncement.v1_3_0.body")).toBeTruthy();
     expect(
-      screen.getByText("releaseAnnouncement.v1_2_0.title").props.className,
+      screen.getByText("releaseAnnouncement.v1_3_0.title").props.className,
     ).toContain("text-white");
     expect(
-      screen.getByText("releaseAnnouncement.v1_2_0.gotIt").props.className,
+      screen.getByText("releaseAnnouncement.v1_3_0.gotIt").props.className,
     ).toContain("text-black");
     expect(
       screen.getByRole("button", {
-        name: "releaseAnnouncement.v1_2_0.gotIt",
+        name: "releaseAnnouncement.v1_3_0.gotIt",
       }).props.className,
     ).toContain("bg-white");
     expect(
       screen.getByLabelText(
-        "releaseAnnouncement.v1_2_0.mediaAccessibilityLabel",
+        "releaseAnnouncement.v1_3_0.mediaAccessibilityLabel",
       ).props.contentFit,
-    ).toBe("contain");
+    ).toBe("cover");
+    expect(
+      screen.getByTestId("release-announcement-media-wrapper").props.style,
+    ).toEqual(
+      expect.objectContaining({ borderRadius: 16 }),
+    );
+    expect(
+      screen.getByTestId("release-announcement-media-wrapper").props.style,
+    ).toEqual(
+      expect.objectContaining({ overflow: "hidden" }),
+    );
 
-    fireEvent.press(screen.getByText("releaseAnnouncement.v1_2_0.gotIt"));
+    fireEvent.press(screen.getByText("releaseAnnouncement.v1_3_0.gotIt"));
 
     expect(loadAcknowledgedReleaseAnnouncement()).toBe(
-      "v1.2.0-buttons-icon-color-announcement",
+      "v1.3.0-advanced-combined-mode-announcement",
     );
-    expect(screen.queryByText("releaseAnnouncement.v1_2_0.title")).toBeNull();
+    expect(screen.queryByText("releaseAnnouncement.v1_3_0.title")).toBeNull();
   });
 
   it("only dismisses when the user acknowledges the announcement", () => {
     render(<ReleaseAnnouncementHost />);
 
-    fireEvent.press(screen.getByText("releaseAnnouncement.v1_2_0.gotIt"));
+    fireEvent.press(screen.getByText("releaseAnnouncement.v1_3_0.gotIt"));
 
     expect(loadAcknowledgedReleaseAnnouncement()).toBe(
-      "v1.2.0-buttons-icon-color-announcement",
+      "v1.3.0-advanced-combined-mode-announcement",
     );
   });
 
   it("does not show an already acknowledged announcement", () => {
-    acknowledgeReleaseAnnouncement("v1.2.0-buttons-icon-color-announcement");
+    acknowledgeReleaseAnnouncement("v1.3.0-advanced-combined-mode-announcement");
 
     render(<ReleaseAnnouncementHost />);
 
-    expect(screen.queryByText("releaseAnnouncement.v1_2_0.title")).toBeNull();
+    expect(screen.queryByText("releaseAnnouncement.v1_3_0.title")).toBeNull();
   });
 
   it("acknowledges when the dialog is dismissed by the platform", () => {
@@ -86,7 +96,7 @@ describe("release announcement", () => {
     fireEvent(rendered.UNSAFE_getByType(Modal), "requestClose");
 
     expect(loadAcknowledgedReleaseAnnouncement()).toBe(
-      "v1.2.0-buttons-icon-color-announcement",
+      "v1.3.0-advanced-combined-mode-announcement",
     );
   });
 });

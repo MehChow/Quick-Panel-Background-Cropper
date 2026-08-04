@@ -18,10 +18,13 @@ interface ButtonCustomizeControlsProps {
   horizontalIdentifierPosition: number;
   onOpenButtonIdentifierAppearance: () => void;
   onButtonPanelOpacityChange: (value: number) => void;
+  onButtonPanelOpacityCommit: (value: number) => void;
   onHorizontalIdentifierPositionChange: (value: number) => void;
+  onHorizontalIdentifierPositionCommit: (value: number) => void;
   onLayout?: (event: LayoutChangeEvent) => void;
   onShowButtonIdentifiersChange: (value: boolean) => void;
   onVerticalIdentifierPositionChange: (value: number) => void;
+  onVerticalIdentifierPositionCommit: (value: number) => void;
   showButtonIdentifiers: boolean;
   verticalIdentifierPosition: number;
 }
@@ -42,10 +45,13 @@ export function ButtonCustomizeControls({
   horizontalIdentifierPosition,
   onOpenButtonIdentifierAppearance,
   onButtonPanelOpacityChange,
+  onButtonPanelOpacityCommit,
   onHorizontalIdentifierPositionChange,
+  onHorizontalIdentifierPositionCommit,
   onLayout,
   onShowButtonIdentifiersChange,
   onVerticalIdentifierPositionChange,
+  onVerticalIdentifierPositionCommit,
   showButtonIdentifiers,
   verticalIdentifierPosition,
 }: ButtonCustomizeControlsProps) {
@@ -100,8 +106,11 @@ export function ButtonCustomizeControls({
         hasVerticalButtons={hasVerticalButtons}
         horizontalIdentifierPosition={horizontalIdentifierPosition}
         onButtonPanelOpacityChange={onButtonPanelOpacityChange}
+        onButtonPanelOpacityCommit={onButtonPanelOpacityCommit}
         onHorizontalIdentifierPositionChange={onHorizontalIdentifierPositionChange}
+        onHorizontalIdentifierPositionCommit={onHorizontalIdentifierPositionCommit}
         onVerticalIdentifierPositionChange={onVerticalIdentifierPositionChange}
+        onVerticalIdentifierPositionCommit={onVerticalIdentifierPositionCommit}
         showButtonIdentifiers={showButtonIdentifiers}
         verticalIdentifierPosition={verticalIdentifierPosition}
       />

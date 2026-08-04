@@ -3,20 +3,21 @@
 ## Product scope
 
 Quick Panel Background Cropper targets Samsung phones running Android 16 with
-One UI 8.5. In v2 it only exports backgrounds for selected Good Lock
+One UI 8.5. The released v2 baseline exports backgrounds for selected Good Lock
 **Controls** targets from this supported set: Button box, Media player,
-Brightness, and Volume.
+Brightness, and Volume. The current app also supports manually selected Good
+Lock **Buttons** and an additive combined Controls + Buttons workflow.
 
 The app provides two modes:
 
 - Default customization for phones using the standard Quick Panel Controls
   layout.
-- Advanced customization for users who have rearranged, resized, removed, or
-  isolated a specific region of those supported Controls panels.
+- Advanced customization with independent **Controls only**, **Buttons only**,
+  and **Controls + Buttons** targets.
 
-Fold, Flip, tablets, DeX, external displays, other One UI versions, additional
-panel types, the Good Lock **Buttons** tab, and multiple saved layout profiles
-remain out of scope.
+DeX, external displays, other One UI versions, automatic enumeration of the
+device's complete Button list, and multiple saved layout profiles remain out of
+scope.
 
 ## Default customization
 
@@ -41,17 +42,20 @@ This remains the fastest path when the panel structure is unchanged.
 
 ## Advanced customization
 
-Advanced mode also starts from a fully expanded Quick Panel screenshot. The
-outer customization area is still anchored from the same S25+ preset logic used
-in Default mode, and the first set of supported boxes is initialized from that
-calibrated preset.
+Advanced mode starts from a fully expanded Quick Panel screenshot and then asks
+the user to choose Controls only, Buttons only, or Controls + Buttons. Each
+target has an independent calibration, including its own outer area and grid.
+The initial boxes are derived from the S25+ preset and then remain freely
+editable inside the confirmed outer area.
 
-The user first confirms a required outer rectangle around the full region they
-want to calibrate. That region may contain all supported Controls panels or
-only a specific subset such as Brightness and Volume. The app then asks which
-supported panels exist in that region, asks the user to set the snapping grid
-once, and guides the user through only the enabled adjustment steps in this
-order:
+### Controls only
+
+The Controls-only target first confirms a required outer rectangle around the
+full region the user wants to calibrate. That region may contain all supported
+Controls panels or only a specific subset such as Brightness and Volume. The
+app then asks which supported panels exist in that region, asks the user to set
+the snapping grid once, and guides the user through only the enabled adjustment
+steps in this order:
 
 - Button box
 - Brightness
@@ -64,9 +68,9 @@ visible as fixed references, so the user can compare the remaining selected
 panels against what has already been aligned before moving to the final review
 screen.
 
-If the user already saved an Advanced calibration before, re-importing a new
-screenshot rescales that saved Advanced layout into the new screenshot first,
-so the user starts from their previous arrangement instead of the default one.
+If the user already saved a Controls-only calibration, re-importing a new
+screenshot rescales that saved layout into the new screenshot first, so the
+user starts from their previous arrangement instead of the default one.
 
 The outer rectangle:
 
@@ -79,16 +83,46 @@ disabled panel can be toggled back on later without losing its last known or
 preset-derived box. Validation, preview, export, and background fit/clamp logic
 only use enabled panels.
 
+### Buttons only
+
+The Buttons-only target confirms an outer area, asks the user to select at least
+one built-in or custom Button label, sets one required grid, and then guides the
+user through the selected Button boxes in selection order. Buttons use
+screenshot-driven geometry rather than fixed shape categories. The catalog has
+30 reviewed built-in labels, while custom labels require one of eight generic
+icons.
+
+### Controls + Buttons
+
+The combined target requires at least one Control and one Button. It uses this
+exact calibration sequence:
+
+1. Confirm one outer area around every panel that will be customized.
+2. Choose the enabled Controls.
+3. Choose the included Buttons.
+4. Set one shared row/column grid.
+5. Align enabled Controls in Button box, Brightness, Volume, and Media player
+   order.
+6. Align selected Buttons in selection order.
+7. Review all boxes together and save.
+
+The combined target stores one screenshot coordinate system, outer area, grid,
+and set of panel rectangles. Controls are purple while active, Buttons are blue
+while active, and completed boxes are orange. The active rectangle may overlap
+another visible rectangle during editing, but Next and final save reject the
+overlap. Customize then applies one background image and one `{ x, y, scale }`
+transform across every combined panel.
+
 ### Snapping grid
 
-Advanced mode includes a snapping grid helper inside the confirmed outer
-rectangle.
+Every Advanced target includes a required snapping grid helper inside the
+confirmed outer rectangle.
 
 - The default grid starts at 4 columns and usually 5 rows.
 - Column and row counts can be set from 1 to 8. The value 1 is useful when a
   partial region has only one meaningful row or column of panels.
-- After the outer area and enabled panels are confirmed, the user chooses the
-  column and row counts once before the first panel-box adjustment step.
+- After the target's selection steps are complete, the user chooses the column
+  and row counts once before the first panel-box adjustment step.
 - The chosen grid remains visible as alignment guidance during panel-box
   adjustment and review. To change it later, the user goes back to the grid
   step instead of editing it inline on each panel step.
@@ -149,8 +183,9 @@ Grid controls also changed from the original bottom-sheet-only approach:
   top chips already carry that context.
 
 Panel boxes may be horizontal, vertical, square, reordered, or separated. They
-must remain inside the outer rectangle and may not overlap. Disabled panel boxes
-are ignored for validation and export.
+must remain inside the outer rectangle and may not overlap when a phase advances
+or a calibration is saved. Disabled Control boxes are ignored for validation
+and export.
 
 ## Export behavior
 
@@ -165,9 +200,13 @@ y = panel.y + (panel.height - side) / 2
 ```
 
 The same background transform is rendered into every enabled centered export
-square, preserving continuity across arbitrary panel layouts. PNGs are exported
-in Good Lock application order, filtered to enabled panels: Button box, Media
-player, Brightness, then Volume.
+square, preserving continuity across arbitrary panel layouts. Controls are
+exported in Good Lock application order, filtered to enabled panels: Button
+box, Media player, Brightness, then Volume. Buttons export in selection order.
+Combined runs export the enabled Controls first and the selected Buttons second,
+using one contiguous family-aware filename sequence. Each Button export is an
+original-quality `1024 x 1024` PNG, and a combined run remains all-or-nothing if
+any sequential capture fails.
 
 ### Export rendering notes
 
@@ -200,8 +239,16 @@ import:
 
 ## Persistence
 
-Default and Advanced calibrations are stored independently. Existing v1
-single-rectangle calibrations migrate into the Default calibration slot.
-Existing Advanced calibrations without an enabled-panel list migrate as if all
-four supported panels are enabled. Imported screenshots and selected background
+Default, Advanced Controls, Advanced Buttons, and Advanced Combined calibrations
+are stored independently. Existing v1 single-rectangle calibrations migrate
+into the Default calibration slot. Existing Advanced Controls calibrations
+without an enabled-panel list migrate as if all four supported panels are
+enabled. Invalid or missing combined data becomes `null` without discarding the
+other valid calibration branches. Imported screenshots and selected background
 images are not persisted.
+
+The last successful main mode and Advanced target are persisted for later
+preselection. Button label visibility, position, color, intensity, and
+light/dark background style remain shared between Buttons-only and combined
+Customize. Combined Button image intensity defaults to `78%` and persists only
+for the combined target under `quick-panel.combined-button-image-intensity`.

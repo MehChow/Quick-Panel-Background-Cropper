@@ -139,6 +139,7 @@ function createScreenState(
     resetFit: jest.fn(),
     canReset: false,
     selectedMode: "default",
+    selectedAdvancedTarget: null,
     setIsPreviewAdjusting: jest.fn(),
     setIsExportSurfaceReady: jest.fn(),
     setTransform: jest.fn(),
@@ -312,5 +313,68 @@ describe("CustomizeScreen export surfaces", () => {
       identifierPositions: { horizontal: 0.35, vertical: 0.8 },
       showButtonIdentifiers: true,
     });
+  });
+
+  it("keeps mixed combined Button intensity synchronized for preview and export", () => {
+    const mixedPreset = {
+      ...mockActivePreset,
+      id: "test-combined",
+      mode: "advanced" as const,
+      panels: {
+        brightness: {
+          id: "brightness" as const,
+          label: "Brightness",
+          fileName: "01-brightness.png",
+          family: "control" as const,
+          rect: { x: 0, y: 0, width: 100, height: 50, radius: 0 },
+        },
+        "button-1": {
+          id: "button-1" as const,
+          label: "Wi-Fi",
+          fileName: "02-wi-fi.png",
+          family: "button" as const,
+          rect: { x: 0, y: 50, width: 100, height: 50, radius: 0 },
+          buttonIdentifier: {
+            columnSpan: 2,
+            rowSpan: 1,
+            iconName: "wifi" as const,
+            referenceCellSize: 50,
+          },
+        },
+        "button-2": {
+          id: "button-2" as const,
+          label: "Bluetooth",
+          fileName: "03-bluetooth.png",
+          family: "button" as const,
+          rect: { x: 0, y: 100, width: 100, height: 50, radius: 0 },
+          buttonIdentifier: {
+            columnSpan: 2,
+            rowSpan: 1,
+            iconName: "bluetooth" as const,
+            referenceCellSize: 50,
+          },
+        },
+      },
+      visualOrder: ["brightness", "button-1", "button-2"] as const,
+      goodLockOrder: ["brightness", "button-1", "button-2"] as const,
+    } satisfies QuickPanelPreset;
+    mockUseCustomizeScreen.mockReturnValue({
+      ...createScreenState(mixedPreset),
+      selectedAdvancedTarget: "combined",
+    });
+    mockUseSequentialExport.mockReturnValue(
+      createSequentialState(true, mixedPreset),
+    );
+
+    render(<CustomizeScreen />);
+
+    expect(mockPreviewProps).toMatchObject({ buttonPanelOpacity: 0.78 });
+    expect(mockExportProps).toMatchObject({ buttonPanelOpacity: 0.78 });
+
+    fireEvent.press(screen.getByTestId("button-adjustment-image-tab"));
+    fireEvent.press(screen.getByTestId("button-panel-opacity-slider"));
+
+    expect(mockPreviewProps).toMatchObject({ buttonPanelOpacity: 0.35 });
+    expect(mockExportProps).toMatchObject({ buttonPanelOpacity: 0.35 });
   });
 });

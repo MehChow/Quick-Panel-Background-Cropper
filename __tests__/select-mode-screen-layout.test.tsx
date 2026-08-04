@@ -1,5 +1,6 @@
-import { render, screen } from "@testing-library/react-native";
+import { fireEvent, render, screen } from "@testing-library/react-native";
 import { SelectModeScreen } from "@/features/quick-panel/select-mode/SelectModeScreen";
+import { AdvancedTargetSelection } from "@/features/quick-panel/select-mode/AdvancedTargetSelection";
 import { ScrollView } from "react-native";
 
 jest.mock("react-i18next", () => ({
@@ -62,5 +63,19 @@ describe("SelectModeScreen layout", () => {
     expect(screen.getByTestId("select-mode-footer")).toBeTruthy();
     expect(screen.getByText("common.confirm")).toBeTruthy();
     expect(UNSAFE_queryByType(ScrollView)).toBeNull();
+  });
+
+  it("lets the Advanced target picker select Controls + Buttons", () => {
+    const onSelectTarget = jest.fn();
+    render(
+      <AdvancedTargetSelection
+        onSelectTarget={onSelectTarget}
+        selectedTarget={null}
+      />,
+    );
+
+    fireEvent.press(screen.getByText("mode.advancedCombined"));
+
+    expect(onSelectTarget).toHaveBeenCalledWith("combined");
   });
 });

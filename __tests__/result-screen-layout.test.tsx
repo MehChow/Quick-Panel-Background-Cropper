@@ -1,6 +1,9 @@
 import { render, screen } from "@testing-library/react-native";
 import { ResultScreen } from "@/features/quick-panel/result/ResultScreen";
 
+let mockSuccessPanelProps: { exports: Array<{ id: string; label: string }> } | null = null;
+const mockUseQuickPanelStore = jest.fn();
+
 jest.mock("react-i18next", () => ({
   useTranslation: () => ({
     t: (key: string) => key,
@@ -15,7 +18,8 @@ jest.mock("expo-router", () => ({
 }));
 
 jest.mock("@/features/quick-panel/customize/components/ExportSuccessPanel", () => ({
-  ExportSuccessPanel: () => {
+  ExportSuccessPanel: (props: { exports: Array<{ id: string; label: string }> }) => {
+    mockSuccessPanelProps = props;
     const React = jest.requireActual("react");
     const { Text } = jest.requireActual("react-native");
     return React.createElement(Text, null, "export-panel");
@@ -38,7 +42,10 @@ jest.mock("@/features/quick-panel/customize/components/GoodLockUnavailableDialog
 }));
 
 jest.mock("@/features/quick-panel/store/quick-panel-store", () => ({
-  useQuickPanelStore: () => ({
+  useQuickPanelStore: (...args: unknown[]) => mockUseQuickPanelStore(...args),
+}));
+
+mockUseQuickPanelStore.mockReturnValue({
     exports: [
       { id: "buttonBox", previewUri: "file:///one.png" },
       { id: "mediaPlayer", previewUri: "file:///two.png" },
@@ -46,8 +53,7 @@ jest.mock("@/features/quick-panel/store/quick-panel-store", () => ({
       { id: "volume", previewUri: "file:///four.png" },
     ],
     goToLanding: jest.fn(),
-  }),
-}));
+  });
 
 describe("ResultScreen wide layout", () => {
   it("renders footer actions outside the success panel", () => {
@@ -57,5 +63,29 @@ describe("ResultScreen wide layout", () => {
     expect(screen.getByTestId("result-footer")).toBeTruthy();
     expect(screen.getByText("export.openGoodLock")).toBeTruthy();
     expect(screen.getByText("export.backHome")).toBeTruthy();
+  });
+
+  it("passes mixed Result exports through without reordering", () => {
+    const mixedExports = [
+      { id: "buttonBox", label: "Button box", previewUri: "file:///1.png" },
+      { id: "mediaPlayer", label: "Media player", previewUri: "file:///2.png" },
+      { id: "brightness", label: "Brightness", previewUri: "file:///3.png" },
+      { id: "button-1", label: "Wi-Fi", previewUri: "file:///4.png" },
+      { id: "button-2", label: "Bluetooth", previewUri: "file:///5.png" },
+    ];
+    mockUseQuickPanelStore.mockReturnValue({
+      exports: mixedExports,
+      goToLanding: jest.fn(),
+    });
+
+    render(<ResultScreen />);
+
+    expect(mockSuccessPanelProps?.exports.map((item) => item.id)).toEqual([
+      "buttonBox",
+      "mediaPlayer",
+      "brightness",
+      "button-1",
+      "button-2",
+    ]);
   });
 });

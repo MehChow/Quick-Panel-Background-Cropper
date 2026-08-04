@@ -16,8 +16,11 @@ interface ButtonAdjustmentTabsProps {
   hasVerticalButtons: boolean;
   horizontalIdentifierPosition: number;
   onButtonPanelOpacityChange: (value: number) => void;
+  onButtonPanelOpacityCommit: (value: number) => void;
   onHorizontalIdentifierPositionChange: (value: number) => void;
+  onHorizontalIdentifierPositionCommit: (value: number) => void;
   onVerticalIdentifierPositionChange: (value: number) => void;
+  onVerticalIdentifierPositionCommit: (value: number) => void;
   showButtonIdentifiers: boolean;
   verticalIdentifierPosition: number;
 }
@@ -30,6 +33,7 @@ export function ButtonAdjustmentTabs(props: ButtonAdjustmentTabsProps) {
       accessibilityLabel: t("customize.buttonPanelOpacity"),
       disabled: false,
       label: t("customize.buttonPanelOpacity"),
+      onSlidingComplete: props.onButtonPanelOpacityCommit,
       onValueChange: props.onButtonPanelOpacityChange,
       sliderTestID: "button-panel-opacity-slider",
       tabLabel: t("customize.buttonAdjustmentImageTab"),
@@ -44,6 +48,7 @@ export function ButtonAdjustmentTabs(props: ButtonAdjustmentTabsProps) {
       accessibilityLabel: t("customize.horizontalIdentifierPosition"),
       disabled: identifierDisabled,
       label: t("customize.horizontalIdentifierPosition"),
+      onSlidingComplete: props.onHorizontalIdentifierPositionCommit,
       onValueChange: props.onHorizontalIdentifierPositionChange,
       sliderTestID: "horizontal-identifier-position-slider",
       tabLabel: t("customize.buttonAdjustmentHorizontalTab"),
@@ -57,6 +62,7 @@ export function ButtonAdjustmentTabs(props: ButtonAdjustmentTabsProps) {
       accessibilityLabel: t("customize.verticalIdentifierPosition"),
       disabled: identifierDisabled,
       label: t("customize.verticalIdentifierPosition"),
+      onSlidingComplete: props.onVerticalIdentifierPositionCommit,
       onValueChange: props.onVerticalIdentifierPositionChange,
       sliderTestID: "vertical-identifier-position-slider",
       tabLabel: t("customize.buttonAdjustmentVerticalTab"),

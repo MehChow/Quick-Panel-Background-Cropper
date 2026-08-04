@@ -8,21 +8,24 @@ import { useWindowDimensions, View } from "react-native";
 import { PanelAlignmentTips } from "./PanelAlignmentTips";
 import { getHelpSheetMediaLayout } from "./help-sheet-media-layout";
 import { useBottomSheetInsets } from "./useBottomSheetInsets";
-import type { AdvancedTarget } from "../model/types";
+import type { AdvancedTarget, PanelFamily } from "../model/types";
 
 interface PanelAlignmentHelpSheetProps {
   onClose: () => void;
-  target: AdvancedTarget;
+  family?: PanelFamily;
+  target?: AdvancedTarget;
 }
 
 export function PanelAlignmentHelpSheet({
   onClose,
+  family: requestedFamily,
   target,
 }: PanelAlignmentHelpSheetProps) {
   const { t } = useTranslation();
   const { height, width } = useWindowDimensions();
   const layout = getHelpSheetMediaLayout(width, height);
   const { bottomInset, contentPaddingBottom } = useBottomSheetInsets();
+  const family = requestedFamily ?? (target === "buttons" ? "button" : "control");
 
   return (
     <BottomSheet
@@ -67,7 +70,7 @@ export function PanelAlignmentHelpSheet({
             </Text>
             <Text className="text-sm font-medium leading-6 text-zinc-300">
               {t(
-                target === "buttons"
+                family === "button"
                   ? "advancedCalibration.buttonPanelHelpBody"
                   : "advancedCalibration.panelHelpBody",
               )}
@@ -76,7 +79,7 @@ export function PanelAlignmentHelpSheet({
         </View>
 
         <View className="px-5">
-          <PanelAlignmentTips target={target} />
+          <PanelAlignmentTips family={family} />
         </View>
       </BottomSheetScrollView>
     </BottomSheet>

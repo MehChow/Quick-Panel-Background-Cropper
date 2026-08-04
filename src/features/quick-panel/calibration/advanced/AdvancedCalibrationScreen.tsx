@@ -8,22 +8,35 @@ import {
   markHelpSeen,
   type HelpEntryId,
 } from "@/features/quick-panel/store/storage";
+import { useQuickPanelStore } from "@/features/quick-panel/store/quick-panel-store";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import type { AdvancedTarget, EditablePanelItem } from "../../model/types";
 import { OuterCalibrationStep } from "../shared/OuterCalibrationStep";
-import { isPanelPhase, type AdvancedCalibrationPhase } from "./advanced-steps";
+import {
+  getVisiblePanelIds,
+  isPanelPhase,
+  type AdvancedCalibrationPhase,
+} from "./advanced-steps";
 import { AdvancedCalibrationControls } from "./AdvancedCalibrationControls";
 import { AdvancedGridSheet } from "./AdvancedGridSheet";
 import { AdvancedCalibrationLeaveDialog } from "./components/AdvancedCalibrationLeaveDialog";
 import { AdvancedPanelCanvas } from "./components/AdvancedPanelCanvas";
 import { AdvancedPanelSelection } from "./components/AdvancedPanelSelection";
 import { ButtonPanelSelection } from "./components/ButtonPanelSelection";
+import { CombinedCalibrationScreen } from "./combined/CombinedCalibrationScreen";
 import { useAdvancedCalibrationScreen } from "./hooks/useAdvancedCalibrationScreen";
 
 export function AdvancedCalibrationScreen() {
+  const selectedTarget = useQuickPanelStore((state) => state.selectedAdvancedTarget);
+  return selectedTarget === "combined"
+    ? <CombinedCalibrationScreen />
+    : <ReleasedAdvancedCalibrationScreen />;
+}
+
+export function ReleasedAdvancedCalibrationScreen() {
   const { t } = useTranslation();
   const [isHelpOpen, setIsHelpOpen] = useState(false);
   const [isGridHelpOpen, setIsGridHelpOpen] = useState(false);
@@ -180,12 +193,14 @@ export function AdvancedCalibrationScreen() {
           </View>
         ) : screenshot && outerRect && panels ? (
           <AdvancedPanelCanvas
+            activePanelId={isPanelStep ? phase : null}
             grid={grid}
+            isReview={isConfirmPhase}
             panelItems={panelItems}
             screenshot={screenshot}
             outerRect={outerRect}
-            phase={phase}
             panels={panels}
+            visiblePanelIds={getVisiblePanelIds(phase, panelItems.map((item) => item.id))}
             onPanelsChange={setAdvancedPanels}
           />
         ) : (
@@ -204,7 +219,7 @@ export function AdvancedCalibrationScreen() {
       </QuickPanelScreenShell>
       {isHelpOpen && isPanelStep ? (
         <PanelAlignmentHelpSheet
-          target={selectedAdvancedTarget ?? "controls"}
+          family={selectedAdvancedTarget === "buttons" ? "button" : "control"}
           onClose={() => setIsHelpOpen(false)}
         />
       ) : null}

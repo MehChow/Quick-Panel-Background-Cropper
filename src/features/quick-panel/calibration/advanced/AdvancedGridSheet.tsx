@@ -70,6 +70,8 @@ export function AdvancedGridSheet({ onClose, target }: Props) {
               {t(
                 target === "buttons"
                   ? "advancedCalibration.buttonGridSheetSubtitle"
+                  : target === "combined"
+                    ? "advancedCalibration.combinedGridSheetSubtitle"
                   : "advancedCalibration.gridSheetSubtitle",
               )}
             </Text>

@@ -3,7 +3,7 @@ import {
   getButtonIdentifierLayoutKind,
   type ButtonIdentifierPositions,
 } from "../../model/button-identifier-layout";
-import type { QuickPanelPreset } from "../../model/types";
+import type { AdvancedTarget, QuickPanelPreset } from "../../model/types";
 import {
   defaultButtonIdentifierBackgroundTheme,
   defaultButtonIdentifierColor,
@@ -14,7 +14,9 @@ import {
 } from "../button-identifier-color";
 import {
   loadButtonCustomizeSettings,
+  loadCombinedButtonImageIntensity,
   saveButtonCustomizeSettings,
+  saveCombinedButtonImageIntensity,
   type ButtonCustomizeSettings,
 } from "../../store/storage";
 
@@ -27,6 +29,9 @@ export interface ButtonCustomizeControlState {
   hasVerticalButtons: boolean;
   horizontalIdentifierPosition: number;
   identifierPositions: ButtonIdentifierPositions;
+  commitButtonPanelOpacity: (value: number) => void;
+  commitHorizontalIdentifierPosition: (value: number) => void;
+  commitVerticalIdentifierPosition: (value: number) => void;
   setButtonIdentifierAppearance: (appearance: ButtonIdentifierAppearance) => void;
   setButtonPanelOpacity: (value: number) => void;
   setHorizontalIdentifierPosition: (value: number) => void;
@@ -38,16 +43,32 @@ export interface ButtonCustomizeControlState {
 
 export function useButtonCustomizeControls(
   preset: QuickPanelPreset,
+  target: AdvancedTarget | null,
 ): ButtonCustomizeControlState {
   const [settings, setSettings] = useState<ButtonCustomizeSettings>(
     loadButtonCustomizeSettings,
   );
-  const updateSetting = <K extends keyof ButtonCustomizeSettings>(
+  const [combinedButtonPanelOpacity, setCombinedButtonPanelOpacity] = useState(
+    loadCombinedButtonImageIntensity,
+  );
+  const setSetting = <K extends keyof ButtonCustomizeSettings>(
     key: K,
     value: ButtonCustomizeSettings[K],
   ) => {
     setSettings((current) => {
-      const next = { ...current, [key]: value };
+      return Object.is(current[key], value)
+        ? current
+        : { ...current, [key]: value };
+    });
+  };
+  const commitSetting = <K extends keyof ButtonCustomizeSettings>(
+    key: K,
+    value: ButtonCustomizeSettings[K],
+  ) => {
+    setSettings((current) => {
+      const next = Object.is(current[key], value)
+        ? current
+        : { ...current, [key]: value };
       saveButtonCustomizeSettings(next);
       return next;
     });
@@ -60,7 +81,10 @@ export function useButtonCustomizeControls(
     buttonIdentifierBackgroundTheme: settings.buttonIdentifierBackgroundTheme,
     buttonIdentifierColor: settings.buttonIdentifierColor,
     buttonIdentifierOpacity: settings.buttonIdentifierOpacity,
-    buttonPanelOpacity: settings.buttonPanelOpacity,
+    buttonPanelOpacity:
+      target === "combined"
+        ? combinedButtonPanelOpacity
+        : settings.buttonPanelOpacity,
     hasHorizontalButtons: orientations.includes("horizontal"),
     hasVerticalButtons: orientations.includes("vertical"),
     horizontalIdentifierPosition: settings.horizontalIdentifierPosition,
@@ -68,6 +92,19 @@ export function useButtonCustomizeControls(
       horizontal: settings.horizontalIdentifierPosition / 100,
       vertical: settings.verticalIdentifierPosition / 100,
     },
+    commitButtonPanelOpacity: (value) => {
+      const next = Math.min(100, Math.max(0, value));
+      if (target === "combined") {
+        setCombinedButtonPanelOpacity(next);
+        saveCombinedButtonImageIntensity(next);
+        return;
+      }
+      commitSetting("buttonPanelOpacity", next);
+    },
+    commitHorizontalIdentifierPosition: (value) =>
+      commitSetting("horizontalIdentifierPosition", value),
+    commitVerticalIdentifierPosition: (value) =>
+      commitSetting("verticalIdentifierPosition", value),
     setButtonIdentifierAppearance: ({ backgroundTheme, color, opacity }) => {
       setSettings((current) => {
         const next = {
@@ -83,10 +120,20 @@ export function useButtonCustomizeControls(
         return next;
       });
     },
-    setButtonPanelOpacity: (value) => updateSetting("buttonPanelOpacity", value),
-    setHorizontalIdentifierPosition: (value) => updateSetting("horizontalIdentifierPosition", value),
-    setShowButtonIdentifiers: (value) => updateSetting("showButtonIdentifiers", value),
-    setVerticalIdentifierPosition: (value) => updateSetting("verticalIdentifierPosition", value),
+    setButtonPanelOpacity: (value) => {
+      const next = Math.min(100, Math.max(0, value));
+      if (target === "combined") {
+        setCombinedButtonPanelOpacity(next);
+        return;
+      }
+      setSetting("buttonPanelOpacity", next);
+    },
+    setHorizontalIdentifierPosition: (value) =>
+      setSetting("horizontalIdentifierPosition", value),
+    setShowButtonIdentifiers: (value) =>
+      commitSetting("showButtonIdentifiers", value),
+    setVerticalIdentifierPosition: (value) =>
+      setSetting("verticalIdentifierPosition", value),
     showButtonIdentifiers: settings.showButtonIdentifiers,
     verticalIdentifierPosition: settings.verticalIdentifierPosition,
   };
