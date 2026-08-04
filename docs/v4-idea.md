@@ -1,7 +1,15 @@
 # v4 Idea: Controls + Buttons Support
 
-This document captures the v4 brainstorming result for future implementation.
-It is product and workflow context only. It is not an implementation plan.
+> Historical context only. The combined target is now implemented. Treat
+> `AGENTS.md`, `README.md`,
+> `docs/superpowers/specs/2026-07-31-controls-buttons-combined-mode-design.md`,
+> and the newest entries in `docs/notes.md` as authoritative. In particular,
+> the implemented combined Button intensity defaults to `78%` and persists
+> independently; the older `50%` non-persisted proposal below is superseded.
+
+This document captures the original v4 brainstorming result. It is retained as
+historical product and workflow context, not as the current implementation
+contract.
 
 ## Current v2 baseline
 

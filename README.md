@@ -1,7 +1,7 @@
 # Quick Panel Background Cropper
 
-Create Samsung Good Lock QuickStar Quick Panel background PNGs for Controls
-panels or selected Quick Panel Buttons from a single image.
+Create Samsung Good Lock QuickStar Quick Panel background PNGs for Controls,
+selected Quick Panel Buttons, or both panel families from a single image.
 
 ## What it does
 
@@ -14,11 +14,13 @@ The current app supports:
   Volume
 - **Buttons-only** customization for one or more manually selected Quick Panel
   Buttons
+- combined **Controls + Buttons** customization using one shared image layout
 
 It includes:
 
 - Default Controls and Advanced layout customization modes
-- separate **Controls only** and **Buttons only** targets under Advanced
+- separate **Controls only**, **Buttons only**, and **Controls + Buttons**
+  targets under Advanced
 - one-time Quick Panel calibration using a screenshot
 - searchable built-in Button labels plus custom labels
 - live preview for the selected Controls or Button panels
@@ -47,13 +49,16 @@ Default mode supports these Controls panels:
 - Brightness
 - Volume
 
-Advanced mode supports two targets:
+Advanced mode supports three targets:
 
 - **Controls only:** calibrate and export any selected subset of the four
   supported Controls panels.
 - **Buttons only:** manually choose one or more built-in or custom Button
   labels, align their boxes to the screenshot, and export each Button as a
   separate PNG.
+- **Controls + Buttons:** select at least one panel from each family, align all
+  boxes inside one shared calibrated area, and export one continuous image
+  composition across the complete layout.
 
 Buttons are screenshot-driven and may be freely resized. The app does not try
 to read the device's complete Quick Settings Button list.
@@ -62,11 +67,10 @@ Not intended for:
 
 - DeX or external-display layouts
 - older or different One UI versions
-- mixed Controls + Buttons customization in one export flow
 
 ## User flow
 
-For a first-time user, the app has three customization paths:
+For a first-time user, the app has four customization paths:
 
 ### Default mode
 
@@ -165,6 +169,53 @@ For a first-time user, the app has three customization paths:
   <img src="./flow/advanced/buttons-only/20.webp" width="200">
 </div><br>
 
+### Advanced Controls + Buttons
+
+1. Press **Start customizing**.
+2. Choose **Advanced** mode and press **Confirm**.
+3. Choose **Controls + Buttons** and press **Confirm**.
+4. Import one fully expanded Quick Panel screenshot from your album.
+5. Adjust one green rectangle around every Control and Button you want to
+   customize.
+6. Select at least one supported Control and at least one built-in or custom
+   Button.
+7. Set one **Col**/**Row** snapping grid, from 1 to 8 on each axis, for the
+   complete combined region.
+8. Align the enabled Controls in guided order, then align the selected Buttons
+   in selection order. Active Control boxes are purple, active Button boxes are
+   blue, and completed boxes are orange.
+9. Review every selected box together and press **Confirm**. Overlapping boxes
+   must be fixed before the calibration can be saved.
+10. Choose one background image, then pan and zoom it across the shared live
+    preview.
+11. Adjust Button image intensity and label visibility, position, color,
+    intensity, or light/dark background style as needed. Controls retain their
+    own One UI treatment.
+12. Press **Export PNGs**. Apply enabled Controls first in Good Lock order, then
+    the selected Buttons in the shown order.
+
+<div style="display: flex; gap: 10px; flex-wrap: wrap;">
+  <img src="./flow/advanced/combined/1.webp" width="200">
+  <img src="./flow/advanced/combined/2.webp" width="200">
+  <img src="./flow/advanced/combined/3.webp" width="200">
+  <img src="./flow/advanced/combined/4.webp" width="200">
+  <img src="./flow/advanced/combined/5.webp" width="200">
+  <img src="./flow/advanced/combined/6.webp" width="200">
+  <img src="./flow/advanced/combined/7.webp" width="200">
+  <img src="./flow/advanced/combined/8.webp" width="200">
+  <img src="./flow/advanced/combined/9.webp" width="200">
+  <img src="./flow/advanced/combined/10.webp" width="200">
+  <img src="./flow/advanced/combined/11.webp" width="200">
+  <img src="./flow/advanced/combined/12.webp" width="200">
+  <img src="./flow/advanced/combined/13.webp" width="200">
+  <img src="./flow/advanced/combined/14.webp" width="200">
+  <img src="./flow/advanced/combined/15.webp" width="200">
+  <img src="./flow/advanced/combined/16.webp" width="200">
+  <img src="./flow/advanced/combined/17.webp" width="200">
+  <img src="./flow/advanced/combined/18.webp" width="200">
+  <img src="./flow/advanced/combined/19.webp" width="200">
+</div><br>
+
 After you calibrate a mode and target once, later runs go straight to image
 selection. Use **Wanna recalibrate?** any time to update the saved layout.
 
@@ -181,8 +232,14 @@ boxes in this order: Button box, Brightness, Volume, and Media player.
 Advanced Buttons uses its own saved calibration. You choose Button labels
 manually, set one shared snapping grid, and align each Button as a user-defined
 box inside the selected outer area. All Button exports use the same image
-placement, and the local image-intensity slider affects both preview and
-export without being persisted.
+placement. Button appearance settings affect both preview and export and persist
+across visits.
+
+Advanced Controls + Buttons has its own saved calibration and requires at least
+one Control and one Button. Both families share one screenshot, outer area,
+snapping grid, coordinate system, and image transform. The combined Button image
+intensity persists independently from Buttons-only intensity, while label
+visibility, position, and appearance settings are shared.
 
 The app remembers the last successfully exported main mode and Advanced target
 as the preselected choices on the Select Mode screen.
@@ -209,8 +266,8 @@ The full calibration logic and assumptions are documented in [CALIBRATION_PLAN.m
 
 - Use a fully expanded Quick Panel screenshot when calibrating.
 - Default remains Controls-only.
-- Advanced supports either Controls-only or Buttons-only exports. Mixed
-  Controls + Buttons customization is not included.
+- Advanced supports Controls-only, Buttons-only, and combined Controls +
+  Buttons exports.
 - Button selection is manual because Android does not expose the user's
   complete Samsung Quick Settings Button list to normal apps.
 - Use Advanced Controls when supported Controls panels have been rearranged,

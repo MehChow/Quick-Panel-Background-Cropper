@@ -733,3 +733,25 @@ The advanced calibration help sheets regressed during the Fold/wide-screen respo
   preview uses the current target's Button image intensity and shared
   identifier settings without adding a crop, transform, export surface, or
   persisted field.
+
+### 2026-08-04: Advanced Controls + Buttons combined flow
+
+- Advanced now offers a third, additive `Controls + Buttons` target. Default,
+  Controls-only, and Buttons-only behavior and persistence remain independent.
+- Combined calibration uses one screenshot, outer area, required grid, and
+  coordinate system. It requires at least one Control and one Button.
+- The phase order is outer area, Control selection, Button selection, grid,
+  enabled Controls, selected Buttons, then combined review. Active Controls are
+  purple, active Buttons are blue, and completed boxes are orange.
+- Next and final save reject overlaps with visible completed boxes even though
+  the active box may temporarily overlap while it is being edited.
+- Combined Customize uses one image transform across both families. Combined
+  Button image intensity defaults to `78%` and persists independently under
+  `quick-panel.combined-button-image-intensity`; identifier visibility,
+  position, color, intensity, and background style remain shared with
+  Buttons-only.
+- Export is sequential and all-or-nothing: enabled Controls first in Good Lock
+  order, followed by Buttons in selection order, using contiguous family-aware
+  filenames.
+- `flow/advanced/combined/1.webp` through `19.webp` are the current end-to-end
+  UI reference, including the final QuickStar result.
