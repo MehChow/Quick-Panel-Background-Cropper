@@ -24,6 +24,12 @@ export function AdvancedTargetSelection({ selectedTarget, onSelectTarget }: Prop
         body={t("mode.advancedButtonsOnlyDescription")}
         onPress={() => onSelectTarget("buttons")}
       />
+      <TargetRow
+        isSelected={selectedTarget === "combined"}
+        title={t("mode.advancedCombined")}
+        body={t("mode.advancedCombinedDescription")}
+        onPress={() => onSelectTarget("combined")}
+      />
     </View>
   );
 }

@@ -26,8 +26,10 @@ import {
 import {
   getAcceptAdvancedCalibrationResult,
   getAcceptAdvancedButtonsCalibrationResult,
+  getAcceptAdvancedCombinedCalibrationResult,
   getAcceptCalibrationResult,
   getAdvancedButtonsCalibrationState,
+  getAdvancedCombinedCalibrationState,
   getAdvancedCalibrationState,
   getDefaultCalibrationState,
   getFailExportState,
@@ -48,6 +50,12 @@ import {
   saveLastExportedAdvancedTarget,
   saveLastExportedMode,
 } from "./storage";
+import {
+  createAdvancedCombinedDraft,
+  getCombinedCalibrationFromDraft,
+  initializeCombinedControlPanels,
+  scaleCombinedDraftToOuter,
+} from "../calibration/advanced/combined/combined-calibration-state";
 import {
   createAdvancedButtonsDraft,
   createAdvancedDraft,
@@ -74,6 +82,13 @@ export interface QuickPanelState extends QuickPanelStateData {
   setAdvancedButtons: (buttons: ButtonCalibrationItem[]) => void;
   setAdvancedButtonPanels: (panels: PanelRects) => void;
   acceptAdvancedCalibration: (grid: AdvancedSnapGrid) => boolean;
+  setCombinedScreenshot: (screenshot: PickedImage, suggestedOuter: PanelRect) => void;
+  setCombinedOuterRect: (rect: PanelRect) => void;
+  confirmCombinedOuterRect: () => void;
+  setCombinedEnabledControls: (ids: ControlPanelId[]) => void;
+  setCombinedButtons: (buttons: ButtonCalibrationItem[]) => void;
+  setCombinedPanels: (panels: PanelRects) => void;
+  acceptCombinedCalibration: (grid: AdvancedSnapGrid) => boolean;
   startImageProcessing: () => void;
   finishImageProcessing: (image: PickedImage) => void;
   failImageProcessing: (message: string | null, errorKey: string | null) => void;
@@ -96,15 +111,17 @@ export const useQuickPanelStore = create<QuickPanelState>((set, get) => ({
     const hasCalibration = mode === "default"
       ? Boolean(state.defaultCalibration)
       : false;
-    set(getModeState(mode, state.defaultCalibration, state.advancedCalibration, state.advancedButtonsCalibration, null));
+    set(getModeState(mode, state.defaultCalibration, state.advancedCalibration, state.advancedButtonsCalibration, state.advancedCombinedCalibration, null));
     return hasCalibration;
   },
   selectAdvancedTarget: (target) => {
     const state = get();
     const hasCalibration = target === "controls"
       ? Boolean(state.advancedCalibration)
-      : Boolean(state.advancedButtonsCalibration);
-    set(getModeState("advanced", state.defaultCalibration, state.advancedCalibration, state.advancedButtonsCalibration, target));
+      : target === "buttons"
+        ? Boolean(state.advancedButtonsCalibration)
+        : Boolean(state.advancedCombinedCalibration);
+    set(getModeState("advanced", state.defaultCalibration, state.advancedCalibration, state.advancedButtonsCalibration, state.advancedCombinedCalibration, target));
     return hasCalibration;
   },
   goToCalibration: () => set(getDefaultCalibrationState(get().defaultCalibration)),
@@ -112,7 +129,9 @@ export const useQuickPanelStore = create<QuickPanelState>((set, get) => ({
     const state = get();
     set(state.selectedAdvancedTarget === "buttons"
       ? getAdvancedButtonsCalibrationState(state.advancedButtonsCalibration)
-      : getAdvancedCalibrationState(state.advancedCalibration, "controls"));
+      : state.selectedAdvancedTarget === "combined"
+        ? getAdvancedCombinedCalibrationState(state.advancedCombinedCalibration)
+        : getAdvancedCalibrationState(state.advancedCalibration, "controls"));
   },
   setError: (error) => set({ error }),
   setScreenshot: (screenshot, rect) => set({ screenshot, calibrationRect: rect, error: null }),
@@ -128,6 +147,7 @@ export const useQuickPanelStore = create<QuickPanelState>((set, get) => ({
       default: result.defaultCalibration,
       advancedControls: state.advancedCalibration,
       advancedButtons: state.advancedButtonsCalibration,
+      advancedCombined: state.advancedCombinedCalibration,
     });
     set(result.state);
     return true;
@@ -214,6 +234,66 @@ export const useQuickPanelStore = create<QuickPanelState>((set, get) => ({
       : null,
     error: null,
   })),
+  setCombinedScreenshot: (screenshot, suggestedOuter) => set((state) => ({
+    advancedCombinedDraft: createAdvancedCombinedDraft(
+      screenshot,
+      suggestedOuter,
+      state.advancedCombinedCalibration,
+    ),
+    error: null,
+  })),
+  setCombinedOuterRect: (outerRect) => set((state) => ({
+    advancedCombinedDraft: state.advancedCombinedDraft
+      ? scaleCombinedDraftToOuter(state.advancedCombinedDraft, outerRect)
+      : null,
+    error: null,
+  })),
+  confirmCombinedOuterRect: () => set((state) => {
+    const draft = state.advancedCombinedDraft;
+    if (!draft?.outerRect) {
+      return { error: translate("errors.confirmOuterFirst") };
+    }
+    return {
+      advancedCombinedDraft: initializeCombinedControlPanels(draft),
+      error: null,
+    };
+  }),
+  setCombinedEnabledControls: (ids) => set((state) => ({
+    advancedCombinedDraft: state.advancedCombinedDraft
+      ? { ...state.advancedCombinedDraft, enabledControls: ids }
+      : null,
+    error: ids.length > 0 ? null : translate("errors.selectCombinedControl"),
+  })),
+  setCombinedButtons: (buttons) => set((state) => ({
+    advancedCombinedDraft: state.advancedCombinedDraft
+      ? { ...state.advancedCombinedDraft, buttons }
+      : null,
+    error: buttons.length > 0 ? null : translate("errors.selectCombinedButton"),
+  })),
+  setCombinedPanels: (panels) => set((state) => {
+    const draft = state.advancedCombinedDraft;
+    if (!draft) {
+      return { advancedCombinedDraft: null, error: null };
+    }
+    return {
+      advancedCombinedDraft: {
+        ...draft,
+        controlPanels: draft.controlPanels
+          ? {
+              ...draft.controlPanels,
+              ...Object.fromEntries(
+                draft.enabledControls.map((id) => [id, panels[id] ?? draft.controlPanels?.[id]]),
+              ),
+            }
+          : null,
+        buttons: draft.buttons.map((button) => ({
+          ...button,
+          rect: panels[button.id] ?? button.rect,
+        })),
+      },
+      error: null,
+    };
+  }),
   acceptAdvancedCalibration: (grid) => {
     const state = get();
     if (state.selectedAdvancedTarget === "buttons") {
@@ -229,6 +309,7 @@ export const useQuickPanelStore = create<QuickPanelState>((set, get) => ({
         default: state.defaultCalibration,
         advancedControls: state.advancedCalibration,
         advancedButtons: calibration,
+        advancedCombined: state.advancedCombinedCalibration,
       });
       set(getAcceptAdvancedButtonsCalibrationResult(calibration));
       return true;
@@ -245,8 +326,34 @@ export const useQuickPanelStore = create<QuickPanelState>((set, get) => ({
       default: state.defaultCalibration,
       advancedControls: calibration,
       advancedButtons: state.advancedButtonsCalibration,
+      advancedCombined: state.advancedCombinedCalibration,
     });
     set(getAcceptAdvancedCalibrationResult(calibration));
+    return true;
+  },
+  acceptCombinedCalibration: (grid) => {
+    const state = get();
+    const draft = state.advancedCombinedDraft;
+    if (!draft || draft.enabledControls.length === 0) {
+      set({ error: translate("errors.selectCombinedControl") });
+      return false;
+    }
+    if (draft.buttons.length === 0) {
+      set({ error: translate("errors.selectCombinedButton") });
+      return false;
+    }
+    const calibration = getCombinedCalibrationFromDraft(draft, grid);
+    if (!calibration) {
+      set({ error: translate("errors.invalidCombinedPanels") });
+      return false;
+    }
+    saveCalibrations({
+      default: state.defaultCalibration,
+      advancedControls: state.advancedCalibration,
+      advancedButtons: state.advancedButtonsCalibration,
+      advancedCombined: calibration,
+    });
+    set(getAcceptAdvancedCombinedCalibrationResult(calibration));
     return true;
   },
   startImageProcessing: () => set(getStartImageProcessingState()),

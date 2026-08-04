@@ -21,4 +21,23 @@ describe("Quick Panel calibration errors", () => {
       "Select at least one Button to continue.",
     );
   });
+
+  it("uses distinct combined selection errors", () => {
+    const store = useQuickPanelStore.getState();
+    store.selectMode("advanced");
+    store.selectAdvancedTarget("combined");
+    store.setCombinedScreenshot(
+      { uri: "file:///screenshot.png", width: 200, height: 400 },
+      { x: 0, y: 0, width: 200, height: 400, radius: 0 },
+    );
+    store.setCombinedEnabledControls([]);
+    expect(useQuickPanelStore.getState().error).toBe(
+      "Select at least one Control to continue.",
+    );
+    store.setCombinedEnabledControls(["buttonBox"]);
+    store.setCombinedButtons([]);
+    expect(useQuickPanelStore.getState().error).toBe(
+      "Select at least one Button to continue.",
+    );
+  });
 });

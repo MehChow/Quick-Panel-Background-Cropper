@@ -11,12 +11,12 @@ const en = {
         "Split one image seamlessly across your Quick Panel Controls area",
     },
     releaseAnnouncement: {
-      v1_2_0: {
-        title: "v1.2.0 Major Updates 🌟\n",
-        body: "• New feature - added icon color customization in Buttons-only mode\n• Removed snapping grid toggling feature",
+      v1_3_0: {
+        title: "v1.3.0 Major Updates 🌟\n",
+        body: "• New: Advanced Controls + Buttons lets one image flow continuously across both Quick Panel families.",
         gotIt: "Got it",
         mediaAccessibilityLabel:
-          "Icon color customization in Buttons-only mode",
+          "Advanced Controls and Buttons using one continuous image",
       },
     },
     landing: {
@@ -36,7 +36,7 @@ const en = {
         "For the standard Controls layout:\nButton box > Brightness > Volume > Media player",
       advanced: "Advanced",
       advancedDescription:
-        "For customized Controls layouts, or when you want to export selected Quick Panel Buttons only. After choosing Advanced, pick Controls only or Buttons only.",
+        "For customized Controls layouts, selected Quick Panel Buttons, or one image across both. After choosing Advanced, pick Controls only, Buttons only, or Controls + Buttons.",
       advancedTargetTitle: "Advanced target",
       advancedTargetSubtitle: "Choose one target for this Advanced export.",
       advancedControlsOnly: "Controls only",
@@ -45,6 +45,9 @@ const en = {
       advancedButtonsOnly: "Buttons only",
       advancedButtonsOnlyDescription:
         "Selected Quick Panel Buttons from your screenshot.",
+      advancedCombined: "Controls + Buttons",
+      advancedCombinedDescription:
+        "One image across selected Controls and Quick Panel Buttons.",
       helpTitle: "Which mode should I choose?",
       helpSubtitle:
         "Pick the one that matches your Quick Panel layout and what you want to export.",
@@ -106,6 +109,15 @@ const en = {
       invalidButtonIdentifierHex: "Enter a valid six-digit HEX color.",
       buttonIdentifierColorWheel: "Label color wheel",
       cancelButtonIdentifierAppearance: "Cancel label appearance changes",
+      buttonAppearancePosition: "{{label}} · {{current}} of {{total}}",
+      buttonAppearancePreview: "{{label}} appearance preview",
+      buttonAppearanceOverallPreview: "Preview full layout",
+      buttonAppearanceOverallPreviewHint:
+        "Tap to open the full layout preview. Tap the dimmed background to close.",
+      buttonAppearanceOverallPreviewClose: "Close full layout preview",
+      buttonAppearancePrevious: "Previous Button",
+      buttonAppearanceNext: "Next Button",
+      buttonAppearanceUnavailable: "Button preview unavailable.",
       chooseAnotherImage: "Choose another image",
       resetPosition: "Reset position",
       exportPngs: "Export PNGs",
@@ -116,6 +128,11 @@ const en = {
     advancedCalibration: {
       title: "Advanced calibration",
       outerSubtitle: "Wrap the full region you want to calibrate",
+      combinedOuterSubtitle: "Wrap every Control and Button you want to calibrate",
+      combinedControlSelectionSubtitle: "Choose the Controls in this region",
+      combinedButtonSelectionSubtitle: "Choose the Quick Panel Buttons in this region",
+      combinedGridSubtitle: "Set one grid for every selected Control and Button",
+      combinedConfirmSubtitle: "Review all Control and Button boxes before saving",
       panelSelectionSubtitle:
         "Turn off the unwanted panels that are missing from this region",
       buttonSelectionSubtitle: "Choose the Quick Panel Buttons in this region",
@@ -160,6 +177,8 @@ const en = {
         "Choose the row and column counts that make the grid dots fall into the gaps between your controls. Use the examples below to decide which grid matches your screenshot more closely.",
       buttonGridSheetSubtitle:
         "Choose the row and column counts that make the grid dots fall into the gaps between your Buttons. Use the examples below to decide which grid matches your screenshot more closely.",
+      combinedGridSheetSubtitle:
+        "Choose row and column counts that place the grid dots in the gaps around both Controls and Buttons.",
       buttonSearchPlaceholder: "Search or custom label",
       selectedButtons: "Selected {{count}}",
       noButtonsSelected: "Tap labels below to add them.",
@@ -195,6 +214,7 @@ const en = {
       defaultLabel: "Galaxy S25+ / One UI 8.5 default",
       calibratedLabel: "{{label}} calibrated",
       advancedLabel: "One UI 8.5 custom advanced layout",
+      combinedLabel: "One UI 8.5 combined Controls and Buttons layout",
     },
     panels: {
       buttonBox: "Button box",
@@ -281,6 +301,11 @@ const en = {
         "Keep selected panel boxes inside the outer area without overlapping.",
       selectAdvancedPanel: "Select at least one panel to continue.",
       selectAdvancedButton: "Select at least one Button to continue.",
+      selectCombinedControl: "Select at least one Control to continue.",
+      selectCombinedButton: "Select at least one Button to continue.",
+      combinedPanelOverlap:
+        "Move or resize the current box so it does not overlap a completed box.",
+      invalidCombinedPanels: "Check every selected Control and Button box before saving.",
     },
   },
 };

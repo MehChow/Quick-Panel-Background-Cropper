@@ -6,6 +6,7 @@ export interface ButtonAdjustment {
   accessibilityLabel: string;
   disabled: boolean;
   label: string;
+  onSlidingComplete: (value: number) => void;
   onValueChange: (value: number) => void;
   sliderTestID: string;
   tabLabel: string;
@@ -36,6 +37,7 @@ export function ButtonAdjustmentSlider({
           disabled={adjustment.disabled}
           max={100}
           min={0}
+          onSlidingComplete={adjustment.onSlidingComplete}
           onValueChange={adjustment.onValueChange}
           size="sm"
           step={1}

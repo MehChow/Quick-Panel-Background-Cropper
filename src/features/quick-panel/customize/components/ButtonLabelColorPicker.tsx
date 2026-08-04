@@ -20,6 +20,8 @@ interface ButtonLabelColorPickerProps {
   onComplete: (colors: ColorFormatsObject) => void;
   onHexChange: (text: string) => void;
   onBackgroundThemeChange: (theme: ButtonIdentifierBackgroundTheme) => void;
+  onInteractionEnd: () => void;
+  onInteractionStart: () => void;
   pickerRef: React.RefObject<ColorPickerRef | null>;
 }
 
@@ -32,28 +34,41 @@ export function ButtonLabelColorPicker({
   onComplete,
   onHexChange,
   onBackgroundThemeChange,
+  onInteractionEnd,
+  onInteractionStart,
   pickerRef,
 }: ButtonLabelColorPickerProps) {
   const { t } = useTranslation();
+  const handlePickerComplete = (colors: ColorFormatsObject) => {
+    onComplete(colors);
+    onInteractionEnd();
+  };
   return (
     <View className="gap-2">
-      <ColorPicker
-        ref={pickerRef}
-        onChange={onChange}
-        onCompleteJS={onComplete}
-        sliderThickness={12}
-        thumbSize={28}
-        thumbStyle={{ borderColor: "#FFFFFF", borderWidth: 2 }}
-        value={initialValue}
+      <View
+        onTouchCancel={onInteractionEnd}
+        onTouchEnd={onInteractionEnd}
+        onTouchStart={onInteractionStart}
+        testID="button-label-picker-gesture-region"
       >
-        <Panel3
-          accessibilityLabel={t("customize.buttonIdentifierColorWheel")}
-          style={{ alignSelf: "center", height: 190, width: 190 }}
-        />
-        <View className="mt-2">
-          <ButtonLabelAdjustmentTabs />
-        </View>
-      </ColorPicker>
+        <ColorPicker
+          ref={pickerRef}
+          onChange={onChange}
+          onCompleteJS={handlePickerComplete}
+          sliderThickness={12}
+          thumbSize={28}
+          thumbStyle={{ borderColor: "#FFFFFF", borderWidth: 2 }}
+          value={initialValue}
+        >
+          <Panel3
+            accessibilityLabel={t("customize.buttonIdentifierColorWheel")}
+            style={{ alignSelf: "center", height: 150, width: 150 }}
+          />
+          <View className="mt-4" testID="button-label-adjustment-tabs">
+            <ButtonLabelAdjustmentTabs />
+          </View>
+        </ColorPicker>
+      </View>
       <Text className="text-xs font-semibold text-zinc-300">
         {t("customize.buttonIdentifierHex")}
       </Text>

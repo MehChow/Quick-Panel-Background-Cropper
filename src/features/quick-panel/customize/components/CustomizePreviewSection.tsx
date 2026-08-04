@@ -45,21 +45,23 @@ export function CustomizePreviewSection({
         className="w-full flex-1 items-center justify-center"
         onLayout={(event) => setPreviewSlotHeight(event.nativeEvent.layout.height)}
       >
-        <QuickPanelPreview
-          buttonIdentifierBackgroundTheme={buttonControls.buttonIdentifierBackgroundTheme}
-          buttonIdentifierColor={buttonControls.buttonIdentifierColor}
-          buttonIdentifierOpacity={buttonControls.buttonIdentifierOpacity / 100}
-          buttonPanelOpacity={buttonControls.buttonPanelOpacity / 100}
-          identifierPositions={buttonControls.identifierPositions}
-          image={image}
-          onAdjustingChange={onAdjustingChange}
-          onTransformChange={onTransformChange}
-          preset={preset}
-          previewUri={previewUri}
-          maxHeight={previewSlotHeight || undefined}
-          showButtonIdentifiers={buttonControls.showButtonIdentifiers}
-          transform={transform}
-        />
+        {isAppearanceDialogOpen ? null : (
+          <QuickPanelPreview
+            buttonIdentifierBackgroundTheme={buttonControls.buttonIdentifierBackgroundTheme}
+            buttonIdentifierColor={buttonControls.buttonIdentifierColor}
+            buttonIdentifierOpacity={buttonControls.buttonIdentifierOpacity / 100}
+            buttonPanelOpacity={buttonControls.buttonPanelOpacity / 100}
+            identifierPositions={buttonControls.identifierPositions}
+            image={image}
+            onAdjustingChange={onAdjustingChange}
+            onTransformChange={onTransformChange}
+            preset={preset}
+            previewUri={previewUri}
+            maxHeight={previewSlotHeight || undefined}
+            showButtonIdentifiers={buttonControls.showButtonIdentifiers}
+            transform={transform}
+          />
+        )}
       </View>
       {hasButtonPanels ? (
         <ButtonCustomizeControls
@@ -70,10 +72,17 @@ export function CustomizePreviewSection({
           hasVerticalButtons={buttonControls.hasVerticalButtons}
           horizontalIdentifierPosition={buttonControls.horizontalIdentifierPosition}
           onButtonPanelOpacityChange={buttonControls.setButtonPanelOpacity}
+          onButtonPanelOpacityCommit={buttonControls.commitButtonPanelOpacity}
           onHorizontalIdentifierPositionChange={buttonControls.setHorizontalIdentifierPosition}
+          onHorizontalIdentifierPositionCommit={
+            buttonControls.commitHorizontalIdentifierPosition
+          }
           onOpenButtonIdentifierAppearance={() => setAppearanceDialogOpen(true)}
           onShowButtonIdentifiersChange={buttonControls.setShowButtonIdentifiers}
           onVerticalIdentifierPositionChange={buttonControls.setVerticalIdentifierPosition}
+          onVerticalIdentifierPositionCommit={
+            buttonControls.commitVerticalIdentifierPosition
+          }
           showButtonIdentifiers={buttonControls.showButtonIdentifiers}
           verticalIdentifierPosition={buttonControls.verticalIdentifierPosition}
         />
