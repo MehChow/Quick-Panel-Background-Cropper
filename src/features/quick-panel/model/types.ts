@@ -6,7 +6,7 @@ export type ButtonPanelId = `button-${number}`;
 export type PanelId = ControlPanelId | ButtonPanelId;
 export type PanelFamily = "control" | "button";
 export type CustomizationMode = "default" | "advanced";
-export type AdvancedTarget = "controls" | "buttons";
+export type AdvancedTarget = "controls" | "buttons" | "combined";
 
 export interface PanelRect {
   x: number;
@@ -96,6 +96,24 @@ export interface AdvancedButtonsCalibration {
 export interface AdvancedButtonsDraft {
   screenshot: PickedImage | null;
   outerRect: PanelRect | null;
+  buttons: ButtonCalibrationItem[];
+}
+
+export interface AdvancedCombinedCalibration {
+  screenshotWidth: number;
+  screenshotHeight: number;
+  grid: AdvancedSnapGrid;
+  outerRect: PanelRect;
+  enabledControls: ControlPanelId[];
+  controlPanels: ControlPanelRects;
+  buttons: ButtonCalibrationItem[];
+}
+
+export interface AdvancedCombinedDraft {
+  screenshot: PickedImage | null;
+  outerRect: PanelRect | null;
+  enabledControls: ControlPanelId[];
+  controlPanels: ControlPanelRects | null;
   buttons: ButtonCalibrationItem[];
 }
 

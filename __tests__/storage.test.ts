@@ -6,7 +6,9 @@ import {
   loadLastExportedAdvancedTarget,
   loadLastExportedMode,
   loadButtonCustomizeSettings,
+  loadCombinedButtonImageIntensity,
   saveCalibrations,
+  saveCombinedButtonImageIntensity,
   saveButtonCustomizeSettings,
   type ButtonCustomizeSettings,
   type SavedCalibrations,
@@ -24,6 +26,13 @@ const rect = {
   y: 20,
 };
 
+const advancedControlPanels = {
+  buttonBox: { x: 20, y: 40, width: 100, height: 120, radius: 0 },
+  brightness: { x: 20, y: 180, width: 200, height: 80, radius: 0 },
+  volume: { x: 240, y: 40, width: 60, height: 220, radius: 0 },
+  mediaPlayer: { x: 20, y: 280, width: 280, height: 160, radius: 0 },
+};
+
 const currentCalibrations = {
   default: { rect },
   advancedControls: {
@@ -31,12 +40,7 @@ const currentCalibrations = {
     screenshotHeight: 2340,
     grid: { columns: 5, rows: 6 },
     outerRect: rect,
-    panels: {
-      buttonBox: { x: 20, y: 40, width: 100, height: 120, radius: 0 },
-      brightness: { x: 20, y: 180, width: 200, height: 80, radius: 0 },
-      volume: { x: 240, y: 40, width: 60, height: 220, radius: 0 },
-      mediaPlayer: { x: 20, y: 280, width: 280, height: 160, radius: 0 },
-    },
+    panels: advancedControlPanels,
     enabledPanels: ["buttonBox", "brightness", "volume", "mediaPlayer"],
   },
   advancedButtons: {
@@ -59,6 +63,22 @@ const currentCalibrations = {
       },
     ],
   },
+  advancedCombined: {
+    screenshotWidth: 1080,
+    screenshotHeight: 2340,
+    grid: { columns: 4, rows: 6 },
+    outerRect: rect,
+    enabledControls: ["buttonBox", "brightness"],
+    controlPanels: advancedControlPanels,
+    buttons: [
+      {
+        id: "button-1",
+        label: "Wi-Fi",
+        customIconId: null,
+        rect: { x: 20, y: 460, width: 120, height: 120, radius: 0 },
+      },
+    ],
+  },
 } satisfies SavedCalibrations;
 
 describe("storage", () => {
@@ -78,6 +98,7 @@ describe("storage", () => {
       default: null,
       advancedControls: null,
       advancedButtons: null,
+      advancedCombined: null,
     });
   });
 
@@ -169,6 +190,7 @@ describe("storage", () => {
       default: null,
       advancedControls: null,
       advancedButtons: null,
+      advancedCombined: null,
     });
     expect(loadLastExportedMode()).toBe("advanced");
     expect(loadLastExportedAdvancedTarget()).toBe("buttons");
@@ -251,6 +273,7 @@ describe("storage", () => {
       default: { rect },
       advancedControls: null,
       advancedButtons: null,
+      advancedCombined: null,
     });
   });
 
@@ -279,6 +302,7 @@ describe("storage", () => {
       default: { rect },
       advancedControls: currentCalibrations.advancedControls,
       advancedButtons: null,
+      advancedCombined: null,
     });
   });
 
@@ -291,6 +315,64 @@ describe("storage", () => {
       default: null,
       advancedControls: null,
       advancedButtons: null,
+      advancedCombined: null,
+    });
+  });
+
+  it("loads v1.2.0 calibrations with a null combined branch", () => {
+    const mmkvStore = (globalThis as typeof globalThis & MmkvTestGlobal)
+      .__mmkvStore;
+    const { advancedCombined: _advancedCombined, ...v12Calibrations } = currentCalibrations;
+    mmkvStore?.set("quick-panel.calibrations", JSON.stringify(v12Calibrations));
+    mmkvStore?.set("quick-panel.last-exported-advanced-target", "combined");
+
+    expect(loadCalibrations()).toMatchObject({
+      default: expect.anything(),
+      advancedControls: expect.anything(),
+      advancedButtons: expect.anything(),
+      advancedCombined: null,
+    });
+    expect(loadLastExportedAdvancedTarget()).toBe("combined");
+  });
+
+  it.each([64, -1, 101, Number.NaN, "not-a-number"]) (
+    "normalizes combined Button image intensity %p",
+    (value) => {
+      const mmkvStore = (globalThis as typeof globalThis & MmkvTestGlobal)
+        .__mmkvStore;
+      mmkvStore?.set(
+        "quick-panel.combined-button-image-intensity",
+        String(value),
+      );
+
+      expect(loadCombinedButtonImageIntensity()).toBe(value === 64 ? 64 : 78);
+    },
+  );
+
+  it("round-trips combined Button image intensity", () => {
+    saveCombinedButtonImageIntensity(64);
+    expect(loadCombinedButtonImageIntensity()).toBe(64);
+  });
+
+  it("rejects only an invalid combined branch", () => {
+    const mmkvStore = (globalThis as typeof globalThis & MmkvTestGlobal)
+      .__mmkvStore;
+    mmkvStore?.set(
+      "quick-panel.calibrations",
+      JSON.stringify({
+        ...currentCalibrations,
+        advancedCombined: {
+          ...currentCalibrations.advancedCombined,
+          enabledControls: [],
+        },
+      }),
+    );
+
+    expect(loadCalibrations()).toEqual({
+      default: currentCalibrations.default,
+      advancedControls: currentCalibrations.advancedControls,
+      advancedButtons: currentCalibrations.advancedButtons,
+      advancedCombined: null,
     });
   });
 });

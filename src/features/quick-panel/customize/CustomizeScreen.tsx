@@ -21,13 +21,16 @@ export function CustomizeScreen() {
   const router = useRouter();
   const [isHelpOpen, setIsHelpOpen] = useState(false);
   const {
-    selectedMode, activePreset, image, transform, setTransform,
+    selectedMode, selectedAdvancedTarget, activePreset, image, transform, setTransform,
     isExporting, isProcessingImage,
     setIsPreviewAdjusting,
     pickImage, resetFit, canReset,
     goToCalibration, goToAdvancedCalibration,
   } = useCustomizeScreen();
-  const buttonControls = useButtonCustomizeControls(activePreset);
+  const buttonControls = useButtonCustomizeControls(
+    activePreset,
+    selectedAdvancedTarget,
+  );
   const previewImage = useCustomizePreviewImage(image);
   const sequentialExport = useSequentialExport({
     image,

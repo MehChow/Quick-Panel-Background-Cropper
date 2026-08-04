@@ -12,6 +12,41 @@ This file is a running project note log for implementation details that are easy
 
 ## Entries
 
+### 2026-08-04: Customize appearance performance boundary
+
+- Button appearance uses one native Modal. The focused inspector and overall
+  preview are mutually exclusive states inside that root; Android Back closes
+  the overall preview before it can cancel the appearance draft.
+- While appearance editing is open, Customize suspends the underlying
+  interactive QuickPanelPreview. Closing or confirming remounts it from the
+  same controlled image, preset, preview URI, and `{ x, y, scale }` transform.
+- Button adjustment sliders suppress duplicate stepped values. Live values
+  still update preview state, while MMKV persistence occurs once from gesture
+  finalization. Toggles and confirmed appearance changes remain immediately
+  persistent.
+- Preview proxy size, panel geometry, identifier composition, export fidelity,
+  and sequential export are unchanged. A single masked stage image remains a
+  separate investigation only if base pan/pinch lag persists.
+
+### 2026-08-04: Focused appearance inspector navigation spacing
+
+- The focused Button preview uses a centered 70% width surface. Previous and
+  Next remain 44dp accessibility buttons in the outside gutters at the
+  preview's vertical center; the visible position label row is removed.
+- The color wheel and adjustment tabs use the same 16dp vertical rhythm as the
+  preview-to-picker spacing.
+
+### 2026-08-04: Button appearance overall preview
+
+- The Button appearance dialog uses a 150dp color wheel so the picker remains
+  usable on short portrait screens without pushing the action footer away.
+- The title row includes a top-right eye action that opens a separate,
+  read-only full-layout preview overlay, matching the Calibration preview
+  interaction: tap the dimmed background to dismiss, or use Android Back.
+- The overlay reuses the static Quick Panel composition with the current image,
+  transform, panel intensity, identifier settings, and latest valid transactional
+  draft appearance. It does not introduce a second crop or transform.
+
 ### 2026-07-28: Buttons label color follows the neutral theme
 
 - The color picker and Brightness slider affect only the Button icon glyph.
@@ -682,3 +717,19 @@ The advanced calibration help sheets regressed during the Fold/wide-screen respo
   configured grid.
 - The enlarged green-area preview strip remains a separate coordinate-alignment
   investigation.
+
+### 2026-08-04: Focused Button appearance inspector
+
+- Buttons-only and combined Customize keep the full calibrated union as the
+  shared image-transform canvas.
+- The appearance dialog previews one real calibrated Button at a time through
+  the existing source-coordinate composition path; Previous/Next focus is
+  screen-local and never changes selection or export order.
+- The focused preview always shows the current valid transactional draft, and
+  the selector contains Button navigation only. Only Confirm persists changes.
+- The modal scroll view is disabled during wheel, Brightness, and Opacity
+  touches, then restored on touch end, cancellation, or picker completion.
+- Continuous color values remain on Reanimated shared values, and the focused
+  preview uses the current target's Button image intensity and shared
+  identifier settings without adding a crop, transform, export surface, or
+  persisted field.

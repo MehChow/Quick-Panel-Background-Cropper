@@ -1,4 +1,7 @@
-import { createButtonFileNames } from "@/features/quick-panel/model/button-export-names";
+import {
+  createButtonFileNameSlugs,
+  createButtonFileNames,
+} from "@/features/quick-panel/model/button-export-names";
 import {
   buttonLabelCatalog,
   customButtonIconChoices,
@@ -157,6 +160,14 @@ describe("button labels", () => {
       "01-wi-fi.png",
       "02-wi-fi-2.png",
       "03-custom-label.png",
+    ]);
+  });
+
+  it("creates reusable duplicate-safe filename slugs", () => {
+    expect(createButtonFileNameSlugs(["Wi-Fi", "Wi-Fi", "!!!"])).toEqual([
+      "wi-fi",
+      "wi-fi-2",
+      "button",
     ]);
   });
 });

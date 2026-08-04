@@ -1,11 +1,14 @@
 import { createAdvancedPreset } from "../calibration/advanced/advanced-geometry";
 import { createButtonsPreset } from "../calibration/advanced/buttons-geometry";
+import { createCombinedPreset } from "../calibration/advanced/combined/combined-preset";
 import { getCalibratedPreset } from "../calibration/shared/calibration-preset";
 import { s25PlusOneUi85Preset } from "../model/preset";
 import type {
   AdvancedCalibration,
   AdvancedButtonsCalibration,
   AdvancedButtonsDraft,
+  AdvancedCombinedCalibration,
+  AdvancedCombinedDraft,
   AdvancedTarget,
   AdvancedCalibrationDraft,
   CustomizationMode,
@@ -31,12 +34,14 @@ export interface QuickPanelStateData {
   defaultCalibration: DefaultCalibration | null;
   advancedCalibration: AdvancedCalibration | null;
   advancedButtonsCalibration: AdvancedButtonsCalibration | null;
+  advancedCombinedCalibration: AdvancedCombinedCalibration | null;
   selectedAdvancedTarget: AdvancedTarget | null;
   activePreset: QuickPanelPreset;
   screenshot: PickedImage | null;
   calibrationRect: PanelRect | null;
   advancedDraft: AdvancedCalibrationDraft | null;
   advancedButtonsDraft: AdvancedButtonsDraft | null;
+  advancedCombinedDraft: AdvancedCombinedDraft | null;
   image: PickedImage | null;
   transform: ImageTransform;
   exports: GeneratedExport[];
@@ -65,6 +70,7 @@ export function getPresetForMode(
   defaultCalibration: DefaultCalibration | null,
   advancedCalibration: AdvancedCalibration | null,
   advancedButtonsCalibration: AdvancedButtonsCalibration | null,
+  advancedCombinedCalibration: AdvancedCombinedCalibration | null,
   advancedTarget: AdvancedTarget | null,
 ) {
   if (mode === "advanced" && advancedTarget === "controls" && advancedCalibration) {
@@ -72,6 +78,9 @@ export function getPresetForMode(
   }
   if (mode === "advanced" && advancedTarget === "buttons" && advancedButtonsCalibration) {
     return createButtonsPreset(advancedButtonsCalibration);
+  }
+  if (mode === "advanced" && advancedTarget === "combined" && advancedCombinedCalibration) {
+    return createCombinedPreset(advancedCombinedCalibration);
   }
   if (mode === "default" && defaultCalibration) {
     return getCalibratedPreset(defaultCalibration.rect);
@@ -89,12 +98,14 @@ export function createInitialQuickPanelStateData(): QuickPanelStateData {
     defaultCalibration: saved.default,
     advancedCalibration: saved.advancedControls,
     advancedButtonsCalibration: saved.advancedButtons,
+    advancedCombinedCalibration: saved.advancedCombined,
     selectedAdvancedTarget: null,
     activePreset: s25PlusOneUi85Preset,
     screenshot: null,
     calibrationRect: null,
     advancedDraft: null,
     advancedButtonsDraft: null,
+    advancedCombinedDraft: null,
     image: null,
     transform: createEmptyTransform(),
     exports: [],

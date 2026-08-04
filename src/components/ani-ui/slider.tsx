@@ -1,6 +1,7 @@
 import { cva, type VariantProps } from "class-variance-authority";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { View } from "react-native";
+import { useSharedValue } from "react-native-reanimated";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { scheduleOnRN } from "react-native-worklets";
 import { cn } from "../../lib/utils";
@@ -28,6 +29,7 @@ export interface SliderProps
   step?: number;
   disabled?: boolean;
   onValueChange?: (value: number) => void;
+  onSlidingComplete?: (value: number) => void;
 }
 
 export function Slider({
@@ -38,6 +40,7 @@ export function Slider({
   disabled,
   size,
   onValueChange,
+  onSlidingComplete,
   className,
   trackClassName,
   ...props
@@ -45,6 +48,13 @@ export function Slider({
   const [trackWidth, setTrackWidth] = useState(0);
   const pct = max > min ? ((value - min) / (max - min)) * 100 : 0;
   const thumbSize = size === "lg" ? 24 : size === "sm" ? 16 : 20;
+  const lastEmittedValue = useSharedValue(value);
+  const gestureValue = useSharedValue(value);
+
+  useEffect(() => {
+    lastEmittedValue.set(value);
+    gestureValue.set(value);
+  }, [gestureValue, lastEmittedValue, value]);
 
   const emitValue = useCallback(
     (locationX: number) => {
@@ -54,9 +64,12 @@ export function Slider({
       const raw = min + ratio * (max - min);
       const stepped = Math.round(raw / step) * step;
       const clamped = Math.max(min, Math.min(max, stepped));
+      gestureValue.set(clamped);
+      if (lastEmittedValue.get() === clamped) return;
+      lastEmittedValue.set(clamped);
       if (onValueChange) scheduleOnRN(onValueChange, clamped);
     },
-    [max, min, onValueChange, step, trackWidth],
+    [gestureValue, lastEmittedValue, max, min, onValueChange, step, trackWidth],
   );
 
   const gesture = Gesture.Pan()
@@ -66,6 +79,11 @@ export function Slider({
     })
     .onUpdate((e) => {
       emitValue(e.x);
+    })
+    .onFinalize(() => {
+      if (onSlidingComplete) {
+        scheduleOnRN(onSlidingComplete, gestureValue.get());
+      }
     })
     .minDistance(0);
 

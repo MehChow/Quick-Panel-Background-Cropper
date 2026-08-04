@@ -2,6 +2,7 @@ import { createMMKV, useMMKVString } from "react-native-mmkv";
 import type {
   AdvancedCalibration,
   AdvancedButtonsCalibration,
+  AdvancedCombinedCalibration,
   AdvancedSnapGrid,
   AdvancedTarget,
   ButtonCalibrationItem,
@@ -31,6 +32,8 @@ const lastExportedModeKey = "quick-panel.last-exported-mode";
 const lastExportedAdvancedTargetKey = "quick-panel.last-exported-advanced-target";
 const seenHelpKey = "quick-panel.seen-help";
 const releaseAnnouncementKey = "quick-panel.acknowledged-release-announcement";
+const combinedButtonImageIntensityKey =
+  "quick-panel.combined-button-image-intensity";
 
 export const activeReleaseAnnouncementId =
   "v1.2.0-buttons-icon-color-announcement";
@@ -52,6 +55,7 @@ export interface SavedCalibrations {
   default: DefaultCalibration | null;
   advancedControls: AdvancedCalibration | null;
   advancedButtons: AdvancedButtonsCalibration | null;
+  advancedCombined: AdvancedCombinedCalibration | null;
 }
 
 export interface ButtonCustomizeSettings {
@@ -74,6 +78,8 @@ export const defaultButtonCustomizeSettings: ButtonCustomizeSettings = {
   verticalIdentifierPosition: 50,
 };
 
+export const defaultCombinedButtonImageIntensity = 78;
+
 type SavedSeenHelp = Partial<Record<HelpEntryId, true>>;
 
 export function loadCalibrations(): SavedCalibrations {
@@ -81,6 +87,7 @@ export function loadCalibrations(): SavedCalibrations {
     default: null,
     advancedControls: null,
     advancedButtons: null,
+    advancedCombined: null,
   };
 }
 
@@ -94,6 +101,18 @@ export function loadButtonCustomizeSettings(): ButtonCustomizeSettings {
 
 export function saveButtonCustomizeSettings(settings: ButtonCustomizeSettings) {
   storage.set(buttonCustomizeSettingsKey, JSON.stringify(settings));
+}
+
+export function loadCombinedButtonImageIntensity(): number {
+  const saved = Number(storage.getString(combinedButtonImageIntensityKey));
+  return parsePercentage(
+    Number.isFinite(saved) ? saved : undefined,
+    defaultCombinedButtonImageIntensity,
+  );
+}
+
+export function saveCombinedButtonImageIntensity(value: number) {
+  storage.set(combinedButtonImageIntensityKey, String(value));
 }
 
 export function loadLastExportedMode(): CustomizationMode | null {
@@ -165,6 +184,7 @@ function parseCalibrations(value: string | undefined): SavedCalibrations | null 
       default: parseDefaultCalibration(parsed.default),
       advancedControls: parseAdvancedCalibration(parsed.advancedControls),
       advancedButtons: parseAdvancedButtonsCalibration(parsed.advancedButtons),
+      advancedCombined: parseAdvancedCombinedCalibration(parsed.advancedCombined),
     };
   } catch {
     return null;
@@ -273,6 +293,21 @@ function parseEnabledPanels(value: unknown): ControlPanelId[] {
     : panelIds;
 }
 
+function parseCombinedEnabledControls(value: unknown): ControlPanelId[] | null {
+  if (!Array.isArray(value)) {
+    return null;
+  }
+  const controls = value.filter((item): item is ControlPanelId =>
+    typeof item === "string" && panelIds.includes(item as ControlPanelId)
+  );
+  const uniqueControls = controls.filter(
+    (id, index) => controls.indexOf(id) === index,
+  );
+  return uniqueControls.length > 0
+    ? panelIds.filter((id) => uniqueControls.includes(id))
+    : null;
+}
+
 function parsePanelRects(value: unknown): ControlPanelRects | null {
   if (!value || typeof value !== "object") {
     return null;
@@ -309,6 +344,39 @@ function parseAdvancedButtonsCalibration(value: unknown): AdvancedButtonsCalibra
     screenshotHeight: item.screenshotHeight,
     grid,
     outerRect,
+    buttons,
+  };
+}
+
+function parseAdvancedCombinedCalibration(value: unknown): AdvancedCombinedCalibration | null {
+  if (!value || typeof value !== "object") {
+    return null;
+  }
+  const item = value as Partial<AdvancedCombinedCalibration>;
+  const outerRect = parseRectValue(item.outerRect);
+  const grid = parseAdvancedGrid(item.grid);
+  const controlPanels = parsePanelRects(item.controlPanels);
+  const enabledControls = parseCombinedEnabledControls(item.enabledControls);
+  const buttons = parseButtonItems(item.buttons);
+  if (
+    typeof item.screenshotWidth !== "number" ||
+    typeof item.screenshotHeight !== "number" ||
+    !grid ||
+    !outerRect ||
+    !enabledControls ||
+    !controlPanels ||
+    !buttons ||
+    buttons.length === 0
+  ) {
+    return null;
+  }
+  return {
+    screenshotWidth: item.screenshotWidth,
+    screenshotHeight: item.screenshotHeight,
+    grid,
+    outerRect,
+    enabledControls,
+    controlPanels,
     buttons,
   };
 }
@@ -387,7 +455,7 @@ function isCustomizationMode(value: unknown): value is CustomizationMode {
 }
 
 function isAdvancedTarget(value: unknown): value is AdvancedTarget {
-  return value === "controls" || value === "buttons";
+  return value === "controls" || value === "buttons" || value === "combined";
 }
 
 function isButtonPanelId(value: unknown): value is ButtonPanelId {

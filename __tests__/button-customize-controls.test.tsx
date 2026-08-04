@@ -2,7 +2,7 @@ import {
   ButtonCustomizeControls,
   getButtonIdentifierColorButtonStyle,
 } from "@/features/quick-panel/customize/components/ButtonCustomizeControls";
-import { fireEvent, render } from "@testing-library/react-native";
+import { act, fireEvent, render } from "@testing-library/react-native";
 import { StyleSheet } from "react-native";
 
 jest.mock("@/components/ani-ui/slider", () => {
@@ -30,10 +30,13 @@ const baseProps = {
   hasVerticalButtons: true,
   horizontalIdentifierPosition: 50,
   onButtonPanelOpacityChange: jest.fn(),
+  onButtonPanelOpacityCommit: jest.fn(),
   onHorizontalIdentifierPositionChange: jest.fn(),
+  onHorizontalIdentifierPositionCommit: jest.fn(),
   onOpenButtonIdentifierAppearance: jest.fn(),
   onShowButtonIdentifiersChange: jest.fn(),
   onVerticalIdentifierPositionChange: jest.fn(),
+  onVerticalIdentifierPositionCommit: jest.fn(),
   showButtonIdentifiers: true,
   verticalIdentifierPosition: 50,
 };
@@ -107,5 +110,32 @@ describe("ButtonCustomizeControls", () => {
     );
     expect(screen.getByTestId("button-adjustment-image-tab").props.accessibilityState)
       .toMatchObject({ selected: true });
+  });
+
+  it("routes each slider completion to its matching persistence callback", () => {
+    const screen = render(<ButtonCustomizeControls {...baseProps} />);
+
+    act(() =>
+      screen
+        .getByTestId("button-panel-opacity-slider")
+        .props.onSlidingComplete(64),
+    );
+    expect(baseProps.onButtonPanelOpacityCommit).toHaveBeenCalledWith(64);
+
+    fireEvent.press(screen.getByTestId("button-adjustment-horizontal-tab"));
+    act(() =>
+      screen
+        .getByTestId("horizontal-identifier-position-slider")
+        .props.onSlidingComplete(24),
+    );
+    expect(baseProps.onHorizontalIdentifierPositionCommit).toHaveBeenCalledWith(24);
+
+    fireEvent.press(screen.getByTestId("button-adjustment-vertical-tab"));
+    act(() =>
+      screen
+        .getByTestId("vertical-identifier-position-slider")
+        .props.onSlidingComplete(76),
+    );
+    expect(baseProps.onVerticalIdentifierPositionCommit).toHaveBeenCalledWith(76);
   });
 });

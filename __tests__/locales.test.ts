@@ -124,6 +124,61 @@ describe("customize locale strings", () => {
     expect(zhLocale.translation.customize.buttonIdentifiersOff).toBeTruthy();
   });
 
+  it("defines focused Button appearance inspector copy in both locales", () => {
+    expect(enLocale.translation.customize.buttonAppearancePosition).toBe(
+      "{{label}} · {{current}} of {{total}}",
+    );
+    expect(enLocale.translation.customize.buttonAppearancePreview).toBe(
+      "{{label}} appearance preview",
+    );
+    expect(enLocale.translation.customize.buttonAppearanceOverallPreview).toBe(
+      "Preview full layout",
+    );
+    expect(
+      enLocale.translation.customize.buttonAppearanceOverallPreviewHint,
+    ).toBeTruthy();
+    expect(
+      enLocale.translation.customize.buttonAppearanceOverallPreviewClose,
+    ).toBe("Close full layout preview");
+    expect(enLocale.translation.customize.buttonAppearancePrevious).toBe(
+      "Previous Button",
+    );
+    expect(enLocale.translation.customize.buttonAppearanceNext).toBe(
+      "Next Button",
+    );
+    expect(enLocale.translation.customize.buttonAppearanceUnavailable).toBe(
+      "Button preview unavailable.",
+    );
+    expect(zhLocale.translation.customize.buttonAppearancePosition).toBe(
+      "{{label}} · 第 {{current}} / {{total}} 個",
+    );
+    expect(zhLocale.translation.customize.buttonAppearancePreview).toBe(
+      "{{label}} 外觀預覽",
+    );
+    expect(zhLocale.translation.customize.buttonAppearanceOverallPreview).toBe(
+      "預覽完整版面",
+    );
+    expect(
+      zhLocale.translation.customize.buttonAppearanceOverallPreviewHint,
+    ).toBeTruthy();
+    expect(
+      zhLocale.translation.customize.buttonAppearanceOverallPreviewClose,
+    ).toBe("關閉完整版面預覽");
+    expect(zhLocale.translation.customize.buttonAppearancePrevious).toBe(
+      "上一個按鈕",
+    );
+    expect(zhLocale.translation.customize.buttonAppearanceNext).toBe(
+      "下一個按鈕",
+    );
+    expect(zhLocale.translation.customize.buttonAppearanceUnavailable).toBe(
+      "無法顯示按鈕預覽。",
+    );
+    expect("buttonAppearanceBefore" in enLocale.translation.customize).toBe(false);
+    expect("buttonAppearanceNew" in enLocale.translation.customize).toBe(false);
+    expect("buttonAppearanceBefore" in zhLocale.translation.customize).toBe(false);
+    expect("buttonAppearanceNew" in zhLocale.translation.customize).toBe(false);
+  });
+
   it("defines target-aware Advanced helper copy in English and Chinese", () => {
     const english = enLocale.translation.advancedCalibration;
     const chinese = zhLocale.translation.advancedCalibration;
@@ -162,5 +217,32 @@ describe("customize locale strings", () => {
     expect(chinese.customIconGamepad).toBeTruthy();
     expect(chinese.customIconGlobe).toBeTruthy();
     expect(chinese.customIconSliders).toBeTruthy();
+  });
+});
+
+describe("combined Advanced locale strings", () => {
+  it("defines the same combined-mode keys in both locales", () => {
+    const paths = [
+      ["mode", "advancedCombined"],
+      ["mode", "advancedCombinedDescription"],
+      ["advancedCalibration", "combinedOuterSubtitle"],
+      ["advancedCalibration", "combinedControlSelectionSubtitle"],
+      ["advancedCalibration", "combinedButtonSelectionSubtitle"],
+      ["advancedCalibration", "combinedGridSubtitle"],
+      ["advancedCalibration", "combinedConfirmSubtitle"],
+      ["advancedCalibration", "combinedGridSheetSubtitle"],
+      ["errors", "selectCombinedControl"],
+      ["errors", "selectCombinedButton"],
+      ["errors", "combinedPanelOverlap"],
+      ["errors", "invalidCombinedPanels"],
+      ["preset", "combinedLabel"],
+    ] as const;
+
+    for (const [section, key] of paths) {
+      const englishSection = (enLocale.translation as unknown as Record<string, Record<string, string>>)[section];
+      const chineseSection = (zhLocale.translation as unknown as Record<string, Record<string, string>>)[section];
+      expect(englishSection[key]).toBeTruthy();
+      expect(chineseSection[key]).toBeTruthy();
+    }
   });
 });
