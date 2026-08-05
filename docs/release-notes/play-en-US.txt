@@ -1,0 +1,2 @@
+New feature: Controls + Buttons mode
+Optimization: Cache cleanup

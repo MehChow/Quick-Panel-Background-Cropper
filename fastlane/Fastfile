@@ -1,0 +1,47 @@
+default_platform(:android)
+
+platform :android do
+  desc "Upload the verified QPBC AAB to Play Internal testing"
+  lane :upload_internal do
+    require "fileutils"
+    require "tmpdir"
+
+    json_key = ENV.fetch("QPBC_PLAY_SERVICE_ACCOUNT_JSON")
+    package_name = ENV.fetch("QPBC_PLAY_PACKAGE")
+    aab_path = File.expand_path(ENV.fetch("QPBC_PLAY_AAB"))
+    release_name = ENV.fetch("QPBC_PLAY_RELEASE_NAME")
+    version_code = Integer(ENV.fetch("QPBC_PLAY_VERSION_CODE"), 10)
+    release_notes_path = File.expand_path(
+      ENV.fetch("QPBC_PLAY_RELEASE_NOTES"),
+    )
+
+    UI.user_error!("Play service-account key is missing") unless File.file?(json_key)
+    UI.user_error!("Verified AAB is missing") unless File.file?(aab_path)
+    UI.user_error!("Generated release notes are missing") unless File.file?(release_notes_path)
+
+    Dir.mktmpdir("qpbc-play-metadata-") do |metadata_path|
+      changelog_directory = File.join(metadata_path, "en-US", "changelogs")
+      FileUtils.mkdir_p(changelog_directory)
+      FileUtils.cp(
+        release_notes_path,
+        File.join(changelog_directory, "#{version_code}.txt"),
+      )
+
+      upload_to_play_store(
+        json_key: json_key,
+        package_name: package_name,
+        aab: aab_path,
+        track: "internal",
+        release_status: "completed",
+        version_name: release_name,
+        metadata_path: metadata_path,
+        skip_upload_apk: true,
+        skip_upload_metadata: true,
+        skip_upload_changelogs: false,
+        skip_upload_images: true,
+        skip_upload_screenshots: true,
+        changes_not_sent_for_review: false,
+      )
+    end
+  end
+end

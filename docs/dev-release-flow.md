@@ -89,15 +89,18 @@ git push -u origin release/1.3.0
 
 Build and test the candidate:
 
-1. Start from a clean release branch.
-2. Run `npm run build-release`.
-3. Choose `new` for the first Play candidate.
-4. Review the reported version, version code, AAB path, and SHA-256.
-5. Review and commit the generated `app.json` and build-flag changes.
-6. Upload the exact AAB to Internal testing.
-7. Fix release blockers on the release branch only.
-8. Run `build-release` with `new` for every replacement AAB uploaded to Play.
-9. Keep new, unrelated features on `dev` or new feature branches.
+1. Complete the checklist under Before every release build below.
+2. Start from a clean release branch.
+3. Run `npm run build-release`.
+4. Choose `new` for the first Play candidate.
+5. Review the reported version, version code, AAB path, and SHA-256.
+6. Accept the final upload prompt to send the verified AAB to Internal testing,
+   or decline to keep it local for review.
+7. After the command returns, review and commit the generated `app.json` and
+   build-flag changes.
+8. Fix release blockers on the release branch only.
+9. Run `build-release` with `new` for every replacement AAB uploaded to Play.
+10. Keep new, unrelated features on `dev` or new feature branches.
 
 After testing passes:
 
@@ -223,6 +226,36 @@ The command never changes `package.json` version. For candidate builds:
 Android uses the higher `versionCode` to decide which build is newer. Never
 reuse an uploaded code, even when the user-visible version remains unchanged.
 
+## Before every release build
+
+Complete this checklist before `npm run build-release`:
+
+1. Review the release/hotfix branch name. It must contain the intended semantic
+   version, for example `release/1.4.0` or `hotfix/1.3.2`.
+2. Update `docs/release-notes/play-en-US.txt` with concise, user-visible changes
+   for this candidate.
+3. Keep only the English (United States) note body in that file. Do not add
+   `<en-US>` tags or a `Build version:` line. The uploader supplies the locale
+   and appends the current build version.
+4. Keep the final notes within Google Play's 500 Unicode-character limit. Allow
+   room for the generated `Build version: <versionCode>` line.
+5. Review and commit the release-note update and every intended release change.
+   `build-release` requires a clean worktree before it changes release metadata.
+6. Confirm the production-package Firebase file, upload keystore, and the four
+   user-level `MYAPP_UPLOAD_*` Gradle properties are present. See
+   `docs/how-to-build.md`.
+7. On a machine that will use automated Play upload, complete and validate
+   `docs/play-upload-setup.md` before starting the long build.
+8. Run `git status --short` and confirm it prints nothing.
+
+The Play release name is generated as `<versionCode> (<version>)`, matching the
+current console convention such as `30000028 (1.3.1)`.
+
+After the verified AAB is built, `build-release` asks whether to invoke the
+repository-pinned Fastlane lane for the `internal` track with status
+`completed`. Declining leaves the verified AAB local. The lane does not change
+permanent store metadata, tester lists, images, screenshots, or Production.
+
 ## Build rules
 
 The release command is:
@@ -248,12 +281,14 @@ It must run from a clean `release/<version>` or `hotfix/<version>` branch. It:
 10. Restores `app.json` and the build flag if prebuild, signing, Gradle, or
     certificate verification fails.
 11. Prints the AAB path, size, SHA-256, upload SHA1, branch, base commit,
-    version, and version code. The base commit is the clean commit from which
-    the script applies the displayed, uncommitted release metadata.
+    version, version code, generated release name, and `en-US` notes.
+12. Asks before uploading the verified AAB to Play Internal testing.
 
-The command never commits, pushes, uploads, or clears app data. Successful
-version changes remain uncommitted so they can be reviewed. Generated Android
-files can change during prebuild; review `git diff` after building.
+The command never commits, pushes, promotes to Production, or clears app data.
+Successful version changes remain uncommitted so they can be reviewed. If an
+upload fails after it starts, the version code may already be consumed; check
+Play Console before choosing `retry` or `new`. Generated Android files can
+change during prebuild; review `git diff` after building.
 
 `build-release` is the only Play AAB command. Do not reintroduce a second command
 that also changes `versionCode`.
@@ -276,7 +311,8 @@ that also changes `versionCode`.
    to Play.
 5. Record the AAB path and SHA-256. Review and commit the generated release
    metadata.
-6. Upload that exact AAB to Internal testing.
+6. Confirm the reported Internal-track upload and retain the exact AAB path and
+   SHA-256 for QA and any later Production promotion.
 7. Test both an in-place production update and the reusable manual checklist in
    `docs/production-manual-test-checklist.md`.
 8. For every replacement uploaded to Play, fix the release branch and run
