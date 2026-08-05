@@ -4,6 +4,8 @@ Read the exact versioned docs at https://docs.expo.dev/versions/v56.0.0/ before 
 
 ## App status
 
+### Current release version: 1.3.1 (New Controls + Buttons mode, cache optimization)
+
 Quick Panel Background Cropper (QPBC) is released on Google Play as v1.0.0, referred to internally as v2. That production version supports Controls customization through Default and Advanced modes. v3 keeps those flows and adds the complete Advanced Buttons-only workflow. The current v4 work keeps every existing path and adds an independent Advanced **Controls + Buttons** target for a single image that spans both panel families.
 
 v3 intentionally ignores legacy calibration coordinates because the old bordered coordinate surface could save inaccurate rectangles. Users updating from v1.0.0/v2 must recalibrate Default, Advanced Controls, and Advanced Buttons once. A one-time release announcement explains the new workflow and recalibration requirement. This is the approved exception to the normal persistence rule: language, seen-help state, last exported choices, release-announcement acknowledgement, and other unrelated preferences must remain intact. For future changes, persist local data across app updates by default. If another reset is absolutely required, warn the user before proceeding.
