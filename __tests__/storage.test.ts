@@ -118,10 +118,10 @@ describe("storage", () => {
 
     expect(loadAcknowledgedReleaseAnnouncement()).toBeNull();
 
-    acknowledgeReleaseAnnouncement("v1.3.0-advanced-combined-mode-announcement");
+    acknowledgeReleaseAnnouncement("v1.3.1-cache-optimization-announcement");
 
     expect(loadAcknowledgedReleaseAnnouncement()).toBe(
-      "v1.3.0-advanced-combined-mode-announcement",
+      "v1.3.1-cache-optimization-announcement",
     );
     expect(loadCalibrations()).toEqual({
       default: null,
