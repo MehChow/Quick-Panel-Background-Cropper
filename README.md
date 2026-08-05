@@ -296,12 +296,19 @@ the same device.
   named `QPBC apk`
 - `npm run build-release` runs from a clean release/hotfix branch, validates
   release metadata, uses `APP_VARIANT=release`, shows the build version in-app,
-  and builds the Play AAB
+  builds the Play AAB, and asks before uploading the verified artifact to Play
+  Internal testing
 - APK builds use `google-services/google-services-apk.json`, while Play release
   builds use `google-services/google-services-open.json`
 - release builds require upload-key values in `android/gradle.properties`,
   `~/.gradle/gradle.properties`, or env:
   `MYAPP_UPLOAD_STORE_FILE`, `MYAPP_UPLOAD_KEY_ALIAS`,
   `MYAPP_UPLOAD_STORE_PASSWORD`, and `MYAPP_UPLOAD_KEY_PASSWORD`
+- automated Play upload additionally requires Ruby 3.3+, Bundler, the locked
+  repository Fastlane dependencies, `QPBC_PLAY_SERVICE_ACCOUNT_JSON`, and the
+  reviewed notes in `docs/release-notes/play-en-US.txt`; see
+  [`docs/play-upload-setup.md`](docs/play-upload-setup.md)
+- the local build/upload command does not use EAS Build, EAS Submit, or EAS
+  Workflows
 - after native config changes, run `npm run android` again so the generated
   `android/` project picks up the latest config-plugin changes

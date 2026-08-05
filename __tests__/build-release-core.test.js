@@ -2,8 +2,13 @@ const { spawnSync } = require("child_process");
 const path = require("path");
 const {
   assertCleanWorktree,
+  assertPlayUploadConfig,
   createReleaseAppJson,
+  createPlayUploadEnvironment,
   getCertificateSha1,
+  getBundlerCommand,
+  getPlayReleaseName,
+  getPlayReleaseNotes,
   getReleaseVersion,
 } = require("../scripts/build-release-core.cjs");
 
@@ -69,6 +74,84 @@ describe("build-release metadata", () => {
       "SHA1",
     );
   });
+
+  test("generates the Play release name", () => {
+    expect(getPlayReleaseName(30000028, "1.3.1")).toBe("30000028 (1.3.1)");
+    expect(() => getPlayReleaseName(0, "1.3.1")).toThrow("version code");
+    expect(() => getPlayReleaseName(30000028, "invalid")).toThrow(
+      "semantic version",
+    );
+  });
+
+  test("generates bounded Play release notes", () => {
+    expect(
+      getPlayReleaseNotes(
+        "New feature: Controls + Buttons mode\nOptimization: Cache cleanup\n",
+        30000028,
+      ),
+    ).toBe(
+      "New feature: Controls + Buttons mode\n" +
+        "Optimization: Cache cleanup\n" +
+        "Build version: 30000028",
+    );
+
+    expect(() => getPlayReleaseNotes("   ", 30000028)).toThrow("empty");
+    expect(() =>
+      getPlayReleaseNotes("<en-US>\nUpdate\n</en-US>", 30000028),
+    ).toThrow("language tags");
+    expect(() =>
+      getPlayReleaseNotes("Update\nBuild version: 1", 30000028),
+    ).toThrow("Build version");
+    expect(() => getPlayReleaseNotes("a".repeat(500), 30000028)).toThrow(
+      "500",
+    );
+  });
+
+  test("selects the platform Bundler command", () => {
+    expect(getBundlerCommand("darwin")).toBe("bundle");
+    expect(getBundlerCommand("win32")).toBe("bundle.bat");
+  });
+
+  test("validates the Play service-account path without reading its contents", () => {
+    expect(() => assertPlayUploadConfig({}, () => false)).toThrow(
+      "QPBC_PLAY_SERVICE_ACCOUNT_JSON",
+    );
+    expect(() =>
+      assertPlayUploadConfig(
+        { QPBC_PLAY_SERVICE_ACCOUNT_JSON: "/missing/key.json" },
+        () => false,
+      ),
+    ).toThrow("does not exist");
+    expect(() =>
+      assertPlayUploadConfig(
+        { QPBC_PLAY_SERVICE_ACCOUNT_JSON: "/secure/key.json" },
+        () => true,
+      ),
+    ).not.toThrow();
+  });
+
+  test("builds the Fastlane environment without credential contents", () => {
+    const environment = createPlayUploadEnvironment({
+      baseEnv: { KEEP_ME: "yes" },
+      serviceAccountPath: "/secure/key.json",
+      packageName: "com.meh_chow.quickpanelbackgroundcropper",
+      artifactPath: "/tmp/app-release.aab",
+      releaseName: "30000028 (1.3.1)",
+      versionCode: 30000028,
+      releaseNotesPath: "/tmp/release-notes.txt",
+    });
+
+    expect(environment).toEqual({
+      KEEP_ME: "yes",
+      QPBC_PLAY_SERVICE_ACCOUNT_JSON: "/secure/key.json",
+      QPBC_PLAY_PACKAGE: "com.meh_chow.quickpanelbackgroundcropper",
+      QPBC_PLAY_AAB: "/tmp/app-release.aab",
+      QPBC_PLAY_RELEASE_NAME: "30000028 (1.3.1)",
+      QPBC_PLAY_VERSION_CODE: "30000028",
+      QPBC_PLAY_RELEASE_NOTES: "/tmp/release-notes.txt",
+    });
+    expect(environment).not.toHaveProperty("QPBC_PLAY_SERVICE_ACCOUNT_JSON_CONTENT");
+  });
 });
 
 describe("build-release command", () => {
@@ -83,7 +166,9 @@ describe("build-release command", () => {
     expect(result.stdout).toContain("release/<version>");
     expect(result.stdout).toContain("new");
     expect(result.stdout).toContain("retry");
-    expect(result.stdout).toContain("does not upload");
+    expect(result.stdout).toContain("Play Internal testing");
+    expect(result.stdout).toContain("play-en-US.txt");
+    expect(result.stdout).toContain("does not promote to Production");
   });
 
   test("removes the legacy beta preparation mode", () => {

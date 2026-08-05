@@ -1,12 +1,18 @@
 const { spawnSync } = require("child_process");
 const crypto = require("crypto");
 const fs = require("fs");
+const os = require("os");
 const path = require("path");
 const readline = require("readline/promises");
 const {
   assertCleanWorktree,
+  assertPlayUploadConfig,
   createReleaseAppJson,
+  createPlayUploadEnvironment,
   getCertificateSha1,
+  getBundlerCommand,
+  getPlayReleaseName,
+  getPlayReleaseNotes,
   getReleaseVersion,
 } = require("./build-release-core.cjs");
 
@@ -21,9 +27,10 @@ Candidate choices:
   new    Increment versionCode for a new Play upload.
   retry  Keep versionCode when rebuilding a candidate that was not uploaded.
 
-The command runs tests, lint, TypeScript, Expo prebuild, signing, and Gradle.
-It leaves successful version changes uncommitted for review and does not upload,
-commit, or push anything.
+The command runs tests, lint, TypeScript, Expo prebuild, signing, and Gradle,
+then asks before uploading the verified AAB to Play Internal testing. Release
+notes come from docs/release-notes/play-en-US.txt. It leaves successful version
+changes uncommitted for review, does not promote to Production, commit, or push.
 `.trim();
 
 if (process.argv.includes("--help")) {
@@ -55,6 +62,13 @@ const npmCommand = process.platform === "win32" ? "npm.cmd" : "npm";
 const npxCommand = process.platform === "win32" ? "npx.cmd" : "npx";
 const gradleCommand =
   process.platform === "win32" ? "gradlew.bat" : "./gradlew";
+const bundlerCommand = getBundlerCommand(process.platform);
+const releaseNotesSourcePath = path.join(
+  rootDir,
+  "docs",
+  "release-notes",
+  "play-en-US.txt",
+);
 
 function run(command, args, options = {}) {
   const result = spawnSync(command, args, {
@@ -123,6 +137,17 @@ async function confirmBuild(prompt) {
   return answer === "y" || answer === "yes";
 }
 
+async function confirmUpload(prompt) {
+  const answer = (
+    await prompt.question(
+      "Upload this verified AAB to Play Internal testing now? [y/N] ",
+    )
+  )
+    .trim()
+    .toLowerCase();
+  return answer === "y" || answer === "yes";
+}
+
 function sha256(filePath) {
   return crypto
     .createHash("sha256")
@@ -146,6 +171,9 @@ async function main() {
   );
   const targetVersion = getReleaseVersion(branch);
   assertCleanWorktree(status);
+  run(bundlerCommand, ["check"]);
+  assertPlayUploadConfig(process.env, fs.existsSync);
+  const releaseNotesSource = fs.readFileSync(releaseNotesSourcePath, "utf8");
 
   const prompt = readline.createInterface({
     input: process.stdin,
@@ -169,6 +197,11 @@ async function main() {
     const currentVersionCode = currentAppJson.expo.android.versionCode;
     const nextVersionCode = nextAppJson.expo.android.versionCode;
     const packageName = currentAppJson.expo.android.package;
+    const releaseName = getPlayReleaseName(nextVersionCode, targetVersion);
+    const releaseNotes = getPlayReleaseNotes(
+      releaseNotesSource,
+      nextVersionCode,
+    );
 
     console.log(
       [
@@ -179,6 +212,10 @@ async function main() {
         `  Package:      ${packageName}`,
         `  Version:      ${currentVersion} -> ${targetVersion}`,
         `  Version code: ${currentVersionCode} -> ${nextVersionCode} (${action})`,
+        `  Release name: ${releaseName}`,
+        "  Track:        internal (completed)",
+        "  Notes (en-US):",
+        releaseNotes,
         "  Build label:  visible on Landing",
         "  Checks:       Jest, lint, TypeScript",
         "  Output:       android/app/build/outputs/bundle/release/app-release.aab",
@@ -255,10 +292,65 @@ async function main() {
         `  Size:         ${artifactSize} MB`,
         `  SHA-256:      ${sha256(artifactPath)}`,
         `  Upload SHA1:  ${expectedUploadKeySha1}`,
+        `  Release name: ${releaseName}`,
+        "  Notes (en-US):",
+        releaseNotes,
         "",
         "Review and commit the version metadata on the release branch.",
-        "Upload this exact AAB to Internal testing, then promote the same",
-        "Play artifact to Production after it passes. This command does not upload.",
+        "Production promotion and manual QA remain separate.",
+      ].join("\n"),
+    );
+
+    if (!(await confirmUpload(prompt))) {
+      console.log(
+        `Verified AAB remains local at ${artifactPath}; no Play upload was started.`,
+      );
+      return;
+    }
+
+    const metadataPath = fs.mkdtempSync(
+      path.join(os.tmpdir(), "qpbc-play-"),
+    );
+    try {
+      const generatedNotesPath = path.join(metadataPath, "play-en-US.txt");
+      fs.writeFileSync(generatedNotesPath, `${releaseNotes}\n`, "utf8");
+      const uploadEnvironment = createPlayUploadEnvironment({
+        baseEnv: process.env,
+        serviceAccountPath: process.env.QPBC_PLAY_SERVICE_ACCOUNT_JSON,
+        packageName,
+        artifactPath,
+        releaseName,
+        versionCode: nextVersionCode,
+        releaseNotesPath: generatedNotesPath,
+      });
+
+      run(
+        bundlerCommand,
+        ["exec", "fastlane", "android", "upload_internal"],
+        { env: uploadEnvironment },
+      );
+    } catch (error) {
+      throw new Error(
+        `Play upload did not finish cleanly for versionCode ${nextVersionCode}. The code may already be consumed. Check Play Console before choosing retry or new.`,
+      );
+    } finally {
+      fs.rmSync(metadataPath, { recursive: true, force: true });
+    }
+
+    console.log(
+      [
+        "",
+        "Uploaded to: Play Internal testing",
+        `  Release name: ${releaseName}`,
+        "  Track status: completed",
+        `  Version:      ${targetVersion}`,
+        `  Version code: ${nextVersionCode}`,
+        `  Artifact:     ${artifactPath}`,
+        `  SHA-256:      ${sha256(artifactPath)}`,
+        "  Notes (en-US):",
+        releaseNotes,
+        "",
+        "Production promotion and manual QA remain separate.",
       ].join("\n"),
     );
   } finally {
