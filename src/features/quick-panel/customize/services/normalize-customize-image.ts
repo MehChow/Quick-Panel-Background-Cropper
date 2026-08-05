@@ -6,6 +6,7 @@ interface CustomizeImageAsset {
   width: number;
   height: number;
   fileName?: string | null;
+  ownedCacheUris?: string[];
   fileSize?: number;
   mimeType?: string;
 }
@@ -46,6 +47,10 @@ export async function normalizeCustomizeImage(
       height: result.height,
       originalHeight: asset.height,
       originalWidth: asset.width,
+      ownedCacheUris: [
+        ...(asset.ownedCacheUris ?? []),
+        result.uri,
+      ],
       uri: result.uri,
       wasOptimized: true,
       width: result.width,
@@ -57,6 +62,7 @@ function toPickedImage(asset: CustomizeImageAsset): PickedImage {
   return {
     fileName: asset.fileName,
     height: asset.height,
+    ...(asset.ownedCacheUris ? { ownedCacheUris: asset.ownedCacheUris } : {}),
     uri: asset.uri,
     width: asset.width,
   };

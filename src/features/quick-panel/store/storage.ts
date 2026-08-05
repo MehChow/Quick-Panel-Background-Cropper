@@ -34,6 +34,8 @@ const seenHelpKey = "quick-panel.seen-help";
 const releaseAnnouncementKey = "quick-panel.acknowledged-release-announcement";
 const combinedButtonImageIntensityKey =
   "quick-panel.combined-button-image-intensity";
+const lastImageDiskCacheClearAtKey =
+  "quick-panel.last-image-disk-cache-clear-at";
 
 export const activeReleaseAnnouncementId =
   "v1.3.0-advanced-combined-mode-announcement";
@@ -113,6 +115,15 @@ export function loadCombinedButtonImageIntensity(): number {
 
 export function saveCombinedButtonImageIntensity(value: number) {
   storage.set(combinedButtonImageIntensityKey, String(value));
+}
+
+export function loadLastImageDiskCacheClearAt(): number | null {
+  const value = Number(storage.getString(lastImageDiskCacheClearAtKey));
+  return Number.isFinite(value) && value >= 0 ? value : null;
+}
+
+export function saveLastImageDiskCacheClearAt(timestamp: number) {
+  storage.set(lastImageDiskCacheClearAtKey, String(timestamp));
 }
 
 export function loadLastExportedMode(): CustomizationMode | null {

@@ -44,6 +44,7 @@ describe("normalizeCustomizeImage", () => {
       fileSize: 3_000_000,
       height: 2048,
       mimeType: "image/jpeg",
+      ownedCacheUris: ["file:///cache/ImagePicker/original.jpg"],
       uri: "file:///original.jpg",
       width: 1536,
     });
@@ -52,6 +53,7 @@ describe("normalizeCustomizeImage", () => {
       image: {
         fileName: "wallpaper.jpg",
         height: 2048,
+        ownedCacheUris: ["file:///cache/ImagePicker/original.jpg"],
         uri: "file:///original.jpg",
         width: 1536,
       },
@@ -65,6 +67,7 @@ describe("normalizeCustomizeImage", () => {
       fileSize: 9_000_000,
       height: 4500,
       mimeType: "image/jpeg",
+      ownedCacheUris: ["file:///cache/ImagePicker/original.jpg"],
       uri: "file:///original.jpg",
       width: 3000,
     });
@@ -84,6 +87,10 @@ describe("normalizeCustomizeImage", () => {
         height: 3072,
         originalHeight: 4500,
         originalWidth: 3000,
+        ownedCacheUris: [
+          "file:///cache/ImagePicker/original.jpg",
+          "file:///optimized.jpg",
+        ],
         uri: "file:///optimized.jpg",
         wasOptimized: true,
         width: 2048,

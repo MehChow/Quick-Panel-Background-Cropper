@@ -26,9 +26,11 @@ import { getPanelLabel } from "../../../model/i18n";
 import { useQuickPanelStore } from "../../../store/quick-panel-store";
 import { quickPanelSelectors } from "../../../store/selectors";
 import { getSuggestedCalibrationRect } from "../../shared/calibration-preset";
+import { useOwnedImageCache } from "../../../cache/useOwnedImageCache";
 
 export function useAdvancedCalibrationScreen() {
   const router = useRouter();
+  const ownedImageCache = useOwnedImageCache();
   const {
     advancedCalibration,
     advancedButtonsCalibration,
@@ -66,8 +68,13 @@ export function useAdvancedCalibrationScreen() {
         return;
       }
 
+      const previousScreenshot = selectedAdvancedTarget === "buttons"
+        ? advancedButtonsDraft?.screenshot ?? null
+        : advancedDraft?.screenshot ?? null;
       const suggestedRect = getSuggestedCalibrationRect(screenshot);
+      ownedImageCache.track(screenshot);
       setAdvancedScreenshot(screenshot, suggestedRect);
+      ownedImageCache.release(previousScreenshot);
       setGrid(savedCalibration?.grid ?? getDefaultAdvancedSnapGrid(suggestedRect));
       setLeavingDraft(null);
       setLeavingPhase(null);

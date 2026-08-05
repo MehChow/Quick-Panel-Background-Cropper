@@ -29,9 +29,11 @@ import { pickImageFromLibrary } from "../../../../shared/pick-image-from-library
 import { getSuggestedCalibrationRect } from "../../../shared/calibration-preset";
 import { useQuickPanelStore } from "../../../../store/quick-panel-store";
 import { quickPanelSelectors } from "../../../../store/selectors";
+import { useOwnedImageCache } from "../../../../cache/useOwnedImageCache";
 
 export function useCombinedCalibrationScreen() {
   const router = useRouter();
+  const ownedImageCache = useOwnedImageCache();
   const { t } = useTranslation();
   const {
     advancedCombinedCalibration,
@@ -61,8 +63,11 @@ export function useCombinedCalibrationScreen() {
     try {
       const screenshot = await pickImageFromLibrary();
       if (!screenshot) return;
+      const previousScreenshot = advancedCombinedDraft?.screenshot ?? null;
       const suggestedOuter = getSuggestedCalibrationRect(screenshot);
+      ownedImageCache.track(screenshot);
       setCombinedScreenshot(screenshot, suggestedOuter);
+      ownedImageCache.release(previousScreenshot);
       setGrid(advancedCombinedCalibration?.grid ?? getDefaultAdvancedSnapGrid(suggestedOuter));
       setPhase("outer");
       setResumePhase(null);

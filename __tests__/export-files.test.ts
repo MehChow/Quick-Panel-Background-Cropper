@@ -40,20 +40,31 @@ jest.mock("react-native-view-shot", () => ({
 }));
 
 jest.mock("expo-file-system", () => ({
+  Directory: class MockDirectory {
+    uri: string;
+
+    constructor(...parts: Array<string | { uri: string }>) {
+      this.uri = parts.map((part) => typeof part === "string" ? part : part.uri).join("/");
+    }
+
+    create = (...args: unknown[]) => mockDirectoryCreate(...args);
+  },
   File: class MockFile {
     uri: string;
 
-    constructor(...parts: string[]) {
-      this.uri = parts.join("/");
+    constructor(...parts: Array<string | { uri: string }>) {
+      this.uri = parts.map((part) => typeof part === "string" ? part : part.uri).join("/");
     }
 
     copy = (...args: unknown[]) => mockCopy(...args);
     delete = () => mockDelete(this.uri);
   },
   Paths: {
-    cache: "file:///cache",
+    cache: { uri: "file:///cache" },
   },
 }));
+
+const mockDirectoryCreate = jest.fn();
 
 jest.mock("react-native", () => ({
   Platform: {
@@ -97,8 +108,8 @@ describe("export files", () => {
       fileName: panel.fileName,
       id: panel.id,
       label: panel.label,
-      previewUri: "file:///cache/01-button-box.png",
-      uri: "file:///cache/01-button-box.png",
+      previewUri: "file:///cache/qpbc-exports/01-button-box.png",
+      uri: "file:///cache/qpbc-exports/01-button-box.png",
     });
     expect(mockCaptureRef).toHaveBeenCalledWith(view, {
       fileName: "01-button-box",
@@ -109,12 +120,13 @@ describe("export files", () => {
       width: 1024,
     });
     expect(mockCopy).toHaveBeenCalledWith(
-      expect.objectContaining({ uri: "file:///cache/01-button-box.png" }),
+      expect.objectContaining({ uri: "file:///cache/qpbc-exports/01-button-box.png" }),
       { overwrite: true },
     );
     expect(mockReleaseCapture).toHaveBeenCalledWith(
       "file:///tmp/01-button-box.png",
     );
+    expect(mockDirectoryCreate).toHaveBeenCalledWith({ idempotent: true });
   });
 
   it("releases a temporary capture when copying fails", async () => {
