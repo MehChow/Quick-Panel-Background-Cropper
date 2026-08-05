@@ -21,6 +21,15 @@ jest.mock("expo-image-manipulator", () => ({
 }));
 
 jest.mock("expo-file-system", () => ({
+  Directory: class {
+    uri: string;
+
+    constructor(...parts: Array<string | { uri: string }>) {
+      this.uri = parts.map((part) => typeof part === "string" ? part : part.uri).join("/");
+    }
+
+    create() {}
+  },
   File: class {
     uri: string;
 
@@ -32,6 +41,7 @@ jest.mock("expo-file-system", () => ({
       mockDelete(this.uri);
     }
   },
+  Paths: { cache: { uri: "file:///cache" } },
 }));
 
 describe("Customize preview images", () => {
@@ -44,9 +54,9 @@ describe("Customize preview images", () => {
     mockContext.resize.mockReturnValue(mockContext);
     mockContext.renderAsync.mockResolvedValue({ saveAsync: mockSaveAsync });
     mockManipulate.mockReturnValue(mockContext);
-    mockSaveAsync.mockResolvedValue({
-      height: 608,
-      uri: "file:///preview.png",
+  mockSaveAsync.mockResolvedValue({
+    height: 608,
+    uri: "file:///cache/preview.png",
       width: 1080,
     });
   });
@@ -82,7 +92,7 @@ describe("Customize preview images", () => {
         width: 1920,
         height: 1080,
       }),
-    ).resolves.toEqual({ isOwned: true, uri: "file:///preview.png" });
+    ).resolves.toEqual({ isOwned: true, uri: "file:///cache/preview.png" });
     expect(mockContext.resize).toHaveBeenCalledWith({
       width: 1080,
       height: 608,
@@ -116,11 +126,11 @@ describe("Customize preview images", () => {
     const hook = renderHook(() => useCustomizePreviewImage(image));
 
     await waitFor(() =>
-      expect(hook.result.current.previewUri).toBe("file:///preview.png"),
+      expect(hook.result.current.previewUri).toBe("file:///cache/preview.png"),
     );
     hook.unmount();
 
-    expect(mockDelete).toHaveBeenCalledWith("file:///preview.png");
+    expect(mockDelete).toHaveBeenCalledWith("file:///cache/preview.png");
     expect(mockDelete).not.toHaveBeenCalledWith(image.uri);
   });
 });

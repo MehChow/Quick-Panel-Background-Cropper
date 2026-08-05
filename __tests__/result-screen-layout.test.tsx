@@ -3,6 +3,7 @@ import { ResultScreen } from "@/features/quick-panel/result/ResultScreen";
 
 let mockSuccessPanelProps: { exports: Array<{ id: string; label: string }> } | null = null;
 const mockUseQuickPanelStore = jest.fn();
+const mockCleanupCapturedExports = jest.fn();
 
 jest.mock("react-i18next", () => ({
   useTranslation: () => ({
@@ -41,6 +42,10 @@ jest.mock("@/features/quick-panel/customize/components/GoodLockUnavailableDialog
   GoodLockUnavailableDialog: () => null,
 }));
 
+jest.mock("@/features/quick-panel/customize/services/export-files", () => ({
+  cleanupCapturedExports: (...args: unknown[]) => mockCleanupCapturedExports(...args),
+}));
+
 jest.mock("@/features/quick-panel/store/quick-panel-store", () => ({
   useQuickPanelStore: (...args: unknown[]) => mockUseQuickPanelStore(...args),
 }));
@@ -56,6 +61,10 @@ mockUseQuickPanelStore.mockReturnValue({
   });
 
 describe("ResultScreen wide layout", () => {
+  beforeEach(() => {
+    mockCleanupCapturedExports.mockReset();
+  });
+
   it("renders footer actions outside the success panel", () => {
     render(<ResultScreen />);
 
@@ -87,5 +96,23 @@ describe("ResultScreen wide layout", () => {
       "button-1",
       "button-2",
     ]);
+  });
+
+  it("cleans successful captures only after Result unmounts", () => {
+    const exports = [
+      { id: "buttonBox", label: "Button box", previewUri: "file:///one.png" },
+      { id: "mediaPlayer", label: "Media player", previewUri: "file:///two.png" },
+    ];
+    mockUseQuickPanelStore.mockReturnValue({
+      exports,
+      goToLanding: jest.fn(),
+    });
+
+    const screen = render(<ResultScreen />);
+
+    expect(mockCleanupCapturedExports).not.toHaveBeenCalled();
+    screen.unmount();
+
+    expect(mockCleanupCapturedExports).toHaveBeenCalledWith(exports);
   });
 });

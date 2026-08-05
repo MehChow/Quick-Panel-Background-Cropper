@@ -4,10 +4,13 @@ import { quickPanelSelectors } from "../../store/selectors";
 import { useQuickPanelStore } from "../../store/quick-panel-store";
 import { recordCrashlyticsError } from "@/lib/crashlytics";
 import { normalizeCustomizeImage } from "../services/normalize-customize-image";
+import { useOwnedImageCache } from "../../cache/useOwnedImageCache";
 
 export function useCustomizeActions() {
+  const ownedImageCache = useOwnedImageCache();
   const {
     activePreset,
+    image,
     isProcessingImage,
     startImageProcessing,
     finishImageProcessing,
@@ -27,11 +30,15 @@ export function useCustomizeActions() {
       }
 
       startImageProcessing();
+      ownedImageCache.track(pickedImage);
 
       try {
         const normalized = await normalizeCustomizeImage(pickedImage);
+        ownedImageCache.track(normalized.image);
         finishImageProcessing(normalized.image);
+        ownedImageCache.release(image);
       } catch (error) {
+        ownedImageCache.release(pickedImage);
         void recordCrashlyticsError(error, {
           action: "normalize_customize_image",
           mode: useQuickPanelStore.getState().selectedMode,

@@ -5,10 +5,12 @@ import {
   loadCalibrations,
   loadLastExportedAdvancedTarget,
   loadLastExportedMode,
+  loadLastImageDiskCacheClearAt,
   loadButtonCustomizeSettings,
   loadCombinedButtonImageIntensity,
   saveCalibrations,
   saveCombinedButtonImageIntensity,
+  saveLastImageDiskCacheClearAt,
   saveButtonCustomizeSettings,
   type ButtonCustomizeSettings,
   type SavedCalibrations,
@@ -82,6 +84,33 @@ const currentCalibrations = {
 } satisfies SavedCalibrations;
 
 describe("storage", () => {
+  it.each([undefined, "bad", "-1", "Infinity", "NaN"])(
+    "returns null for invalid image disk-cache timestamps: %s",
+    (value) => {
+      const mmkvStore = (globalThis as typeof globalThis & MmkvTestGlobal)
+        .__mmkvStore;
+      if (value === undefined) {
+        mmkvStore?.delete("quick-panel.last-image-disk-cache-clear-at");
+      } else {
+        mmkvStore?.set("quick-panel.last-image-disk-cache-clear-at", value);
+      }
+
+      expect(loadLastImageDiskCacheClearAt()).toBeNull();
+    },
+  );
+
+  it("round-trips the independent image disk-cache timestamp", () => {
+    saveLastImageDiskCacheClearAt(123456789);
+
+    expect(loadLastImageDiskCacheClearAt()).toBe(123456789);
+    expect(loadCalibrations()).toEqual({
+      default: null,
+      advancedControls: null,
+      advancedButtons: null,
+      advancedCombined: null,
+    });
+  });
+
   it("stores the acknowledged release announcement independently", () => {
     const mmkvStore = (globalThis as typeof globalThis & MmkvTestGlobal)
       .__mmkvStore;
@@ -89,10 +118,10 @@ describe("storage", () => {
 
     expect(loadAcknowledgedReleaseAnnouncement()).toBeNull();
 
-    acknowledgeReleaseAnnouncement("v1.3.0-advanced-combined-mode-announcement");
+    acknowledgeReleaseAnnouncement("v1.3.1-cache-optimization-announcement");
 
     expect(loadAcknowledgedReleaseAnnouncement()).toBe(
-      "v1.3.0-advanced-combined-mode-announcement",
+      "v1.3.1-cache-optimization-announcement",
     );
     expect(loadCalibrations()).toEqual({
       default: null,

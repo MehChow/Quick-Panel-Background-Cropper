@@ -1,5 +1,4 @@
 import { recordCrashlyticsError } from "@/lib/crashlytics";
-import { File } from "expo-file-system";
 import { useEffect, useState } from "react";
 import type { PickedImage } from "../../model/types";
 import {
@@ -7,6 +6,7 @@ import {
   getCustomizePreviewResize,
   type CustomizePreviewImage,
 } from "../services/create-customize-preview-image";
+import { deleteOwnedCacheUris } from "../../cache/cache-files";
 
 export interface CustomizePreviewImageState {
   previewUri: string;
@@ -84,11 +84,7 @@ function deleteOwnedPreview(preview: CustomizePreviewImage | null) {
     return;
   }
 
-  try {
-    new File(preview.uri).delete();
-  } catch (error) {
-    void recordCrashlyticsError(error, {
-      action: "cleanup_customize_preview_image",
-    });
-  }
+  deleteOwnedCacheUris([preview.uri], {
+    action: "cleanup_customize_preview_image",
+  });
 }

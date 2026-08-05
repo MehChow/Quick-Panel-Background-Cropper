@@ -11,9 +11,9 @@ const en = {
         "Split one image seamlessly across your Quick Panel Controls area",
     },
     releaseAnnouncement: {
-      v1_3_0: {
-        title: "v1.3.0 Major Updates 🌟\n",
-        body: "• New: Advanced Controls + Buttons lets one image flow continuously across both Quick Panel families.",
+      v1_3_1: {
+        title: "v1.3.1 Updates 🌟\n",
+        body: "• New: Advanced Controls + Buttons mode.\n• Optimized cache handling.",
         gotIt: "Got it",
         mediaAccessibilityLabel:
           "Advanced Controls and Buttons using one continuous image",

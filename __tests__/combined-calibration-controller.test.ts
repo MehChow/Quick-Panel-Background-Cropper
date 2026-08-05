@@ -8,6 +8,8 @@ import { createElement } from "react";
 
 const mockBack = jest.fn();
 const mockDismissTo = jest.fn();
+const mockTrack = jest.fn();
+const mockRelease = jest.fn();
 
 jest.mock("expo-router", () => ({
   useRouter: () => ({ back: mockBack, dismissTo: mockDismissTo }),
@@ -15,6 +17,10 @@ jest.mock("expo-router", () => ({
 
 jest.mock("@/features/quick-panel/shared/pick-image-from-library", () => ({
   pickImageFromLibrary: jest.fn(),
+}));
+
+jest.mock("@/features/quick-panel/cache/useOwnedImageCache", () => ({
+  useOwnedImageCache: () => ({ release: mockRelease, track: mockTrack }),
 }));
 
 type HookWindow = typeof globalThis & {
@@ -32,6 +38,7 @@ function getHook() {
 }
 
 const screenshot = {
+  ownedCacheUris: ["file:///cache/ImagePicker/quick-panel.png"],
   uri: "file:///quick-panel.png",
   width: 200,
   height: 400,
@@ -42,6 +49,8 @@ describe("combined calibration controller", () => {
     useQuickPanelStore.setState(createInitialQuickPanelStateData());
     mockBack.mockClear();
     mockDismissTo.mockClear();
+    mockTrack.mockClear();
+    mockRelease.mockClear();
     (pickImageFromLibrary as jest.Mock).mockResolvedValue(screenshot);
   });
 
@@ -56,6 +65,7 @@ describe("combined calibration controller", () => {
     await act(async () => {
       await getHook().importScreenshot();
     });
+    expect(mockTrack).toHaveBeenCalledWith(screenshot);
     act(() => getHook().goForward());
     expect(getHook().phase).toBe("controlSelection");
 

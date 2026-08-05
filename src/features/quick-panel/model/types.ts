@@ -125,6 +125,7 @@ export interface PickedImage {
   originalWidth?: number;
   originalHeight?: number;
   wasOptimized?: boolean;
+  ownedCacheUris?: string[];
 }
 
 export interface ImageTransform {

@@ -10,9 +10,9 @@ const zh = {
       subtitle: "將一張圖片無縫延伸到你的 Quick Panel 控制版面",
     },
     releaseAnnouncement: {
-      v1_3_0: {
-        title: "v1.3.0 主要更新內容 🌟\n",
-        body: "• 新功能：進階「控制版面 + 按鈕」模式，讓同一張圖片無縫延伸到兩種 Quick Panel 版面。",
+      v1_3_1: {
+        title: "v1.3.1 更新內容 🌟\n",
+        body: "• 新功能：進階「控制版面 + 按鈕」模式。\n• 優化快取處理。",
         gotIt: "知道了",
         mediaAccessibilityLabel: "進階控制版面與按鈕使用同一張連續圖片",
       },
