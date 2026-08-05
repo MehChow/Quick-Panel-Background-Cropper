@@ -1,17 +1,17 @@
 import { enLocale, zhLocale } from "../i18next/resources";
 
 describe("release announcement locale strings", () => {
-  it("defines the v1.3.0 updates in English and Traditional Chinese", () => {
-    expect(enLocale.translation.releaseAnnouncement.v1_3_0).toEqual({
-      title: "v1.3.0 Major Updates 🌟\n",
-      body: "• New: Advanced Controls + Buttons lets one image flow continuously across both Quick Panel families.",
+  it("defines the v1.3.1 updates in English and Traditional Chinese", () => {
+    expect(enLocale.translation.releaseAnnouncement.v1_3_1).toEqual({
+      title: "v1.3.1 Updates 🌟\n",
+      body: "• New: Advanced Controls + Buttons mode.\n• Optimized cache handling.",
       gotIt: "Got it",
       mediaAccessibilityLabel:
         "Advanced Controls and Buttons using one continuous image",
     });
-    expect(zhLocale.translation.releaseAnnouncement.v1_3_0).toEqual({
-      title: "v1.3.0 主要更新內容 🌟\n",
-      body: "• 新功能：進階「控制版面 + 按鈕」模式，讓同一張圖片無縫延伸到兩種 Quick Panel 版面。",
+    expect(zhLocale.translation.releaseAnnouncement.v1_3_1).toEqual({
+      title: "v1.3.1 更新內容 🌟\n",
+      body: "• 新功能：進階「控制版面 + 按鈕」模式。\n• 優化快取處理。",
       gotIt: "知道了",
       mediaAccessibilityLabel: "進階控制版面與按鈕使用同一張連續圖片",
     });
