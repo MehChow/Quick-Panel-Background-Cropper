@@ -12,6 +12,17 @@ This file is a running project note log for implementation details that are easy
 
 ## Entries
 
+### 2026-08-05: Cache ownership and cold-start maintenance
+
+- Image cleanup is URI-ownership based and guarded to `Paths.cache`; the cache
+  root, unrelated cache directories, and media-library copies are preserved.
+- Result owns successful export captures until unmount, while cold start
+  recovers stale QPBC-owned files left by interrupted work.
+- Expo Image disk cache is cleared at most once per seven-day interval after a
+  successful clear; cleanup never uses background or termination callbacks.
+- Production and `.dev` storage measurements must always be recorded against
+  their package names separately.
+
 ### 2026-08-04: Customize appearance performance boundary
 
 - Button appearance uses one native Modal. The focused inspector and overall

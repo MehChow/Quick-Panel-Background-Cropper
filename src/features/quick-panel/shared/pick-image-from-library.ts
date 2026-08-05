@@ -18,6 +18,7 @@ export async function pickImageFromLibrary(): Promise<PickedImage | null> {
     return {
       fileName: asset.fileName,
       height: asset.height,
+      ownedCacheUris: [asset.uri],
       uri: asset.uri,
       width: asset.width,
     };

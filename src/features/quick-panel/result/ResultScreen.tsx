@@ -6,11 +6,12 @@ import { QuickPanelScreenShell } from "@/features/quick-panel/shared/QuickPanelS
 import { useQuickPanelStore } from "@/features/quick-panel/store/quick-panel-store";
 import { quickPanelSelectors } from "@/features/quick-panel/store/selectors";
 import { Redirect, useRouter } from "expo-router";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useShallow } from "zustand/react/shallow";
+import { cleanupCapturedExports } from "../customize/services/export-files";
 
 export function ResultScreen() {
   const { t } = useTranslation();
@@ -19,6 +20,7 @@ export function ResultScreen() {
   const { exports, goToLanding } = useQuickPanelStore(
     useShallow(quickPanelSelectors.resultScreen),
   );
+  const exportsRef = useRef(exports);
   const {
     closeGoodLockDialog,
     isGoodLockDialogOpen,
@@ -27,6 +29,12 @@ export function ResultScreen() {
     openGoodLockApp,
     openSamsungStore,
   } = useGoodLockLink();
+
+  useEffect(() => () => {
+    if (exportsRef.current.length > 0) {
+      void cleanupCapturedExports(exportsRef.current);
+    }
+  }, []);
 
   if (exports.length === 0) {
     return <Redirect href="/" />;

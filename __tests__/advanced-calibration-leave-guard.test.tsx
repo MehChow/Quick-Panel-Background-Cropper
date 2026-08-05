@@ -6,6 +6,8 @@ import { useQuickPanelStore } from "@/features/quick-panel/store/quick-panel-sto
 import { BackHandler } from "react-native";
 
 const mockBack = jest.fn();
+const mockTrack = jest.fn();
+const mockRelease = jest.fn();
 
 jest.mock("expo-router", () => ({
   useRouter: () => ({ back: mockBack, dismissTo: jest.fn() }),
@@ -13,6 +15,10 @@ jest.mock("expo-router", () => ({
 
 jest.mock("@/features/quick-panel/shared/pick-image-from-library", () => ({
   pickImageFromLibrary: jest.fn(),
+}));
+
+jest.mock("@/features/quick-panel/cache/useOwnedImageCache", () => ({
+  useOwnedImageCache: () => ({ release: mockRelease, track: mockTrack }),
 }));
 
 type HookWindow = typeof globalThis & {
@@ -30,6 +36,7 @@ function getHook() {
 }
 
 const screenshot = {
+  ownedCacheUris: ["file:///cache/ImagePicker/quick-panel.png"],
   uri: "file:///quick-panel.png",
   width: 1000,
   height: 2000,
@@ -39,6 +46,8 @@ describe("advanced calibration leave guard", () => {
   beforeEach(() => {
     useQuickPanelStore.setState(createInitialQuickPanelStateData());
     mockBack.mockClear();
+    mockTrack.mockClear();
+    mockRelease.mockClear();
     (pickImageFromLibrary as jest.Mock).mockResolvedValue(screenshot);
   });
 
@@ -58,6 +67,7 @@ describe("advanced calibration leave guard", () => {
     });
 
     expect(mockBack).toHaveBeenCalledTimes(1);
+    expect(mockTrack).toHaveBeenCalledWith(screenshot);
     expect(getHook().isLeaveDialogOpen).toBe(false);
     mockBack.mockClear();
 

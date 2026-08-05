@@ -6,6 +6,7 @@ import { pickImageFromLibrary } from "../../../shared/pick-image-from-library";
 import { useQuickPanelStore } from "../../../store/quick-panel-store";
 import { quickPanelSelectors } from "../../../store/selectors";
 import { getSuggestedCalibrationRect } from "../../shared/calibration-preset";
+import { useOwnedImageCache } from "../../../cache/useOwnedImageCache";
 
 interface CalibrationPresentation {
   screenshot: PickedImage;
@@ -14,6 +15,7 @@ interface CalibrationPresentation {
 
 export function useCalibrationScreen() {
   const router = useRouter();
+  const ownedImageCache = useOwnedImageCache();
   const [leavingCalibration, setLeavingCalibration] =
     useState<CalibrationPresentation | null>(null);
   const {
@@ -34,10 +36,12 @@ export function useCalibrationScreen() {
         return;
       }
 
+      ownedImageCache.track(nextScreenshot);
       setScreenshot(
         nextScreenshot,
         getSuggestedCalibrationRect(nextScreenshot),
       );
+      ownedImageCache.release(screenshot);
     } catch (error) {
       failImageProcessing(
         null,
