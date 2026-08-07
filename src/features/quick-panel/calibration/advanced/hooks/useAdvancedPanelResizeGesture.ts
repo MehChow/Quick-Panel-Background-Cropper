@@ -1,7 +1,7 @@
 import { Gesture } from "react-native-gesture-handler";
 import { useSharedValue, type SharedValue } from "react-native-reanimated";
 import { scheduleOnRN } from "react-native-worklets";
-import type { PanelRect } from "../../../model/types";
+import type { PanelId, PanelRect } from "../../../model/types";
 import type { HandlePosition } from "../../shared/calibration-rect";
 import { getAdvancedPanelResizeResult } from "../advanced-panel-gesture";
 import type { AdvancedSnapGrid } from "../advanced-grid";
@@ -10,26 +10,33 @@ import { triggerSnapHaptic } from "../snap-haptics";
 
 interface Params {
   draftRect: SharedValue<PanelRect>;
+  gestureToken: SharedValue<number>;
   grid: AdvancedSnapGrid;
+  label: PanelId;
   outerRect: PanelRect;
   position: HandlePosition;
   scale: number;
   snapSensitivity: SnapSensitivity;
-  onChange: (rect: PanelRect) => void;
+  onGestureBegin: (panelId: PanelId, token: number) => void;
+  onGestureCommit: (panelId: PanelId, token: number, rect: PanelRect) => void;
 }
 
 export function useAdvancedPanelResizeGesture({
   draftRect,
+  gestureToken,
   grid,
+  label,
   outerRect,
   position,
   scale,
   snapSensitivity,
-  onChange,
+  onGestureBegin,
+  onGestureCommit,
 }: Params) {
   const didCommit = useSharedValue(false);
   const lastSnapKey = useSharedValue<string | null>(null);
   const startRect = useSharedValue(outerRect);
+  const currentToken = useSharedValue(0);
 
   const commitDraft = () => {
     "worklet";
@@ -38,14 +45,18 @@ export function useAdvancedPanelResizeGesture({
     }
     didCommit.set(true);
     lastSnapKey.set(null);
-    scheduleOnRN(onChange, draftRect.get());
+    scheduleOnRN(onGestureCommit, label, currentToken.get(), draftRect.get());
   };
 
   return Gesture.Pan()
     .onBegin(() => {
+      const token = gestureToken.get() + 1;
+      gestureToken.set(token);
+      currentToken.set(token);
       didCommit.set(false);
       lastSnapKey.set(null);
       startRect.set({ ...draftRect.get() });
+      scheduleOnRN(onGestureBegin, label, token);
     })
     .onUpdate((event) => {
       const result = getAdvancedPanelResizeResult({

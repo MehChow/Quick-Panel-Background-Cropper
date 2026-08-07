@@ -44,6 +44,9 @@ export function ReleasedAdvancedCalibrationScreen() {
     advancedDraft,
     buttons,
     controlEnabledPanels,
+    activePanelId,
+    beginPanelGesture,
+    commitPanelGesture,
     panelItems,
     panels,
     selectedAdvancedTarget,
@@ -70,7 +73,7 @@ export function ReleasedAdvancedCalibrationScreen() {
     setAdvancedEnabledPanels,
     setAdvancedButtons,
     setAdvancedOuterRect,
-    setAdvancedPanels,
+    isPanelGesturePending,
     setSnapSensitivity,
     snapSensitivity,
   } = useAdvancedCalibrationScreen();
@@ -78,7 +81,9 @@ export function ReleasedAdvancedCalibrationScreen() {
   const outerRect = advancedDraft?.outerRect ?? null;
   const isEditing = Boolean(screenshot && outerRect);
   const isPanelStep = isPanelPhase(phase);
-  const isNextDisabled = isPanelSelectionPhase && enabledPanels.length === 0;
+  const isNextDisabled =
+    (isPanelSelectionPhase && enabledPanels.length === 0) ||
+    (isPanelStep && isPanelGesturePending);
   const showHelpButton = isEditing && (isPanelStep || isConfirmPhase);
   const activeHelpId = getActiveHelpId(phase);
   const actionAccessibilityLabel = showHelpButton
@@ -198,7 +203,7 @@ export function ReleasedAdvancedCalibrationScreen() {
           </View>
         ) : screenshot && outerRect && panels ? (
           <AdvancedPanelCanvas
-            activePanelId={isPanelStep ? phase : null}
+            activePanelId={activePanelId}
             grid={grid}
             isReview={isConfirmPhase}
             panelItems={panelItems}
@@ -207,7 +212,8 @@ export function ReleasedAdvancedCalibrationScreen() {
             panels={panels}
             snapSensitivity={snapSensitivity}
             visiblePanelIds={getVisiblePanelIds(phase, panelItems.map((item) => item.id))}
-            onPanelsChange={setAdvancedPanels}
+            onGestureBegin={beginPanelGesture}
+            onGestureCommit={commitPanelGesture}
           />
         ) : (
           <View />

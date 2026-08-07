@@ -15,10 +15,12 @@ import {
 import type {
   AdvancedCalibrationDraft,
   AdvancedSnapGrid,
+  ButtonPanelId,
   ButtonCalibrationItem,
   ControlPanelId,
-  ControlPanelRects,
   EditablePanelItem,
+  PanelId,
+  PanelRect,
   PanelRects,
 } from "../../../model/types";
 import { pickImageFromLibrary } from "../../../shared/pick-image-from-library";
@@ -28,6 +30,7 @@ import { quickPanelSelectors } from "../../../store/selectors";
 import { useSnapSensitivityPreference } from "../../../store/storage";
 import { getSuggestedCalibrationRect } from "../../shared/calibration-preset";
 import { useOwnedImageCache } from "../../../cache/useOwnedImageCache";
+import { useAdvancedPanelCommitGate } from "./useAdvancedPanelCommitGate";
 
 export function useAdvancedCalibrationScreen() {
   const router = useRouter();
@@ -46,9 +49,9 @@ export function useAdvancedCalibrationScreen() {
     setAdvancedOuterRect,
     confirmAdvancedOuterRect,
     setAdvancedEnabledPanels,
-    setAdvancedPanels,
+    setAdvancedPanel,
     setAdvancedButtons,
-    setAdvancedButtonPanels,
+    setAdvancedButtonPanel,
     acceptAdvancedCalibration,
     failImageProcessing,
   } = useQuickPanelStore(useShallow(quickPanelSelectors.advancedCalibrationScreen));
@@ -132,6 +135,27 @@ export function useAdvancedCalibrationScreen() {
     : advancedDraft?.panels ?? null;
   const previousPhase = getPreviousPhase(displayedPhase, enabledPanels);
   const nextPhase = getNextPhase(displayedPhase, enabledPanels);
+  const activePanelId: PanelId | null = isPanelPhase(displayedPhase)
+    ? displayedPhase
+    : null;
+
+  const commitPanel = (id: PanelId, rect: PanelRect) => {
+    if (
+      selectedAdvancedTarget === "buttons" &&
+      advancedButtonsDraft?.buttons.some((button) => button.id === id)
+    ) {
+      setAdvancedButtonPanel(id as ButtonPanelId, rect);
+      return;
+    }
+    if (advancedDraft?.enabledPanels.includes(id as ControlPanelId)) {
+      setAdvancedPanel(id as ControlPanelId, rect);
+    }
+  };
+  const {
+    beginPanelGesture,
+    commitPanelGesture,
+    isPanelGesturePending,
+  } = useAdvancedPanelCommitGate(activePanelId, commitPanel);
 
   const leaveCalibration = () => {
     router.back();
@@ -174,6 +198,9 @@ export function useAdvancedCalibrationScreen() {
   };
 
   const goForward = () => {
+    if (activePanelId && isPanelGesturePending) {
+      return;
+    }
     if (displayedPhase === "outer") {
       continueToNextPhase();
       return;
@@ -209,16 +236,9 @@ export function useAdvancedCalibrationScreen() {
     }
   };
 
-  const updatePanels = (nextPanels: PanelRects) => {
-    if (selectedAdvancedTarget === "buttons") {
-      setAdvancedButtonPanels(nextPanels);
-      return;
-    }
-    setAdvancedPanels(nextPanels as ControlPanelRects);
-  };
-
   return {
     advancedDraft: displayedDraft,
+    activePanelId,
     buttons: advancedButtonsDraft?.buttons ?? [],
     controlEnabledPanels: advancedDraft?.enabledPanels ?? [],
     panelItems,
@@ -236,6 +256,9 @@ export function useAdvancedCalibrationScreen() {
     decrementRows: () => setGrid((current) => ({ ...current, rows: Math.max(1, current.rows - 1) })),
     goBack,
     goForward,
+    beginPanelGesture,
+    commitPanelGesture,
+    isPanelGesturePending,
     incrementColumns: () => setGrid((current) => ({ ...current, columns: Math.min(8, current.columns + 1) })),
     incrementRows: () => setGrid((current) => ({ ...current, rows: Math.min(8, current.rows + 1) })),
     isConfirmPhase: displayedPhase === "confirm",
@@ -252,7 +275,6 @@ export function useAdvancedCalibrationScreen() {
     setAdvancedEnabledPanels: updateEnabledPanels,
     setAdvancedButtons: updateButtons,
     setAdvancedOuterRect,
-    setAdvancedPanels: updatePanels,
     setSnapSensitivity,
     snapSensitivity,
   };

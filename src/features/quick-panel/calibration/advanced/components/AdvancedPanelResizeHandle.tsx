@@ -1,7 +1,7 @@
 import { View } from "react-native";
 import { GestureDetector } from "react-native-gesture-handler";
 import type { SharedValue } from "react-native-reanimated";
-import type { PanelRect } from "../../../model/types";
+import type { PanelId, PanelRect } from "../../../model/types";
 import type { HandlePosition } from "../../shared/calibration-rect";
 import type { AdvancedSnapGrid } from "../advanced-grid";
 import type { SnapSensitivity } from "../../../model/snap-sensitivity";
@@ -10,13 +10,16 @@ import { useAdvancedPanelResizeGesture } from "../hooks/useAdvancedPanelResizeGe
 interface Props {
   color?: string;
   draftRect: SharedValue<PanelRect>;
+  gestureToken: SharedValue<number>;
   grid: AdvancedSnapGrid;
+  label: PanelId;
   outerRect: PanelRect;
   position: HandlePosition;
   rect: PanelRect;
   scale: number;
   snapSensitivity: SnapSensitivity;
-  onChange: (rect: PanelRect) => void;
+  onGestureBegin: (panelId: PanelId, token: number) => void;
+  onGestureCommit: (panelId: PanelId, token: number, rect: PanelRect) => void;
 }
 
 export function AdvancedPanelResizeHandle(props: Props) {

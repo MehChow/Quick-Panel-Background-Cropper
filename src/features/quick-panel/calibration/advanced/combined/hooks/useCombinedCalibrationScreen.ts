@@ -23,7 +23,7 @@ import type {
   ControlPanelId,
   PanelFamily,
   PanelId,
-  PanelRects,
+  PanelRect,
 } from "../../../../model/types";
 import { pickImageFromLibrary } from "../../../../shared/pick-image-from-library";
 import { getSuggestedCalibrationRect } from "../../../shared/calibration-preset";
@@ -31,6 +31,7 @@ import { useQuickPanelStore } from "../../../../store/quick-panel-store";
 import { quickPanelSelectors } from "../../../../store/selectors";
 import { useSnapSensitivityPreference } from "../../../../store/storage";
 import { useOwnedImageCache } from "../../../../cache/useOwnedImageCache";
+import { useAdvancedPanelCommitGate } from "../../hooks/useAdvancedPanelCommitGate";
 
 export function useCombinedCalibrationScreen() {
   const router = useRouter();
@@ -48,7 +49,7 @@ export function useCombinedCalibrationScreen() {
     confirmCombinedOuterRect,
     setCombinedEnabledControls,
     setCombinedButtons,
-    setCombinedPanels,
+    setCombinedPanel,
     acceptCombinedCalibration,
     failImageProcessing,
   } = useQuickPanelStore(useShallow(quickPanelSelectors.combinedCalibrationScreen));
@@ -104,8 +105,24 @@ export function useCombinedCalibrationScreen() {
   const isButtonSelectionPhase = displayedPhase === "buttonSelection";
   const isGridPhase = displayedPhase === "grid";
   const isConfirmPhase = displayedPhase === "confirm";
+  const commitPanel = (id: PanelId, rect: PanelRect) => {
+    if (
+      draft?.enabledControls.includes(id as ControlPanelId) ||
+      draft?.buttons.some((button) => button.id === id)
+    ) {
+      setCombinedPanel(id, rect);
+    }
+  };
+  const {
+    beginPanelGesture,
+    commitPanelGesture,
+    isPanelGesturePending,
+  } = useAdvancedPanelCommitGate(activePanelId, commitPanel);
 
   const goForward = () => {
+    if (activePanelId && isPanelGesturePending) {
+      return;
+    }
     if (isOuterPhase) {
       confirmCombinedOuterRect();
       setPhase(resumePhase ?? "controlSelection");
@@ -213,7 +230,9 @@ export function useCombinedCalibrationScreen() {
     setCombinedEnabledControls: updateControls,
     setCombinedButtons: updateButtons,
     setCombinedOuterRect,
-    setCombinedPanels: (nextPanels: PanelRects) => setCombinedPanels(nextPanels),
+    beginPanelGesture,
+    commitPanelGesture,
+    isPanelGesturePending,
     setSnapSensitivity,
     snapSensitivity,
   };

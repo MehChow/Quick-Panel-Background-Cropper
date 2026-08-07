@@ -26,12 +26,14 @@ interface Props {
   rect: PanelRect;
   scale: number;
   snapSensitivity: SnapSensitivity;
-  onChange: (rect: PanelRect) => void;
+  onGestureBegin: (panelId: PanelId, token: number) => void;
+  onGestureCommit: (panelId: PanelId, token: number, rect: PanelRect) => void;
 }
 
 export function AdvancedPanelBox(props: Props) {
   const draftRect = useSharedValue(props.rect);
-  const gesture = useAdvancedPanelMoveGesture({ ...props, draftRect });
+  const gestureToken = useSharedValue(0);
+  const gesture = useAdvancedPanelMoveGesture({ ...props, draftRect, gestureToken });
   const animatedStyle = useAnimatedStyle(() => {
     const rect = draftRect.get();
     return {
@@ -82,30 +84,34 @@ export function AdvancedPanelBox(props: Props) {
             {...props}
             color={handleColor}
             draftRect={draftRect}
+            gestureToken={gestureToken}
             position="topLeft"
           />
-          <AdvancedPanelResizeHandle {...props} draftRect={draftRect} position="top" />
+          <AdvancedPanelResizeHandle {...props} draftRect={draftRect} gestureToken={gestureToken} position="top" />
           <AdvancedPanelResizeHandle
             {...props}
             color={handleColor}
             draftRect={draftRect}
+            gestureToken={gestureToken}
             position="topRight"
           />
-          <AdvancedPanelResizeHandle {...props} draftRect={draftRect} position="right" />
-          <AdvancedPanelResizeHandle {...props} draftRect={draftRect} position="bottom" />
+          <AdvancedPanelResizeHandle {...props} draftRect={draftRect} gestureToken={gestureToken} position="right" />
+          <AdvancedPanelResizeHandle {...props} draftRect={draftRect} gestureToken={gestureToken} position="bottom" />
           <AdvancedPanelResizeHandle
             {...props}
             color={handleColor}
             draftRect={draftRect}
+            gestureToken={gestureToken}
             position="bottomLeft"
           />
           <AdvancedPanelResizeHandle
             {...props}
             color={handleColor}
             draftRect={draftRect}
+            gestureToken={gestureToken}
             position="bottomRight"
           />
-          <AdvancedPanelResizeHandle {...props} draftRect={draftRect} position="left" />
+          <AdvancedPanelResizeHandle {...props} draftRect={draftRect} gestureToken={gestureToken} position="left" />
         </>
       ) : null}
     </Animated.View>
