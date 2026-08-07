@@ -1,16 +1,15 @@
 import { enLocale, zhLocale } from "../i18next/resources";
 
 describe("release announcement locale strings", () => {
-  it("defines the v1.3.2 updates in English and Traditional Chinese", () => {
-    expect(enLocale.translation.releaseAnnouncement.v1_3_2).toEqual({
-      title: "v1.3.2 Updates 🌟\n",
+  it("defines the v1.3.3 updates in English and Traditional Chinese", () => {
+    expect(enLocale.translation.releaseAnnouncement.v1_3_3).toEqual({
+      title: "v1.3.3 Updates 🌟\n",
       body: "• New: Snap strength slider.\n• Enhancement: Snapping is now easier and more accurate.",
       gotIt: "Got it",
-      mediaAccessibilityLabel:
-        "Snap strength slider and improved snapping",
+      mediaAccessibilityLabel: "Snap strength slider and improved snapping",
     });
-    expect(zhLocale.translation.releaseAnnouncement.v1_3_2).toEqual({
-      title: "v1.3.2 更新內容 🌟\n",
+    expect(zhLocale.translation.releaseAnnouncement.v1_3_3).toEqual({
+      title: "v1.3.3 更新內容 🌟\n",
       body: "• 新功能：吸附強度滑桿。\n• 優化：吸附更容易、更準確。",
       gotIt: "知道了",
       mediaAccessibilityLabel: "吸附強度滑桿及更容易、更準確的吸附功能",
@@ -174,9 +173,13 @@ describe("customize locale strings", () => {
     expect(zhLocale.translation.customize.buttonAppearanceUnavailable).toBe(
       "無法顯示按鈕預覽。",
     );
-    expect("buttonAppearanceBefore" in enLocale.translation.customize).toBe(false);
+    expect("buttonAppearanceBefore" in enLocale.translation.customize).toBe(
+      false,
+    );
     expect("buttonAppearanceNew" in enLocale.translation.customize).toBe(false);
-    expect("buttonAppearanceBefore" in zhLocale.translation.customize).toBe(false);
+    expect("buttonAppearanceBefore" in zhLocale.translation.customize).toBe(
+      false,
+    );
     expect("buttonAppearanceNew" in zhLocale.translation.customize).toBe(false);
   });
 
@@ -248,8 +251,18 @@ describe("combined Advanced locale strings", () => {
     ] as const;
 
     for (const [section, key] of paths) {
-      const englishSection = (enLocale.translation as unknown as Record<string, Record<string, string>>)[section];
-      const chineseSection = (zhLocale.translation as unknown as Record<string, Record<string, string>>)[section];
+      const englishSection = (
+        enLocale.translation as unknown as Record<
+          string,
+          Record<string, string>
+        >
+      )[section];
+      const chineseSection = (
+        zhLocale.translation as unknown as Record<
+          string,
+          Record<string, string>
+        >
+      )[section];
       expect(englishSection[key]).toBeTruthy();
       expect(chineseSection[key]).toBeTruthy();
     }
