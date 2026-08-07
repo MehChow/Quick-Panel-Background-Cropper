@@ -126,7 +126,6 @@ For a first-time user, the app has four customization paths:
   <img src="./flow/advanced/controls-only/12.webp" width="200">
   <img src="./flow/advanced/controls-only/13.webp" width="200">
   <img src="./flow/advanced/controls-only/14.webp" width="200">
-  <img src="./flow/advanced/controls-only/15.webp" width="200">
 </div><br>
 
 ### Advanced Buttons
@@ -161,12 +160,6 @@ For a first-time user, the app has four customization paths:
   <img src="./flow/advanced/buttons-only/12.webp" width="200">
   <img src="./flow/advanced/buttons-only/13.webp" width="200">
   <img src="./flow/advanced/buttons-only/14.webp" width="200">
-  <img src="./flow/advanced/buttons-only/15.webp" width="200">
-  <img src="./flow/advanced/buttons-only/16.webp" width="200">
-  <img src="./flow/advanced/buttons-only/17.webp" width="200">
-  <img src="./flow/advanced/buttons-only/18.webp" width="200">
-  <img src="./flow/advanced/buttons-only/19.webp" width="200">
-  <img src="./flow/advanced/buttons-only/20.webp" width="200">
 </div><br>
 
 ### Advanced Controls + Buttons
@@ -213,7 +206,6 @@ For a first-time user, the app has four customization paths:
   <img src="./flow/advanced/combined/16.webp" width="200">
   <img src="./flow/advanced/combined/17.webp" width="200">
   <img src="./flow/advanced/combined/18.webp" width="200">
-  <img src="./flow/advanced/combined/19.webp" width="200">
 </div><br>
 
 After you calibrate a mode and target once, later runs go straight to image

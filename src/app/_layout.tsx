@@ -1,5 +1,7 @@
+import { runColdStartCacheMaintenance } from "@/features/quick-panel/cache/cache-maintenance";
 import { ReleaseAnnouncementHost } from "@/features/quick-panel/release/ReleaseAnnouncementHost";
 import { AppGradientBackground } from "@/features/quick-panel/shared/AppGradientBackground";
+import { FloatingLanguageSwitchButton } from "@/features/quick-panel/shared/LanguageSwitchButton";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
@@ -9,7 +11,6 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import "../../global.css";
 import "../../i18next/i18next";
-import { runColdStartCacheMaintenance } from "@/features/quick-panel/cache/cache-maintenance";
 
 SplashScreen.setOptions({
   duration: 500,
@@ -36,7 +37,7 @@ export default function RootLayout() {
             />
           </View>
           <ReleaseAnnouncementHost />
-          {/* {__DEV__ ? <FloatingLanguageSwitchButton /> : null} */}
+          {__DEV__ ? <FloatingLanguageSwitchButton /> : null}
         </BottomSheetModalProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
