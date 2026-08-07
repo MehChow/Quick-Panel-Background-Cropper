@@ -1,7 +1,23 @@
 import { createMMKV, useMMKVString } from "react-native-mmkv";
+import {
+  defaultButtonIdentifierBackgroundTheme,
+  defaultButtonIdentifierColor,
+  normalizeButtonIdentifierBackgroundTheme,
+  normalizeButtonIdentifierColor,
+  type ButtonIdentifierBackgroundTheme,
+} from "../customize/button-identifier-color";
+import {
+  getBuiltInButtonLabel,
+  isCustomButtonIconId,
+} from "../model/button-labels";
+import { panelIds } from "../model/panel-ids";
+import {
+  normalizeSnapSensitivity,
+  type SnapSensitivity,
+} from "../model/snap-sensitivity";
 import type {
-  AdvancedCalibration,
   AdvancedButtonsCalibration,
+  AdvancedCalibration,
   AdvancedCombinedCalibration,
   AdvancedSnapGrid,
   AdvancedTarget,
@@ -13,27 +29,12 @@ import type {
   DefaultCalibration,
   PanelRect,
 } from "../model/types";
-import {
-  defaultButtonIdentifierBackgroundTheme,
-  defaultButtonIdentifierColor,
-  normalizeButtonIdentifierBackgroundTheme,
-  normalizeButtonIdentifierColor,
-  type ButtonIdentifierBackgroundTheme,
-} from "../customize/button-identifier-color";
-import { panelIds } from "../model/panel-ids";
-import {
-  getBuiltInButtonLabel,
-  isCustomButtonIconId,
-} from "../model/button-labels";
-import {
-  normalizeSnapSensitivity,
-  type SnapSensitivity,
-} from "../model/snap-sensitivity";
 
 const calibrationsKey = "quick-panel.calibrations";
 const buttonCustomizeSettingsKey = "quick-panel.button-customize-settings";
 const lastExportedModeKey = "quick-panel.last-exported-mode";
-const lastExportedAdvancedTargetKey = "quick-panel.last-exported-advanced-target";
+const lastExportedAdvancedTargetKey =
+  "quick-panel.last-exported-advanced-target";
 const seenHelpKey = "quick-panel.seen-help";
 const releaseAnnouncementKey = "quick-panel.acknowledged-release-announcement";
 const combinedButtonImageIntensityKey =
@@ -42,8 +43,7 @@ const snapSensitivityKey = "quick-panel.snap-sensitivity";
 const lastImageDiskCacheClearAtKey =
   "quick-panel.last-image-disk-cache-clear-at";
 
-export const activeReleaseAnnouncementId =
-  "v1.3.2-snap-strength-announcement";
+export const activeReleaseAnnouncementId = "v1.3.3-snap-strength-announcement";
 
 export const supportedLanguages = ["en", "zh"] as const;
 export type SupportedLanguage = (typeof supportedLanguages)[number];
@@ -90,12 +90,14 @@ export const defaultCombinedButtonImageIntensity = 78;
 type SavedSeenHelp = Partial<Record<HelpEntryId, true>>;
 
 export function loadCalibrations(): SavedCalibrations {
-  return parseCalibrations(storage.getString(calibrationsKey)) ?? {
-    default: null,
-    advancedControls: null,
-    advancedButtons: null,
-    advancedCombined: null,
-  };
+  return (
+    parseCalibrations(storage.getString(calibrationsKey)) ?? {
+      default: null,
+      advancedControls: null,
+      advancedButtons: null,
+      advancedCombined: null,
+    }
+  );
 }
 
 export function saveCalibrations(calibrations: SavedCalibrations) {
@@ -103,7 +105,9 @@ export function saveCalibrations(calibrations: SavedCalibrations) {
 }
 
 export function loadButtonCustomizeSettings(): ButtonCustomizeSettings {
-  return parseButtonCustomizeSettings(storage.getString(buttonCustomizeSettingsKey));
+  return parseButtonCustomizeSettings(
+    storage.getString(buttonCustomizeSettingsKey),
+  );
 }
 
 export function saveButtonCustomizeSettings(settings: ButtonCustomizeSettings) {
@@ -189,7 +193,9 @@ export function hasSeenHelp(helpId: HelpEntryId): boolean {
   return loadSeenHelp()[helpId] === true;
 }
 
-export function useHasSeenHelp(helpId: HelpEntryId | null | undefined): boolean {
+export function useHasSeenHelp(
+  helpId: HelpEntryId | null | undefined,
+): boolean {
   const [seenHelpValue] = useMMKVString(seenHelpKey, storage);
   if (!helpId) {
     return false;
@@ -213,9 +219,13 @@ export function isSupportedLanguage(
   return supportedLanguages.includes(language as SupportedLanguage);
 }
 
-function parseCalibrations(value: string | undefined): SavedCalibrations | null {
+function parseCalibrations(
+  value: string | undefined,
+): SavedCalibrations | null {
   try {
-    const parsed = value ? JSON.parse(value) as Partial<SavedCalibrations> : null;
+    const parsed = value
+      ? (JSON.parse(value) as Partial<SavedCalibrations>)
+      : null;
     if (!parsed || typeof parsed !== "object") {
       return null;
     }
@@ -224,7 +234,9 @@ function parseCalibrations(value: string | undefined): SavedCalibrations | null 
       default: parseDefaultCalibration(parsed.default),
       advancedControls: parseAdvancedCalibration(parsed.advancedControls),
       advancedButtons: parseAdvancedButtonsCalibration(parsed.advancedButtons),
-      advancedCombined: parseAdvancedCombinedCalibration(parsed.advancedCombined),
+      advancedCombined: parseAdvancedCombinedCalibration(
+        parsed.advancedCombined,
+      ),
     };
   } catch {
     return null;
@@ -233,7 +245,7 @@ function parseCalibrations(value: string | undefined): SavedCalibrations | null 
 
 function parseSeenHelp(value: string | undefined): SavedSeenHelp {
   try {
-    const parsed = value ? JSON.parse(value) as Record<string, unknown> : {};
+    const parsed = value ? (JSON.parse(value) as Record<string, unknown>) : {};
     return helpEntryIds.reduce<SavedSeenHelp>((result, helpId) => {
       if (parsed[helpId] === true) {
         result[helpId] = true;
@@ -245,9 +257,13 @@ function parseSeenHelp(value: string | undefined): SavedSeenHelp {
   }
 }
 
-function parseButtonCustomizeSettings(value: string | undefined): ButtonCustomizeSettings {
+function parseButtonCustomizeSettings(
+  value: string | undefined,
+): ButtonCustomizeSettings {
   try {
-    const parsed = value ? JSON.parse(value) as Partial<ButtonCustomizeSettings> : {};
+    const parsed = value
+      ? (JSON.parse(value) as Partial<ButtonCustomizeSettings>)
+      : {};
     if (!parsed || typeof parsed !== "object") {
       return defaultButtonCustomizeSettings;
     }
@@ -257,8 +273,8 @@ function parseButtonCustomizeSettings(value: string | undefined): ButtonCustomiz
           parsed.buttonIdentifierBackgroundTheme,
         ) ?? defaultButtonIdentifierBackgroundTheme,
       buttonIdentifierColor:
-        normalizeButtonIdentifierColor(parsed.buttonIdentifierColor)
-        ?? defaultButtonIdentifierColor,
+        normalizeButtonIdentifierColor(parsed.buttonIdentifierColor) ??
+        defaultButtonIdentifierColor,
       buttonIdentifierOpacity: parsePercentage(
         parsed.buttonIdentifierOpacity,
         defaultButtonCustomizeSettings.buttonIdentifierOpacity,
@@ -271,9 +287,10 @@ function parseButtonCustomizeSettings(value: string | undefined): ButtonCustomiz
         parsed.horizontalIdentifierPosition,
         defaultButtonCustomizeSettings.horizontalIdentifierPosition,
       ),
-      showButtonIdentifiers: typeof parsed.showButtonIdentifiers === "boolean"
-        ? parsed.showButtonIdentifiers
-        : defaultButtonCustomizeSettings.showButtonIdentifiers,
+      showButtonIdentifiers:
+        typeof parsed.showButtonIdentifiers === "boolean"
+          ? parsed.showButtonIdentifiers
+          : defaultButtonCustomizeSettings.showButtonIdentifiers,
       verticalIdentifierPosition: parsePercentage(
         parsed.verticalIdentifierPosition,
         defaultButtonCustomizeSettings.verticalIdentifierPosition,
@@ -324,10 +341,13 @@ function parseEnabledPanels(value: unknown): ControlPanelId[] {
   if (!Array.isArray(value)) {
     return panelIds;
   }
-  const panels = value.filter((item): item is ControlPanelId =>
-    typeof item === "string" && panelIds.includes(item as ControlPanelId)
+  const panels = value.filter(
+    (item): item is ControlPanelId =>
+      typeof item === "string" && panelIds.includes(item as ControlPanelId),
   );
-  const uniquePanels = panels.filter((id, index) => panels.indexOf(id) === index);
+  const uniquePanels = panels.filter(
+    (id, index) => panels.indexOf(id) === index,
+  );
   return uniquePanels.length > 0
     ? panelIds.filter((id) => uniquePanels.includes(id))
     : panelIds;
@@ -337,8 +357,9 @@ function parseCombinedEnabledControls(value: unknown): ControlPanelId[] | null {
   if (!Array.isArray(value)) {
     return null;
   }
-  const controls = value.filter((item): item is ControlPanelId =>
-    typeof item === "string" && panelIds.includes(item as ControlPanelId)
+  const controls = value.filter(
+    (item): item is ControlPanelId =>
+      typeof item === "string" && panelIds.includes(item as ControlPanelId),
   );
   const uniqueControls = controls.filter(
     (id, index) => controls.indexOf(id) === index,
@@ -362,7 +383,9 @@ function parsePanelRects(value: unknown): ControlPanelRects | null {
     : null;
 }
 
-function parseAdvancedButtonsCalibration(value: unknown): AdvancedButtonsCalibration | null {
+function parseAdvancedButtonsCalibration(
+  value: unknown,
+): AdvancedButtonsCalibration | null {
   if (!value || typeof value !== "object") {
     return null;
   }
@@ -375,7 +398,8 @@ function parseAdvancedButtonsCalibration(value: unknown): AdvancedButtonsCalibra
     typeof item.screenshotHeight !== "number" ||
     !grid ||
     !outerRect ||
-    !buttons || buttons.length === 0
+    !buttons ||
+    buttons.length === 0
   ) {
     return null;
   }
@@ -388,7 +412,9 @@ function parseAdvancedButtonsCalibration(value: unknown): AdvancedButtonsCalibra
   };
 }
 
-function parseAdvancedCombinedCalibration(value: unknown): AdvancedCombinedCalibration | null {
+function parseAdvancedCombinedCalibration(
+  value: unknown,
+): AdvancedCombinedCalibration | null {
   if (!value || typeof value !== "object") {
     return null;
   }
@@ -432,13 +458,14 @@ function parseButtonItems(value: unknown): ButtonCalibrationItem[] | null {
     }
     const button = item as Partial<ButtonCalibrationItem>;
     const rect = parseRectValue(button.rect);
-    const isBuiltIn = typeof button.label === "string"
-      && Boolean(getBuiltInButtonLabel(button.label));
+    const isBuiltIn =
+      typeof button.label === "string" &&
+      Boolean(getBuiltInButtonLabel(button.label));
     if (
-      !isButtonPanelId(button.id)
-      || typeof button.label !== "string"
-      || !button.label.trim()
-      || !rect
+      !isButtonPanelId(button.id) ||
+      typeof button.label !== "string" ||
+      !button.label.trim() ||
+      !rect
     ) {
       return null;
     }
@@ -477,15 +504,25 @@ function parseRectValue(value: unknown): PanelRect | null {
   const rect = value as Partial<PanelRect>;
   return ["x", "y", "width", "height", "radius"].every(
     (key) => typeof rect[key as keyof PanelRect] === "number",
-  ) ? rect as PanelRect : null;
+  )
+    ? (rect as PanelRect)
+    : null;
 }
 
 function isGridValue(value: unknown): value is number {
-  return typeof value === "number" && Number.isInteger(value) && value >= 1 && value <= 8;
+  return (
+    typeof value === "number" &&
+    Number.isInteger(value) &&
+    value >= 1 &&
+    value <= 8
+  );
 }
 
 function parsePercentage(value: unknown, fallback: number): number {
-  return typeof value === "number" && Number.isFinite(value) && value >= 0 && value <= 100
+  return typeof value === "number" &&
+    Number.isFinite(value) &&
+    value >= 0 &&
+    value <= 100
     ? value
     : fallback;
 }
