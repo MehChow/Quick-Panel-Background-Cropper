@@ -36,7 +36,8 @@ const props = {
   },
   screenshot: { uri: "file:///quick-panel.png", width: 300, height: 400 },
   snapSensitivity: "strong" as const,
-  onPanelsChange: jest.fn(),
+  onGestureBegin: jest.fn(),
+  onGestureCommit: jest.fn(),
 };
 
 describe("AdvancedPanelCanvas snapping grid", () => {
@@ -64,5 +65,33 @@ describe("AdvancedPanelCanvas snapping grid", () => {
     render(<AdvancedPanelCanvas {...props} phase="confirm" />);
 
     expect(mockAdvancedSnapGridOverlay).not.toHaveBeenCalled();
+  });
+
+  it("forwards only the committed panel identity and local rectangle", () => {
+    render(<AdvancedPanelCanvas {...props} />);
+
+    const boxProps = mockAdvancedPanelBox.mock.calls[0][0] as {
+      onGestureCommit: (id: string, token: number, rect: typeof outerRect) => void;
+    };
+    boxProps.onGestureCommit("buttonBox", 7, {
+      x: 4,
+      y: 5,
+      width: 120,
+      height: 100,
+      radius: 0,
+    });
+
+    expect(props.onGestureCommit).toHaveBeenCalledWith("buttonBox", 7, {
+      x: 4,
+      y: 5,
+      width: 120,
+      height: 100,
+      radius: 0,
+    });
+    expect(props.onGestureCommit).not.toHaveBeenCalledWith(
+      expect.anything(),
+      expect.anything(),
+      expect.objectContaining({ buttonBox: expect.anything() }),
+    );
   });
 });

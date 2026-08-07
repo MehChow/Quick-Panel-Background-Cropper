@@ -1,6 +1,6 @@
-# v1.3.2 Release Announcement Implementation Plan
+# v1.3.3 Release Announcement Implementation Plan
 
-**Goal:** Show a one-time v1.3.2 startup announcement for the snap strength slider and easier, more accurate snapping.
+**Goal:** Show a one-time v1.3.3 startup announcement for the snap strength slider and easier, more accurate snapping.
 
 **Architecture:** Reuse the existing global release-announcement host and dialog. Change only the active reason-specific ID, localized descriptor content, bundled announcement image, and focused assertions; preserve all acknowledgement, calibration, and preference storage behavior.
 
@@ -15,26 +15,28 @@
 - Use `assets/announcement/9.webp` as compact descriptor media.
 - Do not commit, push, or perform physical-device QA.
 
-### Task 1: Activate v1.3.2 announcement content
+### Task 1: Activate v1.3.3 announcement content
 
 **Files:**
+
 - Modify: `src/features/quick-panel/store/storage.ts`
 - Modify: `src/features/quick-panel/release/ReleaseAnnouncementContent.ts`
 - Modify: `i18next/locales/en.ts`
 - Modify: `i18next/locales/zh.ts`
 
-- [x] Replace the active ID with `v1.3.2-snap-strength-announcement`.
-- [x] Add concise v1.3.2 title, two-item body, acknowledgement label, and localized image accessibility text in both locales.
-- [x] Point the descriptor media source to `assets/announcement/9.webp` and update all descriptor keys to `releaseAnnouncement.v1_3_2.*`.
+- [x] Replace the active ID with `v1.3.3-snap-strength-announcement`.
+- [x] Add concise v1.3.3 title, two-item body, acknowledgement label, and localized image accessibility text in both locales.
+- [x] Point the descriptor media source to `assets/announcement/9.webp` and update all descriptor keys to `releaseAnnouncement.v1_3_3.*`.
 
 ### Task 2: Update focused automated coverage
 
 **Files:**
+
 - Modify: `__tests__/release-announcement.test.tsx`
 - Modify: `__tests__/locales.test.ts`
 
-- [x] Update title/body/action/media key assertions, active ID assertions, and asset filename assertion to v1.3.2.
-- [x] Assert the complete English and Traditional Chinese v1.3.2 entries.
+- [x] Update title/body/action/media key assertions, active ID assertions, and asset filename assertion to v1.3.3.
+- [x] Assert the complete English and Traditional Chinese v1.3.3 entries.
 
 ### Task 3: Verify the change
 

@@ -18,12 +18,11 @@ const en = {
         mediaAccessibilityLabel:
           "Advanced Controls and Buttons using one continuous image",
       },
-      v1_3_2: {
-        title: "v1.3.2 Updates 🌟\n",
+      v1_3_3: {
+        title: "v1.3.3 Updates 🌟\n",
         body: "• New: Snap strength slider.\n• Enhancement: Snapping is now easier and more accurate.",
         gotIt: "Got it",
-        mediaAccessibilityLabel:
-          "Snap strength slider and improved snapping",
+        mediaAccessibilityLabel: "Snap strength slider and improved snapping",
       },
     },
     landing: {
@@ -135,11 +134,15 @@ const en = {
     advancedCalibration: {
       title: "Advanced calibration",
       outerSubtitle: "Wrap the full region you want to calibrate",
-      combinedOuterSubtitle: "Wrap every Control and Button you want to calibrate",
+      combinedOuterSubtitle:
+        "Wrap every Control and Button you want to calibrate",
       combinedControlSelectionSubtitle: "Choose the Controls in this region",
-      combinedButtonSelectionSubtitle: "Choose the Quick Panel Buttons in this region",
-      combinedGridSubtitle: "Set one grid for every selected Control and Button",
-      combinedConfirmSubtitle: "Review all Control and Button boxes before saving",
+      combinedButtonSelectionSubtitle:
+        "Choose the Quick Panel Buttons in this region",
+      combinedGridSubtitle:
+        "Set one grid for every selected Control and Button",
+      combinedConfirmSubtitle:
+        "Review all Control and Button boxes before saving",
       panelSelectionSubtitle:
         "Turn off the unwanted panels that are missing from this region",
       buttonSelectionSubtitle: "Choose the Quick Panel Buttons in this region",
@@ -316,7 +319,8 @@ const en = {
       selectCombinedButton: "Select at least one Button to continue.",
       combinedPanelOverlap:
         "Move or resize the current box so it does not overlap a completed box.",
-      invalidCombinedPanels: "Check every selected Control and Button box before saving.",
+      invalidCombinedPanels:
+        "Check every selected Control and Button box before saving.",
     },
   },
 };

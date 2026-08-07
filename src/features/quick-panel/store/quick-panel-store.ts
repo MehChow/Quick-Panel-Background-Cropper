@@ -10,12 +10,10 @@ import type {
   AdvancedTarget,
   ButtonCalibrationItem,
   ControlPanelId,
-  ControlPanelRects,
   CustomizationMode,
   GeneratedExport,
   ImageTransform,
   PanelRect,
-  PanelRects,
   PickedImage,
 } from "../model/types";
 import { translate } from "../model/i18n";
@@ -78,16 +76,16 @@ export interface QuickPanelState extends QuickPanelStateData {
   setAdvancedOuterRect: (rect: PanelRect) => void;
   confirmAdvancedOuterRect: () => void;
   setAdvancedEnabledPanels: (enabledPanels: ControlPanelId[]) => void;
-  setAdvancedPanels: (panels: ControlPanelRects) => void;
+  setAdvancedPanel: (id: ControlPanelId, rect: PanelRect) => void;
   setAdvancedButtons: (buttons: ButtonCalibrationItem[]) => void;
-  setAdvancedButtonPanels: (panels: PanelRects) => void;
+  setAdvancedButtonPanel: (id: ButtonCalibrationItem["id"], rect: PanelRect) => void;
   acceptAdvancedCalibration: (grid: AdvancedSnapGrid) => boolean;
   setCombinedScreenshot: (screenshot: PickedImage, suggestedOuter: PanelRect) => void;
   setCombinedOuterRect: (rect: PanelRect) => void;
   confirmCombinedOuterRect: () => void;
   setCombinedEnabledControls: (ids: ControlPanelId[]) => void;
   setCombinedButtons: (buttons: ButtonCalibrationItem[]) => void;
-  setCombinedPanels: (panels: PanelRects) => void;
+  setCombinedPanel: (id: ControlPanelId | ButtonCalibrationItem["id"], rect: PanelRect) => void;
   acceptCombinedCalibration: (grid: AdvancedSnapGrid) => boolean;
   startImageProcessing: () => void;
   finishImageProcessing: (image: PickedImage) => void;
@@ -212,8 +210,13 @@ export const useQuickPanelStore = create<QuickPanelState>((set, get) => ({
       : null,
     error: enabledPanels.length > 0 ? null : translate("errors.selectAdvancedPanel"),
   })),
-  setAdvancedPanels: (panels) => set((state) => ({
-    advancedDraft: state.advancedDraft ? { ...state.advancedDraft, panels } : null,
+  setAdvancedPanel: (id, rect) => set((state) => ({
+    advancedDraft: state.advancedDraft?.panels
+      ? {
+          ...state.advancedDraft,
+          panels: { ...state.advancedDraft.panels, [id]: rect },
+        }
+      : state.advancedDraft,
     error: null,
   })),
   setAdvancedButtons: (buttons) => set((state) => ({
@@ -222,14 +225,13 @@ export const useQuickPanelStore = create<QuickPanelState>((set, get) => ({
       : null,
     error: buttons.length > 0 ? null : translate("errors.selectAdvancedButton"),
   })),
-  setAdvancedButtonPanels: (panels) => set((state) => ({
+  setAdvancedButtonPanel: (id, rect) => set((state) => ({
     advancedButtonsDraft: state.advancedButtonsDraft
       ? {
           ...state.advancedButtonsDraft,
-          buttons: state.advancedButtonsDraft.buttons.map((button) => ({
-            ...button,
-            rect: panels[button.id] ?? button.rect,
-          })),
+          buttons: state.advancedButtonsDraft.buttons.map((button) =>
+            button.id === id ? { ...button, rect } : button,
+          ),
         }
       : null,
     error: null,
@@ -270,29 +272,32 @@ export const useQuickPanelStore = create<QuickPanelState>((set, get) => ({
       : null,
     error: buttons.length > 0 ? null : translate("errors.selectCombinedButton"),
   })),
-  setCombinedPanels: (panels) => set((state) => {
+  setCombinedPanel: (id, rect) => set((state) => {
     const draft = state.advancedCombinedDraft;
     if (!draft) {
-      return { advancedCombinedDraft: null, error: null };
+      return state;
     }
-    return {
-      advancedCombinedDraft: {
-        ...draft,
-        controlPanels: draft.controlPanels
-          ? {
-              ...draft.controlPanels,
-              ...Object.fromEntries(
-                draft.enabledControls.map((id) => [id, panels[id] ?? draft.controlPanels?.[id]]),
-              ),
-            }
-          : null,
-        buttons: draft.buttons.map((button) => ({
-          ...button,
-          rect: panels[button.id] ?? button.rect,
-        })),
-      },
-      error: null,
-    };
+    if (draft.enabledControls.includes(id as ControlPanelId) && draft.controlPanels) {
+      return {
+        advancedCombinedDraft: {
+          ...draft,
+          controlPanels: { ...draft.controlPanels, [id]: rect },
+        },
+        error: null,
+      };
+    }
+    if (draft.buttons.some((button) => button.id === id)) {
+      return {
+        advancedCombinedDraft: {
+          ...draft,
+          buttons: draft.buttons.map((button) =>
+            button.id === id ? { ...button, rect } : button,
+          ),
+        },
+        error: null,
+      };
+    }
+    return state;
   }),
   acceptAdvancedCalibration: (grid) => {
     const state = get();

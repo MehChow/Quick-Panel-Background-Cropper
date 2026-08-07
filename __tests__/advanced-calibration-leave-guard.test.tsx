@@ -124,4 +124,58 @@ describe("advanced calibration leave guard", () => {
       (globalThis as HookWindow).__mmkvStore?.get("quick-panel.snap-sensitivity"),
     ).toBe("strong");
   });
+
+  it("keeps Controls-only Next blocked until the active panel commits", async () => {
+    render(<HookProbe />);
+    await act(async () => getHook().importScreenshot());
+
+    act(() => getHook().goForward());
+    act(() => getHook().setAdvancedEnabledPanels(["buttonBox"]));
+    act(() => getHook().goForward());
+    act(() => getHook().goForward());
+    expect(getHook().phase).toBe("buttonBox");
+
+    const finalRect = { x: 10, y: 20, width: 80, height: 80, radius: 0 };
+    act(() => getHook().beginPanelGesture("buttonBox", 1));
+    act(() => getHook().goForward());
+    expect(getHook().phase).toBe("buttonBox");
+
+    act(() => getHook().commitPanelGesture("buttonBox", 1, finalRect));
+    expect(useQuickPanelStore.getState().advancedDraft?.panels?.buttonBox).toEqual(finalRect);
+    act(() => getHook().goForward());
+    expect(getHook().phase).toBe("confirm");
+  });
+
+  it("applies the same pending guard to Buttons-only", async () => {
+    useQuickPanelStore.setState({
+      ...createInitialQuickPanelStateData(),
+      selectedAdvancedTarget: "buttons",
+    });
+    render(<HookProbe />);
+    await act(async () => getHook().importScreenshot());
+
+    act(() => getHook().goForward());
+    act(() => getHook().setAdvancedButtons([{
+      id: "button-1",
+      label: "Wi-Fi",
+      customIconId: null,
+      rect: { x: 10, y: 20, width: 80, height: 80, radius: 0 },
+    }]));
+    act(() => getHook().goForward());
+    act(() => getHook().goForward());
+    expect(getHook().phase).toBe("button-1");
+
+    act(() => getHook().beginPanelGesture("button-1", 1));
+    act(() => getHook().goForward());
+    expect(getHook().phase).toBe("button-1");
+    act(() => getHook().commitPanelGesture("button-1", 1, {
+      x: 20,
+      y: 30,
+      width: 80,
+      height: 80,
+      radius: 0,
+    }));
+    act(() => getHook().goForward());
+    expect(getHook().phase).toBe("confirm");
+  });
 });

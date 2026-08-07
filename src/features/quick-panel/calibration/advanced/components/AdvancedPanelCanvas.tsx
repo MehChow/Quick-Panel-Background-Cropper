@@ -29,7 +29,8 @@ interface Props {
   panels: PanelRects;
   screenshot: PickedImage;
   snapSensitivity: SnapSensitivity;
-  onPanelsChange: (panels: PanelRects) => void;
+  onGestureBegin: (panelId: PanelId, token: number) => void;
+  onGestureCommit: (panelId: PanelId, token: number, rect: PanelRect) => void;
 }
 
 export function AdvancedPanelCanvas({
@@ -43,7 +44,8 @@ export function AdvancedPanelCanvas({
   panels,
   screenshot,
   snapSensitivity,
-  onPanelsChange,
+  onGestureBegin,
+  onGestureCommit,
 }: Props) {
   const [viewport, setViewport] = useState({ height: 0, width: 0 });
   const viewportRect = clampCalibrationAreaRect(outerRect, screenshot);
@@ -60,10 +62,6 @@ export function AdvancedPanelCanvas({
   const isReview = explicitIsReview ?? phase === "confirm";
   const localOuterRect = toLocalRect(outerRect, viewportRect);
   const labels = Object.fromEntries(panelItems.map((item) => [item.id, item]));
-
-  const changePanel = (id: PanelId, rect: PanelRect) => {
-    onPanelsChange({ ...panels, [id]: fromLocalRect(rect, viewportRect) });
-  };
 
   return (
     <View
@@ -114,8 +112,10 @@ export function AdvancedPanelCanvas({
             rect={toLocalRect(panels[id], viewportRect)}
             scale={scale}
             snapSensitivity={snapSensitivity}
-            onChange={(rect) => changePanel(id, rect)}
             label={id}
+            onGestureBegin={onGestureBegin}
+            onGestureCommit={(panelId, token, rect) =>
+              onGestureCommit(panelId, token, fromLocalRect(rect, viewportRect))}
           />
         ))}
       </View>

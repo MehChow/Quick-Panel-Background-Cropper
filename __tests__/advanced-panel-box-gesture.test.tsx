@@ -14,7 +14,13 @@ interface MockPanHandlers {
   onUpdate?: (event: MockPanEvent) => void;
 }
 
+interface ScheduledJob {
+  args: unknown[];
+  callback: (...args: unknown[]) => unknown;
+}
+
 const mockPanGestures: MockPanHandlers[] = [];
+const scheduledJobs: ScheduledJob[] = [];
 
 function mockCreatePanGesture() {
   const handlers: MockPanHandlers = {};
@@ -50,8 +56,17 @@ jest.mock("react-native-worklets", () => ({
   scheduleOnRN: (
     callback: (...args: unknown[]) => unknown,
     ...args: unknown[]
-  ) => callback(...args),
+  ) => scheduledJobs.push({ callback, args }),
 }));
+
+function flushScheduledJobs() {
+  while (scheduledJobs.length > 0) {
+    const job = scheduledJobs.shift()!;
+    if (typeof job.callback === "function") {
+      job.callback(...job.args);
+    }
+  }
+}
 
 const baseProps = {
   family: "button" as const,
@@ -63,16 +78,20 @@ const baseProps = {
   rect: { x: 50, y: 60, width: 80, height: 100, radius: 0 },
   scale: 1,
   snapSensitivity: "balanced" as const,
+  onGestureBegin: jest.fn(),
+  onGestureCommit: jest.fn(),
 };
 
 describe("AdvancedPanelBox gestures", () => {
   beforeEach(() => {
     mockPanGestures.length = 0;
+    scheduledJobs.length = 0;
+    baseProps.onGestureBegin.mockClear();
+    baseProps.onGestureCommit.mockClear();
   });
 
   it("updates the animated draft without committing during move updates", () => {
-    const onChange = jest.fn();
-    render(<AdvancedPanelBox {...baseProps} onChange={onChange} />);
+    render(<AdvancedPanelBox {...baseProps} />);
     const moveHandlers = mockPanGestures[0];
 
     expect(moveHandlers).toBeDefined();
@@ -81,15 +100,24 @@ describe("AdvancedPanelBox gestures", () => {
       moveHandlers.onUpdate?.({ translationX: 12, translationY: 8 });
       moveHandlers.onUpdate?.({ translationX: 24, translationY: 16 });
     });
-    expect(onChange).not.toHaveBeenCalled();
+    expect(baseProps.onGestureBegin).not.toHaveBeenCalled();
+    expect(baseProps.onGestureCommit).not.toHaveBeenCalled();
 
     act(() => moveHandlers.onEnd?.());
-    expect(onChange).toHaveBeenCalledTimes(1);
+    expect(baseProps.onGestureBegin).not.toHaveBeenCalled();
+    expect(baseProps.onGestureCommit).not.toHaveBeenCalled();
+
+    act(flushScheduledJobs);
+    expect(baseProps.onGestureBegin).toHaveBeenCalledWith("button-1", 1);
+    expect(baseProps.onGestureCommit).toHaveBeenCalledWith(
+      "button-1",
+      1,
+      expect.objectContaining({ x: 79.5, y: 84.8 }),
+    );
   });
 
   it("commits the last valid resize rectangle when cancelled", () => {
-    const onChange = jest.fn();
-    render(<AdvancedPanelBox {...baseProps} onChange={onChange} />);
+    render(<AdvancedPanelBox {...baseProps} />);
     const bottomRightHandlers = mockPanGestures[7];
 
     expect(bottomRightHandlers).toBeDefined();
@@ -99,15 +127,18 @@ describe("AdvancedPanelBox gestures", () => {
       bottomRightHandlers.onFinalize?.({}, false);
     });
 
-    expect(onChange).toHaveBeenCalledTimes(1);
-    expect(onChange).toHaveBeenCalledWith(
+    expect(baseProps.onGestureCommit).not.toHaveBeenCalled();
+    act(flushScheduledJobs);
+    expect(baseProps.onGestureCommit).toHaveBeenCalledTimes(1);
+    expect(baseProps.onGestureCommit).toHaveBeenCalledWith(
+      "button-1",
+      1,
       expect.objectContaining({ width: 95.5, height: 120 }),
     );
   });
 
   it("does not commit twice when a successful gesture finalizes", () => {
-    const onChange = jest.fn();
-    render(<AdvancedPanelBox {...baseProps} onChange={onChange} />);
+    render(<AdvancedPanelBox {...baseProps} />);
     const moveHandlers = mockPanGestures[0];
 
     act(() => {
@@ -117,21 +148,18 @@ describe("AdvancedPanelBox gestures", () => {
       moveHandlers.onFinalize?.({}, true);
     });
 
-    expect(onChange).toHaveBeenCalledTimes(1);
+    act(flushScheduledJobs);
+    expect(baseProps.onGestureCommit).toHaveBeenCalledTimes(1);
   });
 
   it("uses a changed sensitivity on the next gesture", () => {
-    const onChange = jest.fn();
-    const view = render(
-      <AdvancedPanelBox {...baseProps} onChange={onChange} />,
-    );
+    const view = render(<AdvancedPanelBox {...baseProps} />);
     const balancedMove = mockPanGestures[0];
 
     view.rerender(
       <AdvancedPanelBox
         {...baseProps}
         snapSensitivity="strong"
-        onChange={onChange}
       />,
     );
     const strongMove = mockPanGestures[9];

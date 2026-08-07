@@ -16,8 +16,10 @@ jest.mock("@/features/quick-panel/calibration/advanced/combined/hooks/useCombine
 const createScreenState = () => ({
     advancedDraft: null,
     activePanelId: null,
+    beginPanelGesture: jest.fn(),
     canGoBack: false,
     closeLeaveDialog: jest.fn(),
+    commitPanelGesture: jest.fn(),
     error: null,
     errorKey: null,
     grid: { columns: 4, rows: 5 },
@@ -41,7 +43,7 @@ const createScreenState = () => ({
     setCombinedEnabledControls: jest.fn(),
     setCombinedButtons: jest.fn(),
     setCombinedOuterRect: jest.fn(),
-    setCombinedPanels: jest.fn(),
+    isPanelGesturePending: false,
     setSnapSensitivity: jest.fn(),
     snapSensitivity: "balanced" as const,
   });

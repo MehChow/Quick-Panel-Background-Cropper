@@ -16,8 +16,8 @@ const zh = {
         gotIt: "知道了",
         mediaAccessibilityLabel: "進階控制版面與按鈕使用同一張連續圖片",
       },
-      v1_3_2: {
-        title: "v1.3.2 更新內容 🌟\n",
+      v1_3_3: {
+        title: "v1.3.3 更新內容 🌟\n",
         body: "• 新功能：吸附強度滑桿。\n• 優化：吸附更容易、更準確。",
         gotIt: "知道了",
         mediaAccessibilityLabel: "吸附強度滑桿及更容易、更準確的吸附功能",
@@ -47,7 +47,8 @@ const zh = {
       advancedButtonsOnly: "僅按鈕",
       advancedButtonsOnlyDescription: "從截圖中選擇的 Quick Panel 按鈕。",
       advancedCombined: "控制版面 + 按鈕",
-      advancedCombinedDescription: "用同一張圖片連接所選控制版面與 Quick Panel 按鈕。",
+      advancedCombinedDescription:
+        "用同一張圖片連接所選控制版面與 Quick Panel 按鈕。",
       helpTitle: "該選哪個模式？",
       helpSubtitle: "選擇最符合你的 Quick Panel 版面與匯出目標的模式。",
     },
@@ -171,7 +172,8 @@ const zh = {
         "選擇能讓格線圓點落在控制項之間留白處的列數與欄數。可參考下方範例，判斷哪一種格線更貼近你的截圖。",
       buttonGridSheetSubtitle:
         "選擇能讓格線圓點落在按鈕之間留白處的列數與欄數。可參考下方範例，判斷哪一種格線更貼近你的截圖。",
-      combinedGridSheetSubtitle: "選擇能讓格線圓點落在控制版面與按鈕周圍留白處的列數與欄數。",
+      combinedGridSheetSubtitle:
+        "選擇能讓格線圓點落在控制版面與按鈕周圍留白處的列數與欄數。",
       buttonSearchPlaceholder: "搜尋或自訂標籤",
       selectedButtons: "已選 {{count}} 個",
       noButtonsSelected: "點選下方標籤即可加入。",

@@ -84,10 +84,13 @@ jest.mock("@/features/quick-panel/calibration/advanced/hooks/useAdvancedCalibrat
 
 function createScreenState() {
   return {
+    activePanelId: null,
     advancedDraft: null,
+    beginPanelGesture: jest.fn(),
     buttons: [],
     canGoBack: false,
     closeLeaveDialog: jest.fn(),
+    commitPanelGesture: jest.fn(),
     controlEnabledPanels: [],
     enabledPanels: [],
     error: null,
@@ -110,7 +113,7 @@ function createScreenState() {
     setAdvancedEnabledPanels: jest.fn(),
     setAdvancedButtons: jest.fn(),
     setAdvancedOuterRect: jest.fn(),
-    setAdvancedPanels: jest.fn(),
+    isPanelGesturePending: false,
     setColumns: jest.fn(),
     setRows: jest.fn(),
     setSnapSensitivity: jest.fn(),
