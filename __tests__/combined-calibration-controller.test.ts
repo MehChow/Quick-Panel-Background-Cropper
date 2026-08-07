@@ -122,4 +122,38 @@ describe("combined calibration controller", () => {
       (globalThis as HookWindow).__mmkvStore?.get("quick-panel.snap-sensitivity"),
     ).toBe("strong");
   });
+
+  it("keeps Combined Next blocked until the active rectangle commits", async () => {
+    render(createElement(HookProbe));
+    await act(async () => getHook().importScreenshot());
+    act(() => getHook().goForward());
+    act(() => getHook().setCombinedEnabledControls(["buttonBox", "brightness"]));
+    act(() => getHook().goForward());
+    act(() => getHook().setCombinedButtons([{
+      id: "button-1",
+      label: "Wi-Fi",
+      customIconId: null,
+      rect: { x: 150, y: 200, width: 40, height: 40, radius: 0 },
+    }]));
+    act(() => getHook().goForward());
+    act(() => getHook().goForward());
+    expect(getHook().phase).toBe("buttonBox");
+
+    const initialButtonBox = useQuickPanelStore.getState().advancedCombinedDraft?.controlPanels?.buttonBox;
+    act(() => getHook().beginPanelGesture("buttonBox", 1));
+    act(() => getHook().goForward());
+    expect(getHook().phase).toBe("buttonBox");
+
+    const finalRect = { ...initialButtonBox! };
+    act(() => getHook().commitPanelGesture("buttonBox", 1, finalRect));
+    act(() => getHook().goForward());
+    expect(getHook().phase).toBe("brightness");
+    expect(useQuickPanelStore.getState().advancedCombinedDraft?.controlPanels?.buttonBox).toEqual(finalRect);
+
+    act(() => getHook().commitPanelGesture("buttonBox", 1, {
+      ...finalRect,
+      x: 100,
+    }));
+    expect(useQuickPanelStore.getState().advancedCombinedDraft?.controlPanels?.buttonBox).toEqual(finalRect);
+  });
 });

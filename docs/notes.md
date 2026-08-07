@@ -787,3 +787,23 @@ The advanced calibration help sheets regressed during the Fold/wide-screen respo
   snapped side.
 - Low, Balanced, and Strong still change capture/release distance only;
   calibration storage, grid geometry, previews, and exports are unchanged.
+
+### 2026-08-07: Atomic Advanced calibration panel commits
+
+- A late asynchronous move or resize callback could rebuild a whole panel map
+  from stale local state, moving a previously confirmed panel or allowing
+  Combined Next to validate before the visible active rectangle reached
+  Zustand.
+- Controls-only, Buttons-only, and Combined now use panel-scoped atomic store
+  actions plus a shared panel/token commit gate. Only the current active
+  panel and transaction token can begin or commit; Next remains guarded until
+  that commit is reflected in Zustand.
+- Snapping, haptics, outer bounds, panel order, colors, calibration schemas and
+  persistence keys, preview/export composition, and all three target flows are
+  unchanged.
+- Automated evidence: focused regression set passed with 11 suites and 52
+  tests; ESLint passed; TypeScript passed; full Jest passed with 77 suites and
+  377 tests; `git diff --check` passed.
+- Physical-device QA is user-owned and remains unrun: rapid move/resize plus
+  immediate Next, Combined overlap blocking, Controls-only/Buttons-only
+  coverage, and Back/Next race checks still require a device.

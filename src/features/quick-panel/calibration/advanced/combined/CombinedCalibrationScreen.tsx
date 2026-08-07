@@ -22,19 +22,22 @@ export function CombinedCalibrationScreen() {
   const [isAlignmentHelpOpen, setIsAlignmentHelpOpen] = useState(false);
   const [isReviewHelpOpen, setIsReviewHelpOpen] = useState(false);
   const {
-    advancedDraft, activePanelFamily, activePanelId, canGoBack, closeLeaveDialog,
+    advancedDraft, activePanelFamily, activePanelId, beginPanelGesture, canGoBack, closeLeaveDialog,
+    commitPanelGesture,
     error, errorKey, grid, goBack, goForward, importScreenshot,
     isButtonSelectionPhase, isConfirmPhase, isControlSelectionPhase, isGridPhase,
     isLeaveDialogOpen, isOuterPhase, leaveCalibration, panelItems, panels, phase,
     requestLeaveCalibration, saveCalibration, setColumns, setRows,
-    setCombinedButtons, setCombinedEnabledControls, setCombinedOuterRect, setCombinedPanels,
+    setCombinedButtons, setCombinedEnabledControls, setCombinedOuterRect,
+    isPanelGesturePending,
     setSnapSensitivity, snapSensitivity,
   } = useCombinedCalibrationScreen();
   const screenshot = advancedDraft?.screenshot ?? null;
   const outerRect = advancedDraft?.outerRect ?? null;
   const isEditing = Boolean(screenshot && outerRect);
   const isNextDisabled = (isControlSelectionPhase && !advancedDraft?.enabledControls.length)
-    || (isButtonSelectionPhase && !advancedDraft?.buttons.length);
+    || (isButtonSelectionPhase && !advancedDraft?.buttons.length)
+    || (activePanelId !== null && isPanelGesturePending);
 
   if (isOuterPhase) {
     return (
@@ -116,7 +119,8 @@ export function CombinedCalibrationScreen() {
             snapSensitivity={snapSensitivity}
             visiblePanelIds={getVisiblePanelIds(panelItems, phase, activePanelId)}
             outerRect={outerRect}
-            onPanelsChange={setCombinedPanels}
+            onGestureBegin={beginPanelGesture}
+            onGestureCommit={commitPanelGesture}
           />
         ) : null}
         {error ? <Text className="mt-4 rounded-md bg-red-500/15 p-3 text-sm text-red-100">{error}</Text> : null}
