@@ -62,6 +62,7 @@ const baseProps = {
   outerRect: { x: 0, y: 0, width: 300, height: 400, radius: 0 },
   rect: { x: 50, y: 60, width: 80, height: 100, radius: 0 },
   scale: 1,
+  snapSensitivity: "balanced" as const,
 };
 
 describe("AdvancedPanelBox gestures", () => {
@@ -100,7 +101,7 @@ describe("AdvancedPanelBox gestures", () => {
 
     expect(onChange).toHaveBeenCalledTimes(1);
     expect(onChange).toHaveBeenCalledWith(
-      expect.objectContaining({ width: 95.5, height: 104.80000000000001 }),
+      expect.objectContaining({ width: 95.5, height: 120 }),
     );
   });
 
@@ -117,5 +118,25 @@ describe("AdvancedPanelBox gestures", () => {
     });
 
     expect(onChange).toHaveBeenCalledTimes(1);
+  });
+
+  it("uses a changed sensitivity on the next gesture", () => {
+    const onChange = jest.fn();
+    const view = render(
+      <AdvancedPanelBox {...baseProps} onChange={onChange} />,
+    );
+    const balancedMove = mockPanGestures[0];
+
+    view.rerender(
+      <AdvancedPanelBox
+        {...baseProps}
+        snapSensitivity="strong"
+        onChange={onChange}
+      />,
+    );
+    const strongMove = mockPanGestures[9];
+
+    expect(balancedMove).toBeDefined();
+    expect(strongMove).toBeDefined();
   });
 });

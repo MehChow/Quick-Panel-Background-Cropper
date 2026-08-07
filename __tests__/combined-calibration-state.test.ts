@@ -178,4 +178,15 @@ describe("combined calibration state", () => {
       enabledControls: ["buttonBox"],
     }, { columns: 4, rows: 6 })).not.toBeNull();
   });
+
+  it("keeps snap sensitivity out of saved Combined geometry", () => {
+    const result = getCombinedCalibrationFromDraft(
+      validDraft,
+      { columns: 4, rows: 6 },
+    );
+
+    expect(result?.grid).toEqual({ columns: 4, rows: 6 });
+    expect(result?.grid).not.toHaveProperty("snapSensitivity");
+    expect(result).not.toHaveProperty("snapSensitivity");
+  });
 });

@@ -25,12 +25,14 @@ import { pickImageFromLibrary } from "../../../shared/pick-image-from-library";
 import { getPanelLabel } from "../../../model/i18n";
 import { useQuickPanelStore } from "../../../store/quick-panel-store";
 import { quickPanelSelectors } from "../../../store/selectors";
+import { useSnapSensitivityPreference } from "../../../store/storage";
 import { getSuggestedCalibrationRect } from "../../shared/calibration-preset";
 import { useOwnedImageCache } from "../../../cache/useOwnedImageCache";
 
 export function useAdvancedCalibrationScreen() {
   const router = useRouter();
   const ownedImageCache = useOwnedImageCache();
+  const { snapSensitivity, setSnapSensitivity } = useSnapSensitivityPreference();
   const {
     advancedCalibration,
     advancedButtonsCalibration,
@@ -251,5 +253,7 @@ export function useAdvancedCalibrationScreen() {
     setAdvancedButtons: updateButtons,
     setAdvancedOuterRect,
     setAdvancedPanels: updatePanels,
+    setSnapSensitivity,
+    snapSensitivity,
   };
 }

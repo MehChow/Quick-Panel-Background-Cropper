@@ -766,3 +766,24 @@ The advanced calibration help sheets regressed during the Fold/wide-screen respo
   filenames.
 - `flow/advanced/combined/1.webp` through `19.webp` are the current end-to-end
   UI reference, including the final QuickStar result.
+
+### 2026-08-07: Three-stop Advanced snap sensitivity
+
+- Editable Advanced panel steps expose one compact Low, Balanced, Strong snap
+  strength control; snapping remains required and has no Off position.
+- Low, Balanced, and Strong use `0.5x`, `1x`, and `1.5x` capture/release
+  multipliers. Thresholds are normalized in screen points so canvas scaling does
+  not change the perceived strength.
+- One global `quick-panel.snap-sensitivity` preference is shared by Controls,
+  Buttons, and Combined and defaults to Balanced when missing or invalid.
+- Sensitivity is interaction-only and is never added to calibration geometry,
+  Button identifier layout, Customize, preview composition, or export data.
+
+### 2026-08-07: Directional Advanced snap candidates
+
+- Internal grid candidates are now owned by the dragged edge: bottom/right use
+  the before/upper-left side, while top/left use the after/lower-right side.
+- Approaching or crossing a dotted line no longer flips an edge to the other
+  snapped side.
+- Low, Balanced, and Strong still change capture/release distance only;
+  calibration storage, grid geometry, previews, and exports are unchanged.

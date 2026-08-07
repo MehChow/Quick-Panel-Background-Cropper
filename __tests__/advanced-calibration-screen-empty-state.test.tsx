@@ -113,6 +113,8 @@ function createScreenState() {
     setAdvancedPanels: jest.fn(),
     setColumns: jest.fn(),
     setRows: jest.fn(),
+    setSnapSensitivity: jest.fn(),
+    snapSensitivity: "balanced" as const,
     selectedAdvancedTarget: "controls",
   };
 }
@@ -179,7 +181,10 @@ describe("AdvancedCalibrationScreen empty state", () => {
     render(<AdvancedCalibrationScreen />);
 
     expect(mockAdvancedPanelCanvas.mock.calls[0][0]).toEqual(
-      expect.objectContaining({ grid: { columns: 4, rows: 5 } }),
+      expect.objectContaining({
+        grid: { columns: 4, rows: 5 },
+        snapSensitivity: "balanced",
+      }),
     );
     expect(mockAdvancedPanelCanvas.mock.calls[0][0]).not.toHaveProperty(
       "isGridEnabled",
@@ -217,5 +222,76 @@ describe("AdvancedCalibrationScreen empty state", () => {
       .not.toHaveProperty("isGridEnabled");
     expect(mockAdvancedCalibrationControls.mock.calls[0][0])
       .not.toHaveProperty("onGridEnabledChange");
+  });
+
+  it("passes snap sensitivity to Controls and Buttons panel phases", () => {
+    const panelState = {
+      ...createScreenState(),
+      advancedDraft: {
+        outerRect: { height: 400, radius: 0, width: 300, x: 0, y: 0 },
+        screenshot: {
+          height: 400,
+          uri: "file:///quick-panel.webp",
+          width: 300,
+        },
+      },
+      isOuterPhase: false,
+      panelItems: [
+        { id: "buttonBox" as const, label: "Button box", family: "control" as const },
+      ],
+      panels: {
+        buttonBox: { height: 100, radius: 0, width: 120, x: 10, y: 20 },
+      },
+      phase: "buttonBox" as const,
+    };
+    mockUseAdvancedCalibrationScreen.mockReturnValue(panelState);
+
+    const view = render(<AdvancedCalibrationScreen />);
+
+    expect(mockAdvancedCalibrationControls.mock.calls[0][0]).toEqual(
+      expect.objectContaining({
+        isPanelPhase: true,
+        onSnapSensitivityChange: panelState.setSnapSensitivity,
+        snapSensitivity: "balanced",
+      }),
+    );
+    expect(mockAdvancedPanelCanvas.mock.calls[0][0]).toEqual(
+      expect.objectContaining({ snapSensitivity: "balanced" }),
+    );
+
+    view.unmount();
+    mockAdvancedCalibrationControls.mockClear();
+    mockAdvancedPanelCanvas.mockClear();
+    mockUseAdvancedCalibrationScreen.mockReturnValue({
+      ...panelState,
+      buttons: [
+        {
+          customIconId: null,
+          id: "button-1",
+          label: "Wi-Fi",
+          rect: { height: 100, radius: 0, width: 100, x: 10, y: 20 },
+        },
+      ],
+      panelItems: [
+        { id: "button-1" as const, label: "Wi-Fi", family: "button" as const },
+      ],
+      panels: {
+        "button-1": { height: 100, radius: 0, width: 100, x: 10, y: 20 },
+      },
+      selectedAdvancedTarget: "buttons" as const,
+    });
+
+    render(<AdvancedCalibrationScreen />);
+
+    expect(mockAdvancedCalibrationControls.mock.calls[0][0]).toEqual(
+      expect.objectContaining({
+        isPanelPhase: true,
+        onSnapSensitivityChange: panelState.setSnapSensitivity,
+        snapSensitivity: "balanced",
+      }),
+    );
+    expect(mockAdvancedPanelCanvas.mock.calls[0][0]).toEqual(
+      expect.objectContaining({ snapSensitivity: "balanced" }),
+    );
   });
 });

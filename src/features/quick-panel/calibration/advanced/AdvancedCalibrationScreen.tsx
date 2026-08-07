@@ -71,6 +71,8 @@ export function ReleasedAdvancedCalibrationScreen() {
     setAdvancedButtons,
     setAdvancedOuterRect,
     setAdvancedPanels,
+    setSnapSensitivity,
+    snapSensitivity,
   } = useAdvancedCalibrationScreen();
   const screenshot = advancedDraft?.screenshot ?? null;
   const outerRect = advancedDraft?.outerRect ?? null;
@@ -136,6 +138,7 @@ export function ReleasedAdvancedCalibrationScreen() {
               isGridPhase={isGridPhase}
               isNextDisabled={isNextDisabled}
               isOuterPhase={isOuterPhase}
+              isPanelPhase={isPanelStep}
               onBack={handleBack}
               onColumnsChange={setColumns}
               onGridHelpPress={() => setIsGridHelpOpen(true)}
@@ -143,7 +146,9 @@ export function ReleasedAdvancedCalibrationScreen() {
               onNext={handleNext}
               onRowsChange={setRows}
               onSave={handleSave}
+              onSnapSensitivityChange={setSnapSensitivity}
               rows={grid.rows}
+              snapSensitivity={snapSensitivity}
             />
           ) : (
             <Button
@@ -200,6 +205,7 @@ export function ReleasedAdvancedCalibrationScreen() {
             screenshot={screenshot}
             outerRect={outerRect}
             panels={panels}
+            snapSensitivity={snapSensitivity}
             visiblePanelIds={getVisiblePanelIds(phase, panelItems.map((item) => item.id))}
             onPanelsChange={setAdvancedPanels}
           />

@@ -1,12 +1,19 @@
 import { render, screen } from "@testing-library/react-native";
 import { CombinedCalibrationScreen } from "@/features/quick-panel/calibration/advanced/combined/CombinedCalibrationScreen";
 
+const mockUseCombinedCalibrationScreen = jest.fn();
+const mockAdvancedCalibrationControls = jest.fn((_props: unknown) => null);
+const mockAdvancedPanelCanvas = jest.fn((_props: unknown) => null);
+
 jest.mock("react-i18next", () => ({
   useTranslation: () => ({ t: (key: string) => key }),
 }));
 
 jest.mock("@/features/quick-panel/calibration/advanced/combined/hooks/useCombinedCalibrationScreen", () => ({
-  useCombinedCalibrationScreen: () => ({
+  useCombinedCalibrationScreen: () => mockUseCombinedCalibrationScreen(),
+}));
+
+const createScreenState = () => ({
     advancedDraft: null,
     activePanelId: null,
     canGoBack: false,
@@ -35,11 +42,15 @@ jest.mock("@/features/quick-panel/calibration/advanced/combined/hooks/useCombine
     setCombinedButtons: jest.fn(),
     setCombinedOuterRect: jest.fn(),
     setCombinedPanels: jest.fn(),
-  }),
-}));
+    setSnapSensitivity: jest.fn(),
+    snapSensitivity: "balanced" as const,
+  });
 
 jest.mock("@/features/quick-panel/shared/QuickPanelScreenShell", () => ({
-  QuickPanelScreenShell: ({ children }: { children: React.ReactNode }) => children,
+  QuickPanelScreenShell: ({
+    children,
+    footer,
+  }: { children: React.ReactNode; footer: React.ReactNode }) => <>{footer}{children}</>,
 }));
 
 jest.mock("@/features/quick-panel/shared/SubPageHeader", () => ({
@@ -51,11 +62,11 @@ jest.mock("@/features/quick-panel/calibration/advanced/combined/CombinedSelectio
 }));
 
 jest.mock("@/features/quick-panel/calibration/advanced/components/AdvancedPanelCanvas", () => ({
-  AdvancedPanelCanvas: () => null,
+  AdvancedPanelCanvas: (props: unknown) => mockAdvancedPanelCanvas(props),
 }));
 
 jest.mock("@/features/quick-panel/calibration/advanced/AdvancedCalibrationControls", () => ({
-  AdvancedCalibrationControls: () => null,
+  AdvancedCalibrationControls: (props: unknown) => mockAdvancedCalibrationControls(props),
 }));
 
 jest.mock("@/features/quick-panel/calibration/advanced/components/AdvancedCalibrationLeaveDialog", () => ({
@@ -86,9 +97,77 @@ jest.mock("@/features/quick-panel/calibration/shared/OuterCalibrationStep", () =
 }));
 
 describe("CombinedCalibrationScreen", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockUseCombinedCalibrationScreen.mockReturnValue(createScreenState());
+  });
+
   it("renders the combined calibration title and outer subtitle", () => {
     render(<CombinedCalibrationScreen />);
     expect(screen.getByText("advancedCalibration.title")).toBeTruthy();
     expect(screen.getByText("advancedCalibration.combinedOuterSubtitle")).toBeTruthy();
+  });
+
+  it("passes snap sensitivity to the panel footer and canvas", () => {
+    const state = {
+      ...createScreenState(),
+      advancedDraft: {
+        buttons: [],
+        enabledControls: ["buttonBox" as const],
+        outerRect: { height: 400, radius: 0, width: 300, x: 0, y: 0 },
+        screenshot: { height: 400, uri: "file:///quick-panel.webp", width: 300 },
+      },
+      activePanelFamily: "control" as const,
+      activePanelId: "buttonBox" as const,
+      isOuterPhase: false,
+      panelItems: [
+        { id: "buttonBox" as const, label: "Button box", family: "control" as const },
+      ],
+      panels: {
+        buttonBox: { height: 100, radius: 0, width: 120, x: 10, y: 20 },
+      },
+      phase: "buttonBox" as const,
+    };
+    mockUseCombinedCalibrationScreen.mockReturnValue(state);
+
+    render(<CombinedCalibrationScreen />);
+
+    expect(mockAdvancedCalibrationControls.mock.calls[0][0]).toEqual(
+      expect.objectContaining({
+        isPanelPhase: true,
+        onSnapSensitivityChange: state.setSnapSensitivity,
+        snapSensitivity: "balanced",
+      }),
+    );
+    expect(mockAdvancedPanelCanvas.mock.calls[0][0]).toEqual(
+      expect.objectContaining({ snapSensitivity: "balanced" }),
+    );
+  });
+
+  it("hides snap strength during Combined review", () => {
+    mockUseCombinedCalibrationScreen.mockReturnValue({
+      ...createScreenState(),
+      advancedDraft: {
+        buttons: [],
+        enabledControls: ["buttonBox" as const],
+        outerRect: { height: 400, radius: 0, width: 300, x: 0, y: 0 },
+        screenshot: { height: 400, uri: "file:///quick-panel.webp", width: 300 },
+      },
+      isConfirmPhase: true,
+      isOuterPhase: false,
+      panelItems: [
+        { id: "buttonBox" as const, label: "Button box", family: "control" as const },
+      ],
+      panels: {
+        buttonBox: { height: 100, radius: 0, width: 120, x: 10, y: 20 },
+      },
+      phase: "confirm" as const,
+    });
+
+    render(<CombinedCalibrationScreen />);
+
+    expect(mockAdvancedCalibrationControls.mock.calls[0][0]).toEqual(
+      expect.objectContaining({ isPanelPhase: false }),
+    );
   });
 });

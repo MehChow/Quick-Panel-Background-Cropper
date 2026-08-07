@@ -5,6 +5,7 @@ import type { PanelRect } from "../../../model/types";
 import type { HandlePosition } from "../../shared/calibration-rect";
 import { getAdvancedPanelResizeResult } from "../advanced-panel-gesture";
 import type { AdvancedSnapGrid } from "../advanced-grid";
+import type { SnapSensitivity } from "../../../model/snap-sensitivity";
 import { triggerSnapHaptic } from "../snap-haptics";
 
 interface Params {
@@ -13,6 +14,7 @@ interface Params {
   outerRect: PanelRect;
   position: HandlePosition;
   scale: number;
+  snapSensitivity: SnapSensitivity;
   onChange: (rect: PanelRect) => void;
 }
 
@@ -22,6 +24,7 @@ export function useAdvancedPanelResizeGesture({
   outerRect,
   position,
   scale,
+  snapSensitivity,
   onChange,
 }: Params) {
   const didCommit = useSharedValue(false);
@@ -52,6 +55,7 @@ export function useAdvancedPanelResizeGesture({
         outerRect,
         position,
         scale,
+        snapSensitivity,
         startRect: startRect.get(),
       });
       draftRect.set(result.rect);

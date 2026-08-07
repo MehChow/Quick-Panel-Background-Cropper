@@ -29,12 +29,14 @@ import { pickImageFromLibrary } from "../../../../shared/pick-image-from-library
 import { getSuggestedCalibrationRect } from "../../../shared/calibration-preset";
 import { useQuickPanelStore } from "../../../../store/quick-panel-store";
 import { quickPanelSelectors } from "../../../../store/selectors";
+import { useSnapSensitivityPreference } from "../../../../store/storage";
 import { useOwnedImageCache } from "../../../../cache/useOwnedImageCache";
 
 export function useCombinedCalibrationScreen() {
   const router = useRouter();
   const ownedImageCache = useOwnedImageCache();
   const { t } = useTranslation();
+  const { snapSensitivity, setSnapSensitivity } = useSnapSensitivityPreference();
   const {
     advancedCombinedCalibration,
     advancedCombinedDraft,
@@ -212,5 +214,7 @@ export function useCombinedCalibrationScreen() {
     setCombinedButtons: updateButtons,
     setCombinedOuterRect,
     setCombinedPanels: (nextPanels: PanelRects) => setCombinedPanels(nextPanels),
+    setSnapSensitivity,
+    snapSensitivity,
   };
 }

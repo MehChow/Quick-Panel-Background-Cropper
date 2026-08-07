@@ -1,19 +1,19 @@
 import { enLocale, zhLocale } from "../i18next/resources";
 
 describe("release announcement locale strings", () => {
-  it("defines the v1.3.1 updates in English and Traditional Chinese", () => {
-    expect(enLocale.translation.releaseAnnouncement.v1_3_1).toEqual({
-      title: "v1.3.1 Updates 🌟\n",
-      body: "• New: Advanced Controls + Buttons mode.\n• Optimized cache handling.",
+  it("defines the v1.3.2 updates in English and Traditional Chinese", () => {
+    expect(enLocale.translation.releaseAnnouncement.v1_3_2).toEqual({
+      title: "v1.3.2 Updates 🌟\n",
+      body: "• New: Snap strength slider.\n• Enhancement: Snapping is now easier and more accurate.",
       gotIt: "Got it",
       mediaAccessibilityLabel:
-        "Advanced Controls and Buttons using one continuous image",
+        "Snap strength slider and improved snapping",
     });
-    expect(zhLocale.translation.releaseAnnouncement.v1_3_1).toEqual({
-      title: "v1.3.1 更新內容 🌟\n",
-      body: "• 新功能：進階「控制版面 + 按鈕」模式。\n• 優化快取處理。",
+    expect(zhLocale.translation.releaseAnnouncement.v1_3_2).toEqual({
+      title: "v1.3.2 更新內容 🌟\n",
+      body: "• 新功能：吸附強度滑桿。\n• 優化：吸附更容易、更準確。",
       gotIt: "知道了",
-      mediaAccessibilityLabel: "進階控制版面與按鈕使用同一張連續圖片",
+      mediaAccessibilityLabel: "吸附強度滑桿及更容易、更準確的吸附功能",
     });
   });
 });
@@ -191,6 +191,10 @@ describe("customize locale strings", () => {
     expect(english.buttonPanelHelpBody).toBeTruthy();
     expect(english.buttonPanelHelpGood).toBeTruthy();
     expect(english.buttonPanelHelpBad).toBeTruthy();
+    expect(english.snapStrengthTitle).toBe("Snap strength");
+    expect(english.snapStrengthLow).toBe("Low");
+    expect(english.snapStrengthBalanced).toBe("Balanced");
+    expect(english.snapStrengthStrong).toBe("Strong");
     expect(chinese.buttonSelectionSubtitle).toBeTruthy();
     expect(chinese.buttonGridSubtitle).toBeTruthy();
     expect(chinese.buttonConfirmSubtitle).toBeTruthy();
@@ -198,6 +202,10 @@ describe("customize locale strings", () => {
     expect(chinese.buttonPanelHelpBody).toBeTruthy();
     expect(chinese.buttonPanelHelpGood).toBeTruthy();
     expect(chinese.buttonPanelHelpBad).toBeTruthy();
+    expect(chinese.snapStrengthTitle).toBe("吸附強度");
+    expect(chinese.snapStrengthLow).toBe("低");
+    expect(chinese.snapStrengthBalanced).toBe("平衡");
+    expect(chinese.snapStrengthStrong).toBe("強");
     expect(english.customIconDialogTitle).toBeTruthy();
     expect(english.customIconDialogBody).toBeTruthy();
     expect(english.customIconStar).toBe("Star");

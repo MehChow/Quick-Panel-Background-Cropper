@@ -23,6 +23,7 @@ jest.mock("@/features/quick-panel/cache/useOwnedImageCache", () => ({
 
 type HookWindow = typeof globalThis & {
   __advancedCalibrationHook?: ReturnType<typeof useAdvancedCalibrationScreen>;
+  __mmkvStore?: Map<string, boolean | string>;
 };
 
 function HookProbe() {
@@ -105,5 +106,22 @@ describe("advanced calibration leave guard", () => {
     screen.unmount();
     expect(remove).toHaveBeenCalledTimes(1);
     addEventListener.mockRestore();
+  });
+
+  it("reads and persists the shared snap sensitivity preference", () => {
+    (globalThis as HookWindow).__mmkvStore?.set(
+      "quick-panel.snap-sensitivity",
+      "low",
+    );
+
+    render(<HookProbe />);
+
+    expect(getHook().snapSensitivity).toBe("low");
+    act(() => getHook().setSnapSensitivity("strong"));
+
+    expect(getHook().snapSensitivity).toBe("strong");
+    expect(
+      (globalThis as HookWindow).__mmkvStore?.get("quick-panel.snap-sensitivity"),
+    ).toBe("strong");
   });
 });

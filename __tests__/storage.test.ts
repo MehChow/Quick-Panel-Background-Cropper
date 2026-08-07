@@ -6,11 +6,13 @@ import {
   loadLastExportedAdvancedTarget,
   loadLastExportedMode,
   loadLastImageDiskCacheClearAt,
+  loadSnapSensitivity,
   loadButtonCustomizeSettings,
   loadCombinedButtonImageIntensity,
   saveCalibrations,
   saveCombinedButtonImageIntensity,
   saveLastImageDiskCacheClearAt,
+  saveSnapSensitivity,
   saveButtonCustomizeSettings,
   type ButtonCustomizeSettings,
   type SavedCalibrations,
@@ -110,6 +112,36 @@ describe("storage", () => {
       advancedCombined: null,
     });
   });
+
+  it.each([undefined, "", "off", "medium", "2"])(
+    "normalizes snap sensitivity %p to Balanced",
+    (value) => {
+      const mmkvStore = (globalThis as typeof globalThis & MmkvTestGlobal)
+        .__mmkvStore;
+      if (value === undefined) {
+        mmkvStore?.delete("quick-panel.snap-sensitivity");
+      } else {
+        mmkvStore?.set("quick-panel.snap-sensitivity", value);
+      }
+
+      expect(loadSnapSensitivity()).toBe("balanced");
+    },
+  );
+
+  it.each(["low", "balanced", "strong"] as const)(
+    "round-trips global snap sensitivity %s independently",
+    (value) => {
+      saveSnapSensitivity(value);
+
+      expect(loadSnapSensitivity()).toBe(value);
+      expect(loadCalibrations()).toEqual({
+        default: null,
+        advancedControls: null,
+        advancedButtons: null,
+        advancedCombined: null,
+      });
+    },
+  );
 
   it("stores the acknowledged release announcement independently", () => {
     const mmkvStore = (globalThis as typeof globalThis & MmkvTestGlobal)
@@ -241,6 +273,24 @@ describe("storage", () => {
     expect(mmkvStore?.has("quick-panel.calibrations-v3")).toBe(false);
 
     expect(loadCalibrations()).toEqual(currentCalibrations);
+  });
+
+  it("keeps snap sensitivity outside serialized calibration geometry", () => {
+    const mmkvStore = (globalThis as typeof globalThis & MmkvTestGlobal)
+      .__mmkvStore;
+    saveCalibrations(currentCalibrations);
+    saveSnapSensitivity("strong");
+
+    const serialized = JSON.parse(
+      mmkvStore?.get("quick-panel.calibrations") as string,
+    ) as Record<string, unknown>;
+    expect(serialized).not.toHaveProperty("snapSensitivity");
+    for (const branch of ["advancedControls", "advancedButtons", "advancedCombined"]) {
+      const calibration = serialized[branch] as Record<string, unknown>;
+      expect(calibration).not.toHaveProperty("snapSensitivity");
+      expect(calibration.grid).not.toHaveProperty("snapSensitivity");
+    }
+    expect(loadSnapSensitivity()).toBe("strong");
   });
 
   it("ignores retired snapping preferences without losing calibration data", () => {

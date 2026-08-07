@@ -25,6 +25,7 @@ jest.mock("@/features/quick-panel/cache/useOwnedImageCache", () => ({
 
 type HookWindow = typeof globalThis & {
   __combinedCalibrationHook?: ReturnType<typeof useCombinedCalibrationScreen>;
+  __mmkvStore?: Map<string, boolean | string>;
 };
 
 function HookProbe() {
@@ -108,5 +109,17 @@ describe("combined calibration controller", () => {
     act(() => getHook().requestLeaveCalibration());
     expect(mockBack).toHaveBeenCalledTimes(1);
     expect(getHook().isLeaveDialogOpen).toBe(true);
+  });
+
+  it("shares and persists the global snap sensitivity preference", () => {
+    render(createElement(HookProbe));
+
+    expect(getHook().snapSensitivity).toBe("balanced");
+    act(() => getHook().setSnapSensitivity("strong"));
+
+    expect(getHook().snapSensitivity).toBe("strong");
+    expect(
+      (globalThis as HookWindow).__mmkvStore?.get("quick-panel.snap-sensitivity"),
+    ).toBe("strong");
   });
 });
