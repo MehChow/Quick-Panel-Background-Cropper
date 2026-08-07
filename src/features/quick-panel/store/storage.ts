@@ -25,6 +25,10 @@ import {
   getBuiltInButtonLabel,
   isCustomButtonIconId,
 } from "../model/button-labels";
+import {
+  normalizeSnapSensitivity,
+  type SnapSensitivity,
+} from "../model/snap-sensitivity";
 
 const calibrationsKey = "quick-panel.calibrations";
 const buttonCustomizeSettingsKey = "quick-panel.button-customize-settings";
@@ -34,6 +38,7 @@ const seenHelpKey = "quick-panel.seen-help";
 const releaseAnnouncementKey = "quick-panel.acknowledged-release-announcement";
 const combinedButtonImageIntensityKey =
   "quick-panel.combined-button-image-intensity";
+const snapSensitivityKey = "quick-panel.snap-sensitivity";
 const lastImageDiskCacheClearAtKey =
   "quick-panel.last-image-disk-cache-clear-at";
 
@@ -115,6 +120,30 @@ export function loadCombinedButtonImageIntensity(): number {
 
 export function saveCombinedButtonImageIntensity(value: number) {
   storage.set(combinedButtonImageIntensityKey, String(value));
+}
+
+export function loadSnapSensitivity(): SnapSensitivity {
+  return normalizeSnapSensitivity(storage.getString(snapSensitivityKey));
+}
+
+export function saveSnapSensitivity(value: SnapSensitivity) {
+  storage.set(snapSensitivityKey, value);
+}
+
+export function useSnapSensitivityPreference(): {
+  snapSensitivity: SnapSensitivity;
+  setSnapSensitivity: (value: SnapSensitivity) => void;
+} {
+  const [savedValue, setSavedValue] = useMMKVString(
+    snapSensitivityKey,
+    storage,
+  );
+  const snapSensitivity = normalizeSnapSensitivity(savedValue);
+  const setSnapSensitivity = (value: SnapSensitivity) => {
+    setSavedValue(value);
+  };
+
+  return { snapSensitivity, setSnapSensitivity };
 }
 
 export function loadLastImageDiskCacheClearAt(): number | null {

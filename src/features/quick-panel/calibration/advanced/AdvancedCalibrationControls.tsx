@@ -2,6 +2,8 @@ import { Button } from "@/components/ani-ui/button";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import { AdvancedGridControls } from "./components/AdvancedGridControls";
+import { AdvancedSnapSensitivityControl } from "./components/AdvancedSnapSensitivityControl";
+import type { SnapSensitivity } from "../../model/snap-sensitivity";
 
 interface Props {
   canGoBack: boolean;
@@ -10,6 +12,7 @@ interface Props {
   isGridPhase: boolean;
   isNextDisabled: boolean;
   isOuterPhase: boolean;
+  isPanelPhase: boolean;
   onBack: () => void;
   onColumnsChange: (value: number) => void;
   onGridHelpPress: () => void;
@@ -17,7 +20,9 @@ interface Props {
   onNext: () => void;
   onRowsChange: (value: number) => void;
   onSave: () => void;
+  onSnapSensitivityChange: (value: SnapSensitivity) => void;
   rows: number;
+  snapSensitivity: SnapSensitivity;
 }
 
 export function AdvancedCalibrationControls({
@@ -27,6 +32,7 @@ export function AdvancedCalibrationControls({
   isGridPhase,
   isNextDisabled,
   isOuterPhase,
+  isPanelPhase,
   onBack,
   onColumnsChange,
   onGridHelpPress,
@@ -34,7 +40,9 @@ export function AdvancedCalibrationControls({
   onNext,
   onRowsChange,
   onSave,
+  onSnapSensitivityChange,
   rows,
+  snapSensitivity,
 }: Props) {
   const { t } = useTranslation();
 
@@ -47,6 +55,12 @@ export function AdvancedCalibrationControls({
           onGridHelpPress={onGridHelpPress}
           onRowsChange={onRowsChange}
           rows={rows}
+        />
+      ) : null}
+      {isPanelPhase ? (
+        <AdvancedSnapSensitivityControl
+          onValueChange={onSnapSensitivityChange}
+          value={snapSensitivity}
         />
       ) : null}
       {isOuterPhase ? (

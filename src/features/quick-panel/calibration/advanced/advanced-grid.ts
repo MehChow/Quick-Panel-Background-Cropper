@@ -8,6 +8,7 @@ import {
 } from "./advanced-snap-axis";
 import { getMatchSnapKey, getSnapKey } from "./advanced-snap-key";
 import { clampPanelRect, clampResizedPanelRect } from "./panel-constraints";
+import type { SnapSensitivity } from "../../model/snap-sensitivity";
 
 export type { AdvancedSnapGrid } from "../../model/types";
 
@@ -80,10 +81,23 @@ export function snapMovedPanelRect(
   startRect: PanelRect,
   outerRect: PanelRect,
   grid: AdvancedSnapGrid,
+  scale: number,
+  snapSensitivity: SnapSensitivity,
 ): SnapResult {
   "worklet";
-  const xAxis = createSnapAxis(outerRect.x, outerRect.width, grid.columns);
-  const yAxis = createSnapAxis(outerRect.y, outerRect.height, grid.rows);
+  const options = { scale, sensitivity: snapSensitivity };
+  const xAxis = createSnapAxis(
+    outerRect.x,
+    outerRect.width,
+    grid.columns,
+    options,
+  );
+  const yAxis = createSnapAxis(
+    outerRect.y,
+    outerRect.height,
+    grid.rows,
+    options,
+  );
   const right = rect.x + rect.width;
   const bottom = rect.y + rect.height;
   const xMatch = getBestMoveMatch(
@@ -121,11 +135,24 @@ export function snapResizedPanelRect(
   startRect: PanelRect,
   outerRect: PanelRect,
   grid: AdvancedSnapGrid,
+  scale: number,
+  snapSensitivity: SnapSensitivity,
   position: HandlePosition,
 ): SnapResult {
   "worklet";
-  const xAxis = createSnapAxis(outerRect.x, outerRect.width, grid.columns);
-  const yAxis = createSnapAxis(outerRect.y, outerRect.height, grid.rows);
+  const options = { scale, sensitivity: snapSensitivity };
+  const xAxis = createSnapAxis(
+    outerRect.x,
+    outerRect.width,
+    grid.columns,
+    options,
+  );
+  const yAxis = createSnapAxis(
+    outerRect.y,
+    outerRect.height,
+    grid.rows,
+    options,
+  );
   let left = rect.x;
   let top = rect.y;
   let right = rect.x + rect.width;

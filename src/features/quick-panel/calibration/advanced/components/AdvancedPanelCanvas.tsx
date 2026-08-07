@@ -7,6 +7,7 @@ import {
   fitCalibrationArea,
 } from "../calibration-area-geometry";
 import type { AdvancedSnapGrid } from "../advanced-grid";
+import type { SnapSensitivity } from "../../../model/snap-sensitivity";
 import {
   getVisiblePanelIds,
   isPanelPhase,
@@ -27,6 +28,7 @@ interface Props {
   phase?: AdvancedCalibrationPhase;
   panels: PanelRects;
   screenshot: PickedImage;
+  snapSensitivity: SnapSensitivity;
   onPanelsChange: (panels: PanelRects) => void;
 }
 
@@ -40,6 +42,7 @@ export function AdvancedPanelCanvas({
   visiblePanelIds: explicitVisiblePanelIds,
   panels,
   screenshot,
+  snapSensitivity,
   onPanelsChange,
 }: Props) {
   const [viewport, setViewport] = useState({ height: 0, width: 0 });
@@ -110,6 +113,7 @@ export function AdvancedPanelCanvas({
             outerRect={localOuterRect}
             rect={toLocalRect(panels[id], viewportRect)}
             scale={scale}
+            snapSensitivity={snapSensitivity}
             onChange={(rect) => changePanel(id, rect)}
             label={id}
           />

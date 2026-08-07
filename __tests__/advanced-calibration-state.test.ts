@@ -100,6 +100,8 @@ describe("getCalibrationFromDraft", () => {
 
     expect(result?.grid).toEqual(grid);
     expect(result).not.toHaveProperty("isGridEnabled");
+    expect(result?.grid).not.toHaveProperty("snapSensitivity");
+    expect(result).not.toHaveProperty("snapSensitivity");
   });
 
   it("stores the Buttons grid without a snapping preference", () => {
@@ -118,5 +120,7 @@ describe("getCalibrationFromDraft", () => {
 
     expect(result?.grid).toEqual(grid);
     expect(result).not.toHaveProperty("isGridEnabled");
+    expect(result?.grid).not.toHaveProperty("snapSensitivity");
+    expect(result).not.toHaveProperty("snapSensitivity");
   });
 });

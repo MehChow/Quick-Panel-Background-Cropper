@@ -35,6 +35,7 @@ const props = {
     buttonBox: { x: 10, y: 20, width: 120, height: 100, radius: 0 },
   },
   screenshot: { uri: "file:///quick-panel.png", width: 300, height: 400 },
+  snapSensitivity: "strong" as const,
   onPanelsChange: jest.fn(),
 };
 
@@ -49,7 +50,10 @@ describe("AdvancedPanelCanvas snapping grid", () => {
 
     expect(mockAdvancedSnapGridOverlay).toHaveBeenCalledTimes(1);
     expect(mockAdvancedPanelBox).toHaveBeenCalledWith(
-      expect.objectContaining({ grid: props.grid }),
+      expect.objectContaining({
+        grid: props.grid,
+        snapSensitivity: "strong",
+      }),
     );
     expect(mockAdvancedPanelBox.mock.calls[0][0]).not.toHaveProperty(
       "isGridEnabled",

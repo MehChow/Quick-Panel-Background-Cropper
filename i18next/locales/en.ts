@@ -167,6 +167,10 @@ const en = {
       next: "Next",
       gridHelpButton: "Grid help",
       gridControlsTitle: "Set the snapping grid",
+      snapStrengthTitle: "Snap strength",
+      snapStrengthLow: "Low",
+      snapStrengthBalanced: "Balanced",
+      snapStrengthStrong: "Strong",
       panelSelectionTitle: "Which panels are in this region?",
       panelSelectionBody:
         "Turn off any unwanted Controls panel that is missing from this region. Disabled panels will not be aligned or exported.",

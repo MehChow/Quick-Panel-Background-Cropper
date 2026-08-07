@@ -151,6 +151,10 @@ const zh = {
       next: "下一步",
       gridHelpButton: "格線說明",
       gridControlsTitle: "設定對齊格線",
+      snapStrengthTitle: "吸附強度",
+      snapStrengthLow: "低",
+      snapStrengthBalanced: "平衡",
+      snapStrengthStrong: "強",
       panelSelectionTitle: "這個區域包含哪些版面？",
       panelSelectionBody:
         "關閉這個區域中沒有的控制版面。已關閉的版面不需要校準，也不會匯出。",

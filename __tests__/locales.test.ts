@@ -191,6 +191,10 @@ describe("customize locale strings", () => {
     expect(english.buttonPanelHelpBody).toBeTruthy();
     expect(english.buttonPanelHelpGood).toBeTruthy();
     expect(english.buttonPanelHelpBad).toBeTruthy();
+    expect(english.snapStrengthTitle).toBe("Snap strength");
+    expect(english.snapStrengthLow).toBe("Low");
+    expect(english.snapStrengthBalanced).toBe("Balanced");
+    expect(english.snapStrengthStrong).toBe("Strong");
     expect(chinese.buttonSelectionSubtitle).toBeTruthy();
     expect(chinese.buttonGridSubtitle).toBeTruthy();
     expect(chinese.buttonConfirmSubtitle).toBeTruthy();
@@ -198,6 +202,10 @@ describe("customize locale strings", () => {
     expect(chinese.buttonPanelHelpBody).toBeTruthy();
     expect(chinese.buttonPanelHelpGood).toBeTruthy();
     expect(chinese.buttonPanelHelpBad).toBeTruthy();
+    expect(chinese.snapStrengthTitle).toBe("吸附強度");
+    expect(chinese.snapStrengthLow).toBe("低");
+    expect(chinese.snapStrengthBalanced).toBe("平衡");
+    expect(chinese.snapStrengthStrong).toBe("強");
     expect(english.customIconDialogTitle).toBeTruthy();
     expect(english.customIconDialogBody).toBeTruthy();
     expect(english.customIconStar).toBe("Star");
