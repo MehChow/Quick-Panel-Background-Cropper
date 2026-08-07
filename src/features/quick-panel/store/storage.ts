@@ -43,7 +43,7 @@ const lastImageDiskCacheClearAtKey =
   "quick-panel.last-image-disk-cache-clear-at";
 
 export const activeReleaseAnnouncementId =
-  "v1.3.1-cache-optimization-announcement";
+  "v1.3.2-snap-strength-announcement";
 
 export const supportedLanguages = ["en", "zh"] as const;
 export type SupportedLanguage = (typeof supportedLanguages)[number];

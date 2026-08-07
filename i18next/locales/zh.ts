@@ -16,6 +16,12 @@ const zh = {
         gotIt: "知道了",
         mediaAccessibilityLabel: "進階控制版面與按鈕使用同一張連續圖片",
       },
+      v1_3_2: {
+        title: "v1.3.2 更新內容 🌟\n",
+        body: "• 新功能：吸附強度滑桿。\n• 優化：吸附更容易、更準確。",
+        gotIt: "知道了",
+        mediaAccessibilityLabel: "吸附強度滑桿及更容易、更準確的吸附功能",
+      },
     },
     landing: {
       startCustomizing: "開始自訂",
