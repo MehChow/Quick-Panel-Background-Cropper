@@ -6,6 +6,7 @@ import {
   getAdvancedPanelMoveResult,
 } from "../advanced-panel-gesture";
 import type { AdvancedSnapGrid } from "../advanced-grid";
+import type { SnapSensitivity } from "../../../model/snap-sensitivity";
 import { triggerSnapHaptic } from "../snap-haptics";
 
 interface Params {
@@ -13,6 +14,7 @@ interface Params {
   grid: AdvancedSnapGrid;
   outerRect: PanelRect;
   scale: number;
+  snapSensitivity: SnapSensitivity;
   onChange: (rect: PanelRect) => void;
 }
 
@@ -21,6 +23,7 @@ export function useAdvancedPanelMoveGesture({
   grid,
   outerRect,
   scale,
+  snapSensitivity,
   onChange,
 }: Params) {
   const didCommit = useSharedValue(false);
@@ -50,6 +53,7 @@ export function useAdvancedPanelMoveGesture({
         grid,
         outerRect,
         scale,
+        snapSensitivity,
         startRect: startRect.get(),
       });
       draftRect.set(result.rect);

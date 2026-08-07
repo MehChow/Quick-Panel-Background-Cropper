@@ -18,6 +18,13 @@ const en = {
         mediaAccessibilityLabel:
           "Advanced Controls and Buttons using one continuous image",
       },
+      v1_3_2: {
+        title: "v1.3.2 Updates 🌟\n",
+        body: "• New: Snap strength slider.\n• Enhancement: Snapping is now easier and more accurate.",
+        gotIt: "Got it",
+        mediaAccessibilityLabel:
+          "Snap strength slider and improved snapping",
+      },
     },
     landing: {
       startCustomizing: "Start customizing",
@@ -167,6 +174,10 @@ const en = {
       next: "Next",
       gridHelpButton: "Grid help",
       gridControlsTitle: "Set the snapping grid",
+      snapStrengthTitle: "Snap strength",
+      snapStrengthLow: "Low",
+      snapStrengthBalanced: "Balanced",
+      snapStrengthStrong: "Strong",
       panelSelectionTitle: "Which panels are in this region?",
       panelSelectionBody:
         "Turn off any unwanted Controls panel that is missing from this region. Disabled panels will not be aligned or exported.",

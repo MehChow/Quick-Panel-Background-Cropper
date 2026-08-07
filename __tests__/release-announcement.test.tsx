@@ -35,31 +35,31 @@ describe("release announcement", () => {
   it("shows an unacknowledged announcement and dismisses it", () => {
     render(<ReleaseAnnouncementHost />);
 
-    expect(screen.getByText("releaseAnnouncement.v1_3_1.title")).toBeTruthy();
-    expect(screen.getByText("releaseAnnouncement.v1_3_1.body")).toBeTruthy();
+    expect(screen.getByText("releaseAnnouncement.v1_3_2.title")).toBeTruthy();
+    expect(screen.getByText("releaseAnnouncement.v1_3_2.body")).toBeTruthy();
     expect(
-      screen.getByText("releaseAnnouncement.v1_3_1.title").props.className,
+      screen.getByText("releaseAnnouncement.v1_3_2.title").props.className,
     ).toContain("text-white");
     expect(
-      screen.getByText("releaseAnnouncement.v1_3_1.gotIt").props.className,
+      screen.getByText("releaseAnnouncement.v1_3_2.gotIt").props.className,
     ).toContain("text-black");
     expect(
       screen.getByRole("button", {
-        name: "releaseAnnouncement.v1_3_1.gotIt",
+        name: "releaseAnnouncement.v1_3_2.gotIt",
       }).props.className,
     ).toContain("bg-white");
     expect(
       screen.getByLabelText(
-        "releaseAnnouncement.v1_3_1.mediaAccessibilityLabel",
+        "releaseAnnouncement.v1_3_2.mediaAccessibilityLabel",
       ).props.contentFit,
     ).toBe("cover");
     expect(
       screen.getByLabelText(
-        "releaseAnnouncement.v1_3_1.mediaAccessibilityLabel",
+        "releaseAnnouncement.v1_3_2.mediaAccessibilityLabel",
       ).props.source,
     ).toEqual(
       expect.objectContaining({
-        testUri: expect.stringContaining("advanced_4.webp"),
+        testUri: expect.stringContaining("9.webp"),
       }),
     );
     expect(
@@ -73,30 +73,30 @@ describe("release announcement", () => {
       expect.objectContaining({ overflow: "hidden" }),
     );
 
-    fireEvent.press(screen.getByText("releaseAnnouncement.v1_3_1.gotIt"));
+    fireEvent.press(screen.getByText("releaseAnnouncement.v1_3_2.gotIt"));
 
     expect(loadAcknowledgedReleaseAnnouncement()).toBe(
-      "v1.3.1-cache-optimization-announcement",
+      "v1.3.2-snap-strength-announcement",
     );
-    expect(screen.queryByText("releaseAnnouncement.v1_3_1.title")).toBeNull();
+    expect(screen.queryByText("releaseAnnouncement.v1_3_2.title")).toBeNull();
   });
 
   it("only dismisses when the user acknowledges the announcement", () => {
     render(<ReleaseAnnouncementHost />);
 
-    fireEvent.press(screen.getByText("releaseAnnouncement.v1_3_1.gotIt"));
+    fireEvent.press(screen.getByText("releaseAnnouncement.v1_3_2.gotIt"));
 
     expect(loadAcknowledgedReleaseAnnouncement()).toBe(
-      "v1.3.1-cache-optimization-announcement",
+      "v1.3.2-snap-strength-announcement",
     );
   });
 
   it("does not show an already acknowledged announcement", () => {
-    acknowledgeReleaseAnnouncement("v1.3.1-cache-optimization-announcement");
+    acknowledgeReleaseAnnouncement("v1.3.2-snap-strength-announcement");
 
     render(<ReleaseAnnouncementHost />);
 
-    expect(screen.queryByText("releaseAnnouncement.v1_3_1.title")).toBeNull();
+    expect(screen.queryByText("releaseAnnouncement.v1_3_2.title")).toBeNull();
   });
 
   it("acknowledges when the dialog is dismissed by the platform", () => {
@@ -105,7 +105,7 @@ describe("release announcement", () => {
     fireEvent(rendered.UNSAFE_getByType(Modal), "requestClose");
 
     expect(loadAcknowledgedReleaseAnnouncement()).toBe(
-      "v1.3.1-cache-optimization-announcement",
+      "v1.3.2-snap-strength-announcement",
     );
   });
 });

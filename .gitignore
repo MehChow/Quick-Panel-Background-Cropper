@@ -50,6 +50,8 @@ android/local.properties
 
 # google play console
 quick-panel-background-cropper-6040e62063a2.json
+google-play-service-account*.json
+play-service-account*.json
 
 # google services
 google-services/

@@ -6,6 +6,7 @@ import {
   type AdvancedSnapGrid,
   type SnapResult,
 } from "./advanced-grid";
+import type { SnapSensitivity } from "../../model/snap-sensitivity";
 
 export interface AdvancedPanelMoveInput {
   dx: number;
@@ -13,6 +14,7 @@ export interface AdvancedPanelMoveInput {
   grid: AdvancedSnapGrid;
   outerRect: PanelRect;
   scale: number;
+  snapSensitivity: SnapSensitivity;
   startRect: PanelRect;
 }
 
@@ -26,6 +28,7 @@ export function getAdvancedPanelMoveResult({
   grid,
   outerRect,
   scale,
+  snapSensitivity,
   startRect,
 }: AdvancedPanelMoveInput): SnapResult {
   "worklet";
@@ -34,7 +37,14 @@ export function getAdvancedPanelMoveResult({
     x: startRect.x + dx / scale,
     y: startRect.y + dy / scale,
   };
-  return snapMovedPanelRect(movedRect, startRect, outerRect, grid);
+  return snapMovedPanelRect(
+    movedRect,
+    startRect,
+    outerRect,
+    grid,
+    scale,
+    snapSensitivity,
+  );
 }
 
 export function getAdvancedPanelResizeResult({
@@ -44,6 +54,7 @@ export function getAdvancedPanelResizeResult({
   outerRect,
   position,
   scale,
+  snapSensitivity,
   startRect,
 }: AdvancedPanelResizeInput): SnapResult {
   "worklet";
@@ -58,6 +69,8 @@ export function getAdvancedPanelResizeResult({
     startRect,
     outerRect,
     grid,
+    scale,
+    snapSensitivity,
     position,
   );
 }

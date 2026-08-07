@@ -4,6 +4,7 @@ import type { SharedValue } from "react-native-reanimated";
 import type { PanelRect } from "../../../model/types";
 import type { HandlePosition } from "../../shared/calibration-rect";
 import type { AdvancedSnapGrid } from "../advanced-grid";
+import type { SnapSensitivity } from "../../../model/snap-sensitivity";
 import { useAdvancedPanelResizeGesture } from "../hooks/useAdvancedPanelResizeGesture";
 
 interface Props {
@@ -14,6 +15,7 @@ interface Props {
   position: HandlePosition;
   rect: PanelRect;
   scale: number;
+  snapSensitivity: SnapSensitivity;
   onChange: (rect: PanelRect) => void;
 }
 

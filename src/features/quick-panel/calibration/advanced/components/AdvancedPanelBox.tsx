@@ -8,6 +8,7 @@ import Animated, {
 } from "react-native-reanimated";
 import type { PanelFamily, PanelId, PanelRect } from "../../../model/types";
 import type { AdvancedSnapGrid } from "../advanced-grid";
+import type { SnapSensitivity } from "../../../model/snap-sensitivity";
 import { useAdvancedPanelMoveGesture } from "../hooks/useAdvancedPanelMoveGesture";
 import { AdvancedPanelResizeHandle } from "./AdvancedPanelResizeHandle";
 
@@ -24,6 +25,7 @@ interface Props {
   outerRect: PanelRect;
   rect: PanelRect;
   scale: number;
+  snapSensitivity: SnapSensitivity;
   onChange: (rect: PanelRect) => void;
 }
 

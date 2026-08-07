@@ -3,6 +3,12 @@
 This repo builds the Play upload `.aab` locally. A fresh machine needs a few
 local-only files and properties before `npm run build-release` will work.
 
+For the Ruby, Bundler, Fastlane, and Google Play service-account setup required
+by the automated Internal upload, follow
+[`docs/play-upload-setup.md`](play-upload-setup.md).
+The build/upload command uses the local Expo/Gradle toolchain and Fastlane; it
+does not use EAS Build, EAS Submit, or EAS Workflows.
+
 ## What this is for
 
 Use this guide when you:
@@ -49,6 +55,8 @@ wrong native setup.
   - keeps the intentional Landing build-version label visible
   - runs tests, lint, TypeScript, prebuild, signing, Gradle, and upload-key
     certificate verification
+  - asks whether to upload the verified AAB to Play Internal testing through
+    the repository-pinned Fastlane lane
 
 ## One-time setup on a new machine
 
@@ -212,9 +220,11 @@ What to be careful about:
 5. Confirm the user-level Gradle properties file contains the four
    `MYAPP_UPLOAD_*` values.
 6. Verify the keystore SHA1 matches Play Console.
-7. Create or switch to the clean `release/<version>` branch.
-8. Run `npm run build-release`.
-9. Choose `new` for a new Play candidate, or `retry` only when the current code
+7. Complete [`docs/play-upload-setup.md`](play-upload-setup.md), including
+   `QPBC_PLAY_SERVICE_ACCOUNT_JSON` and `bundle check`.
+8. Create or switch to the clean `release/<version>` branch.
+9. Run `npm run build-release`.
+10. Choose `new` for a new Play candidate, or `retry` only when the current code
    has never been uploaded.
 
 ## Common failure patterns

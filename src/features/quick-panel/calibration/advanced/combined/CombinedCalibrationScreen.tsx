@@ -28,6 +28,7 @@ export function CombinedCalibrationScreen() {
     isLeaveDialogOpen, isOuterPhase, leaveCalibration, panelItems, panels, phase,
     requestLeaveCalibration, saveCalibration, setColumns, setRows,
     setCombinedButtons, setCombinedEnabledControls, setCombinedOuterRect, setCombinedPanels,
+    setSnapSensitivity, snapSensitivity,
   } = useCombinedCalibrationScreen();
   const screenshot = advancedDraft?.screenshot ?? null;
   const outerRect = advancedDraft?.outerRect ?? null;
@@ -67,6 +68,7 @@ export function CombinedCalibrationScreen() {
             isGridPhase={isGridPhase}
             isNextDisabled={isNextDisabled}
             isOuterPhase={false}
+            isPanelPhase={activePanelId !== null}
             onBack={goBack}
             onColumnsChange={setColumns}
             onGridHelpPress={() => setIsGridHelpOpen(true)}
@@ -74,7 +76,9 @@ export function CombinedCalibrationScreen() {
             onNext={goForward}
             onRowsChange={setRows}
             onSave={saveCalibration}
+            onSnapSensitivityChange={setSnapSensitivity}
             rows={grid.rows}
+            snapSensitivity={snapSensitivity}
           />
         ) : <Button className="my-4 w-full bg-white" onPress={importScreenshot}>{t("calibration.chooseFromAlbum")}</Button>}
         footerTestID="advanced-calibration-footer"
@@ -109,6 +113,7 @@ export function CombinedCalibrationScreen() {
             panelItems={panelItems}
             panels={panels}
             screenshot={screenshot}
+            snapSensitivity={snapSensitivity}
             visiblePanelIds={getVisiblePanelIds(panelItems, phase, activePanelId)}
             outerRect={outerRect}
             onPanelsChange={setCombinedPanels}

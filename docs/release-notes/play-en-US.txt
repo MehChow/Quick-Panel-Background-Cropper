@@ -1,0 +1,2 @@
+New: Snap strength slider
+Enhancement: Snapping is now easier and more accurate

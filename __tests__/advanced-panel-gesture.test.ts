@@ -15,6 +15,7 @@ describe("advanced panel gesture geometry", () => {
         grid: { columns: 1, rows: 1 },
         outerRect,
         scale: 0.5,
+        snapSensitivity: "balanced",
         startRect,
       }).rect,
     ).toMatchObject({ x: 90, y: 80 });
@@ -29,6 +30,7 @@ describe("advanced panel gesture geometry", () => {
         outerRect,
         position: "bottomRight",
         scale: 1,
+        snapSensitivity: "balanced",
         startRect,
       }).rect,
     ).toMatchObject({ width: 95, height: 120 });
@@ -43,9 +45,10 @@ describe("advanced panel gesture geometry", () => {
         outerRect,
         position: "topLeft",
         scale: 0.5,
+        snapSensitivity: "balanced",
         startRect,
       }).rect,
-    ).toMatchObject({ x: 0, y: 40, width: 130, height: 120 });
+    ).toMatchObject({ x: 0, y: 0, width: 130, height: 160 });
   });
 
   it("snaps movement and keeps the result inside the outer rectangle", () => {
@@ -55,6 +58,7 @@ describe("advanced panel gesture geometry", () => {
       grid: { columns: 3, rows: 4 },
       outerRect,
       scale: 1,
+      snapSensitivity: "balanced",
       startRect,
     });
     const clamped = getAdvancedPanelMoveResult({
@@ -63,11 +67,12 @@ describe("advanced panel gesture geometry", () => {
       grid: { columns: 1, rows: 1 },
       outerRect,
       scale: 1,
+      snapSensitivity: "balanced",
       startRect,
     });
 
-    expect(snapped.rect.x).toBe(94);
-    expect(snapped.snapKey).toContain("left:x:94.00");
+    expect(snapped.rect.x).toBe(106);
+    expect(snapped.snapKey).toContain("left:x:106.00");
     expect(clamped.rect).toMatchObject({ x: 220, y: 300 });
   });
 
@@ -78,10 +83,99 @@ describe("advanced panel gesture geometry", () => {
       grid: { columns: 3, rows: 4 },
       outerRect,
       scale: 1,
+      snapSensitivity: "balanced",
       startRect,
     });
 
-    expect(result.rect.x).toBe(94);
-    expect(result.snapKey).toContain("left:x:94.00");
+    expect(result.rect.x).toBe(106);
+    expect(result.snapKey).toContain("left:x:106.00");
   });
+
+  it("changes movement capture distance without changing the target", () => {
+    const input = {
+      dx: 40,
+      dy: 0,
+      grid: { columns: 3, rows: 4 },
+      outerRect,
+      scale: 1,
+      startRect,
+    } as const;
+    const low = getAdvancedPanelMoveResult({
+      ...input,
+      snapSensitivity: "low",
+    });
+    const balanced = getAdvancedPanelMoveResult({
+      ...input,
+      snapSensitivity: "balanced",
+    });
+
+    expect(low.rect.x).not.toBe(balanced.rect.x);
+    expect(low.snapKey).toBeNull();
+    expect(balanced.snapKey).toContain("left:x:106.00");
+  });
+
+  it("uses the same sensitivity for resizing", () => {
+    const input = {
+      dx: 49,
+      dy: 0,
+      grid: { columns: 3, rows: 4 },
+      outerRect,
+      position: "right" as const,
+      scale: 1,
+      startRect,
+    };
+    const low = getAdvancedPanelResizeResult({
+      ...input,
+      snapSensitivity: "low",
+    });
+    const balanced = getAdvancedPanelResizeResult({
+      ...input,
+      snapSensitivity: "balanced",
+    });
+
+    expect(low.rect.width).toBe(129);
+    expect(low.snapKey).toBeNull();
+    expect(balanced.rect.width).toBe(144);
+    expect(balanced.snapKey).toContain("right:x:194.00");
+  });
+
+  it.each([39, 41])(
+    "keeps the bottom edge above the row when raw bottom crosses it with dy %i",
+    (dy) => {
+      const result = getAdvancedPanelResizeResult({
+        dx: 0,
+        dy,
+        grid: { columns: 3, rows: 4 },
+        outerRect,
+        position: "bottom",
+        scale: 1,
+        snapSensitivity: "balanced",
+        startRect,
+      });
+
+      expect(result.rect.y + result.rect.height).toBe(194);
+      expect(result.rect.height).toBe(134);
+      expect(result.snapKey).toContain("bottom:y:194.00");
+    },
+  );
+
+  it.each([69, 71])(
+    "keeps the right edge left of the column when raw right crosses it with dx %i",
+    (dx) => {
+      const result = getAdvancedPanelResizeResult({
+        dx,
+        dy: 0,
+        grid: { columns: 3, rows: 4 },
+        outerRect,
+        position: "right",
+        scale: 1,
+        snapSensitivity: "balanced",
+        startRect,
+      });
+
+      expect(result.rect.x + result.rect.width).toBe(194);
+      expect(result.rect.width).toBe(144);
+      expect(result.snapKey).toContain("right:x:194.00");
+    },
+  );
 });
