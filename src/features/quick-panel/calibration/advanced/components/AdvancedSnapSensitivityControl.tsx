@@ -25,7 +25,7 @@ export function AdvancedSnapSensitivityControl({
       <Text className="text-xs font-semibold uppercase tracking-[0.8px] text-zinc-400">
         {t("advancedCalibration.snapStrengthTitle")}
       </Text>
-      <View className="relative">
+      <View className="relative" testID="advanced-snap-sensitivity-track">
         <Slider
           max={2}
           min={0}
@@ -38,18 +38,19 @@ export function AdvancedSnapSensitivityControl({
         />
         <View
           pointerEvents="none"
-          className="absolute inset-x-2 top-3 flex-row items-center justify-between"
+          className="absolute inset-x-0 top-3 flex-row items-center justify-between"
+          testID="advanced-snap-sensitivity-stops"
         >
           <View
-            className="h-2 w-2 rounded-full bg-zinc-500"
+            className="h-2 w-2 rounded-full bg-zinc-500 opacity-0"
             testID="advanced-snap-sensitivity-stop-low"
           />
           <View
-            className="h-2 w-2 rounded-full bg-zinc-500"
+            className={`h-2 w-2 rounded-full bg-zinc-500 ${selectedValue >= 1 ? "opacity-0" : ""}`}
             testID="advanced-snap-sensitivity-stop-balanced"
           />
           <View
-            className="h-2 w-2 rounded-full bg-zinc-500"
+            className={`h-2 w-2 rounded-full bg-zinc-500 ${selectedValue >= 2 ? "opacity-0" : ""}`}
             testID="advanced-snap-sensitivity-stop-strong"
           />
         </View>

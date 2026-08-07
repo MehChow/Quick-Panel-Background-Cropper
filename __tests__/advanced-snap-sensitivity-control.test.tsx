@@ -1,3 +1,4 @@
+import React from "react";
 import { AdvancedSnapSensitivityControl } from "@/features/quick-panel/calibration/advanced/components/AdvancedSnapSensitivityControl";
 import { fireEvent, render, screen } from "@testing-library/react-native";
 
@@ -36,6 +37,59 @@ describe("AdvancedSnapSensitivityControl", () => {
     expect(screen.getByTestId("advanced-snap-sensitivity-stop-low")).toBeTruthy();
     expect(screen.getByTestId("advanced-snap-sensitivity-stop-balanced")).toBeTruthy();
     expect(screen.getByTestId("advanced-snap-sensitivity-stop-strong")).toBeTruthy();
+  });
+
+  it("aligns markers with the slider track and layers them above the bar", () => {
+    render(
+      <AdvancedSnapSensitivityControl
+        value="balanced"
+        onValueChange={jest.fn()}
+      />,
+    );
+
+    const stops = screen.getByTestId("advanced-snap-sensitivity-stops");
+    expect(stops.props.className).toContain("inset-x-0");
+    expect(stops.props.className).not.toContain("inset-x-2");
+
+    const trackChildren = React.Children.toArray(
+      screen.getByTestId("advanced-snap-sensitivity-track").props.children,
+    );
+    expect(trackChildren[0]).toMatchObject({
+      props: { testID: "advanced-snap-sensitivity-slider" },
+    });
+    expect(trackChildren[1]).toMatchObject({
+      props: { testID: "advanced-snap-sensitivity-stops" },
+    });
+  });
+
+  it.each([
+    ["low", ["advanced-snap-sensitivity-stop-low"], [
+      "advanced-snap-sensitivity-stop-balanced",
+      "advanced-snap-sensitivity-stop-strong",
+    ]],
+    ["balanced", [
+      "advanced-snap-sensitivity-stop-low",
+      "advanced-snap-sensitivity-stop-balanced",
+    ], ["advanced-snap-sensitivity-stop-strong"]],
+    ["strong", [
+      "advanced-snap-sensitivity-stop-low",
+      "advanced-snap-sensitivity-stop-balanced",
+      "advanced-snap-sensitivity-stop-strong",
+    ], []],
+  ] as const)("shows only future markers when %s is selected", (value, hiddenStops, visibleStops) => {
+    render(
+      <AdvancedSnapSensitivityControl
+        value={value}
+        onValueChange={jest.fn()}
+      />,
+    );
+
+    hiddenStops.forEach((testID) => {
+      expect(screen.getByTestId(testID).props.className).toContain("opacity-0");
+    });
+    visibleStops.forEach((testID) => {
+      expect(screen.getByTestId(testID).props.className).not.toContain("opacity-0");
+    });
   });
 
   it.each([
