@@ -2,6 +2,7 @@ import { Text } from "@/components/ani-ui/text";
 import { Lucide } from "@react-native-vector-icons/lucide";
 import Animated, { useAnimatedProps, useAnimatedStyle } from "react-native-reanimated";
 import type { ButtonIdentifierLayout } from "../../model/button-identifier-layout";
+import type { ButtonIdentifierContentMode } from "../../model/button-identifier-content";
 import type { ButtonIdentifierDefinition } from "../../model/types";
 import type { AnimatedButtonIdentifierAppearance } from "./button-identifier-animated-appearance";
 import { buttonIdentifierStyles as styles } from "./button-identifier-content";
@@ -11,6 +12,7 @@ const AnimatedText = Animated.createAnimatedComponent(Text);
 
 interface AnimatedButtonIdentifierVisualsProps {
   appearance: AnimatedButtonIdentifierAppearance;
+  contentMode: ButtonIdentifierContentMode;
   identifier: ButtonIdentifierDefinition;
   label: string;
   layout: ButtonIdentifierLayout;
@@ -18,6 +20,7 @@ interface AnimatedButtonIdentifierVisualsProps {
 
 export function AnimatedButtonIdentifierVisuals({
   appearance,
+  contentMode,
   identifier,
   label,
   layout,
@@ -29,9 +32,11 @@ export function AnimatedButtonIdentifierVisuals({
   const labelStyle = useAnimatedStyle(() => ({
     color: appearance.circleColor.get(),
   }));
+  const showIcon = contentMode !== "none";
+  const showText = contentMode === "both" && layout.showLabel;
   return (
     <>
-      <Animated.View
+      {showIcon ? <Animated.View
         style={[styles.iconBackground, circleStyle, {
           borderRadius: layout.iconBackgroundSize / 2,
           height: layout.iconBackgroundSize,
@@ -45,8 +50,8 @@ export function AnimatedButtonIdentifierVisuals({
           size={layout.iconSize}
           style={styles.shadow}
         />
-      </Animated.View>
-      {layout.showLabel ? (
+      </Animated.View> : null}
+      {showText ? (
         <AnimatedText
           adjustsFontSizeToFit
           allowFontScaling={false}

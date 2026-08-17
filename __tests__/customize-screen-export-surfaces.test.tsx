@@ -250,7 +250,7 @@ describe("CustomizeScreen export surfaces", () => {
       buttonPanelOpacity: 0.78,
       identifierPositions: { horizontal: 0.5, vertical: 0.5 },
       buttonIdentifierColor: "#FFFFFF",
-      showButtonIdentifiers: true,
+      buttonIdentifierContentMode: "both",
     });
     expect(mockExportProps).toMatchObject({
       buttonIdentifierBackgroundTheme: "dark",
@@ -258,7 +258,7 @@ describe("CustomizeScreen export surfaces", () => {
       buttonPanelOpacity: 0.78,
       identifierPositions: { horizontal: 0.5, vertical: 0.5 },
       buttonIdentifierColor: "#FFFFFF",
-      showButtonIdentifiers: true,
+      buttonIdentifierContentMode: "both",
     });
 
     fireEvent.press(screen.getByTestId("button-adjustment-horizontal-tab"));
@@ -281,26 +281,26 @@ describe("CustomizeScreen export surfaces", () => {
     expect(mockPreviewProps).toMatchObject({ buttonPanelOpacity: 0.35 });
     expect(mockExportProps).toMatchObject({ buttonPanelOpacity: 0.35 });
 
-    fireEvent.press(screen.getByTestId("show-button-identifiers-toggle"));
+    fireEvent.press(screen.getByTestId("button-content-none"));
     expect(mockPreviewProps).toMatchObject({
       buttonIdentifierOpacity: 0.7,
       buttonPanelOpacity: 0.35,
-      showButtonIdentifiers: false,
+      buttonIdentifierContentMode: "none",
     });
     expect(mockExportProps).toMatchObject({
       buttonIdentifierOpacity: 0.7,
       buttonPanelOpacity: 0.35,
-      showButtonIdentifiers: false,
+      buttonIdentifierContentMode: "none",
     });
 
-    fireEvent.press(screen.getByTestId("show-button-identifiers-toggle"));
+    fireEvent.press(screen.getByTestId("button-content-icon"));
     expect(mockExportProps).toMatchObject({
       buttonIdentifierBackgroundTheme: "dark",
       buttonIdentifierColor: "#FFFFFF",
       buttonIdentifierOpacity: 0.7,
       buttonPanelOpacity: 0.35,
       identifierPositions: { horizontal: 0.35, vertical: 0.8 },
-      showButtonIdentifiers: true,
+      buttonIdentifierContentMode: "icon",
     });
 
     mounted.unmount();
@@ -311,7 +311,7 @@ describe("CustomizeScreen export surfaces", () => {
       buttonIdentifierOpacity: 0.7,
       buttonPanelOpacity: 0.35,
       identifierPositions: { horizontal: 0.35, vertical: 0.8 },
-      showButtonIdentifiers: true,
+      buttonIdentifierContentMode: "icon",
     });
   });
 

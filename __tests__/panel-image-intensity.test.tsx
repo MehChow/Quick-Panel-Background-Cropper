@@ -72,7 +72,7 @@ describe("panel image intensity", () => {
         previewScale={previewScale}
         previewUri="file:///preview.png"
         showOverlay={false}
-        showButtonIdentifiers
+        buttonIdentifierContentMode="both"
         transform={sharedTransform}
       />,
     );
@@ -100,7 +100,7 @@ describe("panel image intensity", () => {
         previewScale={previewScale}
         previewUri="file:///preview.png"
         showOverlay={false}
-        showButtonIdentifiers
+        buttonIdentifierContentMode="both"
         transform={sharedTransform}
       />,
     );
@@ -128,7 +128,7 @@ describe("panel image intensity", () => {
         previewScale={previewScale}
         previewUri="file:///preview.png"
         showOverlay={false}
-        showButtonIdentifiers
+        buttonIdentifierContentMode="both"
         transform={sharedTransform}
       />,
     );
@@ -156,7 +156,7 @@ describe("panel image intensity", () => {
         onImageLoad={jest.fn()}
         panel={createPanel("control")}
         side={100}
-        showButtonIdentifiers
+        buttonIdentifierContentMode="both"
         transform={transform}
       />,
     );
@@ -179,7 +179,7 @@ describe("panel image intensity", () => {
         onImageLoad={jest.fn()}
         panel={createPanel("button")}
         side={100}
-        showButtonIdentifiers
+        buttonIdentifierContentMode="both"
         transform={transform}
       />,
     );
@@ -210,7 +210,7 @@ describe("panel image intensity", () => {
         onImageLoad={jest.fn()}
         panel={panel}
         side={512}
-        showButtonIdentifiers
+        buttonIdentifierContentMode="both"
         transform={transform}
       />,
     );

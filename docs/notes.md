@@ -807,3 +807,20 @@ The advanced calibration help sheets regressed during the Fold/wide-screen respo
 - Physical-device QA is user-owned and remains unrun: rapid move/resize plus
   immediate Next, Combined overlap blocking, Controls-only/Buttons-only
   coverage, and Back/Next race checks still require a device.
+
+### 2026-08-17: Button identifier content modes
+
+- Buttons-only and Controls + Buttons now share a persisted `Both / Icon / None`
+  identifier content mode under `quick-panel.button-customize-settings`.
+- `Both` renders the existing icon and supported text, `Icon` keeps only the
+  icon while retaining safe horizontal positioning, and `None` renders no
+  identifier and disables identifier appearance and position controls.
+- Horizontal identifier measurements include the content mode, so switching
+  between `Both` and `Icon` hides the overlay until its new width is committed;
+  sequential export waits for that measurement in both modes but not in
+  `None`.
+- Existing `showButtonIdentifiers` values migrate to `both` or `none`; invalid
+  or missing modes default to `both`, and new saves omit the legacy boolean.
+- Preview, focused appearance preview, overall appearance preview, and export
+  continue to use the same panel geometry, image transform, intensity,
+  appearance, and normalized positions.

@@ -55,6 +55,21 @@
       "version": "0.5.0",
       "hash": "4a2a63e3",
       "addedAt": "2026-07-20T07:55:21.709Z"
+    },
+    "toggle-group": {
+      "version": "0.5.0",
+      "hash": "1de629db",
+      "addedAt": "2026-08-17T04:18:59.013Z"
+    },
+    "toggle": {
+      "version": "0.5.0",
+      "hash": "66d8fc4c",
+      "addedAt": "2026-08-17T04:18:59.013Z"
+    },
+    "separator": {
+      "version": "0.5.0",
+      "hash": "2f3da415",
+      "addedAt": "2026-08-17T05:54:43.217Z"
     }
   }
 }

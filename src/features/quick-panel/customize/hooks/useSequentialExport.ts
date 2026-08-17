@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import type { View } from "react-native";
 import { useShallow } from "zustand/react/shallow";
 import { getButtonIdentifierLayoutKind } from "../../model/button-identifier-layout";
+import type { ButtonIdentifierContentMode } from "../../model/button-identifier-content";
 import { translate } from "../../model/i18n";
 import type {
   GeneratedExport,
@@ -40,7 +41,7 @@ interface UseSequentialExportParams {
   image: PickedImage | null;
   isProcessingImage: boolean;
   preset: QuickPanelPreset;
-  showButtonIdentifiers: boolean;
+  buttonIdentifierContentMode: ButtonIdentifierContentMode;
 }
 
 interface ActiveSurface {
@@ -62,7 +63,7 @@ export function useSequentialExport({
   image,
   isProcessingImage,
   preset,
-  showButtonIdentifiers,
+  buttonIdentifierContentMode,
 }: UseSequentialExportParams): SequentialExportState {
   const router = useRouter();
   const { failExport, finishExport, markExportStarted } = useQuickPanelStore(
@@ -146,7 +147,7 @@ export function useSequentialExport({
     }
     const identifier = panel.buttonIdentifier;
     const waitsForIdentifier = Boolean(
-      showButtonIdentifiers
+      buttonIdentifierContentMode !== "none"
       && identifier
       && getButtonIdentifierLayoutKind(identifier) === "horizontal",
     );

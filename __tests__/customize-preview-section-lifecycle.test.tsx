@@ -105,9 +105,9 @@ const buttonControls = {
   setButtonIdentifierAppearance: jest.fn(),
   setButtonPanelOpacity: jest.fn(),
   setHorizontalIdentifierPosition: jest.fn(),
-  setShowButtonIdentifiers: jest.fn(),
+  setButtonIdentifierContentMode: jest.fn(),
   setVerticalIdentifierPosition: jest.fn(),
-  showButtonIdentifiers: true,
+  buttonIdentifierContentMode: "both",
   verticalIdentifierPosition: 50,
 } satisfies ButtonCustomizeControlState;
 

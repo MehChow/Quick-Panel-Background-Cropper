@@ -1,2 +1,1 @@
-New: Snap strength slider
-Enhancement: Snapping is now easier and more accurate
+New: Choose whether Button identifiers show icon and text, icon only, or nothing.

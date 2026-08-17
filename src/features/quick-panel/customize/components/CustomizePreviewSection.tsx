@@ -58,7 +58,7 @@ export function CustomizePreviewSection({
             preset={preset}
             previewUri={previewUri}
             maxHeight={previewSlotHeight || undefined}
-            showButtonIdentifiers={buttonControls.showButtonIdentifiers}
+            buttonIdentifierContentMode={buttonControls.buttonIdentifierContentMode}
             transform={transform}
           />
         )}
@@ -78,12 +78,14 @@ export function CustomizePreviewSection({
             buttonControls.commitHorizontalIdentifierPosition
           }
           onOpenButtonIdentifierAppearance={() => setAppearanceDialogOpen(true)}
-          onShowButtonIdentifiersChange={buttonControls.setShowButtonIdentifiers}
+          onButtonIdentifierContentModeChange={
+            buttonControls.setButtonIdentifierContentMode
+          }
           onVerticalIdentifierPositionChange={buttonControls.setVerticalIdentifierPosition}
           onVerticalIdentifierPositionCommit={
             buttonControls.commitVerticalIdentifierPosition
           }
-          showButtonIdentifiers={buttonControls.showButtonIdentifiers}
+          buttonIdentifierContentMode={buttonControls.buttonIdentifierContentMode}
           verticalIdentifierPosition={buttonControls.verticalIdentifierPosition}
         />
       ) : null}
@@ -103,7 +105,7 @@ export function CustomizePreviewSection({
           open
           preset={preset}
           previewUri={previewUri}
-          showButtonIdentifiers={buttonControls.showButtonIdentifiers}
+          buttonIdentifierContentMode={buttonControls.buttonIdentifierContentMode}
           transform={transform}
         />
       ) : null}

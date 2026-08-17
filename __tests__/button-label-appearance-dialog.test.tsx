@@ -171,7 +171,7 @@ const props = {
   open: true,
   preset,
   previewUri: "file://preview",
-  showButtonIdentifiers: true,
+  buttonIdentifierContentMode: "icon" as const,
   transform: { x: 0, y: 0, scale: 1 },
 };
 

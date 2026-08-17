@@ -178,14 +178,16 @@ const transform = { scale: 1, x: 0, y: 0 };
 
 function SequentialExportHarness({
   preset = buttonsPreset,
+  contentMode = "both",
 }: {
   preset?: QuickPanelPreset;
+  contentMode?: "both" | "icon" | "none";
 }) {
   const controller = useSequentialExport({
     image,
     isProcessingImage: false,
     preset,
-    showButtonIdentifiers: true,
+    buttonIdentifierContentMode: contentMode,
   });
   mockController = controller;
 
@@ -205,7 +207,7 @@ function SequentialExportHarness({
           image={image}
           markIdentifierReady={controller.markIdentifierReady}
           markImageReady={controller.markImageReady}
-          showButtonIdentifiers
+          buttonIdentifierContentMode={contentMode}
           transform={transform}
         />
       ) : null}
@@ -291,6 +293,28 @@ describe("sequential export", () => {
     mockController!.markIdentifierReady(staleToken);
 
     expect(mockCapturePanelExport).toHaveBeenCalledTimes(1);
+  });
+
+  it("waits for a new horizontal measurement in Icon mode", async () => {
+    render(<SequentialExportHarness contentMode="icon" />);
+    fireEvent.press(screen.getByText("start"));
+
+    await screen.findByTestId("export-surface-button-1");
+    act(() => screen.getByTestId("image-ready-button-1").props.onSignal());
+    expect(mockCapturePanelExport).not.toHaveBeenCalled();
+    act(() => screen.getByTestId("identifier-ready-button-1").props.onSignal());
+
+    await waitFor(() => expect(mockCapturePanelExport).toHaveBeenCalledTimes(1));
+  });
+
+  it("captures a horizontal Button without identifier readiness in None mode", async () => {
+    render(<SequentialExportHarness contentMode="none" />);
+    fireEvent.press(screen.getByText("start"));
+
+    await screen.findByTestId("export-surface-button-1");
+    act(() => screen.getByTestId("image-ready-button-1").props.onSignal());
+
+    await waitFor(() => expect(mockCapturePanelExport).toHaveBeenCalledTimes(1));
   });
 
   it("continues with the surface when prefetch fails", async () => {

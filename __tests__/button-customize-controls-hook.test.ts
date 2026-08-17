@@ -16,7 +16,7 @@ describe("useButtonCustomizeControls", () => {
       buttonIdentifierOpacity: 61,
       buttonPanelOpacity: 84,
       horizontalIdentifierPosition: 23,
-      showButtonIdentifiers: false,
+      buttonIdentifierContentMode: "icon",
       verticalIdentifierPosition: 77,
     });
 
@@ -30,7 +30,7 @@ describe("useButtonCustomizeControls", () => {
       buttonIdentifierOpacity: 61,
       buttonPanelOpacity: 84,
       horizontalIdentifierPosition: 23,
-      showButtonIdentifiers: false,
+      buttonIdentifierContentMode: "icon",
       verticalIdentifierPosition: 77,
     });
 
@@ -47,7 +47,7 @@ describe("useButtonCustomizeControls", () => {
       buttonIdentifierColor: "#336699",
       buttonIdentifierOpacity: 100,
       buttonPanelOpacity: 84,
-      showButtonIdentifiers: false,
+      buttonIdentifierContentMode: "icon",
     });
   });
 
@@ -58,7 +58,7 @@ describe("useButtonCustomizeControls", () => {
       buttonIdentifierOpacity: 70,
       buttonPanelOpacity: 84,
       horizontalIdentifierPosition: 50,
-      showButtonIdentifiers: true,
+      buttonIdentifierContentMode: "both",
       verticalIdentifierPosition: 50,
     });
     saveCombinedButtonImageIntensity(63);
@@ -76,7 +76,7 @@ describe("useButtonCustomizeControls", () => {
     act(() => {
       combined.result.current.setButtonPanelOpacity(42);
       combined.result.current.commitButtonPanelOpacity(42);
-      combined.result.current.setShowButtonIdentifiers(false);
+      combined.result.current.setButtonIdentifierContentMode("icon");
       combined.result.current.setHorizontalIdentifierPosition(23);
       combined.result.current.commitHorizontalIdentifierPosition(23);
       combined.result.current.setVerticalIdentifierPosition(77);
@@ -95,7 +95,7 @@ describe("useButtonCustomizeControls", () => {
       buttonIdentifierColor: "#1A2B3C",
       buttonIdentifierOpacity: 61,
       horizontalIdentifierPosition: 23,
-      showButtonIdentifiers: false,
+      buttonIdentifierContentMode: "icon",
       verticalIdentifierPosition: 77,
     });
 
@@ -108,7 +108,7 @@ describe("useButtonCustomizeControls", () => {
       buttonIdentifierColor: "#1A2B3C",
       buttonIdentifierOpacity: 61,
       horizontalIdentifierPosition: 23,
-      showButtonIdentifiers: false,
+      buttonIdentifierContentMode: "icon",
       verticalIdentifierPosition: 77,
     });
   });
@@ -130,7 +130,7 @@ describe("useButtonCustomizeControls", () => {
       buttonIdentifierOpacity: 70,
       buttonPanelOpacity: 78,
       horizontalIdentifierPosition: 50,
-      showButtonIdentifiers: true,
+      buttonIdentifierContentMode: "both",
       verticalIdentifierPosition: 50,
     });
     const hook = renderHook(() =>
