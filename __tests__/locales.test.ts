@@ -1,18 +1,18 @@
 import { enLocale, zhLocale } from "../i18next/resources";
 
 describe("release announcement locale strings", () => {
-  it("defines the v1.3.3 updates in English and Traditional Chinese", () => {
-    expect(enLocale.translation.releaseAnnouncement.v1_3_3).toEqual({
-      title: "v1.3.3 Updates 🌟\n",
-      body: "• New: Snap strength slider.\n• Enhancement: Snapping is now easier and more accurate.",
+  it("defines the v1.4.0 updates in English and Traditional Chinese", () => {
+    expect(enLocale.translation.releaseAnnouncement.v1_4_0).toEqual({
+      title: "v1.4.0 Updates 🌟\n",
+      body: "• New: Choose whether Button identifiers show icon and text, icon only, or nothing.",
       gotIt: "Got it",
-      mediaAccessibilityLabel: "Snap strength slider and improved snapping",
+      mediaAccessibilityLabel: "Button identifier display options in Customize",
     });
-    expect(zhLocale.translation.releaseAnnouncement.v1_3_3).toEqual({
-      title: "v1.3.3 更新內容 🌟\n",
-      body: "• 新功能：吸附強度滑桿。\n• 優化：吸附更容易、更準確。",
+    expect(zhLocale.translation.releaseAnnouncement.v1_4_0).toEqual({
+      title: "v1.4.0 更新內容 🌟\n",
+      body: "• 新功能：可選擇按鈕識別顯示圖示與文字、僅圖示，或不顯示。",
       gotIt: "知道了",
-      mediaAccessibilityLabel: "吸附強度滑桿及更容易、更準確的吸附功能",
+      mediaAccessibilityLabel: "自訂頁面的按鈕識別顯示選項",
     });
   });
 });

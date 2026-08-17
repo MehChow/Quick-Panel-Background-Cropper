@@ -22,6 +22,12 @@ const zh = {
         gotIt: "知道了",
         mediaAccessibilityLabel: "吸附強度滑桿及更容易、更準確的吸附功能",
       },
+      v1_4_0: {
+        title: "v1.4.0 更新內容 🌟\n",
+        body: "• 新功能：可選擇按鈕識別顯示圖示與文字、僅圖示，或不顯示。",
+        gotIt: "知道了",
+        mediaAccessibilityLabel: "自訂頁面的按鈕識別顯示選項",
+      },
     },
     landing: {
       startCustomizing: "開始自訂",

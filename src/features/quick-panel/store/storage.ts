@@ -47,7 +47,8 @@ const snapSensitivityKey = "quick-panel.snap-sensitivity";
 const lastImageDiskCacheClearAtKey =
   "quick-panel.last-image-disk-cache-clear-at";
 
-export const activeReleaseAnnouncementId = "v1.3.3-snap-strength-announcement";
+export const activeReleaseAnnouncementId =
+  "v1.4.0-button-identifier-content-modes-announcement";
 
 export const supportedLanguages = ["en", "zh"] as const;
 export type SupportedLanguage = (typeof supportedLanguages)[number];

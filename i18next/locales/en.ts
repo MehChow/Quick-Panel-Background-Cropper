@@ -24,6 +24,12 @@ const en = {
         gotIt: "Got it",
         mediaAccessibilityLabel: "Snap strength slider and improved snapping",
       },
+      v1_4_0: {
+        title: "v1.4.0 Updates 🌟\n",
+        body: "• New: Choose whether Button identifiers show icon and text, icon only, or nothing.",
+        gotIt: "Got it",
+        mediaAccessibilityLabel: "Button identifier display options in Customize",
+      },
     },
     landing: {
       startCustomizing: "Start customizing",
