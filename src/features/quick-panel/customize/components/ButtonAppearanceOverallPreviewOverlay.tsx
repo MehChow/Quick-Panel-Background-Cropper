@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { Pressable, useWindowDimensions, View } from "react-native";
 import type { ButtonIdentifierPositions } from "../../model/button-identifier-layout";
+import type { ButtonIdentifierContentMode } from "../../model/button-identifier-content";
 import type {
   ImageTransform,
   PickedImage,
@@ -21,7 +22,7 @@ interface ButtonAppearanceOverallPreviewOverlayProps {
   onDismiss: () => void;
   preset: QuickPanelPreset;
   previewUri: string;
-  showButtonIdentifiers: boolean;
+  buttonIdentifierContentMode: ButtonIdentifierContentMode;
   transform: ImageTransform;
 }
 
@@ -62,7 +63,7 @@ export function ButtonAppearanceOverallPreviewOverlay(
           preset={props.preset}
           previewUri={props.previewUri}
           showAppGradientBackground
-          showButtonIdentifiers={props.showButtonIdentifiers}
+          buttonIdentifierContentMode={props.buttonIdentifierContentMode}
           transform={props.transform}
         />
       </View>

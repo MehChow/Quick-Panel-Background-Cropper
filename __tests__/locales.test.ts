@@ -44,9 +44,24 @@ describe("customize locale strings", () => {
   });
 
   it("defines Button identifier controls in English and Chinese", () => {
-    expect(enLocale.translation.customize.showButtonIdentifiers).toBe(
+    expect(enLocale.translation.customize.buttonIdentifierContentTitle).toBe(
       "Show labels",
     );
+    expect(enLocale.translation.customize.buttonIdentifierContentBoth).toBe(
+      "Both",
+    );
+    expect(enLocale.translation.customize.buttonIdentifierContentIcon).toBe(
+      "Icon",
+    );
+    expect(enLocale.translation.customize.buttonIdentifierContentNone).toBe(
+      "None",
+    );
+    expect(enLocale.translation.customize.buttonIdentifierContentBothAccessibility)
+      .toBe("Show icon and text");
+    expect(enLocale.translation.customize.buttonIdentifierContentIconAccessibility)
+      .toBe("Show icon only");
+    expect(enLocale.translation.customize.buttonIdentifierContentNoneAccessibility)
+      .toBe("Hide icon and text");
     expect(enLocale.translation.customize.buttonIdentifierOpacity).toBe(
       "Label intensity",
     );
@@ -85,7 +100,16 @@ describe("customize locale strings", () => {
     );
     expect(enLocale.translation.customize.buttonIdentifiersOn).toBe("On");
     expect(enLocale.translation.customize.buttonIdentifiersOff).toBe("Off");
-    expect(zhLocale.translation.customize.showButtonIdentifiers).toBeTruthy();
+    expect(zhLocale.translation.customize.buttonIdentifierContentTitle).toBeTruthy();
+    expect(zhLocale.translation.customize.buttonIdentifierContentBoth).toBe("全部");
+    expect(zhLocale.translation.customize.buttonIdentifierContentIcon).toBe("圖示");
+    expect(zhLocale.translation.customize.buttonIdentifierContentNone).toBe("無");
+    expect(zhLocale.translation.customize.buttonIdentifierContentBothAccessibility)
+      .toBeTruthy();
+    expect(zhLocale.translation.customize.buttonIdentifierContentIconAccessibility)
+      .toBeTruthy();
+    expect(zhLocale.translation.customize.buttonIdentifierContentNoneAccessibility)
+      .toBeTruthy();
     expect(zhLocale.translation.customize.buttonIdentifierOpacity).toBeTruthy();
     expect(
       zhLocale.translation.customize.horizontalIdentifierPosition,

@@ -15,6 +15,10 @@ import {
   normalizeSnapSensitivity,
   type SnapSensitivity,
 } from "../model/snap-sensitivity";
+import {
+  normalizeButtonIdentifierContentMode,
+  type ButtonIdentifierContentMode,
+} from "../model/button-identifier-content";
 import type {
   AdvancedButtonsCalibration,
   AdvancedCalibration,
@@ -68,20 +72,20 @@ export interface SavedCalibrations {
 export interface ButtonCustomizeSettings {
   buttonIdentifierBackgroundTheme: ButtonIdentifierBackgroundTheme;
   buttonIdentifierColor: string;
+  buttonIdentifierContentMode: ButtonIdentifierContentMode;
   buttonIdentifierOpacity: number;
   buttonPanelOpacity: number;
   horizontalIdentifierPosition: number;
-  showButtonIdentifiers: boolean;
   verticalIdentifierPosition: number;
 }
 
 export const defaultButtonCustomizeSettings: ButtonCustomizeSettings = {
   buttonIdentifierBackgroundTheme: defaultButtonIdentifierBackgroundTheme,
   buttonIdentifierColor: defaultButtonIdentifierColor,
+  buttonIdentifierContentMode: "both",
   buttonIdentifierOpacity: 70,
   buttonPanelOpacity: 78,
   horizontalIdentifierPosition: 50,
-  showButtonIdentifiers: true,
   verticalIdentifierPosition: 50,
 };
 
@@ -262,7 +266,9 @@ function parseButtonCustomizeSettings(
 ): ButtonCustomizeSettings {
   try {
     const parsed = value
-      ? (JSON.parse(value) as Partial<ButtonCustomizeSettings>)
+      ? (JSON.parse(value) as Partial<ButtonCustomizeSettings> & {
+        showButtonIdentifiers?: unknown;
+      })
       : {};
     if (!parsed || typeof parsed !== "object") {
       return defaultButtonCustomizeSettings;
@@ -275,6 +281,17 @@ function parseButtonCustomizeSettings(
       buttonIdentifierColor:
         normalizeButtonIdentifierColor(parsed.buttonIdentifierColor) ??
         defaultButtonIdentifierColor,
+      buttonIdentifierContentMode:
+        normalizeButtonIdentifierContentMode(
+          parsed.buttonIdentifierContentMode,
+        )
+        ?? (
+          typeof parsed.showButtonIdentifiers === "boolean"
+            ? parsed.showButtonIdentifiers
+              ? "both"
+              : "none"
+            : defaultButtonCustomizeSettings.buttonIdentifierContentMode
+        ),
       buttonIdentifierOpacity: parsePercentage(
         parsed.buttonIdentifierOpacity,
         defaultButtonCustomizeSettings.buttonIdentifierOpacity,
@@ -287,10 +304,6 @@ function parseButtonCustomizeSettings(
         parsed.horizontalIdentifierPosition,
         defaultButtonCustomizeSettings.horizontalIdentifierPosition,
       ),
-      showButtonIdentifiers:
-        typeof parsed.showButtonIdentifiers === "boolean"
-          ? parsed.showButtonIdentifiers
-          : defaultButtonCustomizeSettings.showButtonIdentifiers,
       verticalIdentifierPosition: parsePercentage(
         parsed.verticalIdentifierPosition,
         defaultButtonCustomizeSettings.verticalIdentifierPosition,

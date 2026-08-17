@@ -67,7 +67,7 @@ const props = {
   panel: currentPanel,
   preset,
   previewUri: "file://preview",
-  showButtonIdentifiers: true,
+  buttonIdentifierContentMode: "icon" as const,
   transform: { x: 12, y: -8, scale: 1.4 },
 };
 
@@ -95,7 +95,7 @@ describe("FocusedButtonAppearancePreview", () => {
       previewUri: "file://preview",
       previewWidth: 320,
       showAppGradientBackground: true,
-      showButtonIdentifiers: true,
+      buttonIdentifierContentMode: "icon",
       transform: { x: 12, y: -8, scale: 1.4 },
     });
     expect(screen.getByTestId("focused-button-preview-stage").props.preset)

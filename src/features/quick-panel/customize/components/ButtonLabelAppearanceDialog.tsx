@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { colorKit } from "reanimated-color-picker";
 import { View } from "react-native";
 import type { ButtonIdentifierPositions } from "../../model/button-identifier-layout";
+import type { ButtonIdentifierContentMode } from "../../model/button-identifier-content";
 import type {
   ImageTransform,
   PickedImage,
@@ -36,7 +37,7 @@ interface ButtonLabelAppearanceDialogProps {
   open: boolean;
   preset: QuickPanelPreset;
   previewUri: string;
-  showButtonIdentifiers: boolean;
+  buttonIdentifierContentMode: ButtonIdentifierContentMode;
   transform: ImageTransform;
 }
 
@@ -81,7 +82,7 @@ export function ButtonLabelAppearanceDialog(props: ButtonLabelAppearanceDialogPr
       onDismiss={() => setIsOverallPreviewOpen(false)}
       preset={props.preset}
       previewUri={props.previewUri}
-      showButtonIdentifiers={props.showButtonIdentifiers}
+      buttonIdentifierContentMode={props.buttonIdentifierContentMode}
       transform={props.transform}
     />
   ) : undefined;
@@ -110,7 +111,7 @@ export function ButtonLabelAppearanceDialog(props: ButtonLabelAppearanceDialogPr
               panel={focusedPanel}
               preset={props.preset}
               previewUri={props.previewUri}
-              showButtonIdentifiers={props.showButtonIdentifiers}
+              buttonIdentifierContentMode={props.buttonIdentifierContentMode}
               transform={props.transform}
             />
             <ButtonAppearanceInspectorControls

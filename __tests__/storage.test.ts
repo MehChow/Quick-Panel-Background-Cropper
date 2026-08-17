@@ -170,7 +170,7 @@ describe("storage", () => {
       buttonIdentifierOpacity: 61,
       buttonPanelOpacity: 84,
       horizontalIdentifierPosition: 23,
-      showButtonIdentifiers: false,
+      buttonIdentifierContentMode: "icon",
       verticalIdentifierPosition: 77,
     };
 
@@ -178,6 +178,36 @@ describe("storage", () => {
 
     expect(loadButtonCustomizeSettings()).toEqual(settings);
   });
+
+  it.each([
+    [true, "both"],
+    [false, "none"],
+  ] as const)("migrates legacy identifier visibility %s", (saved, expected) => {
+    const mmkvStore = (globalThis as typeof globalThis & MmkvTestGlobal)
+      .__mmkvStore;
+    mmkvStore?.set(
+      "quick-panel.button-customize-settings",
+      JSON.stringify({ showButtonIdentifiers: saved }),
+    );
+
+    expect(loadButtonCustomizeSettings().buttonIdentifierContentMode)
+      .toBe(expected);
+  });
+
+  it.each(["text", "", 1, null])(
+    "defaults invalid identifier content mode %p to both",
+    (saved) => {
+      const mmkvStore = (globalThis as typeof globalThis & MmkvTestGlobal)
+        .__mmkvStore;
+      mmkvStore?.set(
+        "quick-panel.button-customize-settings",
+        JSON.stringify({ buttonIdentifierContentMode: saved }),
+      );
+
+      expect(loadButtonCustomizeSettings().buttonIdentifierContentMode)
+        .toBe("both");
+    },
+  );
 
   it.each([
     [

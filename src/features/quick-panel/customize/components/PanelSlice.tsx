@@ -5,6 +5,7 @@ import Animated, {
   useAnimatedStyle,
 } from "react-native-reanimated";
 import type { ButtonIdentifierPositions } from "../../model/button-identifier-layout";
+import type { ButtonIdentifierContentMode } from "../../model/button-identifier-content";
 import type {
   CustomizationMode,
   ImageTransform,
@@ -28,7 +29,7 @@ interface PanelSliceProps {
   buttonIdentifierOpacity: number;
   buttonPanelOpacity: number;
   identifierPositions: ButtonIdentifierPositions;
-  showButtonIdentifiers: boolean;
+  buttonIdentifierContentMode: ButtonIdentifierContentMode;
   showOverlay: boolean;
   mode: CustomizationMode;
   panel: PanelDefinition;
@@ -48,7 +49,7 @@ export function PanelSlice({
   buttonIdentifierOpacity,
   buttonPanelOpacity,
   identifierPositions,
-  showButtonIdentifiers,
+  buttonIdentifierContentMode,
   showOverlay,
   mode,
   panel,
@@ -106,7 +107,9 @@ export function PanelSlice({
           }}
         />
       </Animated.View>
-      {panel.family === "button" && panel.buttonIdentifier ? (
+      {buttonIdentifierContentMode !== "none"
+        && panel.family === "button"
+        && panel.buttonIdentifier ? (
         <ButtonIdentifierOverlay
           animatedAppearance={animatedButtonIdentifierAppearance}
           backgroundTheme={buttonIdentifierBackgroundTheme}
@@ -119,7 +122,8 @@ export function PanelSlice({
           color={buttonIdentifierColor}
           identifier={panel.buttonIdentifier}
           label={panel.label}
-          opacity={showButtonIdentifiers ? buttonIdentifierOpacity : 0}
+          opacity={buttonIdentifierOpacity}
+          contentMode={buttonIdentifierContentMode}
           positions={identifierPositions}
           referenceCellSize={panel.buttonIdentifier.referenceCellSize * layoutScale}
         />

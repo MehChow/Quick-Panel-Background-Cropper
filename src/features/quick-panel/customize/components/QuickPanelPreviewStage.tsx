@@ -2,6 +2,7 @@ import Animated, { type SharedValue } from "react-native-reanimated";
 import { type LayoutChangeEvent, StyleSheet, View } from "react-native";
 import { AppGradientBackground } from "../../shared/AppGradientBackground";
 import type { ButtonIdentifierPositions } from "../../model/button-identifier-layout";
+import type { ButtonIdentifierContentMode } from "../../model/button-identifier-content";
 import type {
   ImageTransform,
   PanelRect,
@@ -30,7 +31,7 @@ interface QuickPanelPreviewStageProps {
   previewWidth: number;
   preset: QuickPanelPreset;
   showAppGradientBackground?: boolean;
-  showButtonIdentifiers: boolean;
+  buttonIdentifierContentMode: ButtonIdentifierContentMode;
   transform: SharedValue<ImageTransform> | ImageTransform;
 }
 
@@ -85,7 +86,7 @@ export function QuickPanelPreviewStage(props: QuickPanelPreviewStageProps) {
             panel={props.preset.panels[id]}
             previewScale={props.previewScale}
             previewUri={props.previewUri}
-            showButtonIdentifiers={props.showButtonIdentifiers}
+            buttonIdentifierContentMode={props.buttonIdentifierContentMode}
             showOverlay
             transform={props.transform}
           />

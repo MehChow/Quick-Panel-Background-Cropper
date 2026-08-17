@@ -36,7 +36,7 @@ export function CustomizeScreen() {
     image,
     isProcessingImage,
     preset: activePreset,
-    showButtonIdentifiers: buttonControls.showButtonIdentifiers,
+    buttonIdentifierContentMode: buttonControls.buttonIdentifierContentMode,
   });
   const recalibrate = () => {
     if (selectedMode === "advanced") {
@@ -122,7 +122,7 @@ export function CustomizeScreen() {
           markIdentifierReady={sequentialExport.markIdentifierReady}
           markImageReady={sequentialExport.markImageReady}
           transform={transform}
-          showButtonIdentifiers={buttonControls.showButtonIdentifiers}
+          buttonIdentifierContentMode={buttonControls.buttonIdentifierContentMode}
         />
       ) : null}
       {isHelpOpen ? <CustomizeImagePlacementHelpSheet onClose={() => setIsHelpOpen(false)} /> : null}

@@ -79,7 +79,7 @@ describe("QuickPanelPreview layout state", () => {
         onTransformChange={jest.fn()}
         preset={preset}
         previewUri="file:///preview.png"
-        showButtonIdentifiers
+        buttonIdentifierContentMode="both"
         transform={transform}
       />,
     );
@@ -124,7 +124,7 @@ describe("QuickPanelPreview layout state", () => {
         onTransformChange={jest.fn()}
         preset={preset}
         previewUri="file:///preview.png"
-        showButtonIdentifiers
+        buttonIdentifierContentMode="both"
         transform={transform}
       />,
     );

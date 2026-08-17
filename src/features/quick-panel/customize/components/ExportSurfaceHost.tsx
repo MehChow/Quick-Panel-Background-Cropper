@@ -1,6 +1,7 @@
 import type { RefObject } from "react";
 import { PixelRatio, View } from "react-native";
 import type { ButtonIdentifierPositions } from "../../model/button-identifier-layout";
+import type { ButtonIdentifierContentMode } from "../../model/button-identifier-content";
 import { exportSidePixels } from "../../model/panel-geometry";
 import type {
   ImageTransform,
@@ -23,7 +24,7 @@ interface ExportSurfaceHostProps {
   image: PickedImage;
   markIdentifierReady: (token: ExportSurfaceToken) => void;
   markImageReady: (token: ExportSurfaceToken) => void;
-  showButtonIdentifiers: boolean;
+  buttonIdentifierContentMode: ButtonIdentifierContentMode;
   transform: ImageTransform;
 }
 
@@ -39,7 +40,7 @@ export function ExportSurfaceHost({
   image,
   markIdentifierReady,
   markImageReady,
-  showButtonIdentifiers,
+  buttonIdentifierContentMode,
   transform,
 }: ExportSurfaceHostProps) {
   const side = exportSidePixels / PixelRatio.get();
@@ -69,7 +70,7 @@ export function ExportSurfaceHost({
         onIdentifierPositionReady={() => markIdentifierReady(activeToken)}
         onImageLoad={() => markImageReady(activeToken)}
         panel={activePanel}
-        showButtonIdentifiers={showButtonIdentifiers}
+        buttonIdentifierContentMode={buttonIdentifierContentMode}
         side={side}
         transform={transform}
       />

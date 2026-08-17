@@ -66,7 +66,7 @@ describe("ExportSurfaceHost readiness", () => {
         image={{ height: 200, uri: "file:///original.png", width: 100 }}
         markIdentifierReady={markIdentifierReady}
         markImageReady={markImageReady}
-        showButtonIdentifiers
+        buttonIdentifierContentMode="both"
         transform={{ scale: 1, x: 0, y: 0 }}
       />,
     );
@@ -75,7 +75,7 @@ describe("ExportSurfaceHost readiness", () => {
     expect(mockSurfaceProps).toMatchObject({
       identifierPositions: { horizontal: 0.2, vertical: 0.8 },
       panel,
-      showButtonIdentifiers: true,
+      buttonIdentifierContentMode: "both",
     });
     act(() => screen.getByTestId("current-image-ready").props.onSignal());
     act(() => screen.getByTestId("current-identifier-ready").props.onSignal());

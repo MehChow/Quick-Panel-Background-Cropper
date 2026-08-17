@@ -20,7 +20,7 @@ export function StaticQuickPanelPreview({
   preset,
   previewUri,
   showAppGradientBackground = false,
-  showButtonIdentifiers,
+  buttonIdentifierContentMode,
   transform,
 }: Omit<QuickPanelPreviewProps, "interactive">) {
   const { width: windowWidth, height: windowHeight } = useWindowDimensions();
@@ -62,7 +62,7 @@ export function StaticQuickPanelPreview({
           previewUri={previewUri}
           previewWidth={previewWidth}
           showAppGradientBackground={showAppGradientBackground}
-          showButtonIdentifiers={showButtonIdentifiers}
+          buttonIdentifierContentMode={buttonIdentifierContentMode}
           transform={transform}
         />
       </View>

@@ -2,6 +2,7 @@ import { GestureDetector } from "react-native-gesture-handler";
 import { useState } from "react";
 import { useWindowDimensions, View } from "react-native";
 import type { ButtonIdentifierPositions } from "../../model/button-identifier-layout";
+import type { ButtonIdentifierContentMode } from "../../model/button-identifier-content";
 import type {
   ImageTransform,
   PickedImage,
@@ -22,7 +23,7 @@ export interface QuickPanelPreviewProps {
   buttonPanelOpacity: number;
   identifierPositions: ButtonIdentifierPositions;
   interactive?: boolean;
-  showButtonIdentifiers: boolean;
+  buttonIdentifierContentMode: ButtonIdentifierContentMode;
   image: PickedImage;
   previewUri: string;
   preset: QuickPanelPreset;
@@ -56,7 +57,7 @@ function InteractiveQuickPanelPreview({
   onTransformChange,
   preset,
   showAppGradientBackground = false,
-  showButtonIdentifiers,
+  buttonIdentifierContentMode,
   maxHeight,
 }: Omit<QuickPanelPreviewProps, "interactive">) {
   const { width: windowWidth, height: windowHeight } = useWindowDimensions();
@@ -103,7 +104,7 @@ function InteractiveQuickPanelPreview({
       previewUri={previewUri}
       previewWidth={previewWidth}
       showAppGradientBackground={showAppGradientBackground}
-      showButtonIdentifiers={showButtonIdentifiers}
+      buttonIdentifierContentMode={buttonIdentifierContentMode}
       transform={sharedTransform}
     />
   );

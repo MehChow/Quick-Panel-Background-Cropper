@@ -31,20 +31,20 @@ const baseProps = {
   horizontalIdentifierPosition: 50,
   onButtonPanelOpacityChange: jest.fn(),
   onButtonPanelOpacityCommit: jest.fn(),
+  onButtonIdentifierContentModeChange: jest.fn(),
   onHorizontalIdentifierPositionChange: jest.fn(),
   onHorizontalIdentifierPositionCommit: jest.fn(),
   onOpenButtonIdentifierAppearance: jest.fn(),
-  onShowButtonIdentifiersChange: jest.fn(),
   onVerticalIdentifierPositionChange: jest.fn(),
   onVerticalIdentifierPositionCommit: jest.fn(),
-  showButtonIdentifiers: true,
+  buttonIdentifierContentMode: "both" as const,
   verticalIdentifierPosition: 50,
 };
 
 describe("ButtonCustomizeControls", () => {
   beforeEach(() => jest.clearAllMocks());
 
-  it("shows Image and available position tabs without Labels", () => {
+  it("shows Image and available position tabs with Both content", () => {
     const screen = render(<ButtonCustomizeControls {...baseProps} />);
 
     expect(
@@ -70,6 +70,9 @@ describe("ButtonCustomizeControls", () => {
     expect(screen.getByTestId("button-adjustment-horizontal-tab")).toBeTruthy();
     expect(screen.getByTestId("button-adjustment-vertical-tab")).toBeTruthy();
     expect(screen.queryByTestId("button-adjustment-identifier-tab")).toBeNull();
+    expect(
+      screen.getByTestId("button-content-both").props.accessibilityState,
+    ).toEqual({ selected: true });
 
     fireEvent.press(screen.getByTestId("button-adjustment-horizontal-tab"));
     expect(
@@ -91,25 +94,66 @@ describe("ButtonCustomizeControls", () => {
     expect(baseProps.onOpenButtonIdentifierAppearance).toHaveBeenCalledTimes(1);
   });
 
-  it("dims and disables the swatch while labels are hidden", () => {
-    const screen = render(
-      <ButtonCustomizeControls {...baseProps} showButtonIdentifiers={false} />,
-    );
-    const trigger = screen.getByTestId("button-identifier-color-trigger");
-    expect(trigger.props.accessibilityState).toEqual({ disabled: true });
-    expect(getButtonIdentifierColorButtonStyle(false, true)).toEqual({ opacity: 0.45 });
-    fireEvent.press(trigger);
-    expect(baseProps.onOpenButtonIdentifierAppearance).not.toHaveBeenCalled();
+  it("uses compact icons for label content choices beside the title", () => {
+    const screen = render(<ButtonCustomizeControls {...baseProps} />);
+
+    expect(screen.getByTestId("button-identifier-content-row").props.className)
+      .toContain("flex-row");
+    expect(screen.getByTestId("button-identifier-content-title").props.className)
+      .toContain("flex-1");
+    expect(screen.getByTestId("button-content-both-icon").props.name).toBe("scan-text");
+    expect(screen.getByTestId("button-content-icon-icon").props.name).toBe("image");
+    expect(screen.getByTestId("button-content-none-icon").props.name).toBe("eye-off");
+    expect(screen.getByTestId("button-content-both").props.className)
+      .toContain("bg-transparent");
+    expect(screen.getByTestId("button-content-both").props.className)
+      .not.toContain("bg-[#f5d6aa]");
+    expect(screen.getByTestId("button-content-both").props.className).toContain("p-0");
+    expect(screen.getByTestId("button-content-none").props.className).toContain("p-0");
+    expect(screen.getByTestId("button-content-separator-1")).toBeTruthy();
+    expect(screen.getByTestId("button-content-separator-2")).toBeTruthy();
+    expect(screen.getByTestId("button-content-both-icon").props.color).toBe("#f5d6aa");
+    expect(screen.getByTestId("button-content-icon-icon").props.color).toBe("#000000");
+    expect(screen.getByTestId("button-content-none-icon").props.color).toBe("#000000");
+    expect(screen.queryByText("customize.buttonIdentifierContentBoth")).toBeNull();
+    expect(screen.queryByText("customize.buttonIdentifierContentIcon")).toBeNull();
+    expect(screen.queryByText("customize.buttonIdentifierContentNone")).toBeNull();
   });
 
-  it("returns to Image when labels are hidden", () => {
+  it("keeps the swatch and position tabs enabled for Icon content", () => {
+    const screen = render(
+      <ButtonCustomizeControls {...baseProps} buttonIdentifierContentMode="icon" />,
+    );
+    const trigger = screen.getByTestId("button-identifier-color-trigger");
+    expect(trigger.props.accessibilityState).toEqual({ disabled: false });
+    expect(getButtonIdentifierColorButtonStyle(false, false)).toEqual({ opacity: 1 });
+    expect(screen.getByTestId("button-adjustment-horizontal-tab").props.accessibilityState)
+      .toMatchObject({ disabled: false });
+  });
+
+  it("dims controls and returns to Image when content is None", () => {
     const screen = render(<ButtonCustomizeControls {...baseProps} />);
     fireEvent.press(screen.getByTestId("button-adjustment-horizontal-tab"));
     screen.rerender(
-      <ButtonCustomizeControls {...baseProps} showButtonIdentifiers={false} />,
+      <ButtonCustomizeControls {...baseProps} buttonIdentifierContentMode="none" />,
     );
     expect(screen.getByTestId("button-adjustment-image-tab").props.accessibilityState)
       .toMatchObject({ selected: true });
+    expect(screen.getByTestId("button-identifier-color-trigger").props.accessibilityState)
+      .toEqual({ disabled: true });
+    expect(screen.getByTestId("button-adjustment-horizontal-tab").props.accessibilityState)
+      .toMatchObject({ disabled: true });
+  });
+
+  it("routes content mode changes through the typed callback", () => {
+    const screen = render(<ButtonCustomizeControls {...baseProps} />);
+
+    fireEvent.press(screen.getByTestId("button-content-icon"));
+
+    expect(baseProps.onButtonIdentifierContentModeChange)
+      .toHaveBeenCalledWith("icon");
+    expect(screen.getByTestId("button-content-icon").props.accessibilityLabel)
+      .toBe("customize.buttonIdentifierContentIconAccessibility");
   });
 
   it("routes each slider completion to its matching persistence callback", () => {
