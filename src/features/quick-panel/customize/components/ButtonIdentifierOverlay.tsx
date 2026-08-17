@@ -46,9 +46,6 @@ export function ButtonIdentifierOverlay({
   positions,
   referenceCellSize,
 }: ButtonIdentifierOverlayProps) {
-  if (contentMode === "none") {
-    return null;
-  }
   const layout = getButtonIdentifierLayout(bounds, identifier, referenceCellSize);
   const measurementKey = [
     bounds.width,
@@ -67,6 +64,10 @@ export function ButtonIdentifierOverlay({
       onPositionReady?.();
     }
   }, [layout.kind, measuredWidth, onPositionReady, positions.horizontal]);
+
+  if (contentMode === "none") {
+    return null;
+  }
 
   const handleHorizontalLayout = (event: LayoutChangeEvent) => {
     const width = event.nativeEvent.layout.width;
