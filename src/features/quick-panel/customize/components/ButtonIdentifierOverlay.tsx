@@ -6,6 +6,7 @@ import {
   type ButtonIdentifierPositions,
 } from "../../model/button-identifier-layout";
 import type { ButtonIdentifierDefinition } from "../../model/types";
+import type { ButtonIdentifierContentMode } from "../../model/button-identifier-content";
 import type { ButtonIdentifierBackgroundTheme } from "../button-identifier-color";
 import { ButtonIdentifierVisuals } from "./ButtonIdentifierVisuals";
 import { AnimatedButtonIdentifierFrame } from "./AnimatedButtonIdentifierFrame";
@@ -23,6 +24,7 @@ interface ButtonIdentifierOverlayProps {
   backgroundTheme?: ButtonIdentifierBackgroundTheme;
   bounds: ButtonIdentifierBounds;
   color?: string;
+  contentMode?: ButtonIdentifierContentMode;
   identifier: ButtonIdentifierDefinition;
   label: string;
   onPositionReady?: () => void;
@@ -36,6 +38,7 @@ export function ButtonIdentifierOverlay({
   backgroundTheme = "dark",
   bounds,
   color = "#FFFFFF",
+  contentMode = "both",
   identifier,
   label,
   onPositionReady,
@@ -49,6 +52,7 @@ export function ButtonIdentifierOverlay({
     layout.fontSize,
     layout.iconBackgroundSize,
     label,
+    contentMode,
   ].join(":");
   const [measurement, setMeasurement] = useState<HorizontalMeasurement | null>(null);
   const measuredWidth = measurement?.key === measurementKey
@@ -60,6 +64,10 @@ export function ButtonIdentifierOverlay({
       onPositionReady?.();
     }
   }, [layout.kind, measuredWidth, onPositionReady, positions.horizontal]);
+
+  if (contentMode === "none") {
+    return null;
+  }
 
   const handleHorizontalLayout = (event: LayoutChangeEvent) => {
     const width = event.nativeEvent.layout.width;
@@ -73,6 +81,7 @@ export function ButtonIdentifierOverlay({
       identifier={identifier}
       label={label}
       layout={layout}
+      contentMode={contentMode}
     />
   ) : (
     <ButtonIdentifierVisuals
@@ -81,6 +90,7 @@ export function ButtonIdentifierOverlay({
       identifier={identifier}
       label={label}
       layout={layout}
+      contentMode={contentMode}
     />
   );
   const content = (

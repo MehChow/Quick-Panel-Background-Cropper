@@ -76,7 +76,7 @@ const baseProps = {
   previewScale: sharedScale,
   previewUri: "file:///preview.png",
   previewWidth: 100,
-  showButtonIdentifiers: true,
+  buttonIdentifierContentMode: "both" as const,
   transform: sharedTransform,
 };
 

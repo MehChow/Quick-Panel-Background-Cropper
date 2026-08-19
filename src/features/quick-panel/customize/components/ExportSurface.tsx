@@ -11,6 +11,7 @@ import type {
   PanelDefinition,
   PickedImage,
 } from "../../model/types";
+import type { ButtonIdentifierContentMode } from "../../model/button-identifier-content";
 import type { ButtonIdentifierBackgroundTheme } from "../button-identifier-color";
 import { ButtonIdentifierOverlay } from "./ButtonIdentifierOverlay";
 
@@ -26,7 +27,7 @@ interface ExportSurfaceProps {
   side: number;
   onIdentifierPositionReady: () => void;
   onImageLoad: () => void;
-  showButtonIdentifiers: boolean;
+  buttonIdentifierContentMode: ButtonIdentifierContentMode;
 }
 
 export const ExportSurface = forwardRef<View, ExportSurfaceProps>(
@@ -43,7 +44,7 @@ export const ExportSurface = forwardRef<View, ExportSurfaceProps>(
       side,
       onIdentifierPositionReady,
       onImageLoad,
-      showButtonIdentifiers,
+      buttonIdentifierContentMode,
     },
     ref,
   ) {
@@ -74,11 +75,14 @@ export const ExportSurface = forwardRef<View, ExportSurfaceProps>(
             },
           ]}
         />
-        {showButtonIdentifiers && panel.family === "button" && panel.buttonIdentifier ? (
+        {buttonIdentifierContentMode !== "none"
+          && panel.family === "button"
+          && panel.buttonIdentifier ? (
           <ButtonIdentifierOverlay
             backgroundTheme={buttonIdentifierBackgroundTheme}
             bounds={getButtonExportBounds(panel, side)}
             color={buttonIdentifierColor}
+            contentMode={buttonIdentifierContentMode}
             identifier={panel.buttonIdentifier}
             label={panel.label}
             onPositionReady={onIdentifierPositionReady}

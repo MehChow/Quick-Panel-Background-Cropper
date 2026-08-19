@@ -1,4 +1,5 @@
 import { useState } from "react";
+import type { ButtonIdentifierContentMode } from "../../model/button-identifier-content";
 import {
   getButtonIdentifierLayoutKind,
   type ButtonIdentifierPositions,
@@ -23,6 +24,7 @@ import {
 export interface ButtonCustomizeControlState {
   buttonIdentifierBackgroundTheme: ButtonIdentifierBackgroundTheme;
   buttonIdentifierColor: string;
+  buttonIdentifierContentMode: ButtonIdentifierContentMode;
   buttonIdentifierOpacity: number;
   buttonPanelOpacity: number;
   hasHorizontalButtons: boolean;
@@ -35,9 +37,8 @@ export interface ButtonCustomizeControlState {
   setButtonIdentifierAppearance: (appearance: ButtonIdentifierAppearance) => void;
   setButtonPanelOpacity: (value: number) => void;
   setHorizontalIdentifierPosition: (value: number) => void;
-  setShowButtonIdentifiers: (value: boolean) => void;
+  setButtonIdentifierContentMode: (value: ButtonIdentifierContentMode) => void;
   setVerticalIdentifierPosition: (value: number) => void;
-  showButtonIdentifiers: boolean;
   verticalIdentifierPosition: number;
 }
 
@@ -80,6 +81,7 @@ export function useButtonCustomizeControls(
   return {
     buttonIdentifierBackgroundTheme: settings.buttonIdentifierBackgroundTheme,
     buttonIdentifierColor: settings.buttonIdentifierColor,
+    buttonIdentifierContentMode: settings.buttonIdentifierContentMode,
     buttonIdentifierOpacity: settings.buttonIdentifierOpacity,
     buttonPanelOpacity:
       target === "combined"
@@ -130,11 +132,10 @@ export function useButtonCustomizeControls(
     },
     setHorizontalIdentifierPosition: (value) =>
       setSetting("horizontalIdentifierPosition", value),
-    setShowButtonIdentifiers: (value) =>
-      commitSetting("showButtonIdentifiers", value),
+    setButtonIdentifierContentMode: (value) =>
+      commitSetting("buttonIdentifierContentMode", value),
     setVerticalIdentifierPosition: (value) =>
       setSetting("verticalIdentifierPosition", value),
-    showButtonIdentifiers: settings.showButtonIdentifiers,
     verticalIdentifierPosition: settings.verticalIdentifierPosition,
   };
 }

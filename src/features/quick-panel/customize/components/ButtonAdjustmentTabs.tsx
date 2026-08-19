@@ -5,6 +5,7 @@ import {
   TabsTrigger,
 } from "@/components/ani-ui/tabs";
 import { useTranslation } from "react-i18next";
+import type { ButtonIdentifierContentMode } from "../../model/button-identifier-content";
 import {
   ButtonAdjustmentSlider,
   type ButtonAdjustment,
@@ -21,13 +22,13 @@ interface ButtonAdjustmentTabsProps {
   onHorizontalIdentifierPositionCommit: (value: number) => void;
   onVerticalIdentifierPositionChange: (value: number) => void;
   onVerticalIdentifierPositionCommit: (value: number) => void;
-  showButtonIdentifiers: boolean;
+  buttonIdentifierContentMode: ButtonIdentifierContentMode;
   verticalIdentifierPosition: number;
 }
 
 export function ButtonAdjustmentTabs(props: ButtonAdjustmentTabsProps) {
   const { t } = useTranslation();
-  const identifierDisabled = !props.showButtonIdentifiers;
+  const identifierDisabled = props.buttonIdentifierContentMode === "none";
   const adjustments: ButtonAdjustment[] = [
     {
       accessibilityLabel: t("customize.buttonPanelOpacity"),
@@ -75,7 +76,7 @@ export function ButtonAdjustmentTabs(props: ButtonAdjustmentTabsProps) {
   return (
     <Tabs
       defaultValue="image"
-      key={props.showButtonIdentifiers ? "identifiers-on" : "identifiers-off"}
+      key={identifierDisabled ? "identifiers-off" : "identifiers-on"}
       size="sm"
     >
       <TabsList className="w-full border border-white/15 bg-zinc-800/95">

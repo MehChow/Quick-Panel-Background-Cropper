@@ -2,6 +2,7 @@ import { Text } from "@/components/ani-ui/text";
 import { Lucide } from "@react-native-vector-icons/lucide";
 import { View } from "react-native";
 import type { ButtonIdentifierLayout } from "../../model/button-identifier-layout";
+import type { ButtonIdentifierContentMode } from "../../model/button-identifier-content";
 import type { ButtonIdentifierDefinition } from "../../model/types";
 import {
   getButtonIdentifierBackgroundColor,
@@ -12,6 +13,7 @@ import { buttonIdentifierStyles as styles } from "./button-identifier-content";
 interface ButtonIdentifierVisualsProps {
   backgroundTheme: ButtonIdentifierBackgroundTheme;
   color: string;
+  contentMode: ButtonIdentifierContentMode;
   identifier: ButtonIdentifierDefinition;
   label: string;
   layout: ButtonIdentifierLayout;
@@ -20,14 +22,17 @@ interface ButtonIdentifierVisualsProps {
 export function ButtonIdentifierVisuals({
   backgroundTheme,
   color,
+  contentMode,
   identifier,
   label,
   layout,
 }: ButtonIdentifierVisualsProps) {
   const circleColor = getButtonIdentifierBackgroundColor(backgroundTheme);
+  const showIcon = contentMode !== "none";
+  const showText = contentMode === "both" && layout.showLabel;
   return (
     <>
-      <View
+      {showIcon ? <View
         testID="button-identifier-icon-background"
         style={[
           styles.iconBackground,
@@ -45,8 +50,8 @@ export function ButtonIdentifierVisuals({
           size={layout.iconSize}
           style={styles.shadow}
         />
-      </View>
-      {layout.showLabel ? (
+      </View> : null}
+      {showText ? (
         <Text
           adjustsFontSizeToFit
           allowFontScaling={false}

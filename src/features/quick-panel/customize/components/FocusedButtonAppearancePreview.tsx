@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { View } from "react-native";
 import type { ButtonIdentifierPositions } from "../../model/button-identifier-layout";
+import type { ButtonIdentifierContentMode } from "../../model/button-identifier-content";
 import type {
   ImageTransform,
   PickedImage,
@@ -23,7 +24,7 @@ interface FocusedButtonAppearancePreviewProps {
   panel: InspectableButtonPanel;
   preset: QuickPanelPreset;
   previewUri: string;
-  showButtonIdentifiers: boolean;
+  buttonIdentifierContentMode: ButtonIdentifierContentMode;
   transform: ImageTransform;
 }
 
@@ -78,7 +79,7 @@ export function FocusedButtonAppearancePreview(
           previewUri={props.previewUri}
           previewWidth={previewWidth}
           showAppGradientBackground
-          showButtonIdentifiers={props.showButtonIdentifiers}
+          buttonIdentifierContentMode={props.buttonIdentifierContentMode}
           transform={props.transform}
         />
       ) : null}

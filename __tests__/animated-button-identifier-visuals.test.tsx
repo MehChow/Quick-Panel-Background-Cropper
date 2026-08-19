@@ -12,13 +12,14 @@ jest.mock("@react-native-vector-icons/lucide", () => {
   };
 });
 
-function CornerVisuals() {
+function CornerVisuals({ contentMode = "both" }: { contentMode?: "both" | "icon" | "none" }) {
   const circleColor = useSharedValue("#666666");
   const color = useSharedValue("#E3FFF6");
   const opacity = useSharedValue(0.7);
   return (
     <AnimatedButtonIdentifierVisuals
       appearance={{ circleColor, color, opacity }}
+      contentMode={contentMode}
       identifier={{
         columnSpan: 3,
         iconName: "zap",
@@ -45,6 +46,13 @@ function CornerVisuals() {
 }
 
 describe("AnimatedButtonIdentifierVisuals", () => {
+  it("hides corner text in Icon mode while keeping the icon", () => {
+    const screen = render(<CornerVisuals contentMode="icon" />);
+
+    expect(screen.getByTestId("button-identifier-icon-background")).toBeTruthy();
+    expect(screen.queryByText("Shazam")).toBeNull();
+  });
+
   it("renders independently supplied circle and glyph colors", () => {
     const screen = render(<CornerVisuals />);
 

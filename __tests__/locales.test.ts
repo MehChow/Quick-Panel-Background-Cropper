@@ -1,18 +1,18 @@
 import { enLocale, zhLocale } from "../i18next/resources";
 
 describe("release announcement locale strings", () => {
-  it("defines the v1.3.3 updates in English and Traditional Chinese", () => {
-    expect(enLocale.translation.releaseAnnouncement.v1_3_3).toEqual({
-      title: "v1.3.3 Updates 🌟\n",
-      body: "• New: Snap strength slider.\n• Enhancement: Snapping is now easier and more accurate.",
+  it("defines the v1.4.0 updates in English and Traditional Chinese", () => {
+    expect(enLocale.translation.releaseAnnouncement.v1_4_0).toEqual({
+      title: "v1.4.0 Updates 🌟\n",
+      body: "• New: Choose whether Button identifiers show icon and text, icon only, or nothing.",
       gotIt: "Got it",
-      mediaAccessibilityLabel: "Snap strength slider and improved snapping",
+      mediaAccessibilityLabel: "Button identifier display options in Customize",
     });
-    expect(zhLocale.translation.releaseAnnouncement.v1_3_3).toEqual({
-      title: "v1.3.3 更新內容 🌟\n",
-      body: "• 新功能：吸附強度滑桿。\n• 優化：吸附更容易、更準確。",
+    expect(zhLocale.translation.releaseAnnouncement.v1_4_0).toEqual({
+      title: "v1.4.0 更新內容 🌟\n",
+      body: "• 新功能：可選擇按鈕識別顯示圖示與文字、僅圖示，或不顯示。",
       gotIt: "知道了",
-      mediaAccessibilityLabel: "吸附強度滑桿及更容易、更準確的吸附功能",
+      mediaAccessibilityLabel: "自訂頁面的按鈕識別顯示選項",
     });
   });
 });
@@ -44,9 +44,24 @@ describe("customize locale strings", () => {
   });
 
   it("defines Button identifier controls in English and Chinese", () => {
-    expect(enLocale.translation.customize.showButtonIdentifiers).toBe(
+    expect(enLocale.translation.customize.buttonIdentifierContentTitle).toBe(
       "Show labels",
     );
+    expect(enLocale.translation.customize.buttonIdentifierContentBoth).toBe(
+      "Both",
+    );
+    expect(enLocale.translation.customize.buttonIdentifierContentIcon).toBe(
+      "Icon",
+    );
+    expect(enLocale.translation.customize.buttonIdentifierContentNone).toBe(
+      "None",
+    );
+    expect(enLocale.translation.customize.buttonIdentifierContentBothAccessibility)
+      .toBe("Show icon and text");
+    expect(enLocale.translation.customize.buttonIdentifierContentIconAccessibility)
+      .toBe("Show icon only");
+    expect(enLocale.translation.customize.buttonIdentifierContentNoneAccessibility)
+      .toBe("Hide icon and text");
     expect(enLocale.translation.customize.buttonIdentifierOpacity).toBe(
       "Label intensity",
     );
@@ -85,7 +100,16 @@ describe("customize locale strings", () => {
     );
     expect(enLocale.translation.customize.buttonIdentifiersOn).toBe("On");
     expect(enLocale.translation.customize.buttonIdentifiersOff).toBe("Off");
-    expect(zhLocale.translation.customize.showButtonIdentifiers).toBeTruthy();
+    expect(zhLocale.translation.customize.buttonIdentifierContentTitle).toBeTruthy();
+    expect(zhLocale.translation.customize.buttonIdentifierContentBoth).toBe("全部");
+    expect(zhLocale.translation.customize.buttonIdentifierContentIcon).toBe("圖示");
+    expect(zhLocale.translation.customize.buttonIdentifierContentNone).toBe("無");
+    expect(zhLocale.translation.customize.buttonIdentifierContentBothAccessibility)
+      .toBeTruthy();
+    expect(zhLocale.translation.customize.buttonIdentifierContentIconAccessibility)
+      .toBeTruthy();
+    expect(zhLocale.translation.customize.buttonIdentifierContentNoneAccessibility)
+      .toBeTruthy();
     expect(zhLocale.translation.customize.buttonIdentifierOpacity).toBeTruthy();
     expect(
       zhLocale.translation.customize.horizontalIdentifierPosition,

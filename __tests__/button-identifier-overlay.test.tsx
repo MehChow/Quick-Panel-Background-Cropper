@@ -19,11 +19,13 @@ function renderOverlay(
   positions = { horizontal: 0.5, vertical: 0.5 },
   onPositionReady?: () => void,
   overlayBounds = bounds,
+  contentMode: "both" | "icon" | "none" = "both",
 ) {
   return render(
     <ButtonIdentifierOverlay
       backgroundTheme="dark"
       bounds={overlayBounds}
+      contentMode={contentMode}
       identifier={{
         columnSpan,
         rowSpan,
@@ -40,6 +42,26 @@ function renderOverlay(
 }
 
 describe("ButtonIdentifierOverlay", () => {
+  it("renders an icon without text in Icon mode", () => {
+    const screen = renderOverlay(4, 1, undefined, undefined, bounds, "icon");
+
+    expect(screen.getByTestId("button-identifier-icon-background")).toBeTruthy();
+    expect(screen.queryByTestId("button-identifier-label")).toBeNull();
+  });
+
+  it("renders no identifier content in None mode", () => {
+    const screen = renderOverlay(4, 1, undefined, undefined, bounds, "none");
+
+    expect(screen.queryByTestId("button-identifier-icon-background")).toBeNull();
+    expect(screen.queryByTestId("button-identifier-label")).toBeNull();
+  });
+
+  it("removes corner text in Icon mode", () => {
+    const screen = renderOverlay(3, 3, undefined, undefined, bounds, "icon");
+
+    expect(screen.getByTestId("button-identifier-icon-background")).toBeTruthy();
+    expect(screen.queryByTestId("button-identifier-label")).toBeNull();
+  });
   it("centers a 1x1 icon and omits the label", () => {
     const screen = renderOverlay(1, 1);
     const iconBackground = screen.getByTestId("button-identifier-icon-background");
@@ -189,6 +211,51 @@ describe("ButtonIdentifierOverlay", () => {
     expect(StyleSheet.flatten(
       screen.getByTestId("button-identifier-overlay").props.style,
     ).opacity).toBe(0.7);
+  });
+
+  it("remeasures horizontal content when the mode changes", () => {
+    const screen = renderOverlay(4, 1, { horizontal: 1, vertical: 0.5 });
+    const createOverlay = (contentMode: "both" | "icon") => (
+      <ButtonIdentifierOverlay
+        backgroundTheme="dark"
+        bounds={bounds}
+        contentMode={contentMode}
+        identifier={{
+          columnSpan: 4,
+          rowSpan: 1,
+          iconName: "wifi",
+          referenceCellSize: 50,
+        }}
+        label="Wi-Fi"
+        opacity={0.7}
+        positions={{ horizontal: 1, vertical: 0.5 }}
+        referenceCellSize={50}
+      />
+    );
+
+    fireEvent(screen.getByTestId("button-identifier-movable-content"), "layout", {
+      nativeEvent: { layout: { height: 20, width: 40, x: 0, y: 0 } },
+    });
+    expect(StyleSheet.flatten(
+      screen.getByTestId("button-identifier-movable-content").props.style,
+    )).toMatchObject({ left: 53 });
+
+    screen.rerender(createOverlay("icon"));
+    expect(StyleSheet.flatten(
+      screen.getByTestId("button-identifier-overlay").props.style,
+    ).opacity).toBe(0);
+
+    fireEvent(screen.getByTestId("button-identifier-movable-content"), "layout", {
+      nativeEvent: { layout: { height: 20, width: 30, x: 0, y: 0 } },
+    });
+    expect(StyleSheet.flatten(
+      screen.getByTestId("button-identifier-movable-content").props.style,
+    )).toMatchObject({ left: 63 });
+
+    screen.rerender(createOverlay("both"));
+    expect(StyleSheet.flatten(
+      screen.getByTestId("button-identifier-overlay").props.style,
+    ).opacity).toBe(0);
   });
 
   it("moves a measured horizontal icon-and-label group together", () => {
