@@ -97,7 +97,7 @@ Build and test the candidate:
 6. Accept the final upload prompt to send the verified AAB to Internal testing,
    or decline to keep it local for review.
 7. After the command returns, review and commit the generated `app.json` and
-   build-flag changes.
+   build-flag changes. `build: prepare 30000030 release candidate`
 8. Fix release blockers on the release branch only.
 9. Run `build-release` with `new` for every replacement AAB uploaded to Play.
 10. Keep new, unrelated features on `dev` or new feature branches.
