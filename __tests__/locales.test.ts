@@ -243,6 +243,24 @@ describe("customize locale strings", () => {
     expect(english.customIconGamepad).toBe("Gamepad");
     expect(english.customIconGlobe).toBe("Globe");
     expect(english.customIconSliders).toBe("Sliders");
+    expect(english).toMatchObject({
+      customIconHeart: "Heart",
+      customIconBell: "Bell",
+      customIconBookmark: "Bookmark",
+      customIconBriefcase: "Briefcase",
+      customIconCalendar: "Calendar",
+      customIconCar: "Car",
+      customIconCloud: "Cloud",
+      customIconCoffee: "Coffee",
+      customIconGift: "Gift",
+      customIconKey: "Key",
+      customIconLightbulb: "Lightbulb",
+      customIconPalette: "Palette",
+      customIconRocket: "Rocket",
+      customIconShield: "Shield",
+      customIconShoppingBag: "Shopping Bag",
+      customIconTimer: "Timer",
+    });
     expect(chinese.customIconDialogTitle).toBeTruthy();
     expect(chinese.customIconDialogBody).toBeTruthy();
     expect(chinese.customIconStar).toBeTruthy();
@@ -253,6 +271,26 @@ describe("customize locale strings", () => {
     expect(chinese.customIconGamepad).toBeTruthy();
     expect(chinese.customIconGlobe).toBeTruthy();
     expect(chinese.customIconSliders).toBeTruthy();
+    for (const key of [
+      "customIconHeart",
+      "customIconBell",
+      "customIconBookmark",
+      "customIconBriefcase",
+      "customIconCalendar",
+      "customIconCar",
+      "customIconCloud",
+      "customIconCoffee",
+      "customIconGift",
+      "customIconKey",
+      "customIconLightbulb",
+      "customIconPalette",
+      "customIconRocket",
+      "customIconShield",
+      "customIconShoppingBag",
+      "customIconTimer",
+    ] as const) {
+      expect(chinese[key]).toBeTruthy();
+    }
   });
 });
 
