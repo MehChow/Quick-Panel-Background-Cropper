@@ -9,7 +9,7 @@ import {
 } from "@/components/ani-ui/alert-dialog";
 import { Lucide } from "@react-native-vector-icons/lucide";
 import { useTranslation } from "react-i18next";
-import { Pressable, View } from "react-native";
+import { Pressable, ScrollView, useWindowDimensions, View } from "react-native";
 import {
   customButtonIconChoices,
   type CustomButtonIconId,
@@ -29,6 +29,12 @@ export function CustomButtonIconDialog({
   open,
 }: CustomButtonIconDialogProps) {
   const { t } = useTranslation();
+  const { height } = useWindowDimensions();
+  const iconRows = Array.from(
+    { length: Math.ceil(customButtonIconChoices.length / 4) },
+    (_, rowIndex) =>
+      customButtonIconChoices.slice(rowIndex * 4, rowIndex * 4 + 4),
+  );
 
   return (
     <AlertDialog open={open} onOpenChange={onClose}>
@@ -41,28 +47,31 @@ export function CustomButtonIconDialog({
             {t("advancedCalibration.customIconDialogBody", { label })}
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <View className="gap-3">
-          {[customButtonIconChoices.slice(0, 4), customButtonIconChoices.slice(4)].map(
-            (row, rowIndex) => (
-              <View key={rowIndex} className="flex-row gap-3">
-                {row.map((choice) => {
-                  const choiceLabel = t(choice.translationKey);
-                  return (
-                    <Pressable
-                      key={choice.id}
-                      accessibilityLabel={choiceLabel}
-                      accessibilityRole="button"
-                      className="aspect-square flex-1 items-center justify-center rounded-xl border border-white/10 bg-zinc-900 p-2"
-                      onPress={() => onSelect(choice.id)}
-                    >
-                      <Lucide color="#ffffff" name={choice.id} size={24} />
-                    </Pressable>
-                  );
-                })}
-              </View>
-            ),
-          )}
-        </View>
+        <ScrollView
+          contentContainerClassName="gap-3"
+          showsVerticalScrollIndicator={false}
+          style={{ maxHeight: Math.min(320, height * 0.45) }}
+          testID="custom-button-icon-grid"
+        >
+          {iconRows.map((row, rowIndex) => (
+            <View key={rowIndex} className="flex-row gap-3">
+              {row.map((choice) => {
+                const choiceLabel = t(choice.translationKey);
+                return (
+                  <Pressable
+                    key={choice.id}
+                    accessibilityLabel={choiceLabel}
+                    accessibilityRole="button"
+                    className="aspect-square flex-1 items-center justify-center rounded-xl border border-white/10 bg-zinc-900 p-2"
+                    onPress={() => onSelect(choice.id)}
+                  >
+                    <Lucide color="#ffffff" name={choice.id} size={24} />
+                  </Pressable>
+                );
+              })}
+            </View>
+          ))}
+        </ScrollView>
         <AlertDialogFooter>
           <AlertDialogCancel onPress={onClose} className="border-0">
             {t("common.cancel")}
