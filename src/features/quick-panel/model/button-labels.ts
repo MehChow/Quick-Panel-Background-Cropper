@@ -96,6 +96,40 @@ export const customButtonIconChoices = [
     id: "sliders-horizontal",
     translationKey: "advancedCalibration.customIconSliders",
   },
+  { id: "heart", translationKey: "advancedCalibration.customIconHeart" },
+  { id: "bell", translationKey: "advancedCalibration.customIconBell" },
+  {
+    id: "bookmark",
+    translationKey: "advancedCalibration.customIconBookmark",
+  },
+  {
+    id: "briefcase-business",
+    translationKey: "advancedCalibration.customIconBriefcase",
+  },
+  {
+    id: "calendar-days",
+    translationKey: "advancedCalibration.customIconCalendar",
+  },
+  { id: "car", translationKey: "advancedCalibration.customIconCar" },
+  { id: "cloud", translationKey: "advancedCalibration.customIconCloud" },
+  { id: "coffee", translationKey: "advancedCalibration.customIconCoffee" },
+  { id: "gift", translationKey: "advancedCalibration.customIconGift" },
+  { id: "key-round", translationKey: "advancedCalibration.customIconKey" },
+  {
+    id: "lightbulb",
+    translationKey: "advancedCalibration.customIconLightbulb",
+  },
+  {
+    id: "palette",
+    translationKey: "advancedCalibration.customIconPalette",
+  },
+  { id: "rocket", translationKey: "advancedCalibration.customIconRocket" },
+  { id: "shield", translationKey: "advancedCalibration.customIconShield" },
+  {
+    id: "shopping-bag",
+    translationKey: "advancedCalibration.customIconShoppingBag",
+  },
+  { id: "timer", translationKey: "advancedCalibration.customIconTimer" },
 ] as const;
 
 export type CustomButtonIconId = (typeof customButtonIconChoices)[number]["id"];

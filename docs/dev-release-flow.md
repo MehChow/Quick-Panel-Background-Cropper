@@ -41,39 +41,6 @@ git push -u origin feature/buttons-followup
 
 Merge PR after checks pass. Delete feature branch locally and remotely.
 
-## One-time history bridge after v1.2.0
-
-PR #27 safely copied the v1.2.0 production tree into `dev`, but its squash commit
-did not connect the `main` and `dev` histories. Run this repair once after this
-documentation update is merged into `dev`.
-
-Create the bridge from current `main`, then merge the clean `dev` history into
-it:
-
-```bash
-git fetch origin main dev
-git switch -c maintenance/connect-dev-main-history origin/main
-git merge --no-ff origin/dev -m "merge: connect clean dev history to main"
-git diff --check origin/main...HEAD
-git log origin/main..HEAD -- credentials.json
-git push -u origin maintenance/connect-dev-main-history
-```
-
-The credential-history command must print nothing. Open a PR from
-`maintenance/connect-dev-main-history` to `main`. This PR carries the
-documentation change and records `dev` as an ancestor of `main` without copying
-the old secret into `dev`.
-
-After it merges, verify the repair before new feature work advances `dev`:
-
-```bash
-git fetch origin main dev
-git merge-base --is-ancestor origin/dev origin/main
-```
-
-Exit code `0` confirms the bridge. Delete the maintenance branch. Do not merge
-the maintenance branch back into `dev`; `dev` is already its clean parent.
-
 ## Example: release v1.3.0
 
 Complete intended v1.3.0 features through normal feature PRs into `dev`. When
@@ -142,37 +109,6 @@ Optional release-candidate tag: `v1.3.0-rc.1`.
 
 Do not use `main -> release/1.3.0` or `main -> dev`. Those directions expose
 `dev` to the historical `credentials.json` commit.
-
-## Legacy clean sync fallback
-
-Use this only before the one-time bridge is complete, or when a main-based
-hotfix/legacy branch would import old secret-bearing commits into `dev`. A
-normal dev-based release after the bridge should not need this fallback.
-
-Do not mark a real secret as a false positive, rewrite a released/tagged branch,
-or merge the blocked PR. Close it, then copy only the current safe production
-tree into a new branch from `dev`:
-
-```bash
-git fetch origin main dev
-git switch dev
-git pull --ff-only origin dev
-git switch -c sync/1.2.1-to-dev
-git merge --squash origin/main
-git status
-git diff --cached --name-status
-git diff --cached --check
-```
-
-Always fetch `origin/main` before the squash. A stale `origin/main` can merge old
-production code and recreate already-resolved conflicts.
-
-Confirm no credential, keystore, or service-account file is staged. Run the
-full checks, commit the staged production changes, push the sync branch, and
-open a PR to `dev`. Delete temporary branches after the clean PR merges.
-
-This fallback copies tree content without importing the old secret-bearing
-history. It is not the normal v1.3.0 release flow.
 
 ## Hotfix
 

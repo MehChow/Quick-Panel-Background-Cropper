@@ -11,6 +11,7 @@ import {
   pinnedButtonLabelIds,
   searchButtonLabels,
 } from "@/features/quick-panel/model/button-labels";
+import lucideGlyphMap from "@react-native-vector-icons/lucide/glyphmaps/Lucide.json";
 import en from "../i18next/locales/en";
 import zh from "../i18next/locales/zh";
 
@@ -31,7 +32,8 @@ describe("button labels", () => {
   });
 
   it("offers only the reviewed custom icon choices", () => {
-    expect(customButtonIconChoices.map((choice) => choice.id)).toEqual([
+    const customIconIds = customButtonIconChoices.map((choice) => choice.id);
+    expect(customIconIds).toEqual([
       "zap",
       "star",
       "sparkles",
@@ -40,10 +42,33 @@ describe("button labels", () => {
       "gamepad-2",
       "globe",
       "sliders-horizontal",
+      "heart",
+      "bell",
+      "bookmark",
+      "briefcase-business",
+      "calendar-days",
+      "car",
+      "cloud",
+      "coffee",
+      "gift",
+      "key-round",
+      "lightbulb",
+      "palette",
+      "rocket",
+      "shield",
+      "shopping-bag",
+      "timer",
     ]);
-    expect(new Set(customButtonIconChoices.map((choice) => choice.id)).size).toBe(8);
+    expect(new Set(customIconIds).size).toBe(24);
+    const builtInIconNames = new Set(
+      buttonLabelCatalog.map((item) => item.iconName),
+    );
     for (const choice of customButtonIconChoices) {
       expect(isCustomButtonIconId(choice.id)).toBe(true);
+      expect(choice.id in lucideGlyphMap).toBe(true);
+    }
+    for (const iconId of customIconIds.slice(8)) {
+      expect(builtInIconNames.has(iconId)).toBe(false);
     }
   });
 
