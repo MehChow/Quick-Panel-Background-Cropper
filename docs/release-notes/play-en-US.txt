@@ -1,1 +1,1 @@
-New: Choose whether Button identifiers show icon and text, icon only, or nothing.
+New: increased available custom Button icons from 8 to 24.

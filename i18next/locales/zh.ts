@@ -28,6 +28,11 @@ const zh = {
         gotIt: "知道了",
         mediaAccessibilityLabel: "自訂頁面的按鈕識別顯示選項",
       },
+      v1_5_0: {
+        title: "v1.5.0 更新內容 🌟\n",
+        body: "• 新功能：自訂按鈕標籤的圖示選擇由 8 個增加至 24 個。",
+        gotIt: "知道了",
+      },
     },
     landing: {
       startCustomizing: "開始自訂",
