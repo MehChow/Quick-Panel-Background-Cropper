@@ -30,6 +30,11 @@ const en = {
         gotIt: "Got it",
         mediaAccessibilityLabel: "Button identifier display options in Customize",
       },
+      v1_5_0: {
+        title: "v1.5.0 Updates 🌟\n",
+        body: "• New: Custom Button labels now have 24 icon choices, up from 8.",
+        gotIt: "Got it",
+      },
     },
     landing: {
       startCustomizing: "Start customizing",

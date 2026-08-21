@@ -1,18 +1,16 @@
 import { enLocale, zhLocale } from "../i18next/resources";
 
 describe("release announcement locale strings", () => {
-  it("defines the v1.4.0 updates in English and Traditional Chinese", () => {
-    expect(enLocale.translation.releaseAnnouncement.v1_4_0).toEqual({
-      title: "v1.4.0 Updates 🌟\n",
-      body: "• New: Choose whether Button identifiers show icon and text, icon only, or nothing.",
+  it("defines the text-only v1.5.0 update in English and Traditional Chinese", () => {
+    expect(enLocale.translation.releaseAnnouncement.v1_5_0).toEqual({
+      title: "v1.5.0 Updates 🌟\n",
+      body: "• New: Custom Button labels now have 24 icon choices, up from 8.",
       gotIt: "Got it",
-      mediaAccessibilityLabel: "Button identifier display options in Customize",
     });
-    expect(zhLocale.translation.releaseAnnouncement.v1_4_0).toEqual({
-      title: "v1.4.0 更新內容 🌟\n",
-      body: "• 新功能：可選擇按鈕識別顯示圖示與文字、僅圖示，或不顯示。",
+    expect(zhLocale.translation.releaseAnnouncement.v1_5_0).toEqual({
+      title: "v1.5.0 更新內容 🌟\n",
+      body: "• 新功能：自訂按鈕標籤的圖示選擇由 8 個增加至 24 個。",
       gotIt: "知道了",
-      mediaAccessibilityLabel: "自訂頁面的按鈕識別顯示選項",
     });
   });
 });
