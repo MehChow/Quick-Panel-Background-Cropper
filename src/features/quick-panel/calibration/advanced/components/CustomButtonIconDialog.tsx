@@ -7,13 +7,20 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ani-ui/alert-dialog";
-import { Lucide } from "@react-native-vector-icons/lucide";
 import { useTranslation } from "react-i18next";
-import { Pressable, ScrollView, useWindowDimensions, View } from "react-native";
+import { useWindowDimensions } from "react-native";
 import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ani-ui/tabs";
+import {
+  buttonLabelCatalog,
   customButtonIconChoices,
   type CustomButtonIconId,
 } from "../../../model/button-labels";
+import { ButtonIconChoiceGrid } from "./ButtonIconChoiceGrid";
 
 interface CustomButtonIconDialogProps {
   label: string;
@@ -30,11 +37,15 @@ export function CustomButtonIconDialog({
 }: CustomButtonIconDialogProps) {
   const { t } = useTranslation();
   const { height } = useWindowDimensions();
-  const iconRows = Array.from(
-    { length: Math.ceil(customButtonIconChoices.length / 4) },
-    (_, rowIndex) =>
-      customButtonIconChoices.slice(rowIndex * 4, rowIndex * 4 + 4),
-  );
+  const presetChoices = buttonLabelCatalog.map((item) => ({
+    id: item.iconName,
+    label: t(item.translationKey),
+  }));
+  const otherChoices = customButtonIconChoices.map((item) => ({
+    id: item.id,
+    label: t(item.translationKey),
+  }));
+  const maxGridHeight = Math.min(320, height * 0.45);
 
   return (
     <AlertDialog open={open} onOpenChange={onClose}>
@@ -47,31 +58,40 @@ export function CustomButtonIconDialog({
             {t("advancedCalibration.customIconDialogBody", { label })}
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <ScrollView
-          contentContainerClassName="gap-3"
-          showsVerticalScrollIndicator={false}
-          style={{ maxHeight: Math.min(320, height * 0.45) }}
-          testID="custom-button-icon-grid"
-        >
-          {iconRows.map((row, rowIndex) => (
-            <View key={rowIndex} className="flex-row gap-3">
-              {row.map((choice) => {
-                const choiceLabel = t(choice.translationKey);
-                return (
-                  <Pressable
-                    key={choice.id}
-                    accessibilityLabel={choiceLabel}
-                    accessibilityRole="button"
-                    className="aspect-square flex-1 items-center justify-center rounded-xl border border-white/10 bg-zinc-900 p-2"
-                    onPress={() => onSelect(choice.id)}
-                  >
-                    <Lucide color="#ffffff" name={choice.id} size={24} />
-                  </Pressable>
-                );
-              })}
-            </View>
-          ))}
-        </ScrollView>
+        <Tabs key={label} defaultValue="preset" size="sm">
+          <TabsList className="w-full border border-white/15 bg-zinc-800/95">
+            <TabsTrigger
+              activeClassName="bg-black"
+              activeTextClassName="text-white"
+              value="preset"
+            >
+              {t("advancedCalibration.customIconPresetTab")}
+            </TabsTrigger>
+            <TabsTrigger
+              activeClassName="bg-black"
+              activeTextClassName="text-white"
+              value="other"
+            >
+              {t("advancedCalibration.customIconOtherTab")}
+            </TabsTrigger>
+          </TabsList>
+          <TabsContent value="preset">
+            <ButtonIconChoiceGrid
+              choices={presetChoices}
+              maxHeight={maxGridHeight}
+              onSelect={onSelect}
+              testID="preset-button-icon-grid"
+            />
+          </TabsContent>
+          <TabsContent value="other">
+            <ButtonIconChoiceGrid
+              choices={otherChoices}
+              maxHeight={maxGridHeight}
+              onSelect={onSelect}
+              testID="other-button-icon-grid"
+            />
+          </TabsContent>
+        </Tabs>
         <AlertDialogFooter>
           <AlertDialogCancel onPress={onClose} className="border-0">
             {t("common.cancel")}

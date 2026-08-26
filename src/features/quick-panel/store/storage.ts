@@ -48,7 +48,7 @@ const lastImageDiskCacheClearAtKey =
   "quick-panel.last-image-disk-cache-clear-at";
 
 export const activeReleaseAnnouncementId =
-  "v1.5.0-expanded-custom-button-icons-announcement";
+  "v1.6.0-custom-label-preset-icons-announcement";
 
 export const supportedLanguages = ["en", "zh"] as const;
 export type SupportedLanguage = (typeof supportedLanguages)[number];

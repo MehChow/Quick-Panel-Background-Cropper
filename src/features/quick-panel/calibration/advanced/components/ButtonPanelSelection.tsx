@@ -6,12 +6,12 @@ import { Pressable, ScrollView, TextInput, View } from "react-native";
 import { createButtonItems } from "../button-selection";
 import {
   getButtonDisplayLabel,
-  getButtonIconName,
   searchButtonLabels,
 } from "../../../model/button-labels";
 import type { ButtonCalibrationItem, PanelRect, PickedImage } from "../../../model/types";
 import { CalibrationAreaPreview } from "./CalibrationAreaPreview";
 import { CustomButtonIconDialog } from "./CustomButtonIconDialog";
+import { SelectedButtonChip } from "./SelectedButtonChip";
 
 interface Props {
   buttons: ButtonCalibrationItem[];
@@ -76,46 +76,18 @@ export function ButtonPanelSelection({
               <View className="flex-row flex-wrap gap-2">
                 {selectedLabels.length
                   ? buttons.map((button) => {
-                      const isCustom = Boolean(button.customIconId);
                       const displayLabel = getButtonDisplayLabel(
                         button.label,
                         translateLabel,
                       );
                       return (
-                        <Pressable
+                        <SelectedButtonChip
                           key={button.label}
-                          accessibilityLabel={`${t("advancedCalibration.remove")} ${displayLabel}`}
-                          accessibilityRole="button"
-                          className={`flex-row items-center gap-1.5 rounded-full border px-3 py-1.5 ${
-                            isCustom
-                              ? "border-amber-300/50 bg-amber-300/10"
-                              : "border-emerald-300/40 bg-emerald-300/10"
-                          }`}
-                          onPress={() => toggleLabel(button.label)}
-                        >
-                          {isCustom ? (
-                            <Lucide
-                              color="#fde68a"
-                              name={getButtonIconName(
-                                button.label,
-                                button.customIconId,
-                              )}
-                              size={13}
-                            />
-                          ) : null}
-                          <Text
-                            className={`text-xs font-semibold ${
-                              isCustom ? "text-amber-100" : "text-emerald-100"
-                            }`}
-                          >
-                            {displayLabel}
-                          </Text>
-                          <Lucide
-                            color={isCustom ? "#fef3c7" : "#d1fae5"}
-                            name="x"
-                            size={12}
-                          />
-                        </Pressable>
+                          button={button}
+                          displayLabel={displayLabel}
+                          onRemove={() => toggleLabel(button.label)}
+                          removeLabel={t("advancedCalibration.remove")}
+                        />
                       );
                     })
                   : (
@@ -126,21 +98,32 @@ export function ButtonPanelSelection({
               </View>
             </View>
             <View className="gap-2">
-              {labels.map((item) => (
-                <Pressable
-                  key={item.id}
-                  accessibilityRole="checkbox"
-                  accessibilityState={{ checked: selectedLabels.includes(item.label) }}
-                  className={`min-h-11 justify-center rounded-xl border px-3 ${
-                    selectedLabels.includes(item.label)
-                      ? "border-emerald-300/40 bg-emerald-300/10"
-                      : "border-white/10 bg-zinc-800/70"
-                  }`}
-                  onPress={() => toggleLabel(item.label)}
-                >
-                  <Text className="font-semibold text-white">{getButtonDisplayLabel(item.label, translateLabel)}</Text>
-                </Pressable>
-              ))}
+              {labels.map((item) => {
+                const isSelected = selectedLabels.includes(item.label);
+                const displayLabel = getButtonDisplayLabel(item.label, translateLabel);
+                return (
+                  <Pressable
+                    key={item.id}
+                    accessibilityLabel={displayLabel}
+                    accessibilityRole="checkbox"
+                    accessibilityState={{ checked: isSelected }}
+                    className={`min-h-11 flex-row items-center gap-2.5 rounded-xl border px-3 ${
+                      isSelected
+                        ? "border-emerald-300/40 bg-emerald-300/10"
+                        : "border-white/10 bg-zinc-800/70"
+                    }`}
+                    onPress={() => toggleLabel(item.label)}
+                  >
+                    <Lucide
+                      accessible={false}
+                      color={isSelected ? "#d1fae5" : "#ffffff"}
+                      name={item.iconName}
+                      size={18}
+                    />
+                    <Text className="font-semibold text-white">{displayLabel}</Text>
+                  </Pressable>
+                );
+              })}
             </View>
             {canAddCustomLabel ? (
               <Pressable
