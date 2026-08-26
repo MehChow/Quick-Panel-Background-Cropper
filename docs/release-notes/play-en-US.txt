@@ -1,1 +1,2 @@
-New: increased available custom Button icons from 8 to 24.
+New: Add preset icons for custom Button labels.
+Enhancement: Show icon next to the label for better clarity.

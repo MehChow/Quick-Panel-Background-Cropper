@@ -33,6 +33,12 @@ const zh = {
         body: "• 新功能：自訂按鈕標籤的圖示選擇由 8 個增加至 24 個。",
         gotIt: "知道了",
       },
+      v1_6_0: {
+        title: "v1.6.0 更新內容 🌟\n",
+        body: "• 新功能：為自訂按鈕標籤新增預設圖示。\n• 改進：在標籤旁顯示圖示，讓內容更清晰。",
+        gotIt: "知道了",
+        mediaAccessibilityLabel: "自訂按鈕標籤選擇預設按鈕圖示",
+      },
     },
     landing: {
       startCustomizing: "開始自訂",
@@ -197,6 +203,8 @@ const zh = {
       addCustomButtonLabel: "新增「{{label}}」",
       customIconDialogTitle: "選擇按鈕圖示",
       customIconDialogBody: "為「{{label}}」選擇一個圖示。",
+      customIconPresetTab: "預設按鈕",
+      customIconOtherTab: "其他圖示",
       customIconStar: "星形",
       customIconZap: "閃電",
       customIconSparkles: "閃亮",

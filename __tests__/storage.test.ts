@@ -12,6 +12,9 @@ import {
   saveCalibrations,
   saveCombinedButtonImageIntensity,
   saveLastImageDiskCacheClearAt,
+  saveLastExportedAdvancedTarget,
+  saveLastExportedMode,
+  markHelpSeen,
   saveSnapSensitivity,
   saveButtonCustomizeSettings,
   type ButtonCustomizeSettings,
@@ -61,8 +64,8 @@ const currentCalibrations = {
       },
       {
         id: "button-2",
-        label: "My scene",
-        customIconId: "star",
+        label: "快速分享",
+        customIconId: "share-2",
         rect: { x: 150, y: 40, width: 120, height: 120, radius: 0 },
       },
     ],
@@ -150,17 +153,19 @@ describe("storage", () => {
 
     expect(loadAcknowledgedReleaseAnnouncement()).toBeNull();
 
-    acknowledgeReleaseAnnouncement("v1.3.1-cache-optimization-announcement");
+    saveCalibrations(currentCalibrations);
+    saveLastExportedMode("advanced");
+    saveLastExportedAdvancedTarget("buttons");
+    markHelpSeen("calibration-outer");
+    acknowledgeReleaseAnnouncement("v1.6.0-custom-label-preset-icons-announcement");
 
     expect(loadAcknowledgedReleaseAnnouncement()).toBe(
-      "v1.3.1-cache-optimization-announcement",
+      "v1.6.0-custom-label-preset-icons-announcement",
     );
-    expect(loadCalibrations()).toEqual({
-      default: null,
-      advancedControls: null,
-      advancedButtons: null,
-      advancedCombined: null,
-    });
+    expect(loadCalibrations()).toEqual(currentCalibrations);
+    expect(loadLastExportedMode()).toBe("advanced");
+    expect(loadLastExportedAdvancedTarget()).toBe("buttons");
+    expect(hasSeenHelp("calibration-outer")).toBe(true);
   });
 
   it("round-trips Buttons-only customization settings", () => {
@@ -413,6 +418,30 @@ describe("storage", () => {
       advancedButtons: null,
       advancedCombined: null,
     });
+  });
+
+  it.each([
+    ["Wi-Fi", "share-2"],
+    ["快速分享", "not-a-lucide-button-icon"],
+  ])("rejects invalid icon metadata for %s", (label, customIconId) => {
+    const mmkvStore = (globalThis as typeof globalThis & MmkvTestGlobal)
+      .__mmkvStore;
+    mmkvStore?.set(
+      "quick-panel.calibrations",
+      JSON.stringify({
+        ...currentCalibrations,
+        advancedButtons: {
+          ...currentCalibrations.advancedButtons,
+          buttons: [{
+            ...currentCalibrations.advancedButtons.buttons[0],
+            label,
+            customIconId,
+          }],
+        },
+      }),
+    );
+
+    expect(loadCalibrations().advancedButtons).toBeNull();
   });
 
   it("returns an empty current payload when its JSON is malformed", () => {
