@@ -35,8 +35,12 @@ jest.mock("@react-native-vector-icons/lucide", () => ({
 jest.mock(
   "@/features/quick-panel/calibration/advanced/components/CalibrationAreaPreview",
   () => ({
-    CalibrationAreaPreview: ({ children }: { children: React.ReactNode }) => (
-      <>{typeof children === "function" ? children(null) : children}</>
+    CalibrationAreaPreview: ({
+      children,
+    }: {
+      children: (previewTrigger: React.ReactNode) => React.ReactNode;
+    }) => (
+      <>{children(null)}</>
     ),
   }),
 );
