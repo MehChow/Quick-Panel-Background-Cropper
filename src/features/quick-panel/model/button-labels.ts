@@ -45,7 +45,7 @@ const otherLabels = [
   "Wireless DeX",
 ];
 
-const builtInButtonIconNames: Record<string, LucideIconName> = {
+const builtInButtonIconNames = {
   "wi-fi": "wifi",
   bluetooth: "bluetooth",
   "auto-rotate": "rotate-cw",
@@ -76,7 +76,7 @@ const builtInButtonIconNames: Record<string, LucideIconName> = {
   smartthings: "house-plug",
   "camera-access": "camera",
   "microphone-access": "mic",
-};
+} as const satisfies Record<string, LucideIconName>;
 
 export const customButtonIconChoices = [
   { id: "zap", translationKey: "advancedCalibration.customIconZap" },
@@ -132,19 +132,25 @@ export const customButtonIconChoices = [
   { id: "timer", translationKey: "advancedCalibration.customIconTimer" },
 ] as const;
 
-export type CustomButtonIconId = (typeof customButtonIconChoices)[number]["id"];
+type GenericButtonIconId = (typeof customButtonIconChoices)[number]["id"];
 
-export const buttonLabelCatalog: BuiltInButtonLabel[] = [
+type BuiltInButtonIconId =
+  (typeof builtInButtonIconNames)[keyof typeof builtInButtonIconNames];
+
+export type CustomButtonIconId = GenericButtonIconId | BuiltInButtonIconId;
+
+export const buttonLabelCatalog = [
   ...pinnedLabels,
   ...otherLabels,
 ].map((label) => {
   const id = slug(label);
-  const iconName = builtInButtonIconNames[id];
+  const iconName =
+    builtInButtonIconNames[id as keyof typeof builtInButtonIconNames];
   if (!iconName) {
     throw new Error(`Built-in Button ${label} has no icon`);
   }
   return { id, iconName, label, translationKey: `buttonLabels.${id}` };
-});
+}) satisfies BuiltInButtonLabel[];
 
 const buttonLabelsByCanonicalLabel = new Map(
   buttonLabelCatalog.map((item) => [item.label, item]),
@@ -161,7 +167,11 @@ export function getBuiltInButtonLabel(label: string) {
 export function isCustomButtonIconId(
   value: unknown,
 ): value is CustomButtonIconId {
-  return customButtonIconChoices.some((choice) => choice.id === value);
+  if (typeof value !== "string") return false;
+  return (
+    customButtonIconChoices.some((choice) => choice.id === value) ||
+    Object.values(builtInButtonIconNames).some((iconName) => iconName === value)
+  );
 }
 
 export function getButtonIconName(

@@ -12,10 +12,10 @@ describe("createButtonItems", () => {
   it("preserves reviewed order and custom icons", () => {
     expect(createButtonItems([
       { label: "Wi-Fi", customIconId: null },
-      { label: "My scene", customIconId: "zap" },
+      { label: "快速分享", customIconId: "share-2" },
     ], outerRect)).toMatchObject([
       { id: "button-1", label: "Wi-Fi", customIconId: null },
-      { id: "button-2", label: "My scene", customIconId: "zap" },
+      { id: "button-2", label: "快速分享", customIconId: "share-2" },
     ]);
   });
 

@@ -35,6 +35,13 @@ const en = {
         body: "• New: Custom Button labels now have 24 icon choices, up from 8.",
         gotIt: "Got it",
       },
+      v1_6_0: {
+        title: "v1.6.0 Updates 🌟\n",
+        body: "• New: Add preset icons for custom Button labels.\n• Enhancement: Show icon next to the label for better clarity.",
+        gotIt: "Got it",
+        mediaAccessibilityLabel:
+          "Custom Button label choosing from preset Button icons",
+      },
     },
     landing: {
       startCustomizing: "Start customizing",
@@ -216,6 +223,8 @@ const en = {
       addCustomButtonLabel: 'Add "{{label}}"',
       customIconDialogTitle: "Choose a Button icon",
       customIconDialogBody: 'Choose an icon for "{{label}}".',
+      customIconPresetTab: "Preset buttons",
+      customIconOtherTab: "Other icons",
       customIconStar: "Star",
       customIconZap: "Zap",
       customIconSparkles: "Sparkles",

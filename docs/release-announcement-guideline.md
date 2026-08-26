@@ -28,16 +28,16 @@ Do not use it for every small bug fix or patch release. If the update requires d
 
 ## Files involved
 
-| Purpose | File |
-| --- | --- |
-| Persistent acknowledgement API | `src/features/quick-panel/store/storage.ts` |
-| Active release descriptor | `src/features/quick-panel/release/ReleaseAnnouncementContent.ts` |
-| Reusable dialog shell | `src/features/quick-panel/release/ReleaseAnnouncementDialog.tsx` |
-| Startup host and navigation | `src/features/quick-panel/release/ReleaseAnnouncementHost.tsx` |
-| Root startup mounting | `src/app/_layout.tsx` |
-| English copy | `i18next/locales/en.ts` |
-| Traditional Chinese copy | `i18next/locales/zh.ts` |
-| Storage and behavior tests | `__tests__/storage.test.ts`, `__tests__/release-announcement.test.tsx` |
+| Purpose                        | File                                                                   |
+| ------------------------------ | ---------------------------------------------------------------------- |
+| Persistent acknowledgement API | `src/features/quick-panel/store/storage.ts`                            |
+| Active release descriptor      | `src/features/quick-panel/release/ReleaseAnnouncementContent.ts`       |
+| Reusable dialog shell          | `src/features/quick-panel/release/ReleaseAnnouncementDialog.tsx`       |
+| Startup host and navigation    | `src/features/quick-panel/release/ReleaseAnnouncementHost.tsx`         |
+| Root startup mounting          | `src/app/_layout.tsx`                                                  |
+| English copy                   | `i18next/locales/en.ts`                                                |
+| Traditional Chinese copy       | `i18next/locales/zh.ts`                                                |
+| Storage and behavior tests     | `__tests__/storage.test.ts`, `__tests__/release-announcement.test.tsx` |
 
 ## Preparing a future announcement
 
@@ -162,7 +162,11 @@ For a release candidate, also test manually with a clean app data state and an u
 ## Current reference
 
 The current announcement ID is
-`v1.2.0-buttons-icon-color-announcement`. It announces Buttons-only icon color
-customization and removal of snapping-grid toggling, includes the icon color
-picker GIF, and has a single `Got it`/`知道了` acknowledgement CTA. Its
+`v1.6.0-custom-label-preset-icons-announcement`. It announces that custom
+Button labels can reuse preset Button icons, includes localized supporting
+media, and has a single `Got it` / `知道了` acknowledgement CTA. Its
 acknowledgement is independent from `quick-panel.calibrations`.
+
+During development, `assets/announcement/v1_6_0.webp` is a temporary app-icon
+image. Replace it in place with the final feature screenshot before preparing
+the v1.6.0 release candidate.

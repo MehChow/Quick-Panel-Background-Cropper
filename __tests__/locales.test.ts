@@ -1,17 +1,35 @@
 import { enLocale, zhLocale } from "../i18next/resources";
 
 describe("release announcement locale strings", () => {
-  it("defines the text-only v1.5.0 update in English and Traditional Chinese", () => {
-    expect(enLocale.translation.releaseAnnouncement.v1_5_0).toEqual({
-      title: "v1.5.0 Updates 🌟\n",
-      body: "• New: Custom Button labels now have 24 icon choices, up from 8.",
+  it("defines the v1.6.0 update in English and Traditional Chinese", () => {
+    expect(enLocale.translation.releaseAnnouncement.v1_6_0).toEqual({
+      title: "v1.6.0 Updates 🌟\n",
+      body: "• New: Add preset icons for custom Button labels.\n• Enhancement: Show icon next to the label for better clarity.",
       gotIt: "Got it",
+      mediaAccessibilityLabel:
+        "Custom Button label choosing from preset Button icons",
     });
-    expect(zhLocale.translation.releaseAnnouncement.v1_5_0).toEqual({
-      title: "v1.5.0 更新內容 🌟\n",
-      body: "• 新功能：自訂按鈕標籤的圖示選擇由 8 個增加至 24 個。",
+    expect(zhLocale.translation.releaseAnnouncement.v1_6_0).toEqual({
+      title: "v1.6.0 更新內容 🌟\n",
+      body: "• 新功能：為自訂按鈕標籤新增預設圖示。\n• 改進：在標籤旁顯示圖示，讓內容更清晰。",
       gotIt: "知道了",
+      mediaAccessibilityLabel: "自訂按鈕標籤選擇預設按鈕圖示",
     });
+  });
+
+  it("defines the custom icon picker tabs", () => {
+    expect(enLocale.translation.advancedCalibration.customIconPresetTab).toBe(
+      "Preset buttons",
+    );
+    expect(enLocale.translation.advancedCalibration.customIconOtherTab).toBe(
+      "Other icons",
+    );
+    expect(zhLocale.translation.advancedCalibration.customIconPresetTab).toBe(
+      "預設按鈕",
+    );
+    expect(zhLocale.translation.advancedCalibration.customIconOtherTab).toBe(
+      "其他圖示",
+    );
   });
 });
 

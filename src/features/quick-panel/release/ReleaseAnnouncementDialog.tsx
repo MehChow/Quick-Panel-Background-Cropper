@@ -34,28 +34,32 @@ export function ReleaseAnnouncementDialog({
             {t(descriptor.bodyKey)}
           </AlertDialogDescription>
         </AlertDialogHeader>
-        {descriptor.mediaSource ? (
+        {descriptor.mediaSources?.length ? (
           <View
-            className="self-center overflow-hidden"
+            className="self-center flex-row gap-2 overflow-hidden"
             testID="release-announcement-media-wrapper"
             style={{
               borderRadius: 16,
-              height: 240,
+              height: 120,
               overflow: "hidden",
-              width: 111,
+              width: 240,
             }}
           >
-            <Image
-              accessibilityLabel={
-                descriptor.mediaAccessibilityKey
-                  ? t(descriptor.mediaAccessibilityKey)
-                  : undefined
-              }
-              accessible={Boolean(descriptor.mediaAccessibilityKey)}
-              contentFit="cover"
-              source={descriptor.mediaSource}
-              style={{ height: "100%", width: "100%" }}
-            />
+            {descriptor.mediaSources.map((source, index) => (
+              <Image
+                key={index}
+                accessibilityLabel={
+                  index === 0 && descriptor.mediaAccessibilityKey
+                    ? t(descriptor.mediaAccessibilityKey)
+                    : undefined
+                }
+                accessible={index === 0 && Boolean(descriptor.mediaAccessibilityKey)}
+                contentFit="contain"
+                source={source}
+                style={{ flex: 1, height: "100%" }}
+                testID="release-announcement-media"
+              />
+            ))}
           </View>
         ) : null}
         <AlertDialogFooter>

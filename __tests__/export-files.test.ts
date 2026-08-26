@@ -223,6 +223,27 @@ describe("export files", () => {
     }
   });
 
+  it("uses a preset icon with a literal custom Button label", () => {
+    const preset = createButtonsPreset({
+      screenshotWidth: 100,
+      screenshotHeight: 100,
+      grid: { columns: 1, rows: 1 },
+      outerRect: { x: 0, y: 0, width: 100, height: 50, radius: 0 },
+      buttons: [{
+        id: "button-1",
+        label: "快速分享",
+        customIconId: "share-2",
+        rect: { x: 0, y: 0, width: 40, height: 40, radius: 0 },
+      }],
+    });
+
+    expect(preset.panels["button-1"]).toMatchObject({
+      label: "快速分享",
+      fileName: "01-button.png",
+      buttonIdentifier: { iconName: "share-2" },
+    });
+  });
+
   it("preserves duplicate Button ordering and filenames", () => {
     const preset = createButtonsPreset({
       screenshotWidth: 100,

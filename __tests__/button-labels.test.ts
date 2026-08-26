@@ -60,7 +60,7 @@ describe("button labels", () => {
       "timer",
     ]);
     expect(new Set(customIconIds).size).toBe(24);
-    const builtInIconNames = new Set(
+    const builtInIconNames = new Set<string>(
       buttonLabelCatalog.map((item) => item.iconName),
     );
     for (const choice of customButtonIconChoices) {
@@ -76,6 +76,15 @@ describe("button labels", () => {
     expect(getButtonIconName("Wi-Fi", "star")).toBe("wifi");
   });
 
+  it("accepts preset glyphs for custom Button labels", () => {
+    for (const item of buttonLabelCatalog) {
+      expect(isCustomButtonIconId(item.iconName)).toBe(true);
+      expect(item.iconName in lucideGlyphMap).toBe(true);
+    }
+    expect(getButtonIconName("快速分享", "share-2")).toBe("share-2");
+    expect(isCustomButtonIconId("not-a-lucide-button-icon")).toBe(false);
+  });
+
   it("requires an icon for custom labels", () => {
     expect(() => getButtonIconName("My scene", null)).toThrow(
       "Custom Button My scene has no icon",
@@ -85,7 +94,7 @@ describe("button labels", () => {
 
   it("rejects invalid custom icon identifiers", () => {
     expect(isCustomButtonIconId("zap")).toBe(true);
-    expect(isCustomButtonIconId("wifi")).toBe(false);
+    expect(isCustomButtonIconId("wifi")).toBe(true);
     expect(isCustomButtonIconId(undefined)).toBe(false);
   });
 
