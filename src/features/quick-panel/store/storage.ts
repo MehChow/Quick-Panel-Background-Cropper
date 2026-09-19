@@ -50,7 +50,7 @@ const lastImageDiskCacheClearAtKey =
 export const activeReleaseAnnouncementId =
   "v1.6.0-custom-label-preset-icons-announcement";
 
-export const supportedLanguages = ["en", "zh"] as const;
+export const supportedLanguages = ["en", "zh", "es"] as const;
 export type SupportedLanguage = (typeof supportedLanguages)[number];
 export const helpEntryIds = [
   "select-mode",

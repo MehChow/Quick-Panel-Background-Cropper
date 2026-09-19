@@ -85,6 +85,26 @@ describe("CustomButtonIconDialog", () => {
     expect(onSelect).not.toHaveBeenCalled();
   });
 
+  it("keeps both tab labels centered after switching tabs", () => {
+    const screen = render(
+      <CustomButtonIconDialog
+        label="My scene"
+        onClose={jest.fn()}
+        onSelect={jest.fn()}
+        open
+      />,
+    );
+
+    fireEvent.press(screen.getByRole("tab", { name: "Other icons" }));
+
+    expect(screen.getByText("Preset buttons").props.className).toContain(
+      "text-center",
+    );
+    expect(screen.getByText("Other icons").props.className).toContain(
+      "text-center",
+    );
+  });
+
   it("renders both catalogs and resets to presets for a new label", () => {
     const onSelect = jest.fn();
     const rendered = render(

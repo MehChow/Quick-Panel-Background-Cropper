@@ -1,4 +1,68 @@
-import { enLocale, zhLocale } from "../i18next/resources";
+import * as localeResources from "../i18next/resources";
+
+const { enLocale, zhLocale } = localeResources;
+
+interface LocaleLeafMap {
+  [path: string]: string;
+}
+
+function flattenLocale(
+  value: Record<string, unknown>,
+  prefix = "",
+): LocaleLeafMap {
+  const result: LocaleLeafMap = {};
+  for (const [key, entry] of Object.entries(value)) {
+    const path = prefix ? `${prefix}.${key}` : key;
+    if (typeof entry === "string") {
+      result[path] = entry;
+    } else if (entry && typeof entry === "object") {
+      Object.assign(result, flattenLocale(entry as Record<string, unknown>, path));
+    }
+  }
+  return result;
+}
+
+function getPlaceholders(value: string): string[] {
+  return Array.from(value.matchAll(/\{\{([^}]+)\}\}/g), (match) => match[1]).sort();
+}
+
+function getSpanishLocale() {
+  return Reflect.get(localeResources, "esLocale") as
+    | typeof enLocale
+    | undefined;
+}
+
+describe("Spanish locale completeness", () => {
+  it("matches every English key with a non-empty Spanish value", () => {
+    const esLocale = getSpanishLocale();
+    expect(esLocale).toBeDefined();
+    if (!esLocale) return;
+
+    const english = flattenLocale(enLocale.translation);
+    const spanish = flattenLocale(esLocale.translation);
+    expect(Object.keys(spanish).sort()).toEqual(Object.keys(english).sort());
+    for (const value of Object.values(spanish)) {
+      expect(value.trim()).not.toBe("");
+    }
+  });
+
+  it("preserves English interpolation placeholders and intentional line breaks", () => {
+    const esLocale = getSpanishLocale();
+    expect(esLocale).toBeDefined();
+    if (!esLocale) return;
+
+    const english = flattenLocale(enLocale.translation);
+    const spanish = flattenLocale(esLocale.translation);
+    for (const [path, englishValue] of Object.entries(english)) {
+      expect(getPlaceholders(spanish[path])).toEqual(
+        getPlaceholders(englishValue),
+      );
+      expect((spanish[path].match(/\n/g) ?? []).length).toBe(
+        (englishValue.match(/\n/g) ?? []).length,
+      );
+    }
+  });
+});
 
 describe("release announcement locale strings", () => {
   it("defines the v1.6.0 update in English and Traditional Chinese", () => {

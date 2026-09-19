@@ -5,20 +5,21 @@ import {
   isSupportedLanguage,
   type SupportedLanguage,
 } from "../src/features/quick-panel/store/storage";
-import { enLocale, zhLocale } from "./resources";
+import { enLocale, esLocale, zhLocale } from "./resources";
 
-function getLanguage(): SupportedLanguage {
-  const locale = getLocales()[0];
-  const languageCode = locale?.languageCode?.toLowerCase();
+export function resolveLanguage(
+  languageCode: string | null | undefined,
+): SupportedLanguage {
+  const normalizedLanguageCode = languageCode?.toLowerCase();
 
-  if (isSupportedLanguage(languageCode)) {
-    return languageCode;
+  if (isSupportedLanguage(normalizedLanguageCode)) {
+    return normalizedLanguageCode;
   }
 
   return "en";
 }
 
-export const lng = getLanguage();
+export const lng = resolveLanguage(getLocales()[0]?.languageCode);
 
 const i18n = createInstance();
 
@@ -27,6 +28,7 @@ i18n
   .init({
     resources: {
       en: enLocale,
+      es: esLocale,
       zh: zhLocale,
     },
     lng,

@@ -42,6 +42,14 @@ describe("AdvancedGridControls", () => {
     expect(screen.getByTestId("advanced-grid-help")).toBeTruthy();
   });
 
+  it("lets the title shrink so translated help text stays inside the header", () => {
+    render(<AdvancedGridControls {...baseProps} />);
+
+    expect(
+      screen.getByText("advancedCalibration.gridControlsTitle").props.style,
+    ).toEqual(expect.objectContaining({ flexShrink: 1 }));
+  });
+
   it("changes the active grid axis and forwards slider values", () => {
     render(<AdvancedGridControls {...baseProps} />);
 
