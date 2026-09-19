@@ -1,6 +1,6 @@
 # Expo HAS CHANGED
 
-Read the exact versioned docs at https://docs.expo.dev/versions/v56.0.0/ before writing any code.
+Read the exact versioned docs at https://docs.expo.dev/versions/v57.0.0/ before writing any code.
 
 ## App status
 
@@ -38,7 +38,7 @@ For final v3 behavior, refer to `docs/v3_changelog.md`. For the additive v4 comb
 
 ## Tech Stack
 
-- **Framework:** Expo 56
+- **Framework:** Expo 57
 - **Styling:** Uniwind (Tailwind v4)
 - **State management:** Zustand
 - **UI:** AniUi

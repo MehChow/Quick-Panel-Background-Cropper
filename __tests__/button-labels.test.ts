@@ -14,6 +14,7 @@ import {
 import lucideGlyphMap from "@react-native-vector-icons/lucide/glyphmaps/Lucide.json";
 import en from "../i18next/locales/en";
 import zh from "../i18next/locales/zh";
+import * as localeResources from "../i18next/resources";
 
 interface ButtonLabelTranslations {
   [id: string]: string;
@@ -174,6 +175,30 @@ describe("button labels", () => {
     );
   });
 
+  it("provides reviewed Spanish Button labels and preserves custom labels", () => {
+    const esLocale = Reflect.get(localeResources, "esLocale") as
+      | typeof localeResources.enLocale
+      | undefined;
+    expect(esLocale).toBeDefined();
+    if (!esLocale) return;
+    const esLabels = esLocale.translation.buttonLabels as ButtonLabelTranslations;
+    const translateEs = createTranslator(esLabels);
+
+    expect(esLabels).toMatchObject({
+      "auto-rotate": "Giro automático",
+      "flight-mode": "Modo avión",
+      "mobile-data": "Datos móviles",
+      "quick-share": "Quick Share",
+      "smart-view": "Smart View",
+      "wireless-dex": "DeX inalámbrico",
+      "wireless-powershare": "Wireless PowerShare",
+    });
+    expect(getButtonDisplayLabel("Bluetooth", translateEs)).toBe("Bluetooth");
+    expect(getButtonDisplayLabel("My custom tile", translateEs)).toBe(
+      "My custom tile",
+    );
+  });
+
   it("searches canonical and localized labels", () => {
     const zhLabels = Reflect.get(
       zh.translation,
@@ -187,6 +212,23 @@ describe("button labels", () => {
     expect(
       searchButtonLabels("藍牙", translateZh).map((item) => item.label),
     ).toContain("Bluetooth");
+  });
+
+  it("searches Spanish Button labels", () => {
+    const esLocale = Reflect.get(localeResources, "esLocale") as
+      | typeof localeResources.enLocale
+      | undefined;
+    expect(esLocale).toBeDefined();
+    if (!esLocale) return;
+    const esLabels = esLocale.translation.buttonLabels as ButtonLabelTranslations;
+    const translateEs = createTranslator(esLabels);
+
+    expect(
+      searchButtonLabels("avión", translateEs).map((item) => item.label),
+    ).toContain("Flight Mode");
+    expect(
+      searchButtonLabels("datos", translateEs).map((item) => item.label),
+    ).toContain("Mobile Data");
   });
 
   it("creates ordered slugged file names with duplicate suffixes", () => {
