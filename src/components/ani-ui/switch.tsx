@@ -3,7 +3,7 @@ import {
   Pressable,
   type SwitchProps as RNSwitchProps,
   Text,
-  useColorScheme
+  useColorScheme,
 } from "react-native";
 import Animated, {
   Easing,
