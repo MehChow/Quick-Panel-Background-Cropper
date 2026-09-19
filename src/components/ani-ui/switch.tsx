@@ -1,5 +1,10 @@
-import React, { useEffect } from "react";
-import { Pressable, Text, Switch as RNSwitch, useColorScheme } from "react-native";
+import { useEffect } from "react";
+import {
+  Pressable,
+  type SwitchProps as RNSwitchProps,
+  Text,
+  useColorScheme
+} from "react-native";
 import Animated, {
   Easing,
   interpolateColor,
@@ -9,7 +14,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { cn } from "../../lib/utils";
 
-export interface SwitchProps extends React.ComponentPropsWithoutRef<typeof RNSwitch> {
+export interface SwitchProps extends Omit<RNSwitchProps, "className"> {
   className?: string;
   offLabel?: string;
   onLabel?: string;
@@ -53,7 +58,11 @@ export function Switch({
     <Pressable
       accessibilityLabel={props.accessibilityLabel}
       accessibilityRole="switch"
-      accessibilityState={{ ...props.accessibilityState, disabled: props.disabled, checked: isOn }}
+      accessibilityState={{
+        ...props.accessibilityState,
+        disabled: props.disabled,
+        checked: isOn,
+      }}
       className={cn(
         "relative h-8 w-[52px] flex-row items-center rounded-full border border-[#f3c992]/25 p-1",
         props.disabled && "opacity-50",
@@ -72,7 +81,12 @@ export function Switch({
         className="h-6 w-6 items-center justify-center rounded-full"
         style={[{ backgroundColor: thumb }, thumbStyle]}
       >
-        <Text className={cn("text-[8px] font-bold", isOn ? "text-[#f3c992]" : "text-[#2c2328]")}>
+        <Text
+          className={cn(
+            "text-[8px] font-bold",
+            isOn ? "text-[#f3c992]" : "text-[#2c2328]",
+          )}
+        >
           {isOn ? onLabel : offLabel}
         </Text>
       </Animated.View>
