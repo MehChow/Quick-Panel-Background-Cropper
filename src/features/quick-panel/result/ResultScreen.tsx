@@ -30,11 +30,14 @@ export function ResultScreen() {
     openSamsungStore,
   } = useGoodLockLink();
 
-  useEffect(() => () => {
-    if (exportsRef.current.length > 0) {
-      void cleanupCapturedExports(exportsRef.current);
-    }
-  }, []);
+  useEffect(
+    () => () => {
+      if (exportsRef.current.length > 0) {
+        void cleanupCapturedExports(exportsRef.current);
+      }
+    },
+    [],
+  );
 
   if (exports.length === 0) {
     return <Redirect href="/" />;
@@ -63,7 +66,7 @@ export function ResultScreen() {
             <Button
               className="mb-4 w-full bg-black"
               onPress={backHome}
-              textClassName="font-semibold text-white"
+              textClassName="font-semibold text-white w-full"
             >
               {t("export.backHome")}
             </Button>
