@@ -14,6 +14,8 @@ v3 intentionally ignores legacy calibration coordinates because the old bordered
 
 QPBC is an Expo app for creating Samsung Good Lock Quick Panel background PNGs from one user-selected image, with all features run locally. Advanced mode has three independent targets: **Controls only**, **Buttons only**, and **Controls + Buttons**. The supported Controls panels are Button box, Media player, Brightness, and Volume. Buttons are manually selected and exported as separate square PNGs. The combined target requires at least one Control and one Button and lets one image flow continuously across both families.
 
+The app supports English, Traditional Chinese, and Spanish localization. Keep user-facing copy and release announcements synchronized across all three locale files.
+
 The user flow is: landing -> mode selection -> calibration -> image selection -> preview adjustment -> export result. Default mode asks the user to import a fully expanded Quick Panel screenshot, adjust one green rectangle around the full Controls area, and save it as the layout basis. Advanced mode has two visible selection steps: first choose `Advanced`, then choose `Controls only`, `Buttons only`, or `Controls + Buttons`.
 
 Advanced Controls keeps the existing guided calibration flow: confirm the outer area first, turn off any supported panel missing from that region, set the snapping grid, then go through the enabled panel-box steps in this order: Button box, Brightness, Volume, and Media player. Advanced Controls includes an editable snapping grid inside the confirmed outer area so users can fine-tune row and column counts while matching customized layouts.

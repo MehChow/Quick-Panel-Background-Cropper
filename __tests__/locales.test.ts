@@ -1,6 +1,6 @@
 import * as localeResources from "../i18next/resources";
 
-const { enLocale, zhLocale } = localeResources;
+const { enLocale, esLocale, zhLocale } = localeResources;
 
 interface LocaleLeafMap {
   [path: string]: string;
@@ -26,15 +26,8 @@ function getPlaceholders(value: string): string[] {
   return Array.from(value.matchAll(/\{\{([^}]+)\}\}/g), (match) => match[1]).sort();
 }
 
-function getSpanishLocale() {
-  return Reflect.get(localeResources, "esLocale") as
-    | typeof enLocale
-    | undefined;
-}
-
 describe("Spanish locale completeness", () => {
   it("matches every English key with a non-empty Spanish value", () => {
-    const esLocale = getSpanishLocale();
     expect(esLocale).toBeDefined();
     if (!esLocale) return;
 
@@ -47,7 +40,6 @@ describe("Spanish locale completeness", () => {
   });
 
   it("preserves English interpolation placeholders and intentional line breaks", () => {
-    const esLocale = getSpanishLocale();
     expect(esLocale).toBeDefined();
     if (!esLocale) return;
 
@@ -65,19 +57,21 @@ describe("Spanish locale completeness", () => {
 });
 
 describe("release announcement locale strings", () => {
-  it("defines the v1.6.0 update in English and Traditional Chinese", () => {
-    expect(enLocale.translation.releaseAnnouncement.v1_6_0).toEqual({
-      title: "v1.6.0 Updates 🌟\n",
-      body: "• New: Add preset icons for custom Button labels.\n• Enhancement: Show icon next to the label for better clarity.",
+  it("defines the v1.7.0 update in all supported languages", () => {
+    expect(enLocale.translation.releaseAnnouncement.v1_7_0).toEqual({
+      title: "v1.7.0 Updates 🌟\n",
+      body: "• New: Spanish localization.\n• Fixed: Some text display issues.",
       gotIt: "Got it",
-      mediaAccessibilityLabel:
-        "Custom Button label choosing from preset Button icons",
     });
-    expect(zhLocale.translation.releaseAnnouncement.v1_6_0).toEqual({
-      title: "v1.6.0 更新內容 🌟\n",
-      body: "• 新功能：為自訂按鈕標籤新增預設圖示。\n• 改進：在標籤旁顯示圖示，讓內容更清晰。",
+    expect(zhLocale.translation.releaseAnnouncement.v1_7_0).toEqual({
+      title: "v1.7.0 更新內容 🌟\n",
+      body: "• 新功能：新增西班牙文介面。\n• 修正：部分文字顯示問題。",
       gotIt: "知道了",
-      mediaAccessibilityLabel: "自訂按鈕標籤選擇預設按鈕圖示",
+    });
+    expect(esLocale.translation.releaseAnnouncement.v1_7_0).toEqual({
+      title: "Novedades de la v1.7.0 🌟\n",
+      body: "• Nuevo: localización al español.\n• Corrección: se han solucionado algunos problemas de visualización del texto.",
+      gotIt: "Entendido",
     });
   });
 

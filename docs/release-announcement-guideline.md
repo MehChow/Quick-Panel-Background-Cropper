@@ -163,11 +163,7 @@ For a release candidate, also test manually with a clean app data state and an u
 ## Current reference
 
 The current announcement ID is
-`v1.6.0-custom-label-preset-icons-announcement`. It announces that custom
-Button labels can reuse preset Button icons, includes localized supporting
-media, and has a single `Got it` / `知道了` acknowledgement CTA. Its
-acknowledgement is independent from `quick-panel.calibrations`.
-
-During development, `assets/announcement/v1_6_0.webp` is a temporary app-icon
-image. Replace it in place with the final feature screenshot before preparing
-the v1.6.0 release candidate.
+`v1.7.0-spanish-localization-text-display-fixes-announcement`. It announces
+Spanish localization and text-display fixes, has no supporting media, and uses
+a localized acknowledgement CTA. Its acknowledgement is independent from
+`quick-panel.calibrations`.

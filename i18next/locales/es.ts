@@ -46,6 +46,11 @@ const es: Translations = {
         mediaAccessibilityLabel:
           "Selección de iconos predefinidos para una etiqueta personalizada de Botón",
       },
+      v1_7_0: {
+        title: "Novedades de la v1.7.0 🌟\n",
+        body: "• Nuevo: localización al español.\n• Corrección: se han solucionado algunos problemas de visualización del texto.",
+        gotIt: "Entendido",
+      },
     },
     landing: {
       startCustomizing: "Empezar a personalizar",
