@@ -1,2 +1,2 @@
-New: Add preset icons for custom Button labels.
-Enhancement: Show icon next to the label for better clarity.
+New: Spanish localization.
+Fixed: Some text display issues.
