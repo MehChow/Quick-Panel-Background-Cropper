@@ -29,8 +29,11 @@ export function AdvancedGridControls({
 
   return (
     <View className="gap-2 rounded-2xl border border-white/10 bg-zinc-900/90 px-3 py-2.5">
-      <View className="flex-row items-center justify-between">
-        <Text className="text-xs font-semibold uppercase tracking-[0.8px] text-zinc-400">
+      <View className="flex-row items-center justify-between gap-2">
+        <Text
+          className="text-xs font-semibold uppercase tracking-[0.8px] text-zinc-400"
+          style={{ flexShrink: 1 }}
+        >
           {t("advancedCalibration.gridControlsTitle")}
         </Text>
         <GridHelpButton
@@ -79,10 +82,14 @@ function AxisChip({ isActive, label, onPress, testID, value }: AxisChipProps) {
       testID={testID}
     >
       <View className="flex-row items-center justify-between">
-        <Text className={`text-[10px] font-semibold uppercase tracking-[0.8px] ${isActive ? "text-white" : "text-zinc-400"}`}>
+        <Text
+          className={`text-[10px] font-semibold uppercase tracking-[0.8px] ${isActive ? "text-white" : "text-zinc-400"}`}
+        >
           {label}
         </Text>
-        <Text className={`text-sm font-semibold ${isActive ? "text-white" : "text-zinc-300"}`}>
+        <Text
+          className={`text-sm font-semibold ${isActive ? "text-white" : "text-zinc-300"}`}
+        >
           {value}
         </Text>
       </View>

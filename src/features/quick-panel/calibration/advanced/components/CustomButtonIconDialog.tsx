@@ -7,14 +7,14 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ani-ui/alert-dialog";
-import { useTranslation } from "react-i18next";
-import { useWindowDimensions } from "react-native";
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
 } from "@/components/ani-ui/tabs";
+import { useTranslation } from "react-i18next";
+import { useWindowDimensions } from "react-native";
 import {
   buttonLabelCatalog,
   customButtonIconChoices,
@@ -63,6 +63,7 @@ export function CustomButtonIconDialog({
             <TabsTrigger
               activeClassName="bg-black"
               activeTextClassName="text-white"
+              textClassName="text-center"
               value="preset"
             >
               {t("advancedCalibration.customIconPresetTab")}
@@ -70,6 +71,7 @@ export function CustomButtonIconDialog({
             <TabsTrigger
               activeClassName="bg-black"
               activeTextClassName="text-white"
+              textClassName="text-center"
               value="other"
             >
               {t("advancedCalibration.customIconOtherTab")}

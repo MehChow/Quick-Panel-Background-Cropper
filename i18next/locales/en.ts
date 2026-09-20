@@ -42,6 +42,11 @@ const en = {
         mediaAccessibilityLabel:
           "Custom Button label choosing from preset Button icons",
       },
+      v1_7_0: {
+        title: "v1.7.0 Updates 🌟\n",
+        body: "• New: Spanish localization.\n• Fixed: Some text display issues.",
+        gotIt: "Got it",
+      },
     },
     landing: {
       startCustomizing: "Start customizing",

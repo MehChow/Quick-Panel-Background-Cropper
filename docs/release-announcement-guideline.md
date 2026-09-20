@@ -37,6 +37,7 @@ Do not use it for every small bug fix or patch release. If the update requires d
 | Root startup mounting          | `src/app/_layout.tsx`                                                  |
 | English copy                   | `i18next/locales/en.ts`                                                |
 | Traditional Chinese copy       | `i18next/locales/zh.ts`                                                |
+| Spanish copy                   | `i18next/locales/es.ts`                                                |
 | Storage and behavior tests     | `__tests__/storage.test.ts`, `__tests__/release-announcement.test.tsx` |
 
 ## Preparing a future announcement
@@ -46,7 +47,7 @@ Before editing code, prepare these decisions:
 1. Define the audience: fresh installs, users updating from a specific release, or every user who has not seen this announcement.
 2. Define the stable announcement ID. Use a descriptive ID such as `v4-permission-gate` or `v4-export-migration`, not `1.2.1` or the Android `versionCode`.
 3. Decide the single acknowledgement CTA label.
-4. Prepare English and Traditional Chinese copy before implementation.
+4. Prepare English, Traditional Chinese, and Spanish copy before implementation.
 5. Decide whether a real data migration is also required. Keep that logic in storage/domain code, not in the announcement component.
 
 ## Adding a new announcement
@@ -65,7 +66,7 @@ If a future announcement must be shown to the same users again for a materially 
 
 ### 2. Add localized copy
 
-Add matching keys in both locale files:
+Add matching keys in all three locale files:
 
 ```ts
 releaseAnnouncement: {
@@ -130,7 +131,7 @@ Update or add tests for all applicable cases:
 - an already acknowledged active ID does not show;
 - announcement acknowledgement does not change calibration, language, help, or last-mode keys;
 - changing the active ID makes the new announcement show once;
-- both English and Traditional Chinese translation keys exist.
+- English, Traditional Chinese, and Spanish translation keys exist.
 
 Run:
 
@@ -162,11 +163,7 @@ For a release candidate, also test manually with a clean app data state and an u
 ## Current reference
 
 The current announcement ID is
-`v1.6.0-custom-label-preset-icons-announcement`. It announces that custom
-Button labels can reuse preset Button icons, includes localized supporting
-media, and has a single `Got it` / `知道了` acknowledgement CTA. Its
-acknowledgement is independent from `quick-panel.calibrations`.
-
-During development, `assets/announcement/v1_6_0.webp` is a temporary app-icon
-image. Replace it in place with the final feature screenshot before preparing
-the v1.6.0 release candidate.
+`v1.7.0-spanish-localization-text-display-fixes-announcement`. It announces
+Spanish localization and text-display fixes, has no supporting media, and uses
+a localized acknowledgement CTA. Its acknowledgement is independent from
+`quick-panel.calibrations`.
