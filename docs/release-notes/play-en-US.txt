@@ -1,2 +1,2 @@
-New: Spanish localization.
-Fixed: Some text display issues.
+• Fixed a problem when selecting an image.
+• Added 2 new built-in button icons.

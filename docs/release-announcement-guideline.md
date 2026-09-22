@@ -38,6 +38,7 @@ Do not use it for every small bug fix or patch release. If the update requires d
 | English copy                   | `i18next/locales/en.ts`                                                |
 | Traditional Chinese copy       | `i18next/locales/zh.ts`                                                |
 | Spanish copy                   | `i18next/locales/es.ts`                                                |
+| English Google Play notes      | `docs/release-notes/play-en-US.txt`                                    |
 | Storage and behavior tests     | `__tests__/storage.test.ts`, `__tests__/release-announcement.test.tsx` |
 
 ## Preparing a future announcement
@@ -121,6 +122,14 @@ const acknowledge = () => {
 
 If a future release genuinely needs an action beyond dismissal, document that decision and add a dedicated handler. For a simple informational announcement, the current behavior acknowledges on the CTA or platform dismissal.
 
+### 5. Sync the English Google Play release notes
+
+Every time a new release announcement is created, update
+`docs/release-notes/play-en-US.txt` in the same change. Replace the previous
+release notes with the exact English announcement body from `i18next/locales/en.ts`,
+using actual line breaks in place of `\n`. Include the same wording, bullet points,
+and order; omit the dialog title and acknowledgement CTA.
+
 ## Testing checklist
 
 Update or add tests for all applicable cases:
@@ -132,6 +141,7 @@ Update or add tests for all applicable cases:
 - announcement acknowledgement does not change calibration, language, help, or last-mode keys;
 - changing the active ID makes the new announcement show once;
 - English, Traditional Chinese, and Spanish translation keys exist.
+- `docs/release-notes/play-en-US.txt` matches the active English announcement body.
 
 Run:
 
@@ -163,7 +173,7 @@ For a release candidate, also test manually with a clean app data state and an u
 ## Current reference
 
 The current announcement ID is
-`v1.7.0-spanish-localization-text-display-fixes-announcement`. It announces
-Spanish localization and text-display fixes, has no supporting media, and uses
+`v1.7.1-image-selection-fix-button-icons-announcement`. It announces
+an image selection fix and 2 new built-in button icons, has no supporting media, and uses
 a localized acknowledgement CTA. Its acknowledgement is independent from
 `quick-panel.calibrations`.
