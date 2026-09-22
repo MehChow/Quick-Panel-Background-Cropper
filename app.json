@@ -60,10 +60,13 @@
           "android": {
             "minSdkVersion": 36,
             "targetSdkVersion": 36,
-            "compileSdkVersion": 36
+            "compileSdkVersion": 36,
+            "enableMinifyInReleaseBuilds": true,
+            "enableShrinkResourcesInReleaseBuilds": true
           }
         }
-      ]
+      ],
+      "./plugins/with-android-release-optimization"
     ],
     "experiments": {
       "typedRoutes": true,
