@@ -25,7 +25,7 @@ import type {
   PanelId,
   PanelRect,
 } from "../../../../model/types";
-import { pickImageFromLibrary } from "../../../../shared/pick-image-from-library";
+import { useImageImport } from "../../../../shared/useImageImport";
 import { getSuggestedCalibrationRect } from "../../../shared/calibration-preset";
 import { useQuickPanelStore } from "../../../../store/quick-panel-store";
 import { quickPanelSelectors } from "../../../../store/selectors";
@@ -51,7 +51,6 @@ export function useCombinedCalibrationScreen() {
     setCombinedButtons,
     setCombinedPanel,
     acceptCombinedCalibration,
-    failImageProcessing,
   } = useQuickPanelStore(useShallow(quickPanelSelectors.combinedCalibrationScreen));
   const [phase, setPhase] = useState<CombinedCalibrationPhase>("outer");
   const [grid, setGrid] = useState<AdvancedSnapGrid>(() =>
@@ -62,27 +61,18 @@ export function useCombinedCalibrationScreen() {
   const [leavingPhase, setLeavingPhase] = useState<CombinedCalibrationPhase | null>(null);
   const [isLeaveDialogOpen, setIsLeaveDialogOpen] = useState(false);
 
-  const importScreenshot = async () => {
-    try {
-      const screenshot = await pickImageFromLibrary();
-      if (!screenshot) return;
-      const previousScreenshot = advancedCombinedDraft?.screenshot ?? null;
-      const suggestedOuter = getSuggestedCalibrationRect(screenshot);
-      ownedImageCache.track(screenshot);
-      setCombinedScreenshot(screenshot, suggestedOuter);
-      ownedImageCache.release(previousScreenshot);
-      setGrid(advancedCombinedCalibration?.grid ?? getDefaultAdvancedSnapGrid(suggestedOuter));
-      setPhase("outer");
-      setResumePhase(null);
-      setLeavingDraft(null);
-      setLeavingPhase(null);
-    } catch (caught) {
-      failImageProcessing(
-        null,
-        caught instanceof Error ? caught.message : "errors.unableToOpenImagePicker",
-      );
-    }
-  };
+  const { importImage: importScreenshot, isImporting } = useImageImport((screenshot) => {
+    const previousScreenshot = advancedCombinedDraft?.screenshot ?? null;
+    const suggestedOuter = getSuggestedCalibrationRect(screenshot);
+    ownedImageCache.track(screenshot);
+    setCombinedScreenshot(screenshot, suggestedOuter);
+    ownedImageCache.release(previousScreenshot);
+    setGrid(advancedCombinedCalibration?.grid ?? getDefaultAdvancedSnapGrid(suggestedOuter));
+    setPhase("outer");
+    setResumePhase(null);
+    setLeavingDraft(null);
+    setLeavingPhase(null);
+  });
 
   const draft = advancedCombinedDraft ?? leavingDraft;
   const displayedPhase = advancedCombinedDraft ? phase : leavingPhase ?? phase;
@@ -213,6 +203,7 @@ export function useCombinedCalibrationScreen() {
     goBack,
     goForward,
     importScreenshot,
+    isImporting,
     isButtonSelectionPhase,
     isConfirmPhase,
     isControlSelectionPhase,

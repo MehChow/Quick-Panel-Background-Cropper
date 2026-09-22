@@ -8,8 +8,10 @@ import { renderHook, waitFor } from "@testing-library/react-native";
 const mockContext = {
   renderAsync: jest.fn(),
   resize: jest.fn(),
+  release: jest.fn(),
 };
 const mockDelete = jest.fn();
+const mockRenderedRelease = jest.fn();
 const mockManipulate = jest.fn();
 const mockSaveAsync = jest.fn();
 
@@ -48,17 +50,36 @@ describe("Customize preview images", () => {
   beforeEach(() => {
     mockContext.renderAsync.mockReset();
     mockContext.resize.mockReset();
+    mockContext.release.mockReset();
+    mockRenderedRelease.mockReset();
     mockDelete.mockReset();
     mockManipulate.mockReset();
     mockSaveAsync.mockReset();
     mockContext.resize.mockReturnValue(mockContext);
-    mockContext.renderAsync.mockResolvedValue({ saveAsync: mockSaveAsync });
+    mockContext.renderAsync.mockResolvedValue({ saveAsync: mockSaveAsync, release: mockRenderedRelease });
     mockManipulate.mockReturnValue(mockContext);
   mockSaveAsync.mockResolvedValue({
     height: 608,
     uri: "file:///cache/preview.png",
       width: 1080,
     });
+  });
+
+  it("keeps an extreme aspect ratio preview at least one pixel wide", () => {
+    expect(getCustomizePreviewResize(1, 3072)).toEqual({ width: 1, height: 1080 });
+  });
+
+  it("releases both native references after encoding the preview", async () => {
+    await createCustomizePreviewImage({ uri: "file:///working.jpg", width: 2048, height: 3072 });
+    expect(mockContext.release).toHaveBeenCalledTimes(1);
+    expect(mockRenderedRelease).toHaveBeenCalledTimes(1);
+  });
+
+  it("releases references even when saving the proxy fails", async () => {
+    mockSaveAsync.mockRejectedValueOnce(new Error("disk full"));
+    await expect(createCustomizePreviewImage({ uri: "file:///working.jpg", width: 2048, height: 3072 })).rejects.toThrow("disk full");
+    expect(mockContext.release).toHaveBeenCalledTimes(1);
+    expect(mockRenderedRelease).toHaveBeenCalledTimes(1);
   });
 
   it("reuses images whose long edge is at most 1080", async () => {

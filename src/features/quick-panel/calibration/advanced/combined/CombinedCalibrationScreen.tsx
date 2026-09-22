@@ -24,7 +24,7 @@ export function CombinedCalibrationScreen() {
   const {
     advancedDraft, activePanelFamily, activePanelId, beginPanelGesture, canGoBack, closeLeaveDialog,
     commitPanelGesture,
-    error, errorKey, grid, goBack, goForward, importScreenshot,
+    error, errorKey, grid, goBack, goForward, importScreenshot, isImporting,
     isButtonSelectionPhase, isConfirmPhase, isControlSelectionPhase, isGridPhase,
     isLeaveDialogOpen, isOuterPhase, leaveCalibration, panelItems, panels, phase,
     requestLeaveCalibration, saveCalibration, setColumns, setRows,
@@ -43,6 +43,7 @@ export function CombinedCalibrationScreen() {
     return (
       <SafeAreaView style={{ flex: 1 }}>
         <OuterCalibrationStep
+          isImporting={isImporting}
           error={error}
           errorKey={errorKey}
           footerTestID="advanced-calibration-footer"

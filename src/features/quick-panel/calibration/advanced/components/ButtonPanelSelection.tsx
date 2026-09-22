@@ -3,12 +3,16 @@ import { Lucide } from "@react-native-vector-icons/lucide";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Pressable, ScrollView, TextInput, View } from "react-native";
-import { createButtonItems } from "../button-selection";
 import {
   getButtonDisplayLabel,
   searchButtonLabels,
 } from "../../../model/button-labels";
-import type { ButtonCalibrationItem, PanelRect, PickedImage } from "../../../model/types";
+import type {
+  ButtonCalibrationItem,
+  PanelRect,
+  PickedImage,
+} from "../../../model/types";
+import { createButtonItems } from "../button-selection";
 import { CalibrationAreaPreview } from "./CalibrationAreaPreview";
 import { CustomButtonIconDialog } from "./CustomButtonIconDialog";
 import { SelectedButtonChip } from "./SelectedButtonChip";
@@ -28,11 +32,15 @@ export function ButtonPanelSelection({
 }: Props) {
   const { t } = useTranslation();
   const [query, setQuery] = useState("");
-  const [pendingCustomLabel, setPendingCustomLabel] = useState<string | null>(null);
+  const [pendingCustomLabel, setPendingCustomLabel] = useState<string | null>(
+    null,
+  );
   const selectedLabels = buttons.map((button) => button.label);
   const translateLabel = (key: string) => t(key);
   const labels = searchButtonLabels(query, translateLabel).slice(0, 12);
-  const setChoices = (nextButtons: Pick<ButtonCalibrationItem, "customIconId" | "label">[]) => {
+  const setChoices = (
+    nextButtons: Pick<ButtonCalibrationItem, "customIconId" | "label">[],
+  ) => {
     onButtonsChange(createButtonItems(nextButtons, outerRect));
   };
   const toggleLabel = (label: string) => {
@@ -43,13 +51,16 @@ export function ButtonPanelSelection({
     );
     setQuery("");
   };
-  const selectCustomIcon = (customIconId: ButtonCalibrationItem["customIconId"]) => {
+  const selectCustomIcon = (
+    customIconId: ButtonCalibrationItem["customIconId"],
+  ) => {
     if (!pendingCustomLabel || !customIconId) return;
     setChoices([...buttons, { label: pendingCustomLabel, customIconId }]);
     setPendingCustomLabel(null);
     setQuery("");
   };
-  const canAddCustomLabel = Boolean(query.trim()) && !selectedLabels.includes(query.trim());
+  const canAddCustomLabel =
+    Boolean(query.trim()) && !selectedLabels.includes(query.trim());
 
   return (
     <View className="min-h-0 flex-1 overflow-hidden rounded-2xl border border-white/10 bg-zinc-900/80">
@@ -71,36 +82,41 @@ export function ButtonPanelSelection({
             </View>
             <View className="gap-2 rounded-xl border border-white/10 bg-zinc-950/70 p-3">
               <Text className="text-sm font-semibold text-white">
-                {t("advancedCalibration.selectedButtons", { count: selectedLabels.length })}
+                {t("advancedCalibration.selectedButtons", {
+                  count: selectedLabels.length,
+                })}
               </Text>
               <View className="flex-row flex-wrap gap-2">
-                {selectedLabels.length
-                  ? buttons.map((button) => {
-                      const displayLabel = getButtonDisplayLabel(
-                        button.label,
-                        translateLabel,
-                      );
-                      return (
-                        <SelectedButtonChip
-                          key={button.label}
-                          button={button}
-                          displayLabel={displayLabel}
-                          onRemove={() => toggleLabel(button.label)}
-                          removeLabel={t("advancedCalibration.remove")}
-                        />
-                      );
-                    })
-                  : (
+                {selectedLabels.length ? (
+                  buttons.map((button) => {
+                    const displayLabel = getButtonDisplayLabel(
+                      button.label,
+                      translateLabel,
+                    );
+                    return (
+                      <SelectedButtonChip
+                        key={button.label}
+                        button={button}
+                        displayLabel={displayLabel}
+                        onRemove={() => toggleLabel(button.label)}
+                        removeLabel={t("advancedCalibration.remove")}
+                      />
+                    );
+                  })
+                ) : (
                   <Text className="text-sm text-zinc-500">
                     {t("advancedCalibration.noButtonsSelected")}
                   </Text>
-                    )}
+                )}
               </View>
             </View>
             <View className="gap-2">
               {labels.map((item) => {
                 const isSelected = selectedLabels.includes(item.label);
-                const displayLabel = getButtonDisplayLabel(item.label, translateLabel);
+                const displayLabel = getButtonDisplayLabel(
+                  item.label,
+                  translateLabel,
+                );
                 return (
                   <Pressable
                     key={item.id}
@@ -120,7 +136,9 @@ export function ButtonPanelSelection({
                       name={item.iconName}
                       size={18}
                     />
-                    <Text className="font-semibold text-white">{displayLabel}</Text>
+                    <Text className="font-semibold text-white flex-1">
+                      {displayLabel}
+                    </Text>
                   </Pressable>
                 );
               })}
@@ -131,7 +149,9 @@ export function ButtonPanelSelection({
                 onPress={() => setPendingCustomLabel(query.trim())}
               >
                 <Text className="font-semibold text-white">
-                  {t("advancedCalibration.addCustomButtonLabel", { label: query.trim() })}
+                  {t("advancedCalibration.addCustomButtonLabel", {
+                    label: query.trim(),
+                  })}
                 </Text>
               </Pressable>
             ) : null}

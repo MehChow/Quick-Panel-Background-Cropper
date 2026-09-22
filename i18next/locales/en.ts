@@ -1,6 +1,7 @@
 const en = {
   translation: {
     common: {
+      preparingImage: "Preparing image...",
       cancel: "Cancel",
       close: "Close",
       confirm: "Confirm",
@@ -41,6 +42,11 @@ const en = {
         gotIt: "Got it",
         mediaAccessibilityLabel:
           "Custom Button label choosing from preset Button icons",
+      },
+      v1_7_1: {
+        title: "v1.7.1 Updates 🌟\n",
+        body: "• Fixed a problem when selecting an image.\n• Added 2 new built-in button icons.",
+        gotIt: "Got it",
       },
       v1_7_0: {
         title: "v1.7.0 Updates 🌟\n",
@@ -251,7 +257,7 @@ const en = {
       customIconLightbulb: "Lightbulb",
       customIconPalette: "Palette",
       customIconRocket: "Rocket",
-      customIconShield: "Shield",
+      customIconFlag: "Flag",
       customIconShoppingBag: "Shopping Bag",
       customIconTimer: "Timer",
       moveUp: "Up",
@@ -295,7 +301,7 @@ const en = {
       "mobile-hotspot": "Mobile Hotspot",
       "power-saving": "Power Saving",
       "smart-view": "Smart View",
-      "nearby-devices": "Nearby devices",
+      "nearby-devices": "Nearby Devices",
       "eye-comfort-shield": "Eye Comfort Shield",
       "do-not-disturb": "Do Not Disturb",
       "link-to-windows": "Link to Windows",
@@ -337,6 +343,7 @@ const en = {
       accessibility: "Accessibility",
       "camera-access": "Camera Access",
       "microphone-access": "Microphone Access",
+      "privacy-display": "Privacy Display",
       "private-share": "Private Share",
       "nearby-share": "Nearby Share",
       "work-profile": "Work profile",

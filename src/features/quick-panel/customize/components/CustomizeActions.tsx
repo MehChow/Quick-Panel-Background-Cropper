@@ -33,7 +33,7 @@ export function CustomizeActions({
           textClassName="w-full font-semibold text-black"
         >
           {isProcessingImage
-            ? t("customize.optimizingImage")
+            ? t("common.preparingImage")
             : t("customize.chooseAnotherImage")}
         </Button>
       </View>
@@ -59,7 +59,7 @@ export function CustomizeActions({
             {isExporting
               ? ""
               : isProcessingImage
-                ? t("customize.optimizingImage")
+                ? t("common.preparingImage")
                 : t("customize.exportPngs")}
           </Button>
           {isExporting ? (

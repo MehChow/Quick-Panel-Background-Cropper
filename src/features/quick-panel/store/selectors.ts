@@ -55,6 +55,8 @@ export const quickPanelSelectors = {
     failImageProcessing: state.failImageProcessing,
   }),
   customizeScreen: (state: QuickPanelState) => ({
+    errorKey: state.errorKey,
+    error: state.error,
     selectedMode: state.selectedMode,
     selectedAdvancedTarget: state.selectedAdvancedTarget,
     activePreset: state.activePreset,

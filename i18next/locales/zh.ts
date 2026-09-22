@@ -1,6 +1,7 @@
 const zh = {
   translation: {
     common: {
+      preparingImage: "正在準備圖片⋯",
       cancel: "取消",
       close: "關閉",
       confirm: "確認",
@@ -38,6 +39,11 @@ const zh = {
         body: "• 新功能：為自訂按鈕標籤新增預設圖示。\n• 改進：在標籤旁顯示圖示，讓內容更清晰。",
         gotIt: "知道了",
         mediaAccessibilityLabel: "自訂按鈕標籤選擇預設按鈕圖示",
+      },
+      v1_7_1: {
+        title: "v1.7.1 更新內容 🌟\n",
+        body: "• 修正選擇圖片時的問題。\n• 新增 2 個內建按鈕圖示。",
+        gotIt: "知道了",
       },
       v1_7_0: {
         title: "v1.7.0 更新內容 🌟\n",
@@ -231,7 +237,7 @@ const zh = {
       customIconLightbulb: "燈泡",
       customIconPalette: "調色盤",
       customIconRocket: "火箭",
-      customIconShield: "盾牌",
+      customIconFlag: "旗幟",
       customIconShoppingBag: "購物袋",
       customIconTimer: "計時器",
       moveUp: "上移",
@@ -317,6 +323,7 @@ const zh = {
       accessibility: "協助工具",
       "camera-access": "相機存取",
       "microphone-access": "話筒存取",
+      "privacy-display": "私隱顯示",
       "private-share": "私人分享",
       "nearby-share": "鄰近分享",
       "work-profile": "工作設定檔",

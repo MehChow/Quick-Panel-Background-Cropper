@@ -32,49 +32,59 @@ beforeEach(() => {
 });
 
 describe("release announcement", () => {
+  it("shows the new announcement after acknowledging the previous release", () => {
+    acknowledgeReleaseAnnouncement(
+      "v1.7.0-spanish-localization-text-display-fixes-announcement",
+    );
+
+    render(<ReleaseAnnouncementHost />);
+
+    expect(screen.getByText("releaseAnnouncement.v1_7_1.title")).toBeTruthy();
+  });
+
   it("shows an unacknowledged announcement and dismisses it", () => {
     render(<ReleaseAnnouncementHost />);
 
-    expect(screen.getByText("releaseAnnouncement.v1_7_0.title")).toBeTruthy();
-    expect(screen.getByText("releaseAnnouncement.v1_7_0.body")).toBeTruthy();
+    expect(screen.getByText("releaseAnnouncement.v1_7_1.title")).toBeTruthy();
+    expect(screen.getByText("releaseAnnouncement.v1_7_1.body")).toBeTruthy();
     expect(
-      screen.getByText("releaseAnnouncement.v1_7_0.title").props.className,
+      screen.getByText("releaseAnnouncement.v1_7_1.title").props.className,
     ).toContain("text-white");
     expect(
-      screen.getByText("releaseAnnouncement.v1_7_0.gotIt").props.className,
+      screen.getByText("releaseAnnouncement.v1_7_1.gotIt").props.className,
     ).toContain("text-black");
     expect(
       screen.getByRole("button", {
-        name: "releaseAnnouncement.v1_7_0.gotIt",
+        name: "releaseAnnouncement.v1_7_1.gotIt",
       }).props.className,
     ).toContain("bg-white");
     expect(screen.queryByTestId("release-announcement-media-wrapper")).toBeNull();
     expect(screen.queryByTestId("release-announcement-media")).toBeNull();
 
-    fireEvent.press(screen.getByText("releaseAnnouncement.v1_7_0.gotIt"));
+    fireEvent.press(screen.getByText("releaseAnnouncement.v1_7_1.gotIt"));
 
     expect(loadAcknowledgedReleaseAnnouncement()).toBe(
-      "v1.7.0-spanish-localization-text-display-fixes-announcement",
+      "v1.7.1-image-selection-fix-button-icons-announcement",
     );
-    expect(screen.queryByText("releaseAnnouncement.v1_7_0.title")).toBeNull();
+    expect(screen.queryByText("releaseAnnouncement.v1_7_1.title")).toBeNull();
   });
 
   it("only dismisses when the user acknowledges the announcement", () => {
     render(<ReleaseAnnouncementHost />);
 
-    fireEvent.press(screen.getByText("releaseAnnouncement.v1_7_0.gotIt"));
+    fireEvent.press(screen.getByText("releaseAnnouncement.v1_7_1.gotIt"));
 
     expect(loadAcknowledgedReleaseAnnouncement()).toBe(
-      "v1.7.0-spanish-localization-text-display-fixes-announcement",
+      "v1.7.1-image-selection-fix-button-icons-announcement",
     );
   });
 
   it("does not show an already acknowledged announcement", () => {
-    acknowledgeReleaseAnnouncement("v1.7.0-spanish-localization-text-display-fixes-announcement");
+    acknowledgeReleaseAnnouncement("v1.7.1-image-selection-fix-button-icons-announcement");
 
     render(<ReleaseAnnouncementHost />);
 
-    expect(screen.queryByText("releaseAnnouncement.v1_7_0.title")).toBeNull();
+    expect(screen.queryByText("releaseAnnouncement.v1_7_1.title")).toBeNull();
   });
 
   it("acknowledges when the dialog is dismissed by the platform", () => {
@@ -83,7 +93,7 @@ describe("release announcement", () => {
     fireEvent(rendered.UNSAFE_getByType(Modal), "requestClose");
 
     expect(loadAcknowledgedReleaseAnnouncement()).toBe(
-      "v1.7.0-spanish-localization-text-display-fixes-announcement",
+      "v1.7.1-image-selection-fix-button-icons-announcement",
     );
   });
 });

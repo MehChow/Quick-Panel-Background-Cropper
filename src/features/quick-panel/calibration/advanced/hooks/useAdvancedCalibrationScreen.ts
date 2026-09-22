@@ -23,7 +23,7 @@ import type {
   PanelRect,
   PanelRects,
 } from "../../../model/types";
-import { pickImageFromLibrary } from "../../../shared/pick-image-from-library";
+import { useImageImport } from "../../../shared/useImageImport";
 import { getPanelLabel } from "../../../model/i18n";
 import { useQuickPanelStore } from "../../../store/quick-panel-store";
 import { quickPanelSelectors } from "../../../store/selectors";
@@ -53,7 +53,6 @@ export function useAdvancedCalibrationScreen() {
     setAdvancedButtons,
     setAdvancedButtonPanel,
     acceptAdvancedCalibration,
-    failImageProcessing,
   } = useQuickPanelStore(useShallow(quickPanelSelectors.advancedCalibrationScreen));
   const savedCalibration = selectedAdvancedTarget === "buttons"
     ? advancedButtonsCalibration
@@ -66,34 +65,20 @@ export function useAdvancedCalibrationScreen() {
   const [leavingPhase, setLeavingPhase] = useState<AdvancedCalibrationPhase | null>(null);
   const [resumePhase, setResumePhase] = useState<AdvancedCalibrationPhase | null>(null);
 
-  const importScreenshot = async () => {
-    try {
-      const screenshot = await pickImageFromLibrary();
-      if (!screenshot) {
-        return;
-      }
-
-      const previousScreenshot = selectedAdvancedTarget === "buttons"
-        ? advancedButtonsDraft?.screenshot ?? null
-        : advancedDraft?.screenshot ?? null;
-      const suggestedRect = getSuggestedCalibrationRect(screenshot);
-      ownedImageCache.track(screenshot);
-      setAdvancedScreenshot(screenshot, suggestedRect);
-      ownedImageCache.release(previousScreenshot);
-      setGrid(savedCalibration?.grid ?? getDefaultAdvancedSnapGrid(suggestedRect));
-      setLeavingDraft(null);
-      setLeavingPhase(null);
-      setPhase("outer");
-      setResumePhase(null);
-    } catch (error) {
-      failImageProcessing(
-        null,
-        error instanceof Error
-          ? error.message
-          : "errors.unableToOpenImagePicker",
-      );
-    }
-  };
+  const { importImage: importScreenshot, isImporting } = useImageImport((screenshot) => {
+    const previousScreenshot = selectedAdvancedTarget === "buttons"
+      ? advancedButtonsDraft?.screenshot ?? null
+      : advancedDraft?.screenshot ?? null;
+    const suggestedRect = getSuggestedCalibrationRect(screenshot);
+    ownedImageCache.track(screenshot);
+    setAdvancedScreenshot(screenshot, suggestedRect);
+    ownedImageCache.release(previousScreenshot);
+    setGrid(savedCalibration?.grid ?? getDefaultAdvancedSnapGrid(suggestedRect));
+    setLeavingDraft(null);
+    setLeavingPhase(null);
+    setPhase("outer");
+    setResumePhase(null);
+  });
 
   const continueToNextPhase = () => {
     confirmAdvancedOuterRect();
@@ -252,6 +237,7 @@ export function useAdvancedCalibrationScreen() {
     canGoBack: previousPhase !== null,
     closeLeaveDialog,
     importScreenshot,
+    isImporting,
     decrementColumns: () => setGrid((current) => ({ ...current, columns: Math.max(1, current.columns - 1) })),
     decrementRows: () => setGrid((current) => ({ ...current, rows: Math.max(1, current.rows - 1) })),
     goBack,

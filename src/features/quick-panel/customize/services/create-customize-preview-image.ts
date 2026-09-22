@@ -1,4 +1,4 @@
-import { ImageManipulator, SaveFormat } from "expo-image-manipulator";
+import { ImageManipulator, SaveFormat, type ImageRef } from "expo-image-manipulator";
 import type { PickedImage } from "../../model/types";
 
 const previewLongEdge = 1080;
@@ -18,14 +18,14 @@ export function getCustomizePreviewResize(
 
   if (width >= height) {
     return {
-      height: Math.round((height / width) * previewLongEdge),
+      height: Math.max(1, Math.round((height / width) * previewLongEdge)),
       width: previewLongEdge,
     };
   }
 
   return {
     height: previewLongEdge,
-    width: Math.round((width / height) * previewLongEdge),
+    width: Math.max(1, Math.round((width / height) * previewLongEdge)),
   };
 }
 
@@ -38,12 +38,14 @@ export async function createCustomizePreviewImage(
   }
 
   const context = ImageManipulator.manipulate(image.uri);
-  context.resize(resize);
-  const rendered = await context.renderAsync();
-  const result = await rendered.saveAsync({
-    compress: 1,
-    format: SaveFormat.PNG,
-  });
-
-  return { isOwned: true, uri: result.uri };
+  let rendered: ImageRef | undefined;
+  try {
+    context.resize(resize);
+    rendered = await context.renderAsync();
+    const result = await rendered.saveAsync({ compress: 1, format: SaveFormat.PNG });
+    return { isOwned: true, uri: result.uri };
+  } finally {
+    rendered?.release();
+    context.release();
+  }
 }

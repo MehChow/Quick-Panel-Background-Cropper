@@ -48,7 +48,7 @@ const lastImageDiskCacheClearAtKey =
   "quick-panel.last-image-disk-cache-clear-at";
 
 export const activeReleaseAnnouncementId =
-  "v1.7.0-spanish-localization-text-display-fixes-announcement";
+  "v1.7.1-image-selection-fix-button-icons-announcement";
 
 export const supportedLanguages = ["en", "zh", "es"] as const;
 export type SupportedLanguage = (typeof supportedLanguages)[number];

@@ -13,12 +13,14 @@ export function CalibrationScreen() {
     displayedRect,
     setCalibrationRect,
     importScreenshot,
+    isImporting,
     saveCalibration,
   } = useCalibrationScreen();
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <OuterCalibrationStep
+        isImporting={isImporting}
         error={error}
         errorKey={errorKey}
         footerTestID="calibration-footer"

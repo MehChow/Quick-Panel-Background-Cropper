@@ -56,7 +56,7 @@ describe("button labels", () => {
       "lightbulb",
       "palette",
       "rocket",
-      "shield",
+      "flag",
       "shopping-bag",
       "timer",
     ]);
@@ -100,7 +100,7 @@ describe("button labels", () => {
   });
 
   it("keeps pinned labels first when search is empty", () => {
-    expect(buttonLabelCatalog).toHaveLength(30);
+    expect(buttonLabelCatalog).toHaveLength(32);
     expect(
       searchButtonLabels("")
         .slice(0, pinnedButtonLabelIds.length)

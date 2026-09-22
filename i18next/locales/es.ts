@@ -3,6 +3,7 @@ import type { Translations } from "./en";
 const es: Translations = {
   translation: {
     common: {
+      preparingImage: "Preparando imagen...",
       cancel: "Cancelar",
       close: "Cerrar",
       confirm: "Confirmar",
@@ -45,6 +46,11 @@ const es: Translations = {
         gotIt: "Entendido",
         mediaAccessibilityLabel:
           "Selección de iconos predefinidos para una etiqueta personalizada de Botón",
+      },
+      v1_7_1: {
+        title: "Novedades de la v1.7.1 🌟\n",
+        body: "• Se ha corregido un problema al seleccionar una imagen.\n• Se han añadido 2 nuevos iconos de botón integrados.",
+        gotIt: "Entendido",
       },
       v1_7_0: {
         title: "Novedades de la v1.7.0 🌟\n",
@@ -268,7 +274,7 @@ const es: Translations = {
       customIconLightbulb: "Bombilla",
       customIconPalette: "Paleta",
       customIconRocket: "Cohete",
-      customIconShield: "Escudo",
+      customIconFlag: "Bandera",
       customIconShoppingBag: "Bolsa de compras",
       customIconTimer: "Temporizador",
       moveUp: "Subir",
@@ -355,6 +361,7 @@ const es: Translations = {
       accessibility: "Accesibilidad",
       "camera-access": "Acceso a la cámara",
       "microphone-access": "Acceso al micrófono",
+      "privacy-display": "Pantalla de privacidad",
       "private-share": "Private Share",
       "nearby-share": "Nearby Share",
       "work-profile": "Perfil de trabajo",
