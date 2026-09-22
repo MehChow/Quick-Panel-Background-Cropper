@@ -12,6 +12,15 @@ This file is a running project note log for implementation details that are easy
 
 ## Entries
 
+### 2026-09-22: Nearby Devices and Privacy Display buttons
+
+- The built-in catalog now contains 32 labels. Nearby Devices uses Lucide
+  `radar`; Privacy Display uses `shield`, with labels in all three locales.
+- The 24 generic custom icon choices now offer `flag` instead of `shield`,
+  avoiding duplication with Privacy Display. Saved custom `shield` selections
+  remain valid through the existing built-in icon validation path.
+- Both additions use the existing identifier preview and PNG export rendering.
+
 ### 2026-09-22: Unified silent image import
 
 - Customize and every calibration target use the same picker, preparation, and

@@ -27,7 +27,7 @@ const iconLabels: Record<string, string> = {
   "advancedCalibration.customIconLightbulb": "Lightbulb",
   "advancedCalibration.customIconPalette": "Palette",
   "advancedCalibration.customIconRocket": "Rocket",
-  "advancedCalibration.customIconShield": "Shield",
+  "advancedCalibration.customIconFlag": "Flag",
   "advancedCalibration.customIconShoppingBag": "Shopping Bag",
   "advancedCalibration.customIconTimer": "Timer",
 };
@@ -163,7 +163,7 @@ describe("CustomButtonIconDialog", () => {
       .getAllByRole("button")
       .filter((tile) => tile.props.accessibilityLabel?.startsWith("buttonLabels."));
 
-    expect(tiles).toHaveLength(30);
+    expect(tiles).toHaveLength(32);
     expect(tiles.slice(-2).every((tile) => tile.props.className.includes("w-full")))
       .toBe(true);
   });

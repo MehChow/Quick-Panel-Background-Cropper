@@ -331,7 +331,7 @@ describe("customize locale strings", () => {
       customIconLightbulb: "Lightbulb",
       customIconPalette: "Palette",
       customIconRocket: "Rocket",
-      customIconShield: "Shield",
+      customIconFlag: "Flag",
       customIconShoppingBag: "Shopping Bag",
       customIconTimer: "Timer",
     });
@@ -359,7 +359,7 @@ describe("customize locale strings", () => {
       "customIconLightbulb",
       "customIconPalette",
       "customIconRocket",
-      "customIconShield",
+      "customIconFlag",
       "customIconShoppingBag",
       "customIconTimer",
     ] as const) {

@@ -43,6 +43,8 @@ const otherLabels = [
   "SmartThings",
   "Link to Windows",
   "Wireless DeX",
+  "Nearby Devices",
+  "Privacy Display",
 ];
 
 const builtInButtonIconNames = {
@@ -76,6 +78,8 @@ const builtInButtonIconNames = {
   smartthings: "house-plug",
   "camera-access": "camera",
   "microphone-access": "mic",
+  "nearby-devices": "radar",
+  "privacy-display": "shield",
 } as const satisfies Record<string, LucideIconName>;
 
 export const customButtonIconChoices = [
@@ -124,7 +128,7 @@ export const customButtonIconChoices = [
     translationKey: "advancedCalibration.customIconPalette",
   },
   { id: "rocket", translationKey: "advancedCalibration.customIconRocket" },
-  { id: "shield", translationKey: "advancedCalibration.customIconShield" },
+  { id: "flag", translationKey: "advancedCalibration.customIconFlag" },
   {
     id: "shopping-bag",
     translationKey: "advancedCalibration.customIconShoppingBag",
