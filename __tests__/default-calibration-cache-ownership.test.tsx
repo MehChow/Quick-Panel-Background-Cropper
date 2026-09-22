@@ -58,6 +58,19 @@ describe("Default calibration cache ownership", () => {
     delete (globalThis as HookWindow).__defaultCalibrationHook;
   });
 
+  it("blocks duplicate calibration picks and exposes loading until the prepared screenshot arrives", async () => {
+    let finish!: (image: typeof firstScreenshot) => void;
+    (pickImageFromLibrary as jest.Mock).mockReturnValue(new Promise((resolve) => { finish = resolve; }));
+    render(<HookProbe />);
+    let pending!: Promise<void>;
+    act(() => { pending = getHook().importScreenshot(); void getHook().importScreenshot(); });
+    expect(pickImageFromLibrary).toHaveBeenCalledTimes(1);
+    expect(getHook().isImporting).toBe(true);
+    await act(async () => { finish(firstScreenshot); await pending; });
+    expect(getHook().isImporting).toBe(false);
+    expect(useQuickPanelStore.getState().screenshot).toEqual(firstScreenshot);
+  });
+
   it("tracks imports and releases the replaced screenshot", async () => {
     (pickImageFromLibrary as jest.Mock)
       .mockResolvedValueOnce(firstScreenshot)

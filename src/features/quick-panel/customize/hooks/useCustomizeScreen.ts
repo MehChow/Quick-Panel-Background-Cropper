@@ -17,6 +17,8 @@ export function useCustomizeScreen() {
     exports,
     isExporting,
     isProcessingImage,
+    errorKey,
+    error,
     goToCalibration,
     goToAdvancedCalibration,
   } =
@@ -36,6 +38,8 @@ export function useCustomizeScreen() {
     exports,
     isExporting,
     isProcessingImage,
+    errorKey,
+    error,
     isPreviewAdjusting,
     setIsPreviewAdjusting,
     pickImage,

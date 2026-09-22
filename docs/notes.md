@@ -12,6 +12,32 @@ This file is a running project note log for implementation details that are easy
 
 ## Entries
 
+### 2026-09-22: Unified silent image import
+
+- Customize and every calibration target use the same picker, preparation, and
+  import lifecycle. Do not restore the old 6144-edge/20MP rejection: it rejected
+  the reported 5152 x 7728 JPEG before compression, and removed toast handling
+  made that failure appear as an unchanged screen.
+- Keep inputs at or below a 3072-pixel long edge unchanged. For larger inputs,
+  use Expo Image's bounded native decode, then pass its native image reference
+  to ImageManipulator. Encode JPEG at 90% or PNG for transparency, preserving
+  orientation and using the actual saved dimensions. No compression notice.
+- Glide can divide by zero when a thin side downsamples below one pixel. For
+  these strips, decode at their original dimensions only when their pixel count
+  fits within the working-image budget, then resize with a one-pixel minimum.
+- Customize waits for its 1080-edge preview proxy before rendering it. Export
+  retains the working source and existing shared coordinates. Release native
+  image/manipulator references; remove replaced, failed, and abandoned owned
+  cache files while retaining the old selection on cancel or failure.
+- API 36 emulator: exact-size JPEG and 54MP JPEG imported; rotated/mirrored JPEG
+  outputs matched independently oriented references; PNG alpha retained; narrow
+  PNG handled; small JPEG unchanged by SHA-256; cancellation retained source;
+  repeated replacements removed prior cache files; Default export succeeded.
+  Advanced Controls, Buttons, and Combined imports have hook integration tests;
+  their full native calibration/export flows were not repeated for this change.
+- Validation: 81 Jest suites / 434 tests, TypeScript, lint, and Android debug
+  build passed. No native dependency, persistence reset, or new format support.
+
 ### 2026-08-05: Cache ownership and cold-start maintenance
 
 - Image cleanup is URI-ownership based and guarded to `Paths.cache`; the cache

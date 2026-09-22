@@ -66,6 +66,7 @@ export function ReleasedAdvancedCalibrationScreen() {
     leaveCalibration,
     phase,
     importScreenshot,
+    isImporting,
     requestLeaveCalibration,
     saveCalibration,
     setColumns,
@@ -114,6 +115,7 @@ export function ReleasedAdvancedCalibrationScreen() {
     return (
       <SafeAreaView style={{ flex: 1 }}>
         <OuterCalibrationStep
+          isImporting={isImporting}
           error={error}
           errorKey={errorKey}
           footerTestID="advanced-calibration-footer"

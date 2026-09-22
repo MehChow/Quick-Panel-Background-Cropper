@@ -3,6 +3,7 @@ import type { Translations } from "./en";
 const es: Translations = {
   translation: {
     common: {
+      preparingImage: "Preparando imagen...",
       cancel: "Cancelar",
       close: "Cerrar",
       confirm: "Confirmar",

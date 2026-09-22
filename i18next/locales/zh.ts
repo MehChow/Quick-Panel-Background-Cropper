@@ -1,6 +1,7 @@
 const zh = {
   translation: {
     common: {
+      preparingImage: "正在準備圖片⋯",
       cancel: "取消",
       close: "關閉",
       confirm: "確認",

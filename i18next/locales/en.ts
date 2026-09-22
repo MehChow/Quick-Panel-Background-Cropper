@@ -1,6 +1,7 @@
 const en = {
   translation: {
     common: {
+      preparingImage: "Preparing image...",
       cancel: "Cancel",
       close: "Close",
       confirm: "Confirm",

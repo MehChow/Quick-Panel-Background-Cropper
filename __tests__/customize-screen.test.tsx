@@ -3,6 +3,7 @@ import { CustomizeScreen } from "@/features/quick-panel/customize/CustomizeScree
 import type { QuickPanelPreset } from "@/features/quick-panel/model/types";
 
 const mockUseCustomizeScreen = jest.fn();
+let mockPreparingPreview = false;
 const mockUseSequentialExport = jest.fn();
 const mockActivePreset = {
   id: "test-controls",
@@ -108,7 +109,7 @@ jest.mock("@/features/quick-panel/customize/hooks/useCustomizeScreen", () => ({
 
 jest.mock("@/features/quick-panel/customize/hooks/useCustomizePreviewImage", () => ({
   useCustomizePreviewImage: () => ({
-    isPreparingPreview: false,
+    isPreparingPreview: mockPreparingPreview,
     previewUri: "file:///preview.png",
   }),
 }));
@@ -132,6 +133,21 @@ describe("CustomizeScreen", () => {
 
   afterEach(() => {
     jest.clearAllMocks();
+    mockPreparingPreview = false;
+  });
+
+  it("does not mount the larger image while its proxy is being prepared", () => {
+    mockPreparingPreview = true;
+    mockUseCustomizeScreen.mockReturnValue({ ...mockScreenState, image: { uri: "file:///working.jpg", width: 2048, height: 3072 } });
+    render(<CustomizeScreen />);
+    expect(screen.queryByTestId("quick-panel-preview")).toBeNull();
+    expect(screen.getByTestId("preparing-image-preview")).toBeTruthy();
+  });
+
+  it("shows a real import failure without requiring an existing image", () => {
+    mockUseCustomizeScreen.mockReturnValue({ ...mockScreenState, errorKey: "errors.unableToProcessImage" });
+    render(<CustomizeScreen />);
+    expect(screen.getByText("errors.unableToProcessImage")).toBeTruthy();
   });
 
   it("opens localized image-placement help from the header", () => {

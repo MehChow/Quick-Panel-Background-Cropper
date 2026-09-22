@@ -1,10 +1,11 @@
+import { Text } from "@/components/ani-ui/text";
 import { Button } from "@/components/ani-ui/button";
 import { QuickPanelScreenShell } from "@/features/quick-panel/shared/QuickPanelScreenShell";
 import { SubPageHeader } from "@/features/quick-panel/shared/SubPageHeader";
 import { useTranslation } from "react-i18next";
 import { type Href, useRouter } from "expo-router";
 import { useState } from "react";
-import { View } from "react-native";
+import { ActivityIndicator, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { CustomizeActions } from "./components/CustomizeActions";
 import { CustomizeImagePlacementHelpSheet } from "./components/CustomizeImagePlacementHelpSheet";
@@ -22,7 +23,7 @@ export function CustomizeScreen() {
   const [isHelpOpen, setIsHelpOpen] = useState(false);
   const {
     selectedMode, selectedAdvancedTarget, activePreset, image, transform, setTransform,
-    isExporting, isProcessingImage,
+    isExporting, isProcessingImage, errorKey, error,
     setIsPreviewAdjusting,
     pickImage, resetFit, canReset,
     goToCalibration, goToAdvancedCalibration,
@@ -73,7 +74,7 @@ export function CustomizeScreen() {
               onPress={pickImage}
               textClassName="font-semibold text-zinc-900"
             >
-              {isProcessingImage ? t("customize.optimizingImage") : t("calibration.chooseFromAlbum")}
+              {isProcessingImage ? t("common.preparingImage") : t("calibration.chooseFromAlbum")}
             </Button>
           )
         }
@@ -91,9 +92,13 @@ export function CustomizeScreen() {
         <View
           className="flex-1 overflow-hidden"
           testID="customize-middle-area"
-          pointerEvents={isExporting ? "none" : "auto"}
+          pointerEvents={isExporting || isProcessingImage ? "none" : "auto"}
         >
-          {image ? (
+          {image && previewImage.isPreparingPreview ? (
+            <View testID="preparing-image-preview" className="flex-1 items-center justify-center">
+              <ActivityIndicator color="white" accessibilityLabel={t("common.preparingImage")} />
+            </View>
+          ) : image ? (
             <CustomizePreviewSection
               buttonControls={buttonControls}
               image={image}
@@ -107,6 +112,7 @@ export function CustomizeScreen() {
             <ImagePickerCard mode={selectedMode ?? "default"} onRecalibrate={recalibrate} preset={activePreset} />
           )}
         </View>
+        {error || errorKey ? <Text accessibilityRole="alert" className="mt-2 text-sm text-red-100">{error ?? t(errorKey ?? "errors.unableToProcessImage")}</Text> : null}
       </QuickPanelScreenShell>
       {image && sequentialExport.activePanel && sequentialExport.activeToken ? (
         <ExportSurfaceHost

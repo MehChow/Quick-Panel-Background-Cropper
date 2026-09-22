@@ -118,6 +118,8 @@ export interface AdvancedCombinedDraft {
 }
 
 export interface PickedImage {
+  mimeType?: string;
+  fileSize?: number;
   uri: string;
   width: number;
   height: number;

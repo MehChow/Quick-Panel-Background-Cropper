@@ -15,6 +15,7 @@ import { CalibrationCanvas } from "./CalibrationCanvas";
 import { RectSelectionOverlay } from "./RectSelectionOverlay";
 
 interface OuterCalibrationStepProps {
+  isImporting?: boolean;
   error: string | null;
   errorKey: string | null;
   footerTestID: string;
@@ -31,6 +32,7 @@ interface OuterCalibrationStepProps {
 }
 
 export function OuterCalibrationStep({
+  isImporting = false,
   error,
   errorKey,
   footerTestID,
@@ -62,6 +64,8 @@ export function OuterCalibrationStep({
             <View className="flex-row gap-3 py-4">
               <Button
                 className="flex-1 bg-white"
+                disabled={isImporting}
+                loading={isImporting}
                 onPress={onImport}
                 textClassName="font-semibold text-black"
               >
@@ -69,6 +73,7 @@ export function OuterCalibrationStep({
               </Button>
               <Button
                 className="flex-1 bg-green-200/90 px-0"
+                disabled={isImporting}
                 onPress={onPrimaryPress}
                 textClassName="font-semibold text-green-900 w-full"
               >
@@ -78,6 +83,8 @@ export function OuterCalibrationStep({
           ) : (
             <Button
               className="my-4 w-full bg-white"
+              disabled={isImporting}
+              loading={isImporting}
               onPress={onImport}
               textClassName="font-semibold text-black"
             >
