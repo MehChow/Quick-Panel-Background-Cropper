@@ -2,7 +2,7 @@ import { ButtonLabelAppearanceDialog } from "@/features/quick-panel/customize/co
 import { useButtonLabelAppearanceDraft } from "@/features/quick-panel/customize/hooks/useButtonLabelAppearanceDraft";
 import type { QuickPanelPreset } from "@/features/quick-panel/model/types";
 import { act, fireEvent, render, renderHook } from "@testing-library/react-native";
-import { KeyboardAvoidingView, Modal, Platform } from "react-native";
+import { Keyboard, KeyboardAvoidingView, Modal, Platform } from "react-native";
 
 jest.mock("react-i18next", () => ({
   useTranslation: () => ({
@@ -331,6 +331,7 @@ describe("ButtonLabelAppearanceDialog", () => {
     expect(screen.UNSAFE_getAllByType(Modal)).toHaveLength(1);
     expect(screen.getByTestId("focused-button-preview")).toBeTruthy();
     expect(screen.getByTestId("mock-color-picker")).toBeTruthy();
+    fireEvent.press(screen.getByTestId("button-label-intensity-tab"));
     expect(
       screen.queryByTestId("button-appearance-overall-preview-overlay"),
     ).toBeNull();
@@ -354,6 +355,8 @@ describe("ButtonLabelAppearanceDialog", () => {
     expect(screen.queryByTestId("button-appearance-overall-preview-overlay")).toBeNull();
     expect(screen.getByTestId("focused-button-preview")).toBeTruthy();
     expect(screen.getByTestId("mock-color-picker")).toBeTruthy();
+    expect(screen.getByTestId("mock-opacity")).toBeTruthy();
+    expect(screen.queryByTestId("mock-brightness")).toBeNull();
   });
 
   it("closes the overall preview before Android Back cancels the dialog", () => {
@@ -371,6 +374,17 @@ describe("ButtonLabelAppearanceDialog", () => {
     act(() => screen.UNSAFE_getByType(Modal).props.onRequestClose());
     expect(props.onCancel).toHaveBeenCalledTimes(1);
     expect(props.onConfirm).not.toHaveBeenCalled();
+  });
+
+  it("dismisses the HEX keyboard before showing the overall preview", () => {
+    const dismiss = jest.spyOn(Keyboard, "dismiss");
+    try {
+      const screen = render(<ButtonLabelAppearanceDialog {...props} />);
+      fireEvent.press(screen.getByTestId("button-label-appearance-overall-preview"));
+      expect(dismiss).toHaveBeenCalledTimes(1);
+    } finally {
+      dismiss.mockRestore();
+    }
   });
 
   it("uses non-sticky Android keyboard padding while the backdrop stays full-screen", () => {
