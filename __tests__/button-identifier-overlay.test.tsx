@@ -238,7 +238,7 @@ describe("ButtonIdentifierOverlay", () => {
     });
     expect(StyleSheet.flatten(
       screen.getByTestId("button-identifier-movable-content").props.style,
-    )).toMatchObject({ left: 53 });
+    )).toMatchObject({ left: 7, transform: [{ translateX: 46 }] });
 
     screen.rerender(createOverlay("icon"));
     expect(StyleSheet.flatten(
@@ -250,7 +250,7 @@ describe("ButtonIdentifierOverlay", () => {
     });
     expect(StyleSheet.flatten(
       screen.getByTestId("button-identifier-movable-content").props.style,
-    )).toMatchObject({ left: 63 });
+    )).toMatchObject({ left: 7, transform: [{ translateX: 56 }] });
 
     screen.rerender(createOverlay("both"));
     expect(StyleSheet.flatten(
@@ -266,7 +266,10 @@ describe("ButtonIdentifierOverlay", () => {
       nativeEvent: { layout: { height: 20, width: 40, x: 0, y: 0 } },
     });
 
-    expect(StyleSheet.flatten(content.props.style)).toMatchObject({ left: 30 });
+    expect(StyleSheet.flatten(content.props.style)).toMatchObject({
+      left: 7,
+      transform: [{ translateX: 23 }],
+    });
   });
 
   it.each([

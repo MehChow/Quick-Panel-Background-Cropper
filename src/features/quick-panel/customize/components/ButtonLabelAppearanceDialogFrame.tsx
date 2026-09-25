@@ -3,7 +3,7 @@ import { Text } from "@/components/ani-ui/text";
 import { Lucide } from "@react-native-vector-icons/lucide";
 import { useTranslation } from "react-i18next";
 import type { PropsWithChildren, ReactNode } from "react";
-import { KeyboardAvoidingView, Modal, Pressable, View } from "react-native";
+import { Keyboard, KeyboardAvoidingView, Modal, Pressable, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
 interface ButtonLabelAppearanceDialogFrameProps extends PropsWithChildren {
@@ -22,7 +22,14 @@ export function ButtonLabelAppearanceDialogFrame(
 ) {
   const { t } = useTranslation();
   const normalContent = (
-    <View className="flex-1" testID="button-label-appearance-root">
+    <View
+      accessibilityElementsHidden={!!props.fullScreenContent}
+      className="flex-1"
+      importantForAccessibility={props.fullScreenContent ? "no-hide-descendants" : "auto"}
+      pointerEvents={props.fullScreenContent ? "none" : "auto"}
+      style={props.fullScreenContent ? { display: "none" } : undefined}
+      testID="button-label-appearance-root"
+    >
       <Pressable
         accessibilityLabel={t("customize.cancelButtonIdentifierAppearance")}
         className="absolute inset-0 bg-black/50"
@@ -49,7 +56,10 @@ export function ButtonLabelAppearanceDialogFrame(
               accessibilityLabel={t("customize.buttonAppearanceOverallPreview")}
               accessibilityRole="button"
               className="h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-zinc-950"
-              onPress={props.onOpenOverallPreview}
+              onPress={() => {
+                Keyboard.dismiss();
+                props.onOpenOverallPreview();
+              }}
               testID="button-label-appearance-overall-preview"
             >
               <Lucide color="#ffffff" name="eye" size={20} />
@@ -96,7 +106,9 @@ export function ButtonLabelAppearanceDialogFrame(
       transparent
       visible={props.open}
     >
-      {props.fullScreenContent ?? normalContent}
+      {/* Keep picker HSV/alpha and tab state alive for the whole edit session. */}
+      {normalContent}
+      {props.fullScreenContent}
     </Modal>
   );
 }

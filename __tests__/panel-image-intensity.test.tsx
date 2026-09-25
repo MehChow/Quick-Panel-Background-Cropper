@@ -9,6 +9,7 @@ import zh from "@/../i18next/locales/zh";
 import { render } from "@testing-library/react-native";
 import { StyleSheet } from "react-native";
 import type { SharedValue } from "react-native-reanimated";
+import * as Reanimated from "react-native-reanimated";
 
 jest.mock("expo-image", () => {
   const React = jest.requireActual("react");
@@ -57,6 +58,44 @@ function createPanel(family: PanelDefinition["family"]): PanelDefinition {
 }
 
 describe("panel image intensity", () => {
+  it.each([false, true])("preserves source coordinates and subscribes only for interactive images: %s", (interactive) => {
+    const animation = jest.spyOn(Reanimated, "useAnimatedStyle");
+    const placement = { x: -30, y: 40, scale: 2 };
+    const inputTransform = interactive
+      ? { get: () => placement } as SharedValue<ImageTransform>
+      : placement;
+    try {
+      const screen = render(<PanelSlice
+        buttonIdentifierOpacity={0.7}
+        buttonPanelOpacity={0.63}
+        image={image}
+        identifierPositions={{ horizontal: 0.5, vertical: 0.5 }}
+        layoutScale={0.5}
+        mode="advanced"
+        originX={0}
+        originY={0}
+        panel={createPanel("button")}
+        previewScale={0.5}
+        previewUri="file:///preview.png"
+        showOverlay={false}
+        buttonIdentifierContentMode="none"
+        transform={inputTransform}
+      />);
+      expect(animation).toHaveBeenCalledTimes(interactive ? 1 : 0);
+      const previewImage = screen.getByTestId("expo-image");
+      let frame = previewImage.parent;
+      while (frame && !StyleSheet.flatten(frame.props.style)?.transformOrigin) {
+        frame = frame.parent;
+      }
+      expect(StyleSheet.flatten(frame?.props.style)).toMatchObject({
+        transformOrigin: [0, 0, 0],
+        transform: [{ translateX: -20 }, { translateY: 10 }, { scale: 1 }],
+      });
+    } finally {
+      animation.mockRestore();
+    }
+  });
+
   it("previews Controls at 50% image opacity without a black overlay", () => {
     const screen = render(
       <PanelSlice

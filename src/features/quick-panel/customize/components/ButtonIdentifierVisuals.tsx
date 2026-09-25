@@ -67,6 +67,8 @@ export function ButtonIdentifierVisuals({
               color: circleColor,
               lineHeight: layout.fontSize * 1.2,
               maxWidth: layout.maxLabelWidth,
+              // Keep the final glyph clear of Android's measured text edge.
+              paddingRight: layout.fontSize * 0.2,
             },
             layout.kind === "corner" && [
               styles.cornerLabel,

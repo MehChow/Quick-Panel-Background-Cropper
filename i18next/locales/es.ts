@@ -52,6 +52,11 @@ const es: Translations = {
         body: "• Se ha corregido un problema al seleccionar una imagen.\n• Se han añadido 2 nuevos iconos de botón integrados.",
         gotIt: "Entendido",
       },
+      v1_7_3: {
+        title: "Novedades de la v1.7.3 🌟\n",
+        body: "• Se ha corregido un problema al seleccionar una imagen.\n• Se han añadido 2 nuevos iconos de botón integrados.\n• Se optimizó la aplicación para que funcione de forma más eficiente.\n• Se corrigió un problema que hacía que algunos textos se mostraran incorrectamente.\n• Se corrigió un problema por el que los iconos podían mostrar un color incorrecto según su estado.",
+        gotIt: "Entendido",
+      },
       v1_7_0: {
         title: "Novedades de la v1.7.0 🌟\n",
         body: "• Nuevo: localización al español.\n• Corrección: se han solucionado algunos problemas de visualización del texto.",

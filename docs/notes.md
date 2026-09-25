@@ -859,3 +859,24 @@ The advanced calibration help sheets regressed during the Fold/wide-screen respo
 - Preview, focused appearance preview, overall appearance preview, and export
   continue to use the same panel geometry, image transform, intensity,
   appearance, and normalized positions.
+
+### 2026-09-23: Appearance preview state and rendering costs
+
+- The full-layout eye preview replaced the dialog contents, unmounting the
+  picker. Returning recreated its HSV/alpha from saved settings even though
+  the separate draft (and Confirm) still held the edited appearance.
+- The picker now remains mounted but hidden from display, touch, and
+  accessibility until the full preview closes. This preserves exact HSV/alpha
+  (including hue at zero brightness), percentages, and the selected adjustment
+  tab. The keyboard dismisses on preview entry. Only one image-preview tree
+  is mounted at a time; closing the entire dialog still discards its draft.
+- Preview images have a separate component boundary from identifiers so React
+  Compiler can reuse them during identifier updates. Fixed-transform focused
+  and overall previews no longer create an image animation subscription per
+  panel. Interactive pan/zoom retains UI-thread transforms; export composition
+  and original-image quality are unchanged.
+- Performance review: the focused inspector already renders only one Button
+  and picker drags use shared values. The main image/position sliders still
+  update React state, and full layouts retain one clipped image per panel.
+  These costs grow with panel count; the changes above are structural savings,
+  not measured frame-rate claims. Device QA and timing are left to the user.
