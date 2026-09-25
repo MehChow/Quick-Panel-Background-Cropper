@@ -1,9 +1,5 @@
-import { Image } from "expo-image";
-import { StyleSheet, View } from "react-native";
-import Animated, {
-  type SharedValue,
-  useAnimatedStyle,
-} from "react-native-reanimated";
+import { View } from "react-native";
+import type { SharedValue } from "react-native-reanimated";
 import type { ButtonIdentifierPositions } from "../../model/button-identifier-layout";
 import type { ButtonIdentifierContentMode } from "../../model/button-identifier-content";
 import type {
@@ -12,7 +8,7 @@ import type {
   PanelDefinition,
   PickedImage,
 } from "../../model/types";
-import { getPanelImageTransform } from "../panel-image-transform";
+import { PreviewPanelImage } from "./PreviewPanelImage";
 import {
   getPreviewPanelFrameStyle,
   getPreviewPanelRadius,
@@ -62,27 +58,6 @@ export function PanelSlice({
   transform,
 }: PanelSliceProps) {
   const panelRadius = getPreviewPanelRadius(panel.rect, layoutScale);
-  const imageStyle = useAnimatedStyle(() => {
-    const currentPreviewScale = typeof previewScale === "number"
-      ? previewScale
-      : previewScale.get();
-    const currentTransform = "get" in transform
-      ? transform.get()
-      : transform;
-    const placement = getPanelImageTransform({
-      panelX: panel.rect.x,
-      panelY: panel.rect.y,
-      previewScale: currentPreviewScale,
-      transform: currentTransform,
-    });
-    return {
-      transform: [
-        { translateX: placement.translateX },
-        { translateY: placement.translateY },
-        { scale: placement.scale },
-      ],
-    };
-  });
 
   return (
     <View
@@ -95,18 +70,15 @@ export function PanelSlice({
       )}
       testID={`panel-slice-${panel.id}`}
     >
-      <Animated.View style={[styles.image, imageStyle]}>
-        <Image
-          cachePolicy="memory-disk"
-          contentFit="fill"
-          source={{ uri: previewUri }}
-          style={{
-            height: image.height,
-            opacity: panel.family === "button" ? buttonPanelOpacity : 0.5,
-            width: image.width,
-          }}
-        />
-      </Animated.View>
+      <PreviewPanelImage
+        image={image}
+        opacity={panel.family === "button" ? buttonPanelOpacity : 0.5}
+        panelX={panel.rect.x}
+        panelY={panel.rect.y}
+        previewScale={previewScale}
+        previewUri={previewUri}
+        transform={transform}
+      />
       {buttonIdentifierContentMode !== "none"
         && panel.family === "button"
         && panel.buttonIdentifier ? (
@@ -149,12 +121,3 @@ export function PanelSlice({
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  image: {
-    left: 0,
-    position: "absolute",
-    top: 0,
-    transformOrigin: [0, 0, 0],
-  },
-});

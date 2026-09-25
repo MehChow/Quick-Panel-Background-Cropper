@@ -37,7 +37,13 @@ export function ButtonIdentifierPositionedContent({
       <View
         onLayout={onHorizontalLayout}
         testID="button-identifier-movable-content"
-        style={[styles.horizontal, { gap: layout.gap, left, maxWidth }]}
+        style={[styles.horizontal, {
+          gap: layout.gap,
+          left: layout.inset,
+          maxWidth,
+          // Moving the row must not change its text measurement constraints.
+          transform: [{ translateX: left - layout.inset }],
+        }]}
       >
         {children}
       </View>

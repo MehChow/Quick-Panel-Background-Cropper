@@ -173,7 +173,8 @@ For a release candidate, also test manually with a clean app data state and an u
 ## Current reference
 
 The current announcement ID is
-`v1.7.1-image-selection-fix-button-icons-announcement`. It announces
-an image selection fix and 2 new built-in button icons, has no supporting media, and uses
-a localized acknowledgement CTA. Its acknowledgement is independent from
+`v1.7.3-app-optimization-display-fixes-announcement`. It retains the v1.7.1
+image selection fix and 2 new built-in button icons, and adds app optimization,
+text display, and icon color state fixes. It has no supporting media and uses a
+localized acknowledgement CTA. Its acknowledgement is independent from
 `quick-panel.calibrations`.

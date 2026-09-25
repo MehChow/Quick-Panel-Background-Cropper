@@ -2,13 +2,13 @@
   "expo": {
     "name": "Quick Panel Background Cropper",
     "slug": "quick-panel-background-cropper",
-    "version": "1.7.1",
+    "version": "1.7.3",
     "orientation": "portrait",
     "icon": "./assets/images/appicon.png",
     "scheme": "quickpanelbackgroundcropper",
     "userInterfaceStyle": "automatic",
     "android": {
-      "versionCode": 30000035,
+      "versionCode": 30000037,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/appicon.png",
         "backgroundColor": "#FFFFFF",
@@ -60,10 +60,13 @@
           "android": {
             "minSdkVersion": 36,
             "targetSdkVersion": 36,
-            "compileSdkVersion": 36
+            "compileSdkVersion": 36,
+            "enableMinifyInReleaseBuilds": true,
+            "enableShrinkResourcesInReleaseBuilds": true
           }
         }
-      ]
+      ],
+      "./plugins/with-android-release-optimization"
     ],
     "experiments": {
       "typedRoutes": true,

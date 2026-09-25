@@ -99,7 +99,7 @@ export function ButtonLabelAppearanceDialog(props: ButtonLabelAppearanceDialogPr
     >
       {focusedPanel ? (
         <>
-          <View className="relative w-full items-center">
+          {!isOverallPreviewOpen ? <View className="relative w-full items-center">
             <FocusedButtonAppearancePreview
               animatedAppearance={draft.animatedAppearance}
               backgroundTheme={draft.backgroundTheme}
@@ -119,7 +119,7 @@ export function ButtonLabelAppearanceDialog(props: ButtonLabelAppearanceDialogPr
               onPrevious={() => cycleFocus(-1)}
               total={inspectablePanels.length}
             />
-          </View>
+          </View> : null}
           <ButtonLabelColorPicker
             backgroundTheme={draft.backgroundTheme}
             error={draft.error}

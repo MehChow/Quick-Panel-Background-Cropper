@@ -1,2 +1,5 @@
 • Fixed a problem when selecting an image.
 • Added 2 new built-in button icons.
+• Optimized the app to run more efficiently.
+• Fixed an issue that could make some text appear incorrectly.
+• Fixed an issue where icons could show the wrong color for their current state.

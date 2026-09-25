@@ -48,6 +48,11 @@ const en = {
         body: "• Fixed a problem when selecting an image.\n• Added 2 new built-in button icons.",
         gotIt: "Got it",
       },
+      v1_7_3: {
+        title: "v1.7.3 Updates 🌟\n",
+        body: "• Fixed a problem when selecting an image.\n• Added 2 new built-in button icons.\n• Optimized the app to run more efficiently.\n• Fixed an issue that could make some text appear incorrectly.\n• Fixed an issue where icons could show the wrong color for their current state.",
+        gotIt: "Got it",
+      },
       v1_7_0: {
         title: "v1.7.0 Updates 🌟\n",
         body: "• New: Spanish localization.\n• Fixed: Some text display issues.",
