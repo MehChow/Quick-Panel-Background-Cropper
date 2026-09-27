@@ -36,11 +36,6 @@
       "hash": "ddacc252",
       "addedAt": "2026-06-02T10:10:37.964Z"
     },
-    "carousel": {
-      "version": "0.3.0",
-      "hash": "d750292a",
-      "addedAt": "2026-06-11T09:27:53.694Z"
-    },
     "slider": {
       "version": "0.3.0",
       "hash": "887c5e0f",
@@ -51,19 +46,9 @@
       "hash": "9e1d27c3",
       "addedAt": "2026-07-17T07:20:44.253Z"
     },
-    "switch": {
-      "version": "0.5.0",
-      "hash": "4a2a63e3",
-      "addedAt": "2026-07-20T07:55:21.709Z"
-    },
     "toggle-group": {
       "version": "0.5.0",
       "hash": "1de629db",
-      "addedAt": "2026-08-17T04:18:59.013Z"
-    },
-    "toggle": {
-      "version": "0.5.0",
-      "hash": "66d8fc4c",
       "addedAt": "2026-08-17T04:18:59.013Z"
     },
     "separator": {

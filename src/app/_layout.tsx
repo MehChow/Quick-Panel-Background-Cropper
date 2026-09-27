@@ -36,7 +36,6 @@ export default function RootLayout() {
             />
           </View>
           <ReleaseAnnouncementHost />
-          {/* {__DEV__ ? <FloatingLanguageSwitchButton /> : null} */}
         </BottomSheetModalProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>

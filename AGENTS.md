@@ -1,75 +1,69 @@
-# Expo HAS CHANGED
+# Project instructions
 
-Read the exact versioned docs at https://docs.expo.dev/versions/v57.0.0/ before writing any code.
+Read the exact [Expo SDK 57 documentation](https://docs.expo.dev/versions/v57.0.0/)
+before writing code. Do not use a web browser for this Expo project; read docs
+through a documentation tool or HTTP client. Subagents may use GPT-6 Luna High
+or below only.
 
-## App status
+## Current sources of truth
 
-### Current release version: 1.3.1 (New Controls + Buttons mode, cache optimization)
+QPBC is a released Samsung Good Lock QuickStar background cropper. Current
+release: 1.7.3 (authoritative release metadata: app.json). Keep all existing
+features during the upcoming UI revamp.
 
-Quick Panel Background Cropper (QPBC) is released on Google Play as v1.0.0, referred to internally as v2. That production version supports Controls customization through Default and Advanced modes. v3 keeps those flows and adds the complete Advanced Buttons-only workflow. The current v4 work keeps every existing path and adds an independent Advanced **Controls + Buttons** target for a single image that spans both panel families.
+- [Documentation index](docs/README.md)
+- [Product behavior](docs/product-behavior.md): four customization paths and user-facing contracts.
+- [Architecture](docs/architecture.md): geometry, image composition and persistence compatibility.
+- [Current styling](docs/styling.md): baseline until explicitly superseded by the revamp.
+- [Testing](docs/testing.md) and [manual acceptance](docs/production-manual-test-checklist.md).
+- [Release workflow](docs/dev-release-flow.md) and [announcements](docs/release-announcement-guideline.md).
 
-v3 intentionally ignores legacy calibration coordinates because the old bordered coordinate surface could save inaccurate rectangles. Users updating from v1.0.0/v2 must recalibrate Default, Advanced Controls, and Advanced Buttons once. A one-time release announcement explains the new workflow and recalibration requirement. This is the approved exception to the normal persistence rule: language, seen-help state, last exported choices, release-announcement acknowledgement, and other unrelated preferences must remain intact. For future changes, persist local data across app updates by default. If another reset is absolutely required, warn the user before proceeding.
+Historical plans and handoffs in Git history are not current instructions.
+Deferred ideas under docs/backlog are not approved implementation scope.
+Current screenshots are under flow/default, flow/advanced/controls-only,
+flow/advanced/buttons-only, flow/advanced/combined and flow/bottom-sheet-tutorial.
 
-## App brief
+## Non-negotiable behavior
 
-QPBC is an Expo app for creating Samsung Good Lock Quick Panel background PNGs from one user-selected image, with all features run locally. Advanced mode has three independent targets: **Controls only**, **Buttons only**, and **Controls + Buttons**. The supported Controls panels are Button box, Media player, Brightness, and Volume. Buttons are manually selected and exported as separate square PNGs. The combined target requires at least one Control and one Button and lets one image flow continuously across both families.
+- Preserve Default and all three independent Advanced targets: Controls only,
+  Buttons only, Controls + Buttons. Combined requires at least one of each family.
+- Preserve local data across updates. Keep storage keys and compatibility
+  parsers; warn the user before any newly necessary reset.
+- Keep English, Traditional Chinese and Spanish copy synchronized.
+- All Advanced grids are required; retain bounds, overlap validation, snapping,
+  haptics and atomic gesture commits before phase advance.
+- Preview and export share one working-image coordinate system and transform.
+  Exports use the working source, never the smaller preview proxy.
+- Preserve 1024-square PNGs, centered square source areas, Good Lock order,
+  sequential image/identifier readiness and capture-failure cleanup.
+- Preserve URI-based cache ownership and transactional appearance editing.
 
-The app supports English, Traditional Chinese, and Spanish localization. Keep user-facing copy and release announcements synchronized across all three locale files.
+## Stack and code style
 
-The user flow is: landing -> mode selection -> calibration -> image selection -> preview adjustment -> export result. Default mode asks the user to import a fully expanded Quick Panel screenshot, adjust one green rectangle around the full Controls area, and save it as the layout basis. Advanced mode has two visible selection steps: first choose `Advanced`, then choose `Controls only`, `Buttons only`, or `Controls + Buttons`.
+- Expo 57, TypeScript, Zustand, Uniwind (Tailwind v4), currently AniUI.
+- Use interfaces for props/state; avoid any.
+- Keep code concise, typed and organized by feature. Extract business logic
+  into hooks and keep component files under 150 lines when making changes.
+- Use camelCase variables/functions, PascalCase components and lowercase
+  hyphenated directories.
+- React Compiler handles memoization. Do not add useMemo, useCallback or
+  React.memo outside src/components/ani-ui.
+- Use expo-image for raster images. Reuse current AniUI primitives for routine
+  maintenance; the explicitly requested UI-library revamp may replace them.
+- Use consistent padding and responsive layouts; consult docs/styling.md.
 
-Advanced Controls keeps the existing guided calibration flow: confirm the outer area first, turn off any supported panel missing from that region, set the snapping grid, then go through the enabled panel-box steps in this order: Button box, Brightness, Volume, and Media player. Advanced Controls includes an editable snapping grid inside the confirmed outer area so users can fine-tune row and column counts while matching customized layouts.
+## Commands
 
-Advanced Buttons asks the user to confirm an outer area, set the snapping grid, choose one or more Quick Panel Button labels through a toggle list with a selected-chip summary, and then fine-tune the generated button boxes. The final catalog has 30 reviewed built-in labels with stable icon mappings. Custom labels require one of eight generic icons: Zap, Star, Sparkles, Circle, Music, Gamepad, Globe, or Sliders. At least one Button must be selected.
+- npm test -- --runInBand
+- npx tsc --noEmit
+- npm run lint
+- npm run android: clean native prebuild and development installation.
+- npm run build-apk: local APK variant.
+- npm run build-release: interactive signed Play build/upload workflow;
+  follow the release guide and preserve its upload confirmation.
 
-Advanced Controls + Buttons uses one fully expanded screenshot, one combined outer area, and one required grid. Its exact calibration order is: outer area -> Control selection -> Button selection -> grid -> enabled Controls in guided order -> selected Buttons in selection order -> combined review. Controls are purple while active, Buttons are blue while active, and completed boxes are orange. Boxes may overlap while they are actively edited, but Next and final save reject overlap with visible completed boxes. Combined calibration is stored independently from all existing calibration branches.
+## Agent-device
 
-The snapping grid is required in all Advanced targets. Row and column controls remain available, all editable boxes snap with haptic feedback, and boxes remain constrained to the confirmed outer area. Controls-only, Buttons-only, and Controls + Buttons retain independent grid counts with their separate calibrations. The app remembers the last successful main mode (`Default` or `Advanced`) and, for Advanced exports, the last successful advanced target (`Controls only`, `Buttons only`, or `Controls + Buttons`) as preselected choices on the Select Mode flow. Default, Advanced Controls, Advanced Buttons, and Advanced Combined calibrations are stored independently.
+Use agent-device only for app/device automation tasks. For a normal app-driving task, start immediately. Do not probe first with `--help`, `--version`, `devices`, `appstate`, `snapshot`, or `screenshot`; open the requested app in the foreground and continue from its initial interactive snapshot. For TV, Fire TV, or Vega OS tasks, read `agent-device help tv`. For exploratory QA, read `agent-device help dogfood`. For logs, network, audio, traces, or runtime failures, read `agent-device help debugging`. For React Native component trees, props/state/hooks, slow renders, or rerenders, read `agent-device help react-devtools`. For React Native JavaScript heap growth, heap snapshots, allocation hotspots, or retained-object leaks, read `agent-device help cdp`. For React Native apps, overlays, Metro/Fast Refresh blockers, and routing to React DevTools or debugging evidence, read `agent-device help react-native`.
 
-After calibration, the app lets users choose a background image, pan/zoom it against a live preview, and export square PNGs in Good Lock application order. Advanced Controls exports only enabled Controls panels. Advanced Buttons exports only the selected Button panels. Combined exports enabled Controls first in Good Lock order, then Buttons in selection order, with one contiguous family-aware filename sequence. The S25+ One UI 8.5 preset remains the base template. Default mode scales that preset into the calibrated outer union, while each Advanced target starts from preset-based boxes and then lets the user fine-tune each panel.
-
-For targets containing Buttons, the preview/export path uses full-fill image rendering and a compact adjustment panel for Button image intensity, persisted `Both / Icon / None` identifier content, horizontal and vertical label position, and a focused label-appearance dialog for color, intensity, and light/dark background style. `Icon` keeps the existing safe dynamic positioning for horizontal identifiers; `None` disables identifier appearance and position controls and exports no identifier overlay. These settings affect both preview and export. Identifier settings are shared with Buttons-only under `quick-panel.button-customize-settings`; legacy `showButtonIdentifiers` values migrate to `both` or `none` without clearing other settings. Combined Button image intensity defaults to `78%` and persists separately under `quick-panel.combined-button-image-intensity`, so changing it does not change Buttons-only intensity.
-
-Buttons preview and export must share one source-coordinate composition: the same panel rectangles, original image dimensions, `{ x, y, scale }` transform, image intensity, label settings, and normalized label positions. A preview-only proxy may cap large images at a 1080-pixel long edge, but exports must use the normalized original. Do not add separate per-panel or export-only crops/transforms. Keep label metrics relative to the shared calibrated grid-cell reference and constrain them to the visible Button bounds.
-
-Each Button export is an original-quality `1024 x 1024` PNG. Non-square Buttons use a centered square source area for QuickStar to clip into the final shape. Export one panel at a time in Good Lock order, wait for the original image and any measured horizontal label position to be ready, and keep the run all-or-nothing if a capture fails.
-
-For the exact UI flows, refer to `flow/default`, `flow/advanced/controls-only`, `flow/advanced/buttons-only`, `flow/advanced/combined`, and the bottom helper sheets under `flow/bottom-sheet-tutorial`.
-
-For final v3 behavior, refer to `docs/v3_changelog.md`. For the additive v4 combined target, refer to `docs/superpowers/specs/2026-07-31-controls-buttons-combined-mode-design.md` and the newest superseding entries in `docs/notes.md`. `docs/v4-idea.md` is historical context only. Older notes and specs may describe a deferred combined target, screen-local Customize settings, a `50%` non-persisted combined intensity, older label/icon catalogs, separate preview/export sizing, or removed experiments; do not treat those as current behavior. Use `docs/release-announcement-guideline.md` for future startup announcements.
-
-## Tech Stack
-
-- **Framework:** Expo 57
-- **Styling:** Uniwind (Tailwind v4)
-- **State management:** Zustand
-- **UI:** AniUi
-
-## TypeScript
-
-- Use interfaces for props/state, avoid `any`
-
-## Code Style
-
-- Concise, type-safe TypeScript
-- Modular, feature-organized files
-- Prevent using `useMemo, useCallback, React.memo` as it is handled by React Complier (except AniUI components under `src/components/ani-ui`)
-
-## Naming
-
-- camelCase for variables/functions: `isFetchingData`
-- PascalCase for components: `UserProfile`
-- lowercase + hyphenated directories: `user-profile`
-
-## Styling Rules
-
-- Consistent padding, responsive design
-- Use `expo-image` for images
-- Preferrably use / install components from AniUi under src/components/ani-ui for base components
-- Read `docs/styling.md` for detailed guideline on ui designs
-
-## Best Practices
-
-- DRY principle
-- Extract business logic into custom hook
-- Keep components files small (.tsx, .jsx), each file under 150 lines of code
+Use MCP tools or the CLI in the integrated terminal. If `agent-device` is not on PATH but the user installed it globally in another shell, resolve the command the same way the user would from a normal terminal session and run that absolute path instead. This may require inspecting shell startup behavior or package-manager/global bin locations; do not assume the agent process `PATH` is the user's `PATH`. Do not silently fall back to `npx -y agent-device@latest`; ask or use an exact version. MCP exposes structured tools backed by the agent-device client; it does not expose generic shell execution. Prefer `open -> snapshot -i -> act -> re-snapshot -> verify -> close` where the target supports capture and selectors; otherwise follow target-specific help. Use current refs such as `@e3` for exploration and selectors for durable replay. Keep mutating commands against one session serial. Capture screenshots, logs, network, audio, perf, traces, recordings, and `.ad` replay scripts only when they add evidence.
