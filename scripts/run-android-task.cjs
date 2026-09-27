@@ -50,12 +50,21 @@ const tasks = {
 };
 
 function runStep(step) {
+  // Prefab launches a separate JVM; Gradle's org.gradle.jvmargs does not reach it.
+  // Java 24+ native-access warnings otherwise fail AGP's Prefab stderr parser.
+  const env = { ...process.env, ...step.env };
+  const nativeAccessOption = "--enable-native-access=ALL-UNNAMED";
+  if (!(env.JAVA_TOOL_OPTIONS ?? "").includes(nativeAccessOption)) {
+    env.JAVA_TOOL_OPTIONS = [env.JAVA_TOOL_OPTIONS, nativeAccessOption]
+      .filter(Boolean)
+      .join(" ");
+  }
   const isWindowsScript =
     process.platform === "win32" &&
     (step.command.endsWith(".cmd") || step.command.endsWith(".bat"));
   const result = spawnSync(step.command, step.args, {
     cwd: step.cwd ?? rootDir,
-    env: { ...process.env, ...step.env },
+    env,
     shell: isWindowsScript,
     stdio: "inherit",
   });

@@ -1,3 +1,5 @@
+import { activeReleaseAnnouncement } from "../src/features/quick-panel/release/ReleaseAnnouncementContent";
+import { buttonLabelCatalog } from "../src/features/quick-panel/model/button-labels";
 import * as localeResources from "../i18next/resources";
 
 const { enLocale, esLocale, zhLocale } = localeResources;
@@ -26,15 +28,15 @@ function getPlaceholders(value: string): string[] {
   return Array.from(value.matchAll(/\{\{([^}]+)\}\}/g), (match) => match[1]).sort();
 }
 
-describe("Spanish locale completeness", () => {
-  it("matches every English key with a non-empty Spanish value", () => {
-    expect(esLocale).toBeDefined();
-    if (!esLocale) return;
-
+describe("locale completeness", () => {
+  it.each([
+    ["Spanish", esLocale],
+    ["Traditional Chinese", zhLocale],
+  ] as const)("matches every English key with a non-empty %s value", (_name, locale) => {
     const english = flattenLocale(enLocale.translation);
-    const spanish = flattenLocale(esLocale.translation);
-    expect(Object.keys(spanish).sort()).toEqual(Object.keys(english).sort());
-    for (const value of Object.values(spanish)) {
+    const localized = flattenLocale(locale.translation);
+    expect(Object.keys(localized).sort()).toEqual(Object.keys(english).sort());
+    for (const value of Object.values(localized)) {
       expect(value.trim()).not.toBe("");
     }
   });
@@ -57,22 +59,25 @@ describe("Spanish locale completeness", () => {
 });
 
 describe("release announcement locale strings", () => {
-  it("defines the v1.7.0 update in all supported languages", () => {
-    expect(enLocale.translation.releaseAnnouncement.v1_7_0).toEqual({
-      title: "v1.7.0 Updates 🌟\n",
-      body: "• New: Spanish localization.\n• Fixed: Some text display issues.",
-      gotIt: "Got it",
-    });
-    expect(zhLocale.translation.releaseAnnouncement.v1_7_0).toEqual({
-      title: "v1.7.0 更新內容 🌟\n",
-      body: "• 新功能：新增西班牙文介面。\n• 修正：部分文字顯示問題。",
-      gotIt: "知道了",
-    });
-    expect(esLocale.translation.releaseAnnouncement.v1_7_0).toEqual({
-      title: "Novedades de la v1.7.0 🌟\n",
-      body: "• Nuevo: localización al español.\n• Corrección: se han solucionado algunos problemas de visualización del texto.",
-      gotIt: "Entendido",
-    });
+  it("defines the active announcement in every supported language", () => {
+    const descriptor = activeReleaseAnnouncement;
+    for (const locale of [enLocale, zhLocale, esLocale]) {
+      const entries = flattenLocale(locale.translation);
+      for (const key of [descriptor.titleKey, descriptor.bodyKey, descriptor.actionKey]) {
+        expect(entries[key]?.trim()).toBeTruthy();
+      }
+    }
+    const activeGroup = descriptor.titleKey.split(".")[1];
+    for (const locale of [enLocale, zhLocale, esLocale]) {
+      expect(Object.keys(locale.translation.releaseAnnouncement)).toEqual([activeGroup]);
+    }
+  });
+
+  it("keeps localized Button labels aligned with the active catalog", () => {
+    const ids = buttonLabelCatalog.map((item) => item.id).sort();
+    for (const locale of [enLocale, zhLocale, esLocale]) {
+      expect(Object.keys(locale.translation.buttonLabels).sort()).toEqual(ids);
+    }
   });
 
   it("defines the custom icon picker tabs", () => {
@@ -92,6 +97,13 @@ describe("release announcement locale strings", () => {
 });
 
 describe("customize locale strings", () => {
+  it.each(["default", "advanced"])("defines the %s picker calibration message in every locale", (mode) => {
+    for (const locale of [enLocale, zhLocale, esLocale]) {
+      const entries = flattenLocale(locale.translation);
+      expect(entries[`customize.${mode}Calibrated`]?.trim()).toBeTruthy();
+    }
+  });
+
   it("defines Customize image-placement help in English and Chinese", () => {
     const english = enLocale.translation.customize;
     const chinese = zhLocale.translation.customize;
@@ -106,15 +118,6 @@ describe("customize locale strings", () => {
       expect(locale.imagePlacementHelpTitle).toBeTruthy();
       expect(locale.imagePlacementHelpBody).toBeTruthy();
     }
-  });
-
-  it("defines optimization copy for English and Chinese", () => {
-    expect(enLocale.translation.customize.optimizingImage).toBe(
-      "Optimizing image...",
-    );
-    expect(zhLocale.translation.customize.optimizingImage).toBe(
-      "最佳化圖片中...",
-    );
   });
 
   it("defines Button identifier controls in English and Chinese", () => {
@@ -172,8 +175,6 @@ describe("customize locale strings", () => {
     expect(enLocale.translation.customize.buttonAdjustmentVerticalTab).toBe(
       "Vert.",
     );
-    expect(enLocale.translation.customize.buttonIdentifiersOn).toBe("On");
-    expect(enLocale.translation.customize.buttonIdentifiersOff).toBe("Off");
     expect(zhLocale.translation.customize.buttonIdentifierContentTitle).toBeTruthy();
     expect(zhLocale.translation.customize.buttonIdentifierContentBoth).toBe("全部");
     expect(zhLocale.translation.customize.buttonIdentifierContentIcon).toBe("圖示");
@@ -218,14 +219,9 @@ describe("customize locale strings", () => {
     expect(zhLocale.translation.customize.buttonAdjustmentVerticalTab).toBe(
       "垂直",
     );
-    expect(zhLocale.translation.customize.buttonIdentifiersOn).toBeTruthy();
-    expect(zhLocale.translation.customize.buttonIdentifiersOff).toBeTruthy();
   });
 
   it("defines focused Button appearance inspector copy in both locales", () => {
-    expect(enLocale.translation.customize.buttonAppearancePosition).toBe(
-      "{{label}} · {{current}} of {{total}}",
-    );
     expect(enLocale.translation.customize.buttonAppearancePreview).toBe(
       "{{label}} appearance preview",
     );
@@ -246,9 +242,6 @@ describe("customize locale strings", () => {
     );
     expect(enLocale.translation.customize.buttonAppearanceUnavailable).toBe(
       "Button preview unavailable.",
-    );
-    expect(zhLocale.translation.customize.buttonAppearancePosition).toBe(
-      "{{label}} · 第 {{current}} / {{total}} 個",
     );
     expect(zhLocale.translation.customize.buttonAppearancePreview).toBe(
       "{{label}} 外觀預覽",

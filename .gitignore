@@ -59,3 +59,9 @@ google-services/
 # eas credentials
 credentials.json
 credentials/
+
+# Local IDE/workflow state and generated Fastlane output
+.idea/
+.superpowers/
+fastlane/report.xml
+fastlane/README.md

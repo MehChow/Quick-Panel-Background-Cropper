@@ -1,11 +1,15 @@
-# Styling guide
+# Current UI styling baseline
+
+This describes the existing UI, not a constraint against the approved UI revamp.
+Replace this baseline when the new design system is implemented; preserve the
+behavior in [product behavior](product-behavior.md) and [architecture](architecture.md).
 
 This app should feel like a focused Samsung Quick Panel workbench: dark,
 phone-first, preview-heavy, and calm until the user is adjusting calibration
 geometry. Use this file when adding or restyling app components.
 
 This guide is based on the current screens in `src/features/quick-panel`, the
-AniUI primitives in `src/components/ani-ui`, and the v2 flow screenshots under
+AniUI primitives in `src/components/ani-ui`, and the current flow screenshots under
 `flow/`.
 
 ## Core direction
@@ -159,7 +163,7 @@ Use cards for actual content containers, not for whole page sections.
 These colors are functional, not decorative.
 
 - Default outer rectangle: emerald/green line and handles.
-- Advanced panel boxes: orange line and orange label.
+- Active Controls: purple. Active Buttons: blue. Completed panels: orange.
 - Advanced outer/grid confirmation: green outline.
 - Snap/grid dots: low-opacity white.
 - Grid tutorial examples: red for columns, blue for rows.
@@ -210,7 +214,7 @@ component or constant. If it appears once, keep it local.
 Current reusable theme values live in `global.css` and AniUI variants. Prefer
 semantic classes such as `bg-primary`, `bg-secondary`, `text-muted-foreground`,
 and `border-border` inside base components. Feature screens may use the
-established product colors above when they are part of the v2 flow language.
+established product colors above when they are part of the current flow language.
 
 If a repeated raw color becomes app-wide, promote it to `global.css` and verify
 that Uniwind generates the intended utility classes before replacing call sites.
