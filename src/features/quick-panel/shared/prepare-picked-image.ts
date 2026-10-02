@@ -2,7 +2,7 @@ import { Image } from "expo-image";
 import { ImageManipulator, SaveFormat, type ImageManipulatorContext, type ImageRef } from "expo-image-manipulator";
 import type { PickedImage } from "../model/types";
 
-const workingLongEdge = 3072;
+const workingLongEdge = 2048;
 
 /** Bound native decoding before encoding the single authoritative working image. */
 export async function preparePickedImage(asset: PickedImage): Promise<PickedImage> {

@@ -14,9 +14,9 @@ const es: Translations = {
         "Divide una imagen de forma continua en el área de Controles del Panel rápido",
     },
     releaseAnnouncement: {
-      v1_7_3: {
-        title: "Novedades de la v1.7.3 🌟\n",
-        body: "• Se ha corregido un problema al seleccionar una imagen.\n• Se han añadido 2 nuevos iconos de botón integrados.\n• Se optimizó la aplicación para que funcione de forma más eficiente.\n• Se corrigió un problema que hacía que algunos textos se mostraran incorrectamente.\n• Se corrigió un problema por el que los iconos podían mostrar un color incorrecto según su estado.",
+      v1_7_4: {
+        title: "Novedades de la v1.7.4 🌟\n",
+        body: "• Las imágenes grandes ahora se reducen a un máximo de 2048 píxeles en el lado más largo para reducir el uso de memoria.\n• Se han añadido 4 iconos de botón personalizados: Modo oscuro, Sonido, Vibración y Silencio.",
         gotIt: "Entendido",
       },
     },
@@ -231,6 +231,10 @@ const es: Translations = {
       customIconFlag: "Bandera",
       customIconShoppingBag: "Bolsa de compras",
       customIconTimer: "Temporizador",
+      customIconDarkMode: "Modo oscuro",
+      customIconSound: "Sonido",
+      customIconVibrate: "Vibración",
+      customIconMute: "Silencio",
       remove: "Eliminar",
     },
     export: {

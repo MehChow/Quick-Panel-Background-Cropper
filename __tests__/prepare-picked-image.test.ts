@@ -18,16 +18,16 @@ const large = { uri: "file:///large.jpg", width: 5152, height: 7728, mimeType: "
 describe("shared image preparation", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockLoad.mockResolvedValue({ width: 2048, height: 3072, release: mockSourceRelease });
+    mockLoad.mockResolvedValue({ width: 1365, height: 2048, release: mockSourceRelease });
     mockManipulate.mockReturnValue({ renderAsync: mockRender, release: mockContextRelease, resize: mockResize });
     mockRender.mockResolvedValue({ saveAsync: mockSave, release: mockRenderedRelease });
-    mockSave.mockResolvedValue({ uri: "file:///optimized.jpg", width: 2048, height: 3072 });
+    mockSave.mockResolvedValue({ uri: "file:///optimized.jpg", width: 1365, height: 2048 });
   });
 
   it("accepts the reported 39.8MP JPEG using bounded decoding before encoding", async () => {
     const image = await preparePickedImage(large);
-    expect(image).toMatchObject({ width: 2048, height: 3072, uri: "file:///optimized.jpg" });
-    expect(mockLoad).toHaveBeenCalledWith(large.uri, { maxWidth: 3072, maxHeight: 3072 });
+    expect(image).toMatchObject({ width: 1365, height: 2048, uri: "file:///optimized.jpg" });
+    expect(mockLoad).toHaveBeenCalledWith(large.uri, { maxWidth: 2048, maxHeight: 2048 });
     expect(mockManipulate).toHaveBeenCalledWith(await mockLoad.mock.results[0].value);
     expect(mockSave).toHaveBeenCalledWith({ compress: 0.9, format: "jpeg" });
     expect(mockSourceRelease).toHaveBeenCalledTimes(1);
@@ -41,13 +41,24 @@ describe("shared image preparation", () => {
     expect(mockLoad).not.toHaveBeenCalled();
   });
 
+  it("optimizes images just above the 2048 long-edge limit", async () => {
+    await preparePickedImage({ ...large, width: 2049, height: 1536 });
+    expect(mockLoad).toHaveBeenCalledWith(large.uri, { maxWidth: 2048, maxHeight: 2048 });
+  });
+
+  it("resizes an oversized decoder result using upright dimensions", async () => {
+    mockLoad.mockResolvedValueOnce({ width: 3072, height: 2048, release: mockSourceRelease });
+    await preparePickedImage(large);
+    expect(mockResize).toHaveBeenCalledWith({ width: 2048, height: 1365 });
+  });
+
   it("avoids native zero-width downsampling for a low-pixel-count strip", async () => {
     mockLoad.mockResolvedValueOnce({ width: 1, height: 10000, release: mockSourceRelease });
-    mockSave.mockResolvedValueOnce({ uri: "file:///thin.png", width: 1, height: 3072 });
+    mockSave.mockResolvedValueOnce({ uri: "file:///thin.png", width: 1, height: 2048 });
     const image = await preparePickedImage({ uri: "file:///thin.png", width: 1, height: 10000 });
     expect(mockLoad).toHaveBeenCalledWith("file:///thin.png", { maxWidth: 1, maxHeight: 10000 });
-    expect(mockResize).toHaveBeenCalledWith({ width: 1, height: 3072 });
-    expect(image).toMatchObject({ width: 1, height: 3072 });
+    expect(mockResize).toHaveBeenCalledWith({ width: 1, height: 2048 });
+    expect(image).toMatchObject({ width: 1, height: 2048 });
   });
 
   it.each(["image/png", "image/webp"])("preserves alpha for %s even without a filename", async (mimeType) => {
@@ -56,8 +67,8 @@ describe("shared image preparation", () => {
   });
 
   it("uses the decoder's upright dimensions rather than stale picker geometry", async () => {
-    mockSave.mockResolvedValue({ uri: "file:///rotated.jpg", width: 3072, height: 2048 });
-    expect(await preparePickedImage(large)).toMatchObject({ width: 3072, height: 2048 });
+    mockSave.mockResolvedValue({ uri: "file:///rotated.jpg", width: 2048, height: 1365 });
+    expect(await preparePickedImage(large)).toMatchObject({ width: 2048, height: 1365 });
   });
 
   it("releases all native references when encoding fails", async () => {
@@ -75,7 +86,7 @@ describe("shared image preparation", () => {
   });
 
   it("decodes missing dimensions with bounds rather than accepting invalid geometry", async () => {
-    expect(await preparePickedImage({ ...large, width: 0, height: 0 })).toMatchObject({ width: 2048, height: 3072 });
+    expect(await preparePickedImage({ ...large, width: 0, height: 0 })).toMatchObject({ width: 1365, height: 2048 });
     expect(mockLoad).toHaveBeenCalled();
   });
 });

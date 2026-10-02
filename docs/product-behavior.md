@@ -43,7 +43,7 @@ overlap with visible completed boxes. Pending gestures must commit before Next.
 ## Buttons and identifiers
 
 The catalog currently contains 32 built-in labels. Custom labels can choose
-from preset Button icons or 24 generic icons. The canonical catalog and stable
+from preset Button icons or 28 generic icons. The canonical catalog and stable
 icon IDs are defined in `src/features/quick-panel/model/button-labels.ts`.
 Selection order determines calibration and export order; at least one Button
 is required for either Button-containing target.
@@ -67,7 +67,7 @@ separately from Buttons-only, while the identifier settings remain shared.
 ## Image import, preview and export
 
 All calibration and background selection use the same import pipeline. Images
-at or below a 3072-pixel long edge remain unchanged; larger inputs are decoded
+at or below a 2048-pixel long edge remain unchanged; larger inputs are decoded
 at bounded size and saved as a working source, JPEG at 90% or PNG to preserve
 transparency. Orientation and actual output dimensions determine geometry.
 The optimization is silent. Cancel/failure retains the prior selection.
