@@ -59,8 +59,12 @@ describe("button labels", () => {
       "flag",
       "shopping-bag",
       "timer",
+      "moon",
+      "volume-2",
+      "volume-1",
+      "volume-x",
     ]);
-    expect(new Set(customIconIds).size).toBe(24);
+    expect(new Set(customIconIds).size).toBe(28);
     const builtInIconNames = new Set<string>(
       buttonLabelCatalog.map((item) => item.iconName),
     );

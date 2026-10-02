@@ -30,6 +30,10 @@ const iconLabels: Record<string, string> = {
   "advancedCalibration.customIconFlag": "Flag",
   "advancedCalibration.customIconShoppingBag": "Shopping Bag",
   "advancedCalibration.customIconTimer": "Timer",
+  "advancedCalibration.customIconDarkMode": "Dark mode",
+  "advancedCalibration.customIconSound": "Sound",
+  "advancedCalibration.customIconVibrate": "Vibrate",
+  "advancedCalibration.customIconMute": "Mute",
 };
 
 jest.mock("react-i18next", () => ({
@@ -65,6 +69,21 @@ describe("CustomButtonIconDialog", () => {
 
     expect(onSelect).toHaveBeenCalledWith("wifi");
     expect(screen.queryByText("buttonLabels.wi-fi")).toBeNull();
+  });
+
+  it.each([
+    ["Dark mode", "moon"],
+    ["Sound", "volume-2"],
+    ["Vibrate", "volume-1"],
+    ["Mute", "volume-x"],
+  ])("selects the %s custom icon", (label, iconId) => {
+    const onSelect = jest.fn();
+    const screen = render(
+      <CustomButtonIconDialog label="My scene" onClose={jest.fn()} onSelect={onSelect} open />,
+    );
+    fireEvent.press(screen.getByRole("tab", { name: "Other icons" }));
+    fireEvent.press(screen.getByLabelText(label));
+    expect(onSelect).toHaveBeenCalledWith(iconId);
   });
 
   it("closes without selecting when canceled", () => {

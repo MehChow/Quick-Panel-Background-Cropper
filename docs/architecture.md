@@ -42,7 +42,7 @@ Single-row/column grids remain valid; do not coerce their counts to two.
 ## Image composition and export readiness
 
 `prepare-picked-image.ts` produces the authoritative working image for every
-import path. Keep the 3072-edge bounded decode, orientation handling, native
+import path. Keep the 2048-edge bounded decode, orientation handling, native
 reference release, transparency handling and thin-strip decode guard. Import
 controllers reject duplicate/stale completion and retain old data on cancel or
 failure. Never restore the retired 6144-edge/20MP rejection.

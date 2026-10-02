@@ -12,9 +12,9 @@ const en = {
         "Split one image seamlessly across your Quick Panel Controls area",
     },
     releaseAnnouncement: {
-      v1_7_3: {
-        title: "v1.7.3 Updates 🌟\n",
-        body: "• Fixed a problem when selecting an image.\n• Added 2 new built-in button icons.\n• Optimized the app to run more efficiently.\n• Fixed an issue that could make some text appear incorrectly.\n• Fixed an issue where icons could show the wrong color for their current state.",
+      v1_7_4: {
+        title: "What’s new in v1.7.4 🌟\n",
+        body: "• Large images now resize to a maximum of 2048 pixels on the longest edge to reduce memory use.\n• Added 4 custom button icons: Dark mode, Sound, Vibrate, and Mute.",
         gotIt: "Got it",
       },
     },
@@ -216,6 +216,10 @@ const en = {
       customIconFlag: "Flag",
       customIconShoppingBag: "Shopping Bag",
       customIconTimer: "Timer",
+      customIconDarkMode: "Dark mode",
+      customIconSound: "Sound",
+      customIconVibrate: "Vibrate",
+      customIconMute: "Mute",
       remove: "Remove",
     },
     export: {

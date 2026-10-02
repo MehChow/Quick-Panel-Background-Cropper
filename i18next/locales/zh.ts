@@ -11,9 +11,9 @@ const zh = {
       subtitle: "將一張圖片無縫延伸到你的 Quick Panel 控制版面",
     },
     releaseAnnouncement: {
-      v1_7_3: {
-        title: "v1.7.3 更新內容 🌟\n",
-        body: "• 修正選擇圖片時的問題。\n• 新增 2 個內建按鈕圖示。\n• 優化應用程式，讓運作更有效率。\n• 修正部分文字顯示不正確的問題。\n• 修正圖示顏色未能正確反映目前狀態的問題。",
+      v1_7_4: {
+        title: "v1.7.4 更新內容 🌟\n",
+        body: "• 大型圖片現在會縮小至最長邊不超過 2048 像素，以減少記憶體用量。\n• 新增 4 個自訂按鈕圖示：深色模式、音效、震動及靜音。",
         gotIt: "知道了",
       },
     },
@@ -199,6 +199,10 @@ const zh = {
       customIconFlag: "旗幟",
       customIconShoppingBag: "購物袋",
       customIconTimer: "計時器",
+      customIconDarkMode: "深色模式",
+      customIconSound: "音效",
+      customIconVibrate: "震動",
+      customIconMute: "靜音",
       remove: "移除",
     },
     export: {
