@@ -70,7 +70,6 @@
   },
   "scripts": {
     "start": "expo start",
-    "reset-project": "node ./scripts/reset-project.js",
     "test": "jest",
     "test:watch": "jest --watch",
     "lint": "expo lint",

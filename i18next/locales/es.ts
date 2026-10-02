@@ -14,52 +14,9 @@ const es: Translations = {
         "Divide una imagen de forma continua en el área de Controles del Panel rápido",
     },
     releaseAnnouncement: {
-      v1_3_1: {
-        title: "Novedades de la v1.3.1 🌟\n",
-        body: "• Nuevo: modo avanzado Controles + Botones.\n• Gestión de caché optimizada.",
-        gotIt: "Entendido",
-        mediaAccessibilityLabel:
-          "Controles y Botones avanzados con una sola imagen continua",
-      },
-      v1_3_3: {
-        title: "Novedades de la v1.3.3 🌟\n",
-        body: "• Nuevo: control deslizante de intensidad de ajuste.\n• Mejora: el ajuste ahora es más fácil y preciso.",
-        gotIt: "Entendido",
-        mediaAccessibilityLabel:
-          "Control de intensidad de ajuste y ajuste mejorado",
-      },
-      v1_4_0: {
-        title: "Novedades de la v1.4.0 🌟\n",
-        body: "• Nuevo: elige si los identificadores de los Botones muestran icono y texto, solo el icono o nada.",
-        gotIt: "Entendido",
-        mediaAccessibilityLabel:
-          "Opciones de visualización de identificadores de Botones en Personalizar",
-      },
-      v1_5_0: {
-        title: "Novedades de la v1.5.0 🌟\n",
-        body: "• Nuevo: las etiquetas personalizadas de Botones ahora tienen 24 iconos disponibles, en lugar de 8.",
-        gotIt: "Entendido",
-      },
-      v1_6_0: {
-        title: "Novedades de la v1.6.0 🌟\n",
-        body: "• Nuevo: añade iconos predefinidos a las etiquetas personalizadas de Botones.\n• Mejora: muestra el icono junto a la etiqueta para que sea más fácil de identificar.",
-        gotIt: "Entendido",
-        mediaAccessibilityLabel:
-          "Selección de iconos predefinidos para una etiqueta personalizada de Botón",
-      },
-      v1_7_1: {
-        title: "Novedades de la v1.7.1 🌟\n",
-        body: "• Se ha corregido un problema al seleccionar una imagen.\n• Se han añadido 2 nuevos iconos de botón integrados.",
-        gotIt: "Entendido",
-      },
-      v1_7_3: {
-        title: "Novedades de la v1.7.3 🌟\n",
-        body: "• Se ha corregido un problema al seleccionar una imagen.\n• Se han añadido 2 nuevos iconos de botón integrados.\n• Se optimizó la aplicación para que funcione de forma más eficiente.\n• Se corrigió un problema que hacía que algunos textos se mostraran incorrectamente.\n• Se corrigió un problema por el que los iconos podían mostrar un color incorrecto según su estado.",
-        gotIt: "Entendido",
-      },
-      v1_7_0: {
-        title: "Novedades de la v1.7.0 🌟\n",
-        body: "• Nuevo: localización al español.\n• Corrección: se han solucionado algunos problemas de visualización del texto.",
+      v1_7_4: {
+        title: "Novedades de la v1.7.4 🌟\n",
+        body: "• Las imágenes grandes ahora se reducen a un máximo de 2048 píxeles en el lado más largo para reducir el uso de memoria.\n• Se han añadido 4 iconos de botón personalizados: Modo oscuro, Sonido, Vibración y Silencio.",
         gotIt: "Entendido",
       },
     },
@@ -68,8 +25,6 @@ const es: Translations = {
       calibrated: "Calibrado.",
       recalibrate: "¿Quieres volver a calibrar?",
       calibration: "Calibración",
-      calibrationRequired:
-        "Calibra una vez antes de usar la aplicación; podrás ajustarlo de nuevo más adelante",
       example: "Ejemplo",
     },
     mode: {
@@ -111,12 +66,10 @@ const es: Translations = {
         "No dejes que el borde del cuadro verde se superponga al borde del panel.",
       helpButton: "Abrir ayuda de calibración",
       helpTitle: "Cómo calibrar",
-      likeThis: "Así",
       importTitle: "Importar captura del Panel rápido",
       importSubtitle: "Usa un Panel rápido totalmente expandido",
       chooseFromAlbum: "Elegir del álbum",
       reImport: "Volver a importar",
-      looksGood: "Confirmar",
     },
     customize: {
       title: "Personalizar",
@@ -127,7 +80,6 @@ const es: Translations = {
         "QuickStar aplica una imagen cuadrada a cada panel. Los paneles anchos solo muestran la parte central de ese cuadrado, por lo que el área oculta también debe permanecer cubierta. Amplía la imagen para tener más espacio al moverla.",
       imagePlacementBoundaryHelp:
         "Si no puedes mover la imagen lo suficiente hacia arriba o abajo, puede que no haya bastante espacio alrededor del área que quieres mostrar. Prueba a ampliar la imagen e inténtalo de nuevo.",
-      optimizingImage: "Optimizando imagen...",
       pickerTitle: "Elegir imagen de fondo",
       pickerSubtitle: "Se admiten PNG, JPG y WEBP.",
       layoutPreview: "Vista previa del diseño actual",
@@ -145,8 +97,6 @@ const es: Translations = {
       buttonIdentifierOpacity: "Intensidad de etiqueta",
       horizontalIdentifierPosition: "Posición horizontal de etiqueta",
       verticalIdentifierPosition: "Posición vertical de etiqueta",
-      buttonIdentifiersOn: "Activado",
-      buttonIdentifiersOff: "Desactivado",
       buttonIdentifierAppearance: "Aspecto de etiqueta",
       chooseButtonIdentifierColor:
         "Elegir color de etiqueta, color actual {{color}}",
@@ -164,7 +114,6 @@ const es: Translations = {
       buttonIdentifierColorWheel: "Rueda de color de etiqueta",
       cancelButtonIdentifierAppearance:
         "Cancelar cambios de aspecto de etiqueta",
-      buttonAppearancePosition: "{{label}} · {{current}} de {{total}}",
       buttonAppearancePreview: "Vista previa del aspecto de {{label}}",
       buttonAppearanceOverallPreview: "Vista previa del diseño completo",
       buttonAppearanceOverallPreviewHint:
@@ -282,8 +231,10 @@ const es: Translations = {
       customIconFlag: "Bandera",
       customIconShoppingBag: "Bolsa de compras",
       customIconTimer: "Temporizador",
-      moveUp: "Subir",
-      moveDown: "Bajar",
+      customIconDarkMode: "Modo oscuro",
+      customIconSound: "Sonido",
+      customIconVibrate: "Vibración",
+      customIconMute: "Silencio",
       remove: "Eliminar",
     },
     export: {
@@ -317,7 +268,6 @@ const es: Translations = {
       bluetooth: "Bluetooth",
       "auto-rotate": "Giro automático",
       flashlight: "Linterna",
-      sound: "Sonido",
       "flight-mode": "Modo avión",
       location: "Ubicación",
       "mobile-data": "Datos móviles",
@@ -334,45 +284,18 @@ const es: Translations = {
       "screen-recorder": "Grabadora de pantalla",
       "take-screenshot": "Captura de pantalla",
       modes: "Modos",
-      "device-control": "Control de dispositivos",
-      "music-share": "Music Share",
       "dolby-atmos": "Dolby Atmos",
       "extra-dim": "Atenuación extra",
       "secure-folder": "Carpeta segura",
       "always-on-display": "Always On Display",
-      sync: "Sincronizar",
-      kids: "Kids",
       "qr-code-scanner": "Escáner de códigos QR",
-      "video-call-effects": "Efectos de videollamada",
       "live-caption": "Subtítulos instantáneos",
-      "call-caption": "Subtítulos de llamadas",
-      "microphone-mode": "Modo de micrófono",
       "performance-profile": "Perfil de rendimiento",
-      "battery-protect": "Protección de la batería",
-      "bluetooth-tethering": "Anclaje a red Bluetooth",
-      "ultra-wideband": "Banda ultraancha",
-      "data-saver": "Ahorro de datos",
-      vpn: "VPN",
-      "focus-mode": "Modo Concentración",
-      "bedtime-mode": "Modo Hora de acostarse",
-      "screen-cast": "Transmitir pantalla",
       "wireless-dex": "DeX inalámbrico",
       smartthings: "SmartThings",
-      "one-handed-mode": "Modo Una mano",
-      "touch-sensitivity": "Sensibilidad táctil",
-      "color-inversion": "Inversión de colores",
-      "color-correction": "Corrección de color",
-      "reduce-brightness": "Reducir brillo",
-      accessibility: "Accesibilidad",
       "camera-access": "Acceso a la cámara",
       "microphone-access": "Acceso al micrófono",
       "privacy-display": "Pantalla de privacidad",
-      "private-share": "Private Share",
-      "nearby-share": "Nearby Share",
-      "work-profile": "Perfil de trabajo",
-      "usb-tethering": "Anclaje a red USB",
-      storage: "Almacenamiento",
-      "hotspot-2-0": "Hotspot 2.0",
     },
     errors: {
       mustCalibrate:
@@ -383,8 +306,6 @@ const es: Translations = {
         "Se necesita permiso para acceder a la biblioteca multimedia y guardar las exportaciones.",
       exportSurfaceMissing:
         "La vista previa de exportación de {{panel}} no está disponible.",
-      imageTooLarge:
-        "Esta imagen es demasiado grande para procesarla con fluidez. Elige una imagen más pequeña.",
       unableToOpenImagePicker: "No se puede abrir el selector de imágenes.",
       imagePickerRestartRequired:
         "Android ha detectado cambios en los ajustes del sistema. Reinicia la aplicación e inténtalo de nuevo.",

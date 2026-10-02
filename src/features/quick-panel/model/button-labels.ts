@@ -134,6 +134,10 @@ export const customButtonIconChoices = [
     translationKey: "advancedCalibration.customIconShoppingBag",
   },
   { id: "timer", translationKey: "advancedCalibration.customIconTimer" },
+  { id: "moon", translationKey: "advancedCalibration.customIconDarkMode" },
+  { id: "volume-2", translationKey: "advancedCalibration.customIconSound" },
+  { id: "volume-1", translationKey: "advancedCalibration.customIconVibrate" },
+  { id: "volume-x", translationKey: "advancedCalibration.customIconMute" },
 ] as const;
 
 type GenericButtonIconId = (typeof customButtonIconChoices)[number]["id"];

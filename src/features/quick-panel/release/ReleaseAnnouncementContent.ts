@@ -11,8 +11,8 @@ export interface ReleaseAnnouncementDescriptor {
 }
 
 export const activeReleaseAnnouncement: ReleaseAnnouncementDescriptor = {
-  actionKey: "releaseAnnouncement.v1_7_3.gotIt",
-  bodyKey: "releaseAnnouncement.v1_7_3.body",
+  actionKey: "releaseAnnouncement.v1_7_4.gotIt",
+  bodyKey: "releaseAnnouncement.v1_7_4.body",
   id: activeReleaseAnnouncementId,
-  titleKey: "releaseAnnouncement.v1_7_3.title",
+  titleKey: "releaseAnnouncement.v1_7_4.title",
 };

@@ -1,16 +1,12 @@
 # Cache Optimization
 
-**Status:** Implemented (verified 2026-08-05)
+Current ownership rules; see [architecture](architecture.md) for image preparation.
 
 ## Purpose
 
-QPBC processes full-quality screenshots, source images, preview proxies, and
+QPBC processes prepared screenshots, working source images, preview proxies, and
 `1024 x 1024` PNG exports locally. Temporary storage is expected, but it must
 remain disposable and must not grow indefinitely across completed sessions.
-
-The reported production app cache is about 140 MB. A separate inspection of
-`com.meh_chow.quickpanelbackgroundcropper.dev` showed only about 578 KB, so
-variant measurements must not be compared as if they were the same app data.
 
 ## Graceful cache handling
 

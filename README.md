@@ -252,7 +252,7 @@ outer-calibration, advanced panel-alignment, and advanced review screens until
 that specific help sheet is opened. The icon uses two soft pulse rings plus a
 small wave motion to draw attention, then stays still after that helper has been seen. The animation is disabled when reduced motion is enabled.
 
-The full calibration logic and assumptions are documented in [CALIBRATION_PLAN.md](CALIBRATION_PLAN.md).
+See [current product behavior](docs/product-behavior.md), [architecture and compatibility](docs/architecture.md), and the [documentation index](docs/README.md).
 
 ## Notes
 

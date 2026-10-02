@@ -37,6 +37,15 @@ wrong native setup.
 
 ## Expected build commands
 
+The dev/APK runner forwards `--enable-native-access=ALL-UNNAMED` through
+`JAVA_TOOL_OPTIONS` while preserving existing options. Prefab runs in a child
+JVM, so setting only Gradle's `org.gradle.jvmargs` does not cover it. With newer
+Java runtimes, Prefab's native-access warning can otherwise be treated as a
+CMake configuration failure by the Android Gradle plugin.
+
+For direct Gradle commands using the same runtime, supply that option in the
+terminal's `JAVA_TOOL_OPTIONS` too; the runner does not change system settings.
+
 - `npm run android`
   - dev build
   - uses `APP_VARIANT=dev`

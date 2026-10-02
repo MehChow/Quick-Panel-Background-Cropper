@@ -173,8 +173,10 @@ For a release candidate, also test manually with a clean app data state and an u
 ## Current reference
 
 The current announcement ID is
-`v1.7.3-app-optimization-display-fixes-announcement`. It retains the v1.7.1
-image selection fix and 2 new built-in button icons, and adds app optimization,
-text display, and icon color state fixes. It has no supporting media and uses a
-localized acknowledgement CTA. Its acknowledgement is independent from
-`quick-panel.calibrations`.
+`v1.7.4-large-image-custom-icons-announcement`. It briefly explains the
+2048-pixel long-edge limit for large image imports and the four new custom
+button icons: Dark mode, Sound, Vibrate, and Mute. It appears once for every
+user who has not acknowledged this ID, including fresh installs and users
+upgrading from v1.7.3. It has no supporting media and uses a localized
+acknowledgement CTA with no navigation. No data migration is required; its
+acknowledgement is independent from `quick-panel.calibrations`.
