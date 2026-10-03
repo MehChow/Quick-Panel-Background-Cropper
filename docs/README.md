@@ -6,6 +6,7 @@ Use these maintained references for current behavior. Release metadata lives in
 - [Product behavior](product-behavior.md): supported paths and user-visible contracts.
 - [Architecture](architecture.md): geometry, rendering, gestures, persistence and compatibility.
 - [Styling](styling.md): the existing UI baseline, to be superseded during the UI revamp.
+- [Screen inventory](screen-inventory.md): current screens, workflow steps, overlays and states to cover in the UI revamp.
 - [Testing](testing.md): automated checks and test boundaries.
 - [Manual acceptance](production-manual-test-checklist.md): current device regression checklist.
 - [Cache ownership](cache-optimization.md): cleanup lifetimes and measurement.
