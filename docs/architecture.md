@@ -3,18 +3,33 @@
 ## Code map
 
 - `src/app`: Expo Router entry points and shared providers.
-- `src/features/quick-panel/model`: panel definitions, geometry, icons and identifier metrics.
+- `src/features/quick-panel/model`: panel definitions, geometry, icons, identifier
+  metrics, color normalization and customization setting types/defaults.
 - `calibration/default`, `calibration/advanced`, `calibration/advanced/combined`:
   controllers and views for independent calibration branches.
-- `store`: Zustand transitions, atomic panel actions, defaults and MMKV parsing.
-- `shared`: image import lifecycle, screen structure and contextual help.
+- `store`: Zustand transitions, atomic panel actions and workflow defaults.
+  `store/storage.ts` is the public persistence facade; `store/persistence` owns
+  MMKV setup, keys and compatibility codecs.
+- `image-import`: picker access, working-image preparation and import lifecycle.
+- `shared`: screen structure and contextual help.
 - `customize`: shared composition, appearance editing and sequential export.
 - `cache`: URI ownership, cleanup and cold-start recovery.
 - `release`: current startup announcement descriptor and acknowledgement host.
 - `src/components/ani-ui`: currently used UI primitives.
+- Repository-root `i18next/languages.ts` and `i18next/locales`: supported
+  languages and copy.
 
 Paths above are relative to `src/features/quick-panel` unless stated otherwise.
 Keep domain logic separable from screen styling during the UI revamp.
+Use the [task map](task-map.md) to locate owners/tests and the
+[glossary](../GLOSSARY.md) for product terminology.
+
+ESLint enforces resolved import boundaries for relative and alias imports:
+the model stays independent of feature controllers/state and app/UI modules;
+AniUI stays independent of Quick Panel. Consumers use `store/storage.ts` rather
+than persistence internals. The export lifecycle receives state/navigation
+integration through callbacks in its wrapper. These boundaries are checked by
+`__tests__/eslint-boundaries.test.ts`.
 
 ## Geometry and gestures
 
@@ -41,7 +56,7 @@ Single-row/column grids remain valid; do not coerce their counts to two.
 
 ## Image composition and export readiness
 
-`prepare-picked-image.ts` produces the authoritative working image for every
+`image-import/prepare-picked-image.ts` produces the authoritative working image for every
 import path. Keep the 2048-edge bounded decode, orientation handling, native
 reference release, transparency handling and thin-strip decode guard. Import
 controllers reject duplicate/stale completion and retain old data on cancel or
@@ -60,7 +75,11 @@ the shared transform. Identifier metrics use the shared calibrated grid-cell
 reference and fit within visible Button bounds. Horizontal content measurements
 must match the current content mode before the overlay/capture becomes ready.
 
-`useSequentialExport` and `ExportSurfaceHost` mount one surface at a time.
+`customize/hooks/useSequentialExport.ts` connects Zustand and routing to the
+internal `useSequentialExportLifecycle.ts` hook. The lifecycle owns readiness,
+scheduling, capture and cleanup; it reports start/success/failure through
+callbacks. The wrapper owns the successful store update and Result navigation.
+The lifecycle and `ExportSurfaceHost` mount one surface at a time.
 Wait for image load and any required identifier measurement; use run/panel
 tokens to reject stale callbacks. Capture every panel before media saving.
 On failure, clean run-owned captures and do not navigate to a partial Result.

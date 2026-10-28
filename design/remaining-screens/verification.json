@@ -1,0 +1,186 @@
+{
+  "roots": 139,
+  "screenRoots": 128,
+  "boards": 10,
+  "approvedRoots": 6,
+  "problems": 0,
+  "instances": 1545,
+  "tokenBoundNodes": 3813,
+  "date": "2026-10-03",
+  "kind": "Static canvas review",
+  "inventoryIds": [
+    "S01",
+    "S02",
+    "S03",
+    "D01",
+    "D02",
+    "A01",
+    "A02",
+    "A03",
+    "A04",
+    "A05",
+    "A06",
+    "A07",
+    "A08",
+    "A09",
+    "A10",
+    "A11",
+    "C01",
+    "C02",
+    "C03",
+    "C04",
+    "C05",
+    "C06",
+    "R01",
+    "R02",
+    "O01",
+    "O02",
+    "O03",
+    "O04",
+    "O05",
+    "O06",
+    "O07",
+    "O08",
+    "O09",
+    "O10",
+    "O11",
+    "O12",
+    "O13",
+    "O14"
+  ],
+  "missingInventoryIds": [],
+  "exportScale": 2,
+  "inventoryRowsCovered": 38,
+  "expectedPNGCount": 145,
+  "actualPNGCount": 145,
+  "missingPNGs": [],
+  "wrongPNGDimensions": [],
+  "unfinishedPlaceholders": 0,
+  "productionSourceChanged": false,
+  "deviceQA": false,
+  "scope": "Original screen design/export pass; board/root counts below are historical. See canvasOrganization for current organization checks.",
+  "canvasOrganization": {
+    "date": "2026-10-03",
+    "kind": "Static canvas organization review",
+    "overviewId": "slnqi",
+    "screens": 134,
+    "annotations": 1,
+    "foundationsBoards": 4,
+    "groupWrappers": 15,
+    "removedCanvasBoards": 13,
+    "missingCanonicalNodes": [],
+    "brokenRefs": [],
+    "enabledNodeClipping": [],
+    "overlappingGroups": [],
+    "unfinishedPlaceholders": [],
+    "reusableComponents": 27,
+    "variables": 88,
+    "visualInspection": "Overview and all fifteen wrapper frames",
+    "productionSourceChanged": false,
+    "deviceQA": false,
+    "recoveredMissingScreen": {
+      "previousId": "imUDj",
+      "retainedEditableCopy": "GxffP"
+    },
+    "bounds": [
+      {
+        "id": "S07y6",
+        "x": 0,
+        "y": 1485,
+        "width": 2600,
+        "height": 2134
+      },
+      {
+        "id": "ZnuV0",
+        "x": 0,
+        "y": 3719,
+        "width": 2600,
+        "height": 1125
+      },
+      {
+        "id": "D9Fnb9",
+        "x": 2700,
+        "y": 1485,
+        "width": 2600,
+        "height": 2134
+      },
+      {
+        "id": "L4REt",
+        "x": 2700,
+        "y": 3719,
+        "width": 2600,
+        "height": 2134
+      },
+      {
+        "id": "v9a33",
+        "x": 5400,
+        "y": 1485,
+        "width": 2600,
+        "height": 3143
+      },
+      {
+        "id": "mJqDD",
+        "x": 0,
+        "y": 4944,
+        "width": 2600,
+        "height": 2134
+      },
+      {
+        "id": "RuaZk",
+        "x": 2700,
+        "y": 5953,
+        "width": 2600,
+        "height": 3143
+      },
+      {
+        "id": "MbMO0",
+        "x": 0,
+        "y": 7178,
+        "width": 2600,
+        "height": 2134
+      },
+      {
+        "id": "PmLrW",
+        "x": 5400,
+        "y": 4728,
+        "width": 2600,
+        "height": 5161
+      },
+      {
+        "id": "oNVvI",
+        "x": 5400,
+        "y": 9989,
+        "width": 2600,
+        "height": 2134
+      },
+      {
+        "id": "MT5nZ",
+        "x": 0,
+        "y": 9412,
+        "width": 2600,
+        "height": 2134
+      },
+      {
+        "id": "COFmY",
+        "x": 5400,
+        "y": 12223,
+        "width": 2600,
+        "height": 2134
+      },
+      {
+        "id": "dwnE9",
+        "x": 2700,
+        "y": 9196,
+        "width": 2600,
+        "height": 4152
+      },
+      {
+        "id": "SptaB",
+        "x": 0,
+        "y": 11646,
+        "width": 2600,
+        "height": 1380
+      }
+    ]
+  }
+}

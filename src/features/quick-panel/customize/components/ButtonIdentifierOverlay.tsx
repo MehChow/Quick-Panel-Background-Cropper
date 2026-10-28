@@ -7,7 +7,7 @@ import {
 } from "../../model/button-identifier-layout";
 import type { ButtonIdentifierDefinition } from "../../model/types";
 import type { ButtonIdentifierContentMode } from "../../model/button-identifier-content";
-import type { ButtonIdentifierBackgroundTheme } from "../button-identifier-color";
+import type { ButtonIdentifierBackgroundTheme } from "../../model/button-identifier-color";
 import { ButtonIdentifierVisuals } from "./ButtonIdentifierVisuals";
 import { AnimatedButtonIdentifierFrame } from "./AnimatedButtonIdentifierFrame";
 import { AnimatedButtonIdentifierVisuals } from "./AnimatedButtonIdentifierVisuals";

@@ -13,7 +13,7 @@ import type {
 import type {
   ButtonIdentifierAppearance,
   ButtonIdentifierBackgroundTheme,
-} from "../button-identifier-color";
+} from "../../model/button-identifier-color";
 import {
   getCycledButtonIndex,
   getInspectableButtonPanels,

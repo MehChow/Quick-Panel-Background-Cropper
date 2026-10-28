@@ -13,7 +13,7 @@ import { getCustomizePreviewDisplayFrame } from "../preview-geometry";
 import type { AnimatedButtonIdentifierAppearance } from "./button-identifier-animated-appearance";
 import { QuickPanelPreviewStage } from "./QuickPanelPreviewStage";
 import { StaticQuickPanelPreview } from "./StaticQuickPanelPreview";
-import type { ButtonIdentifierBackgroundTheme } from "../button-identifier-color";
+import type { ButtonIdentifierBackgroundTheme } from "../../model/button-identifier-color";
 
 export interface QuickPanelPreviewProps {
   animatedButtonIdentifierAppearance?: AnimatedButtonIdentifierAppearance;

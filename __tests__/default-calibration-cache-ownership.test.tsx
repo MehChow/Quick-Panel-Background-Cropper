@@ -1,6 +1,6 @@
 import { act, render } from "@testing-library/react-native";
 import { useCalibrationScreen } from "@/features/quick-panel/calibration/default/hooks/useCalibrationScreen";
-import { pickImageFromLibrary } from "@/features/quick-panel/shared/pick-image-from-library";
+import { pickImageFromLibrary } from "@/features/quick-panel/image-import/pick-image-from-library";
 import { createInitialQuickPanelStateData } from "@/features/quick-panel/store/quick-panel-defaults";
 import { useQuickPanelStore } from "@/features/quick-panel/store/quick-panel-store";
 
@@ -11,7 +11,7 @@ jest.mock("expo-router", () => ({
   useRouter: () => ({ dismissTo: jest.fn() }),
 }));
 
-jest.mock("@/features/quick-panel/shared/pick-image-from-library", () => ({
+jest.mock("@/features/quick-panel/image-import/pick-image-from-library", () => ({
   pickImageFromLibrary: jest.fn(),
 }));
 

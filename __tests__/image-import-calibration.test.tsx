@@ -5,7 +5,7 @@ import { useQuickPanelStore } from "@/features/quick-panel/store/quick-panel-sto
 import { createInitialQuickPanelStateData } from "@/features/quick-panel/store/quick-panel-defaults";
 const mockPick = jest.fn();
 jest.mock("expo-router", () => ({ useRouter: () => ({ back: jest.fn(), dismissTo: jest.fn() }) }));
-jest.mock("@/features/quick-panel/shared/pick-image-from-library", () => ({ pickImageFromLibrary: () => mockPick() }));
+jest.mock("@/features/quick-panel/image-import/pick-image-from-library", () => ({ pickImageFromLibrary: () => mockPick() }));
 jest.mock("@/features/quick-panel/cache/cache-files", () => ({ deleteOwnedCacheUris: jest.fn() }));
 const prepared = { uri: "file:///working.jpg", width: 2048, height: 3072, originalWidth: 5152, originalHeight: 7728 };
 

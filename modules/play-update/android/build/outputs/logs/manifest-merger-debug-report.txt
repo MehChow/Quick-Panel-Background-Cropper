@@ -1,0 +1,16 @@
+-- Merging decision tree log ---
+manifest
+ADDED from C:\Quick-Panel-Background-Cropper\modules\play-update\android\build\intermediates\tmp\ProcessLibraryManifest\debug\tempAndroidManifest4587709189621494133.xml:2:13-83
+INJECTED from C:\Quick-Panel-Background-Cropper\modules\play-update\android\build\intermediates\tmp\ProcessLibraryManifest\debug\tempAndroidManifest4587709189621494133.xml:2:13-83
+	package
+		INJECTED from C:\Quick-Panel-Background-Cropper\modules\play-update\android\build\intermediates\tmp\ProcessLibraryManifest\debug\tempAndroidManifest4587709189621494133.xml
+	xmlns:android
+		ADDED from C:\Quick-Panel-Background-Cropper\modules\play-update\android\build\intermediates\tmp\ProcessLibraryManifest\debug\tempAndroidManifest4587709189621494133.xml:2:23-81
+uses-sdk
+INJECTED from C:\Quick-Panel-Background-Cropper\modules\play-update\android\build\intermediates\tmp\ProcessLibraryManifest\debug\tempAndroidManifest4587709189621494133.xml reason: use-sdk injection requested
+INJECTED from C:\Quick-Panel-Background-Cropper\modules\play-update\android\build\intermediates\tmp\ProcessLibraryManifest\debug\tempAndroidManifest4587709189621494133.xml
+INJECTED from C:\Quick-Panel-Background-Cropper\modules\play-update\android\build\intermediates\tmp\ProcessLibraryManifest\debug\tempAndroidManifest4587709189621494133.xml
+	android:targetSdkVersion
+		INJECTED from C:\Quick-Panel-Background-Cropper\modules\play-update\android\build\intermediates\tmp\ProcessLibraryManifest\debug\tempAndroidManifest4587709189621494133.xml
+	android:minSdkVersion
+		INJECTED from C:\Quick-Panel-Background-Cropper\modules\play-update\android\build\intermediates\tmp\ProcessLibraryManifest\debug\tempAndroidManifest4587709189621494133.xml

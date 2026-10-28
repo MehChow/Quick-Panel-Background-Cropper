@@ -27,6 +27,15 @@ const es: Translations = {
       calibration: "Calibración",
       example: "Ejemplo",
     },
+    playUpdate: {
+      title: "Actualización disponible",
+      description: "Hay una nueva versión disponible en Google Play. La aplicación se reiniciará cuando termine la descarga.",
+      notNow: "Ahora no",
+      update: "Actualizar",
+      downloading: "Descargando actualización…",
+      progress: "Descargando actualización… {{progress}} %",
+      failed: "No se pudo descargar la actualización. Puedes seguir usando la aplicación.",
+    },
     mode: {
       title: "Seleccionar modo",
       subtitle: "Elige el diseño del Panel rápido que coincida con el tuyo",

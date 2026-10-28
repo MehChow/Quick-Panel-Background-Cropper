@@ -295,6 +295,41 @@ describe("sequential export", () => {
     expect(mockCapturePanelExport).toHaveBeenCalledTimes(1);
   });
 
+  it("stores completed exports before navigating and only after media saving succeeds", async () => {
+    let resolveSave!: () => void;
+    let navigationState: { isExporting: boolean; ids: string[] } | undefined;
+    mockSaveCapturedExports.mockReturnValue(new Promise<void>((resolve) => {
+      resolveSave = resolve;
+    }));
+    mockReplace.mockImplementationOnce(() => {
+      const state = useQuickPanelStore.getState();
+      navigationState = {
+        isExporting: state.isExporting,
+        ids: state.exports.map((file) => file.id),
+      };
+    });
+    render(<SequentialExportHarness />);
+    fireEvent.press(screen.getByText("start"));
+    await screen.findByTestId("export-surface-button-1");
+    signalReady("button-1", true);
+    await screen.findByTestId("export-surface-button-2");
+    signalReady("button-2", false);
+    await screen.findByTestId("export-surface-button-3");
+    signalReady("button-3", false);
+
+    await waitFor(() => expect(mockSaveCapturedExports).toHaveBeenCalledTimes(1));
+    expect(useQuickPanelStore.getState().isExporting).toBe(true);
+    expect(useQuickPanelStore.getState().exports).toEqual([]);
+    expect(mockReplace).not.toHaveBeenCalled();
+    await act(async () => resolveSave());
+
+    expect(mockReplace).toHaveBeenCalledWith("/result");
+    expect(navigationState).toEqual({
+      isExporting: false,
+      ids: ["button-1", "button-2", "button-3"],
+    });
+  });
+
   it("waits for a new horizontal measurement in Icon mode", async () => {
     render(<SequentialExportHarness contentMode="icon" />);
     fireEvent.press(screen.getByText("start"));

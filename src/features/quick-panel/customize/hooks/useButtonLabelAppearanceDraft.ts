@@ -11,7 +11,7 @@ import {
   normalizeButtonIdentifierColor,
   type ButtonIdentifierAppearance,
   type ButtonIdentifierBackgroundTheme,
-} from "../button-identifier-color";
+} from "../../model/button-identifier-color";
 import type { AnimatedButtonIdentifierAppearance } from "../components/button-identifier-animated-appearance";
 
 interface ButtonLabelAppearanceDraft {

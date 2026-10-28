@@ -1,57 +1,54 @@
-import { createMMKV, useMMKVString } from "react-native-mmkv";
+import { useMMKVString } from "react-native-mmkv";
 import {
-  defaultButtonIdentifierBackgroundTheme,
-  defaultButtonIdentifierColor,
-  normalizeButtonIdentifierBackgroundTheme,
-  normalizeButtonIdentifierColor,
-  type ButtonIdentifierBackgroundTheme,
-} from "../customize/button-identifier-color";
-import {
-  getBuiltInButtonLabel,
-  isCustomButtonIconId,
-} from "../model/button-labels";
-import { panelIds } from "../model/panel-ids";
+  defaultCombinedButtonImageIntensity,
+  type ButtonCustomizeSettings,
+} from "../model/button-customize-settings";
 import {
   normalizeSnapSensitivity,
   type SnapSensitivity,
 } from "../model/snap-sensitivity";
-import {
-  normalizeButtonIdentifierContentMode,
-  type ButtonIdentifierContentMode,
-} from "../model/button-identifier-content";
 import type {
-  AdvancedButtonsCalibration,
-  AdvancedCalibration,
-  AdvancedCombinedCalibration,
-  AdvancedSnapGrid,
   AdvancedTarget,
-  ButtonCalibrationItem,
-  ButtonPanelId,
-  ControlPanelId,
-  ControlPanelRects,
   CustomizationMode,
-  DefaultCalibration,
-  PanelRect,
 } from "../model/types";
+import {
+  parseCalibrations,
+  type SavedCalibrations,
+} from "./persistence/calibration-codecs";
+import {
+  parseButtonCustomizeSettings,
+  parsePercentage,
+} from "./persistence/customize-settings-codec";
+import {
+  buttonCustomizeSettingsKey,
+  calibrationsKey,
+  combinedButtonImageIntensityKey,
+  declinedPlayUpdateKey,
+  lastExportedAdvancedTargetKey,
+  lastExportedModeKey,
+  lastImageDiskCacheClearAtKey,
+  releaseAnnouncementKey,
+  seenHelpKey,
+  snapSensitivityKey,
+  storage,
+} from "./persistence/storage-instance";
 
-const calibrationsKey = "quick-panel.calibrations";
-const buttonCustomizeSettingsKey = "quick-panel.button-customize-settings";
-const lastExportedModeKey = "quick-panel.last-exported-mode";
-const lastExportedAdvancedTargetKey =
-  "quick-panel.last-exported-advanced-target";
-const seenHelpKey = "quick-panel.seen-help";
-const releaseAnnouncementKey = "quick-panel.acknowledged-release-announcement";
-const combinedButtonImageIntensityKey =
-  "quick-panel.combined-button-image-intensity";
-const snapSensitivityKey = "quick-panel.snap-sensitivity";
-const lastImageDiskCacheClearAtKey =
-  "quick-panel.last-image-disk-cache-clear-at";
+export {
+  isSupportedLanguage,
+  supportedLanguages,
+  type SupportedLanguage,
+} from "../../../../i18next/languages";
+export {
+  defaultButtonCustomizeSettings,
+  defaultCombinedButtonImageIntensity,
+  type ButtonCustomizeSettings,
+} from "../model/button-customize-settings";
+
+export type { SavedCalibrations } from "./persistence/calibration-codecs";
 
 export const activeReleaseAnnouncementId =
   "v1.7.4-large-image-custom-icons-announcement";
 
-export const supportedLanguages = ["en", "zh", "es"] as const;
-export type SupportedLanguage = (typeof supportedLanguages)[number];
 export const helpEntryIds = [
   "select-mode",
   "calibration-outer",
@@ -60,37 +57,6 @@ export const helpEntryIds = [
   "customize-image-placement",
 ] as const;
 export type HelpEntryId = (typeof helpEntryIds)[number];
-
-const storage = createMMKV({ id: "quick-panel" });
-
-export interface SavedCalibrations {
-  default: DefaultCalibration | null;
-  advancedControls: AdvancedCalibration | null;
-  advancedButtons: AdvancedButtonsCalibration | null;
-  advancedCombined: AdvancedCombinedCalibration | null;
-}
-
-export interface ButtonCustomizeSettings {
-  buttonIdentifierBackgroundTheme: ButtonIdentifierBackgroundTheme;
-  buttonIdentifierColor: string;
-  buttonIdentifierContentMode: ButtonIdentifierContentMode;
-  buttonIdentifierOpacity: number;
-  buttonPanelOpacity: number;
-  horizontalIdentifierPosition: number;
-  verticalIdentifierPosition: number;
-}
-
-export const defaultButtonCustomizeSettings: ButtonCustomizeSettings = {
-  buttonIdentifierBackgroundTheme: defaultButtonIdentifierBackgroundTheme,
-  buttonIdentifierColor: defaultButtonIdentifierColor,
-  buttonIdentifierContentMode: "both",
-  buttonIdentifierOpacity: 70,
-  buttonPanelOpacity: 78,
-  horizontalIdentifierPosition: 50,
-  verticalIdentifierPosition: 50,
-};
-
-export const defaultCombinedButtonImageIntensity = 78;
 
 type SavedSeenHelp = Partial<Record<HelpEntryId, true>>;
 
@@ -190,6 +156,12 @@ export function acknowledgeReleaseAnnouncement(id: string) {
   storage.set(releaseAnnouncementKey, id);
 }
 
+export function usePlayUpdatePreferences() {
+  const [declinedVersion, setDeclinedVersion] = useMMKVString(declinedPlayUpdateKey, storage);
+  const [announcement] = useMMKVString(releaseAnnouncementKey, storage);
+  return { declinedVersion, setDeclinedVersion, announcementAcknowledged: announcement === activeReleaseAnnouncementId };
+}
+
 export function loadSeenHelp(): SavedSeenHelp {
   return parseSeenHelp(storage.getString(seenHelpKey));
 }
@@ -218,36 +190,6 @@ export function markHelpSeen(helpId: HelpEntryId) {
   );
 }
 
-export function isSupportedLanguage(
-  language: string | undefined,
-): language is SupportedLanguage {
-  return supportedLanguages.includes(language as SupportedLanguage);
-}
-
-function parseCalibrations(
-  value: string | undefined,
-): SavedCalibrations | null {
-  try {
-    const parsed = value
-      ? (JSON.parse(value) as Partial<SavedCalibrations>)
-      : null;
-    if (!parsed || typeof parsed !== "object") {
-      return null;
-    }
-
-    return {
-      default: parseDefaultCalibration(parsed.default),
-      advancedControls: parseAdvancedCalibration(parsed.advancedControls),
-      advancedButtons: parseAdvancedButtonsCalibration(parsed.advancedButtons),
-      advancedCombined: parseAdvancedCombinedCalibration(
-        parsed.advancedCombined,
-      ),
-    };
-  } catch {
-    return null;
-  }
-}
-
 function parseSeenHelp(value: string | undefined): SavedSeenHelp {
   try {
     const parsed = value ? (JSON.parse(value) as Record<string, unknown>) : {};
@@ -262,293 +204,10 @@ function parseSeenHelp(value: string | undefined): SavedSeenHelp {
   }
 }
 
-function parseButtonCustomizeSettings(
-  value: string | undefined,
-): ButtonCustomizeSettings {
-  try {
-    const parsed = value
-      ? (JSON.parse(value) as Partial<ButtonCustomizeSettings> & {
-        showButtonIdentifiers?: unknown;
-      })
-      : {};
-    if (!parsed || typeof parsed !== "object") {
-      return defaultButtonCustomizeSettings;
-    }
-    return {
-      buttonIdentifierBackgroundTheme:
-        normalizeButtonIdentifierBackgroundTheme(
-          parsed.buttonIdentifierBackgroundTheme,
-        ) ?? defaultButtonIdentifierBackgroundTheme,
-      buttonIdentifierColor:
-        normalizeButtonIdentifierColor(parsed.buttonIdentifierColor) ??
-        defaultButtonIdentifierColor,
-      buttonIdentifierContentMode:
-        normalizeButtonIdentifierContentMode(
-          parsed.buttonIdentifierContentMode,
-        )
-        ?? (
-          typeof parsed.showButtonIdentifiers === "boolean"
-            ? parsed.showButtonIdentifiers
-              ? "both"
-              : "none"
-            : defaultButtonCustomizeSettings.buttonIdentifierContentMode
-        ),
-      buttonIdentifierOpacity: parsePercentage(
-        parsed.buttonIdentifierOpacity,
-        defaultButtonCustomizeSettings.buttonIdentifierOpacity,
-      ),
-      buttonPanelOpacity: parsePercentage(
-        parsed.buttonPanelOpacity,
-        defaultButtonCustomizeSettings.buttonPanelOpacity,
-      ),
-      horizontalIdentifierPosition: parsePercentage(
-        parsed.horizontalIdentifierPosition,
-        defaultButtonCustomizeSettings.horizontalIdentifierPosition,
-      ),
-      verticalIdentifierPosition: parsePercentage(
-        parsed.verticalIdentifierPosition,
-        defaultButtonCustomizeSettings.verticalIdentifierPosition,
-      ),
-    };
-  } catch {
-    return defaultButtonCustomizeSettings;
-  }
-}
-
-function parseDefaultCalibration(value: unknown): DefaultCalibration | null {
-  if (!value || typeof value !== "object" || !("rect" in value)) {
-    return null;
-  }
-  const rect = parseRectValue(value.rect);
-  return rect ? { rect } : null;
-}
-
-function parseAdvancedCalibration(value: unknown): AdvancedCalibration | null {
-  if (!value || typeof value !== "object") {
-    return null;
-  }
-  const item = value as Partial<AdvancedCalibration>;
-  const outerRect = parseRectValue(item.outerRect);
-  const panels = parsePanelRects(item.panels);
-  const grid = parseAdvancedGrid(item.grid);
-  const enabledPanels = parseEnabledPanels(item.enabledPanels);
-  if (
-    typeof item.screenshotWidth !== "number" ||
-    typeof item.screenshotHeight !== "number" ||
-    !grid ||
-    !outerRect ||
-    !panels
-  ) {
-    return null;
-  }
-  return {
-    screenshotWidth: item.screenshotWidth,
-    screenshotHeight: item.screenshotHeight,
-    grid,
-    outerRect,
-    enabledPanels,
-    panels,
-  };
-}
-
-function parseEnabledPanels(value: unknown): ControlPanelId[] {
-  if (!Array.isArray(value)) {
-    return panelIds;
-  }
-  const panels = value.filter(
-    (item): item is ControlPanelId =>
-      typeof item === "string" && panelIds.includes(item as ControlPanelId),
-  );
-  const uniquePanels = panels.filter(
-    (id, index) => panels.indexOf(id) === index,
-  );
-  return uniquePanels.length > 0
-    ? panelIds.filter((id) => uniquePanels.includes(id))
-    : panelIds;
-}
-
-function parseCombinedEnabledControls(value: unknown): ControlPanelId[] | null {
-  if (!Array.isArray(value)) {
-    return null;
-  }
-  const controls = value.filter(
-    (item): item is ControlPanelId =>
-      typeof item === "string" && panelIds.includes(item as ControlPanelId),
-  );
-  const uniqueControls = controls.filter(
-    (id, index) => controls.indexOf(id) === index,
-  );
-  return uniqueControls.length > 0
-    ? panelIds.filter((id) => uniqueControls.includes(id))
-    : null;
-}
-
-function parsePanelRects(value: unknown): ControlPanelRects | null {
-  if (!value || typeof value !== "object") {
-    return null;
-  }
-  const panels = value as Partial<ControlPanelRects>;
-  const buttonBox = parseRectValue(panels.buttonBox);
-  const brightness = parseRectValue(panels.brightness);
-  const volume = parseRectValue(panels.volume);
-  const mediaPlayer = parseRectValue(panels.mediaPlayer);
-  return buttonBox && brightness && volume && mediaPlayer
-    ? { buttonBox, brightness, volume, mediaPlayer }
-    : null;
-}
-
-function parseAdvancedButtonsCalibration(
-  value: unknown,
-): AdvancedButtonsCalibration | null {
-  if (!value || typeof value !== "object") {
-    return null;
-  }
-  const item = value as Partial<AdvancedButtonsCalibration>;
-  const outerRect = parseRectValue(item.outerRect);
-  const grid = parseAdvancedGrid(item.grid);
-  const buttons = parseButtonItems(item.buttons);
-  if (
-    typeof item.screenshotWidth !== "number" ||
-    typeof item.screenshotHeight !== "number" ||
-    !grid ||
-    !outerRect ||
-    !buttons ||
-    buttons.length === 0
-  ) {
-    return null;
-  }
-  return {
-    screenshotWidth: item.screenshotWidth,
-    screenshotHeight: item.screenshotHeight,
-    grid,
-    outerRect,
-    buttons,
-  };
-}
-
-function parseAdvancedCombinedCalibration(
-  value: unknown,
-): AdvancedCombinedCalibration | null {
-  if (!value || typeof value !== "object") {
-    return null;
-  }
-  const item = value as Partial<AdvancedCombinedCalibration>;
-  const outerRect = parseRectValue(item.outerRect);
-  const grid = parseAdvancedGrid(item.grid);
-  const controlPanels = parsePanelRects(item.controlPanels);
-  const enabledControls = parseCombinedEnabledControls(item.enabledControls);
-  const buttons = parseButtonItems(item.buttons);
-  if (
-    typeof item.screenshotWidth !== "number" ||
-    typeof item.screenshotHeight !== "number" ||
-    !grid ||
-    !outerRect ||
-    !enabledControls ||
-    !controlPanels ||
-    !buttons ||
-    buttons.length === 0
-  ) {
-    return null;
-  }
-  return {
-    screenshotWidth: item.screenshotWidth,
-    screenshotHeight: item.screenshotHeight,
-    grid,
-    outerRect,
-    enabledControls,
-    controlPanels,
-    buttons,
-  };
-}
-
-function parseButtonItems(value: unknown): ButtonCalibrationItem[] | null {
-  if (!Array.isArray(value)) {
-    return null;
-  }
-  const buttons: ButtonCalibrationItem[] = [];
-  for (const item of value) {
-    if (!item || typeof item !== "object") {
-      return null;
-    }
-    const button = item as Partial<ButtonCalibrationItem>;
-    const rect = parseRectValue(button.rect);
-    const isBuiltIn =
-      typeof button.label === "string" &&
-      Boolean(getBuiltInButtonLabel(button.label));
-    if (
-      !isButtonPanelId(button.id) ||
-      typeof button.label !== "string" ||
-      !button.label.trim() ||
-      !rect
-    ) {
-      return null;
-    }
-    let customIconId: ButtonCalibrationItem["customIconId"];
-    if (isBuiltIn) {
-      if (button.customIconId !== null) return null;
-      customIconId = null;
-    } else {
-      if (!isCustomButtonIconId(button.customIconId)) return null;
-      customIconId = button.customIconId;
-    }
-    buttons.push({
-      id: button.id,
-      label: button.label,
-      customIconId,
-      rect,
-    });
-  }
-  return buttons;
-}
-
-function parseAdvancedGrid(value: unknown): AdvancedSnapGrid | null {
-  if (!value || typeof value !== "object") {
-    return null;
-  }
-  const grid = value as Partial<AdvancedSnapGrid>;
-  return isGridValue(grid.columns) && isGridValue(grid.rows)
-    ? { columns: grid.columns, rows: grid.rows }
-    : null;
-}
-
-function parseRectValue(value: unknown): PanelRect | null {
-  if (!value || typeof value !== "object") {
-    return null;
-  }
-  const rect = value as Partial<PanelRect>;
-  return ["x", "y", "width", "height", "radius"].every(
-    (key) => typeof rect[key as keyof PanelRect] === "number",
-  )
-    ? (rect as PanelRect)
-    : null;
-}
-
-function isGridValue(value: unknown): value is number {
-  return (
-    typeof value === "number" &&
-    Number.isInteger(value) &&
-    value >= 1 &&
-    value <= 8
-  );
-}
-
-function parsePercentage(value: unknown, fallback: number): number {
-  return typeof value === "number" &&
-    Number.isFinite(value) &&
-    value >= 0 &&
-    value <= 100
-    ? value
-    : fallback;
-}
-
 function isCustomizationMode(value: unknown): value is CustomizationMode {
   return value === "default" || value === "advanced";
 }
 
 function isAdvancedTarget(value: unknown): value is AdvancedTarget {
   return value === "controls" || value === "buttons" || value === "combined";
-}
-
-function isButtonPanelId(value: unknown): value is ButtonPanelId {
-  return typeof value === "string" && /^button-\d+$/.test(value);
 }

@@ -71,8 +71,11 @@
   "scripts": {
     "start": "expo start",
     "test": "jest",
+    "test:ci": "jest --runInBand",
     "test:watch": "jest --watch",
+    "typecheck": "tsc --noEmit",
     "lint": "expo lint",
+    "verify": "npm run test:ci && npm run typecheck && npm run lint && git diff --check",
     "convert-assets": "node ./convert-to-webp.js",
     "android": "node ./scripts/run-android-task.cjs dev",
     "build-apk": "node ./scripts/run-android-task.cjs apk",

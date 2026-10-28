@@ -24,6 +24,15 @@ const zh = {
       calibration: "校正",
       example: "範例",
     },
+    playUpdate: {
+      title: "有可用更新",
+      description: "Google Play 上有新版本可供更新。下載完成後，應用程式會重新啟動。",
+      notNow: "暫時不要",
+      update: "更新",
+      downloading: "正在下載更新…",
+      progress: "正在下載更新… {{progress}}%",
+      failed: "無法下載更新。你可以繼續使用應用程式。",
+    },
     mode: {
       title: "選擇模式",
       subtitle: "選擇最符合你的 Quick Panel 版面",

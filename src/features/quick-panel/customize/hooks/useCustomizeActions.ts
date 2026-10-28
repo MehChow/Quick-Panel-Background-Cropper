@@ -1,5 +1,5 @@
 import { useOwnedImageCache } from "../../cache/useOwnedImageCache";
-import { useImageImport } from "../../shared/useImageImport";
+import { useImageImport } from "../../image-import/useImageImport";
 import { useQuickPanelStore } from "../../store/quick-panel-store";
 
 export function useCustomizeActions() {

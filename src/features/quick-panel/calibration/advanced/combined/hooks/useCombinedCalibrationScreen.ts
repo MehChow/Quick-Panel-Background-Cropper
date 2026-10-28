@@ -25,7 +25,7 @@ import type {
   PanelId,
   PanelRect,
 } from "../../../../model/types";
-import { useImageImport } from "../../../../shared/useImageImport";
+import { useImageImport } from "../../../../image-import/useImageImport";
 import { getSuggestedCalibrationRect } from "../../../shared/calibration-preset";
 import { useQuickPanelStore } from "../../../../store/quick-panel-store";
 import { quickPanelSelectors } from "../../../../store/selectors";

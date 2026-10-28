@@ -7,7 +7,7 @@ import type { ButtonIdentifierDefinition } from "../../model/types";
 import {
   getButtonIdentifierBackgroundColor,
   type ButtonIdentifierBackgroundTheme,
-} from "../button-identifier-color";
+} from "../../model/button-identifier-color";
 import { buttonIdentifierStyles as styles } from "./button-identifier-content";
 
 interface ButtonIdentifierVisualsProps {

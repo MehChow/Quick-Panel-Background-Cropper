@@ -1,0 +1,23 @@
+# Task map
+
+Start with the implementation owner for a change, then check its contracts and
+representative tests. Feature paths below are relative to
+`src/features/quick-panel`; test links resolve from this document.
+
+| Common task | Implementation owner | Contracts and representative tests |
+| --- | --- | --- |
+| Change panel geometry, presets or ordering | `model/panel-geometry.ts`, `model/preset.ts`, `model/panel-ids.ts` | [Geometry and composition](architecture.md); [panel transform](../__tests__/panel-image-transform.test.ts), [Combined preset](../__tests__/combined-preset.test.ts), [export names](../__tests__/combined-export-names.test.ts) |
+| Change identifier layout, color or setting defaults | `model/button-identifier-*`, `model/button-customize-settings.ts` | [Identifiers](product-behavior.md); [color](../src/features/quick-panel/model/__tests__/button-identifier-color.test.ts), [layout](../__tests__/button-identifier-layout.test.ts), [overlay](../__tests__/button-identifier-overlay.test.tsx) |
+| Change saved data or compatibility parsing | Public `store/storage.ts`; codecs/keys in `store/persistence` | [Persistence](architecture.md); [storage](../src/features/quick-panel/store/__tests__/storage.test.ts) |
+| Change workflow state or target transitions | `store/quick-panel-store.ts`, `store/quick-panel-transitions.ts`, calibration controllers | [Four paths](product-behavior.md); [transitions](../__tests__/quick-panel-transitions.test.ts), [Combined controller](../__tests__/combined-calibration-controller.test.ts) |
+| Change Advanced calibration interaction | `calibration/advanced` constraints, gesture hooks and commit gate; `store/advanced-calibration-state.ts` | [Geometry and gestures](architecture.md); [gesture](../__tests__/advanced-panel-gesture.test.ts), [commit gate](../__tests__/advanced-panel-commit-gate.test.tsx), [atomic store](../__tests__/advanced-panel-atomic-store.test.ts) |
+| Change picking or image preparation | `image-import/pick-image-from-library.ts`, `image-import/prepare-picked-image.ts`, `image-import/useImageImport.ts` | [Import and ownership](architecture.md); [preparation](../src/features/quick-panel/image-import/__tests__/prepare-picked-image.test.ts), [lifecycle](../src/features/quick-panel/image-import/__tests__/image-import-lifecycle.test.tsx), [picker ownership](../src/features/quick-panel/image-import/__tests__/image-picker-cache-ownership.test.ts) |
+| Change Customize preview or appearance editing | `customize/hooks`, `customize/components`; identifier model | [Composition and appearance](architecture.md); [preview lifecycle](../__tests__/customize-preview-section-lifecycle.test.tsx), [appearance transaction](../__tests__/button-label-appearance-dialog.test.tsx), [picker lifecycle](../__tests__/button-appearance-picker-lifecycle.test.tsx) |
+| Change export readiness, capture or integration | Internal `customize/hooks/useSequentialExportLifecycle.ts`; public wrapper `customize/hooks/useSequentialExport.ts`, surfaces and `customize/services/export-files.ts` | [Export](architecture.md); [lifecycle](../src/features/quick-panel/customize/hooks/__tests__/useSequentialExportLifecycle.test.tsx), [wrapper](../__tests__/sequential-export.test.tsx), [surface readiness](../__tests__/export-surface-readiness.test.ts), [files](../__tests__/export-files.test.ts) |
+| Change cache lifetimes or cleanup | `cache`; importing, Customize and Result owners | [Cache ownership](cache-optimization.md); [cache files](../__tests__/cache-files.test.ts), [owned image](../__tests__/owned-image-cache.test.tsx), [Customize ownership](../__tests__/customize-cache-ownership.test.ts) |
+| Change copy or release notices | Repo `i18next/languages.ts`, `i18next/locales`; `release` | [Language contract](product-behavior.md), [announcements](release-announcement-guideline.md); [locales](../__tests__/locales.test.ts), [language resolution](../__tests__/language-resolution.test.ts), [announcement](../__tests__/release-announcement.test.tsx) |
+| Migrate screen styling or UI primitives | Feature screens/shared shell and repo `src/components/ani-ui` | [Styling and design authority](styling.md), [screen inventory](screen-inventory.md), [manual acceptance](production-manual-test-checklist.md); relevant screen/accessibility tests plus AniUI's separate suite |
+| Change boundaries or verification tooling | Repo `eslint.config.js`, `package.json`, `.github/workflows/verify.yml` | [Architecture boundaries](architecture.md), [testing](testing.md); [resolved-import cases](../__tests__/eslint-boundaries.test.ts), `npm run verify` |
+
+Use [testing](testing.md) for full verification and native acceptance boundaries;
+these examples are entry points, not the complete regression suite.

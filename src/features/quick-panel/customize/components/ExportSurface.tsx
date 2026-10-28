@@ -12,7 +12,7 @@ import type {
   PickedImage,
 } from "../../model/types";
 import type { ButtonIdentifierContentMode } from "../../model/button-identifier-content";
-import type { ButtonIdentifierBackgroundTheme } from "../button-identifier-color";
+import type { ButtonIdentifierBackgroundTheme } from "../../model/button-identifier-color";
 import { ButtonIdentifierOverlay } from "./ButtonIdentifierOverlay";
 
 interface ExportSurfaceProps {

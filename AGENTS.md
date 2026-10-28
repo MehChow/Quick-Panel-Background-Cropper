@@ -7,11 +7,13 @@ or below only.
 
 ## Current sources of truth
 
-QPBC is a released Samsung Good Lock QuickStar background cropper. Current
-release: 1.7.3 (authoritative release metadata: app.json). Keep all existing
-features during the upcoming UI revamp.
+QPBC is a released Samsung Good Lock QuickStar background cropper. Release
+metadata is authoritative in app.json. Keep all existing features during the
+upcoming UI revamp.
 
 - [Documentation index](docs/README.md)
+- [Domain glossary](GLOSSARY.md): read when naming or discussing product concepts.
+- [Task map](docs/task-map.md): read when locating an implementation owner and its tests.
 - [Product behavior](docs/product-behavior.md): four customization paths and user-facing contracts.
 - [Architecture](docs/architecture.md): geometry, image composition and persistence compatibility.
 - [Current styling](docs/styling.md): baseline until explicitly superseded by the revamp.
@@ -54,8 +56,9 @@ flow/advanced/buttons-only, flow/advanced/combined and flow/bottom-sheet-tutoria
 
 ## Commands
 
-- npm test -- --runInBand
-- npx tsc --noEmit
+- npm run verify: full Jest suite, typecheck, lint and diff whitespace check; also used by CI.
+- npm test -- --runInBand: focused tests with additional test paths.
+- npm run typecheck
 - npm run lint
 - npm run android: clean native prebuild and development installation.
 - npm run build-apk: local APK variant.

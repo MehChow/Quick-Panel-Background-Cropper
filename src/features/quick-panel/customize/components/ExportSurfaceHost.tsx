@@ -10,7 +10,7 @@ import type {
 } from "../../model/types";
 import type { ExportSurfaceToken } from "../hooks/useSequentialExport";
 import { ExportSurface } from "./ExportSurface";
-import type { ButtonIdentifierBackgroundTheme } from "../button-identifier-color";
+import type { ButtonIdentifierBackgroundTheme } from "../../model/button-identifier-color";
 
 interface ExportSurfaceHostProps {
   activePanel: PanelDefinition;

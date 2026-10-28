@@ -1,0 +1,132 @@
+{
+  "version": "1.0.0",
+  "theme": "charcoal-amber",
+  "document": "/c:/Users/Meh Chow/.pencil/documents/3a4c797f-62d3-46d2-a08a-dd33d6fadb46/pencil-new.pen",
+  "boards": {
+    "foundations": "dPOoE",
+    "components": "M54RCv",
+    "patterns": "w69xX",
+    "screenLayout": "f9G2sU"
+  },
+  "approvedScreens": {
+    "home": "EeI0F",
+    "modeSelection": "RTExV",
+    "advancedTargets": "dvedl",
+    "combinedImage": "Ebb5z",
+    "identifierOverview": "CKKZM",
+    "identifierPosition": "vWVmS"
+  },
+  "ids": {
+    "foundations": "dPOoE",
+    "library": "M54RCv",
+    "actionsCol": "vYkG6",
+    "formsCol": "VWgDa",
+    "surfacesCol": "s2ESDn",
+    "button": "v1pDNb",
+    "buttonLeading": "PwVcZ",
+    "buttonLabel": "QJoiI",
+    "buttonTrailing": "MDU2y",
+    "secondary": "Qx8Ge",
+    "secondaryIcon": "eJeQC",
+    "secondaryLabel": "gomtc",
+    "iconButton": "G3vwCY",
+    "iconGlyph": "aKAIM",
+    "choice": "mD70J",
+    "choiceTitle": "v8IKbs",
+    "choiceRadio": "ycyYt",
+    "choiceCheck": "E8cthD",
+    "choiceBody": "d3qJ1q",
+    "segment2": "jlStl",
+    "segment2Parts": [
+      {
+        "item": "kBGzW",
+        "label": "H5BKC"
+      },
+      {
+        "item": "lFyGV",
+        "label": "mONGe"
+      }
+    ],
+    "segment3": "x2kHS",
+    "segment3Parts": [
+      {
+        "item": "zcdri",
+        "label": "iTBXY"
+      },
+      {
+        "item": "i3pUwN",
+        "label": "zdc49"
+      },
+      {
+        "item": "Tu7RI",
+        "label": "c8Gii"
+      }
+    ],
+    "setting": "rlmA6",
+    "settingIcon": "EfRLp",
+    "settingLabel": "hts9R",
+    "settingValue": "ysI0d",
+    "settingSwatch": "w6I1kL",
+    "settingChevron": "LrELE",
+    "slider": "lYUj6",
+    "sliderLabel": "LCbdm",
+    "sliderValue": "bVMhq",
+    "sliderFill": "XesTu",
+    "sliderThumb": "XGDP3",
+    "input": "tAKwT",
+    "inputLabel": "v1VlU",
+    "inputField": "M5pHAE",
+    "inputText": "WT2ki",
+    "inputError": "SPvgz",
+    "notice": "tByDP",
+    "noticeIcon": "n9iGc",
+    "noticeText": "r0YNU",
+    "toggle": "U8fIoI",
+    "toggleIcon": "L9rYI",
+    "toggleLabel": "tvfcX",
+    "toggleTrack": "Szybv",
+    "toggleThumb": "NAee2",
+    "chip": "anTfd",
+    "chipIcon": "d6P1K",
+    "chipLabel": "Wo9Ct",
+    "stepper": "fZmSj",
+    "stepperLabel": "ADTKK",
+    "stepperValue": "PrWG5",
+    "image": "htKKV",
+    "busy": "yJmVb",
+    "patterns": "w69xX",
+    "header": "hTcmv",
+    "headerTitle": "I6SMJn",
+    "footer": "AF8wQ",
+    "footerBack": "d4jQg1",
+    "footerNext": "fDwFw",
+    "sheet": "Lvqvs",
+    "sheetTitle": "alt7B",
+    "sheetBody": "z6AZqq",
+    "dialog": "pxKli",
+    "dialogTitle": "wfEkA",
+    "dialogBody": "tfQE5",
+    "import": "wgcrD",
+    "importTitle": "arRfq",
+    "importBody": "berZ1",
+    "exportTile": "SYrss",
+    "exportImage": "qkktZ",
+    "exportTitle": "QsZJo",
+    "success": "fnJNZ",
+    "calibration": "xEjqg",
+    "snap": "fYu2a",
+    "content": "wkDDo",
+    "appearance": "eFSCZ",
+    "position": "y1ZpM",
+    "layout": "f9G2sU",
+    "screen": "dUnt8",
+    "screenBody": "Mz1Sy",
+    "screenFooter": "fC5Xj"
+  },
+  "canvasOrganization": {
+    "manifest": "../remaining-screens/manifest.json",
+    "note": "Board and approved-screen IDs preserved inside organization wrappers",
+    "foundationGroupId": "XHgIl",
+    "overviewId": "slnqi"
+  }
+}

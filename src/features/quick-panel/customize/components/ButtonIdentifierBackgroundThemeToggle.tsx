@@ -4,7 +4,7 @@ import { Pressable } from "react-native";
 import {
   getButtonIdentifierBackgroundColor,
   type ButtonIdentifierBackgroundTheme,
-} from "../button-identifier-color";
+} from "../../model/button-identifier-color";
 
 interface ButtonIdentifierBackgroundThemeToggleProps {
   onChange: (theme: ButtonIdentifierBackgroundTheme) => void;

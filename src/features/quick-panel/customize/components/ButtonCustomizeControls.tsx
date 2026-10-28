@@ -13,7 +13,7 @@ import {
 import {
   getButtonIdentifierBackgroundColor,
   type ButtonIdentifierBackgroundTheme,
-} from "../button-identifier-color";
+} from "../../model/button-identifier-color";
 import { ButtonAdjustmentTabs } from "./ButtonAdjustmentTabs";
 
 const buttonIdentifierContentIcons = {

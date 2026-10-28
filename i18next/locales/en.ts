@@ -25,6 +25,15 @@ const en = {
       calibration: "Calibration",
       example: "Example",
     },
+    playUpdate: {
+      title: "Update available",
+      description: "A newer version is available on Google Play. The app will restart when the download finishes.",
+      notNow: "Not now",
+      update: "Update",
+      downloading: "Downloading update…",
+      progress: "Downloading update… {{progress}}%",
+      failed: "The update couldn't be downloaded. You can continue using the app.",
+    },
     mode: {
       title: "Select mode",
       subtitle: "Choose the Quick Panel layout that matches yours",

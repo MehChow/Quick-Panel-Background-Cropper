@@ -8,7 +8,7 @@ import type {
   PickedImage,
   QuickPanelPreset,
 } from "../../model/types";
-import type { ButtonIdentifierBackgroundTheme } from "../button-identifier-color";
+import type { ButtonIdentifierBackgroundTheme } from "../../model/button-identifier-color";
 import type { InspectableButtonPanel } from "../focused-button-inspector";
 import type { AnimatedButtonIdentifierAppearance } from "./button-identifier-animated-appearance";
 import { QuickPanelPreviewStage } from "./QuickPanelPreviewStage";

@@ -12,6 +12,25 @@ This guide is based on the current screens in `src/features/quick-panel`, the
 AniUI primitives in `src/components/ani-ui`, and the current flow screenshots under
 `flow/`.
 
+## Approved design authority and handoff
+
+The sections below govern the current implementation. Future approved UI
+migration follows the Charcoal + Amber [design system](../design/design-system/README.md),
+its canonical [tokens](../design/design-system/tokens.json) and
+[components](../design/design-system/components.json). Use the
+[remaining-screen manifest](../design/remaining-screens/manifest.json) and
+[coverage matrix](../design/remaining-screens/coverage-matrix.md) to map inventory
+states to designs. The [handoff](../design/design-system/remaining-screens-handoff.md)
+records preserved design constraints; its historical session instructions are
+superseded by the [current remaining-screen guidance](../design/remaining-screens/README.md)
+and [canvas organization](../design/remaining-screens/canvas-organization/README.md).
+
+These sources govern visual migration; [product behavior](product-behavior.md)
+and [architecture](architecture.md) remain the behavior contracts. Follow the
+design system's MCP-only guidance for its encrypted editable `.pen` document.
+Repository PNGs/manifests are static references; live canvas inspection and
+device acceptance are separate checks when design or implementation resumes.
+
 ## Core direction
 
 - Keep the UI phone-first. The S25+ flow screenshots are the normal layout

@@ -4,8 +4,10 @@ Use these maintained references for current behavior. Release metadata lives in
 `app.json`; framework and package versions live in `package.json`.
 
 - [Product behavior](product-behavior.md): supported paths and user-visible contracts.
+- [Domain glossary](../GLOSSARY.md): canonical product terms.
+- [Task map](task-map.md): common changes, implementation owners and regression tests.
 - [Architecture](architecture.md): geometry, rendering, gestures, persistence and compatibility.
-- [Styling](styling.md): the existing UI baseline, to be superseded during the UI revamp.
+- [Styling](styling.md): current UI baseline and approved Charcoal + Amber design authority for future migration.
 - [Screen inventory](screen-inventory.md): current screens, workflow steps, overlays and states to cover in the UI revamp.
 - [Testing](testing.md): automated checks and test boundaries.
 - [Manual acceptance](production-manual-test-checklist.md): current device regression checklist.

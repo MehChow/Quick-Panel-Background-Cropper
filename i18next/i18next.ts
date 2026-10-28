@@ -4,7 +4,7 @@ import { initReactI18next } from "react-i18next";
 import {
   isSupportedLanguage,
   type SupportedLanguage,
-} from "../src/features/quick-panel/store/storage";
+} from "./languages";
 import { enLocale, esLocale, zhLocale } from "./resources";
 
 export function resolveLanguage(

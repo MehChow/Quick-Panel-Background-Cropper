@@ -259,6 +259,37 @@ that also changes `versionCode`.
 11. Delete merged feature, release, and sync branches. Keep only `main` and
     `dev` permanently.
 
+## Testing Google Play in-app updates
+
+This test requires two Play builds containing the update feature; an older
+installed release without the feature cannot display its prompt. Use the
+internal testing track only, with the same application ID and Play signing
+identity and a tester account that has acquired the app from Google Play.
+
+1. On a clean `release/1.7.5` branch, use the normal release command and
+   choose `new` to upload a baseline to Internal testing. Install that build
+   from Google Play on the test device and acknowledge any release announcement.
+2. Prepare a second candidate with `new`, using a higher version code. Upload
+   it to the same track and wait until it is available to the tester. Keep both
+   user-visible versions at 1.7.5 for this experiment. Do not promote either
+   candidate to Production.
+3. Open the installed baseline and check the landing-screen notice. Verify
+   that dismissing it, or cancelling Play's confirmation, suppresses the same
+   version on later launches. A subsequent higher-code candidate should be
+   offered again.
+4. Accept the update. Confirm that Start customizing is disabled during the
+   download, progress is shown when available, and the app installs and
+   restarts after download. If possible, test a failed download and relaunch
+   during download. Inspect the Play dialog's What's new content.
+5. For a later real release, use a new release version and a version code
+   higher than every candidate already uploaded, and follow the regular release
+   process. Preserve the upload confirmation and avoid publishing the test
+   candidates to Production.
+
+Availability can depend on Play rollout and the tester account. Google also
+documents an [Internal App Sharing procedure](https://developer.android.com/guide/playcore/in-app-updates/test)
+for testing in-app updates; that is a separate Play distribution mechanism.
+
 ## Secrets and CI
 
 Manual local build plus Play upload works for solo development. Add CI later for

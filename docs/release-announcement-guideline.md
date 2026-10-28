@@ -39,7 +39,7 @@ Do not use it for every small bug fix or patch release. If the update requires d
 | Traditional Chinese copy       | `i18next/locales/zh.ts`                                                |
 | Spanish copy                   | `i18next/locales/es.ts`                                                |
 | English Google Play notes      | `docs/release-notes/play-en-US.txt`                                    |
-| Storage and behavior tests     | `__tests__/storage.test.ts`, `__tests__/release-announcement.test.tsx` |
+| Storage and behavior tests     | `src/features/quick-panel/store/__tests__/storage.test.ts`, `__tests__/release-announcement.test.tsx` |
 
 ## Preparing a future announcement
 
@@ -146,7 +146,7 @@ Update or add tests for all applicable cases:
 Run:
 
 ```bash
-npx jest __tests__/storage.test.ts __tests__/release-announcement.test.tsx --runInBand
+npx jest src/features/quick-panel/store/__tests__/storage.test.ts __tests__/release-announcement.test.tsx --runInBand
 npm run lint
 npx tsc --noEmit
 ```

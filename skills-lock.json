@@ -13,17 +13,41 @@
       "skillPath": "skills/android-emulator/SKILL.md",
       "computedHash": "324f7396ad7ebdd9f0577440258ac5fba98d8a245953c48e31e6c36d755ae1b8"
     },
+    "code-review": {
+      "source": "mattpocock/skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/code-review/SKILL.md",
+      "computedHash": "1846141c77eaada59e449d831720ac1fd3f99e5cb22c30ed42ea5e4d14bd3cda"
+    },
+    "codebase-design": {
+      "source": "mattpocock/skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/codebase-design/SKILL.md",
+      "computedHash": "fb1d8ab98ad151551eeade003e3ae55a46578a380fd9fc3ed4dbf9c2fbce0a9f"
+    },
     "design-taste-frontend": {
       "source": "Leonxlnx/taste-skill",
       "sourceType": "github",
       "skillPath": "skills/taste-skill/SKILL.md",
       "computedHash": "899b84384f74f540ea5284d9b2e9234e050998b42eacc805410b518d4226c0b3"
     },
+    "diagnosing-bugs": {
+      "source": "mattpocock/skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/diagnosing-bugs/SKILL.md",
+      "computedHash": "aec3686657177071076dc1586c22cdf95137c230bc74cbb5d069903d73804817"
+    },
     "dogfood": {
       "source": "callstack/agent-device",
       "sourceType": "github",
       "skillPath": "skills/dogfood/SKILL.md",
       "computedHash": "c83ed84a234bb8ea7a588635ace904e150429f83321024487c7dbcfd19c81575"
+    },
+    "domain-modeling": {
+      "source": "mattpocock/skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/domain-modeling/SKILL.md",
+      "computedHash": "f377a1341e1b368833cfe5889ace3e61d7df48d7a9e5da9253dba75d062bbfbc"
     },
     "eas-app-stores": {
       "source": "expo/skills",
@@ -71,7 +95,7 @@
       "source": "expo/skills",
       "sourceType": "github",
       "skillPath": "plugins/expo/skills/expo-animation/SKILL.md",
-      "computedHash": "f5c0b8e735bccfe0be886b194017d2c21472dfce51b7c244acda828527e783ac"
+      "computedHash": "8f37108472fb5bcaa9978049864a09861c1e4a1980dc13c46b317865452300ab"
     },
     "expo-app-clip": {
       "source": "expo/skills",
@@ -95,13 +119,13 @@
       "source": "expo/skills",
       "sourceType": "github",
       "skillPath": "plugins/expo/skills/expo-design-system/SKILL.md",
-      "computedHash": "66eaad5bb936710d6ca46bdb5550f414b2b1e4ef0375af95767519f569d3fc21"
+      "computedHash": "83c9772c14be17d62d0ede65bab366aef0ae3ea51eca8638d0492163bef1d76f"
     },
     "expo-dev-client": {
       "source": "expo/skills",
       "sourceType": "github",
       "skillPath": "plugins/expo/skills/expo-dev-client/SKILL.md",
-      "computedHash": "7b8b0ec9a98e96674b13b72b798bc1b0b0d122244dc22c54d375613eb525bcae"
+      "computedHash": "c9ae54e5a7e37a3bb02e98ccd63de02167f99c56f0e5131eb832f8d50e6420af"
     },
     "expo-dom": {
       "source": "expo/skills",
@@ -125,13 +149,13 @@
       "source": "expo/skills",
       "sourceType": "github",
       "skillPath": "plugins/expo/skills/expo-module/SKILL.md",
-      "computedHash": "8434c055b84c5c13d274293890fabe534b514ab2e6897e781c52cc67cde00de0"
+      "computedHash": "5e57daebc1ac22109040ffe0ca6f7d0be6b3b2a34f407f7c21af965da1db6f3f"
     },
     "expo-native-ui": {
       "source": "expo/skills",
       "sourceType": "github",
       "skillPath": "plugins/expo/skills/expo-native-ui/SKILL.md",
-      "computedHash": "e6899567b8564fe814f17e45de3de308dceafa6ecadf00580e4c6d7759429ecf"
+      "computedHash": "e8b0afc3f853e2248726ff77fc79d91e7d784f4f1db1cda89e0a41b389326591"
     },
     "expo-overview": {
       "source": "expo/skills",
@@ -149,7 +173,7 @@
       "source": "expo/skills",
       "sourceType": "github",
       "skillPath": "plugins/expo/skills/expo-router/SKILL.md",
-      "computedHash": "012b297f89b20780e23e0a2308ba2640c243359abad8a87622cc4a53bfa2d881"
+      "computedHash": "feef393db7b7b59c8180c917e3edc2f3db9e3dbfe4b6dcfeb2cfe2e4c47f8e7c"
     },
     "expo-skill-eval": {
       "source": "expo/skills",
@@ -167,7 +191,7 @@
       "source": "expo/skills",
       "sourceType": "github",
       "skillPath": "plugins/expo/skills/expo-ui/SKILL.md",
-      "computedHash": "132d7bea7b1f1d026d66efa3e2c252ba86b8fa9a468c97ed1bf3ca5415caec97"
+      "computedHash": "a4e73e1a419ac4fe0fee837cb234de211999443cf83d1a6656f7967bfe7643fa"
     },
     "expo-upgrade": {
       "source": "expo/skills",
@@ -187,11 +211,53 @@
       "skillPath": "skills/gpt-tasteskill/SKILL.md",
       "computedHash": "7bd1bfdda0e51016ca222693401a65fc0dd9bf9487e0bd5b1740ba510f6f963a"
     },
+    "grill-me": {
+      "source": "mattpocock/skills",
+      "sourceType": "github",
+      "skillPath": "skills/productivity/grill-me/SKILL.md",
+      "computedHash": "5e0c683385eafd83f106ac6c9d67dfbbfe5aa4b3fe65aad114eb1055a99c818f"
+    },
+    "grill-with-docs": {
+      "source": "mattpocock/skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/grill-with-docs/SKILL.md",
+      "computedHash": "a610223c9796f755b603f15ec114849a4b38b9ba3006acfa9bdf3cc56dd44dad"
+    },
+    "grilling": {
+      "source": "mattpocock/skills",
+      "sourceType": "github",
+      "skillPath": "skills/productivity/grilling/SKILL.md",
+      "computedHash": "c3b3e67f18495984385413bc6be7e2acbf2139c6cf52ef42abdda7242a791822"
+    },
+    "handoff": {
+      "source": "mattpocock/skills",
+      "sourceType": "github",
+      "skillPath": "skills/productivity/handoff/SKILL.md",
+      "computedHash": "00e2d31992d62490083ed2fa2fc2a4418362f765875a59e7a3dc52836f826ab2"
+    },
     "high-end-visual-design": {
       "source": "Leonxlnx/taste-skill",
       "sourceType": "github",
       "skillPath": "skills/soft-skill/SKILL.md",
       "computedHash": "f730e4132775f13eea19e3dc39afc6bb453cfc0498872b127ad8f0d47cfd802d"
+    },
+    "implement": {
+      "source": "mattpocock/skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/implement/SKILL.md",
+      "computedHash": "141e77647388ad7d716a8f992b604872df0cbf6cdfbc8fa2a02cbc9fe67160fc"
+    },
+    "implement-spec": {
+      "source": "mattpocock/skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/implement-spec/SKILL.md",
+      "computedHash": "4b91b5634b1a89a8b2ad44f8e7a320f778d05f6bd978d93076b6e89d7adfe9d8"
+    },
+    "improve-codebase-architecture": {
+      "source": "mattpocock/skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/improve-codebase-architecture/SKILL.md",
+      "computedHash": "f74b0bf1be26220dd615523fc1c0562567f9c463d9e9b255d4031345ffb37cd3"
     },
     "minimalist-ui": {
       "source": "Leonxlnx/taste-skill",
@@ -204,6 +270,36 @@
       "sourceType": "github",
       "skillPath": "skills/redesign-skill/SKILL.md",
       "computedHash": "47eced3e960a2c961d3cbee11fa1216264f589344b586a5cbd03967cd6b9c54b"
+    },
+    "setup-matt-pocock-skills": {
+      "source": "mattpocock/skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/setup-matt-pocock-skills/SKILL.md",
+      "computedHash": "1114faf86d8658d6b3c729e7e604fbfecdee3fa112f23c4889463e87da662aec"
+    },
+    "tdd": {
+      "source": "mattpocock/skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/tdd/SKILL.md",
+      "computedHash": "535d1a6f3bd5bded8971e7e4ea76538907cbff6b6d32c39cf97b669869dcd383"
+    },
+    "to-spec": {
+      "source": "mattpocock/skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/to-spec/SKILL.md",
+      "computedHash": "0ee8caf20fc7df94db53e76f42588fb01eee88c6f8dc97e7a3a0565be8978e74"
+    },
+    "to-tickets": {
+      "source": "mattpocock/skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/to-tickets/SKILL.md",
+      "computedHash": "f7d1bca83f85e4880eec5ed4fe0bff5b8ad1ba14f1e0b17dd0f6d9235a461ec4"
+    },
+    "writing-for-agents": {
+      "source": "mattpocock/skills",
+      "sourceType": "github",
+      "skillPath": "skills/productivity/writing-for-agents/SKILL.md",
+      "computedHash": "831e996c177c6c5233eb3bb472a33edee2b3ce1ee5a6d7e8b696c1c3fb4eda3d"
     }
   }
 }

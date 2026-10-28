@@ -7,7 +7,7 @@ import ColorPicker, {
   type ColorFormatsObject,
   type ColorPickerRef,
 } from "reanimated-color-picker";
-import type { ButtonIdentifierBackgroundTheme } from "../button-identifier-color";
+import type { ButtonIdentifierBackgroundTheme } from "../../model/button-identifier-color";
 import { ButtonIdentifierBackgroundThemeToggle } from "./ButtonIdentifierBackgroundThemeToggle";
 import { ButtonLabelAdjustmentTabs } from "./ButtonLabelAdjustmentTabs";
 

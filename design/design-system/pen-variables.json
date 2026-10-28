@@ -1,0 +1,354 @@
+{
+  "qpbc-background": {
+    "type": "color",
+    "value": "#141416"
+  },
+  "qpbc-preview": {
+    "type": "color",
+    "value": "#19191C"
+  },
+  "qpbc-surface": {
+    "type": "color",
+    "value": "#202024"
+  },
+  "qpbc-raised": {
+    "type": "color",
+    "value": "#29292E"
+  },
+  "qpbc-border": {
+    "type": "color",
+    "value": "#343438"
+  },
+  "qpbc-border-strong": {
+    "type": "color",
+    "value": "#3D3D42"
+  },
+  "qpbc-outline": {
+    "type": "color",
+    "value": "#9A958D"
+  },
+  "qpbc-text": {
+    "type": "color",
+    "value": "#F0EFEC"
+  },
+  "qpbc-text-secondary": {
+    "type": "color",
+    "value": "#CAC6C0"
+  },
+  "qpbc-text-muted": {
+    "type": "color",
+    "value": "#B3B0AB"
+  },
+  "qpbc-text-disabled": {
+    "type": "color",
+    "value": "#827F79"
+  },
+  "qpbc-accent": {
+    "type": "color",
+    "value": "#E2B77A"
+  },
+  "qpbc-accent-pressed": {
+    "type": "color",
+    "value": "#CCA165"
+  },
+  "qpbc-on-accent": {
+    "type": "color",
+    "value": "#2C2114"
+  },
+  "qpbc-accent-tint": {
+    "type": "color",
+    "value": "#433526"
+  },
+  "qpbc-on-accent-tint": {
+    "type": "color",
+    "value": "#F3D6AA"
+  },
+  "qpbc-selection": {
+    "type": "color",
+    "value": "#29231D"
+  },
+  "qpbc-track": {
+    "type": "color",
+    "value": "#7F7363"
+  },
+  "qpbc-disabled-surface": {
+    "type": "color",
+    "value": "#303035"
+  },
+  "qpbc-success": {
+    "type": "color",
+    "value": "#AAD9BC"
+  },
+  "qpbc-success-surface": {
+    "type": "color",
+    "value": "#213128"
+  },
+  "qpbc-error": {
+    "type": "color",
+    "value": "#FFB4AB"
+  },
+  "qpbc-error-surface": {
+    "type": "color",
+    "value": "#382324"
+  },
+  "qpbc-info": {
+    "type": "color",
+    "value": "#CAD0E0"
+  },
+  "qpbc-info-surface": {
+    "type": "color",
+    "value": "#252C38"
+  },
+  "qpbc-backdrop": {
+    "type": "color",
+    "value": "#14141699"
+  },
+  "qpbc-control-active": {
+    "type": "color",
+    "value": "#C084FC"
+  },
+  "qpbc-control-fill": {
+    "type": "color",
+    "value": "#C084FC26"
+  },
+  "qpbc-button-active": {
+    "type": "color",
+    "value": "#60A5FA"
+  },
+  "qpbc-button-fill": {
+    "type": "color",
+    "value": "#60A5FA26"
+  },
+  "qpbc-geometry-completed": {
+    "type": "color",
+    "value": "#FB923C"
+  },
+  "qpbc-geometry-completed-fill": {
+    "type": "color",
+    "value": "#FB923C26"
+  },
+  "qpbc-geometry-outer": {
+    "type": "color",
+    "value": "#6EE7B7"
+  },
+  "qpbc-geometry-outer-fill": {
+    "type": "color",
+    "value": "#6EE7B71A"
+  },
+  "qpbc-grid": {
+    "type": "color",
+    "value": "#F0EFEC26"
+  },
+  "qpbc-preview-stroke": {
+    "type": "color",
+    "value": "#F0EFEC88"
+  },
+  "qpbc-space-xs": {
+    "type": "number",
+    "value": 4
+  },
+  "qpbc-space-sm": {
+    "type": "number",
+    "value": 8
+  },
+  "qpbc-space-md": {
+    "type": "number",
+    "value": 12
+  },
+  "qpbc-space-lg": {
+    "type": "number",
+    "value": 16
+  },
+  "qpbc-space-xl": {
+    "type": "number",
+    "value": 20
+  },
+  "qpbc-space-screen": {
+    "type": "number",
+    "value": 24
+  },
+  "qpbc-space-section": {
+    "type": "number",
+    "value": 28
+  },
+  "qpbc-space-xxl": {
+    "type": "number",
+    "value": 32
+  },
+  "qpbc-space-board": {
+    "type": "number",
+    "value": 40
+  },
+  "qpbc-space-xxxl": {
+    "type": "number",
+    "value": 48
+  },
+  "qpbc-radius-sm": {
+    "type": "number",
+    "value": 8
+  },
+  "qpbc-radius-md": {
+    "type": "number",
+    "value": 12
+  },
+  "qpbc-radius-action": {
+    "type": "number",
+    "value": 14
+  },
+  "qpbc-radius-card": {
+    "type": "number",
+    "value": 20
+  },
+  "qpbc-radius-inspector": {
+    "type": "number",
+    "value": 24
+  },
+  "qpbc-radius-sheet": {
+    "type": "number",
+    "value": 32
+  },
+  "qpbc-radius-full": {
+    "type": "number",
+    "value": 999
+  },
+  "qpbc-control-minimum-target": {
+    "type": "number",
+    "value": 44
+  },
+  "qpbc-control-primary-height": {
+    "type": "number",
+    "value": 54
+  },
+  "qpbc-control-secondary-height": {
+    "type": "number",
+    "value": 44
+  },
+  "qpbc-control-setting-row-height": {
+    "type": "number",
+    "value": 56
+  },
+  "qpbc-control-segment-height": {
+    "type": "number",
+    "value": 52
+  },
+  "qpbc-control-segment-inset": {
+    "type": "number",
+    "value": 4
+  },
+  "qpbc-control-icon-size": {
+    "type": "number",
+    "value": 20
+  },
+  "qpbc-control-slider-touch-height": {
+    "type": "number",
+    "value": 44
+  },
+  "qpbc-control-slider-track-height": {
+    "type": "number",
+    "value": 4
+  },
+  "qpbc-control-slider-thumb-size": {
+    "type": "number",
+    "value": 20
+  },
+  "qpbc-control-grid-min": {
+    "type": "number",
+    "value": 1
+  },
+  "qpbc-control-grid-max": {
+    "type": "number",
+    "value": 8
+  },
+  "qpbc-font": {
+    "type": "string",
+    "value": "Geist"
+  },
+  "qpbc-type-hero": {
+    "type": "number",
+    "value": 32
+  },
+  "qpbc-type-screen-title": {
+    "type": "number",
+    "value": 28
+  },
+  "qpbc-type-toolbar-title": {
+    "type": "number",
+    "value": 23
+  },
+  "qpbc-type-card-title": {
+    "type": "number",
+    "value": 20
+  },
+  "qpbc-type-headline": {
+    "type": "number",
+    "value": 18
+  },
+  "qpbc-type-panel-title": {
+    "type": "number",
+    "value": 17
+  },
+  "qpbc-type-action": {
+    "type": "number",
+    "value": 16
+  },
+  "qpbc-type-body": {
+    "type": "number",
+    "value": 15
+  },
+  "qpbc-type-label": {
+    "type": "number",
+    "value": 14
+  },
+  "qpbc-type-small": {
+    "type": "number",
+    "value": 13
+  },
+  "qpbc-type-caption": {
+    "type": "number",
+    "value": 12
+  },
+  "qpbc-type-preview-label": {
+    "type": "number",
+    "value": 13
+  },
+  "qpbc-motion-press-ms": {
+    "type": "number",
+    "value": 120
+  },
+  "qpbc-motion-panel-ms": {
+    "type": "number",
+    "value": 200
+  },
+  "qpbc-motion-sheet-ms": {
+    "type": "number",
+    "value": 280
+  },
+  "qpbc-motion-reduced-ms": {
+    "type": "number",
+    "value": 0
+  },
+  "qpbc-motion-press-opacity": {
+    "type": "number",
+    "value": 0.88
+  },
+  "qpbc-motion-disabled-opacity": {
+    "type": "number",
+    "value": 0.5
+  },
+  "qpbc-reference-width": {
+    "type": "number",
+    "value": 412
+  },
+  "qpbc-reference-height": {
+    "type": "number",
+    "value": 915
+  },
+  "qpbc-max-phone-width": {
+    "type": "number",
+    "value": 430
+  },
+  "qpbc-max-fold-width": {
+    "type": "number",
+    "value": 520
+  }
+}

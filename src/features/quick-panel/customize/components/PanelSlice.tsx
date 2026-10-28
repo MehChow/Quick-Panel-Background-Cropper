@@ -13,7 +13,7 @@ import {
   getPreviewPanelFrameStyle,
   getPreviewPanelRadius,
 } from "../preview-geometry";
-import type { ButtonIdentifierBackgroundTheme } from "../button-identifier-color";
+import type { ButtonIdentifierBackgroundTheme } from "../../model/button-identifier-color";
 import { PanelOverlay } from "./PanelOverlay";
 import { ButtonIdentifierOverlay } from "./ButtonIdentifierOverlay";
 import type { AnimatedButtonIdentifierAppearance } from "./button-identifier-animated-appearance";

@@ -1,0 +1,50 @@
+{
+  "date": "2026-10-03",
+  "scope": "Static Pen.dev design; no runtime source changes or device QA",
+  "theme": "charcoal-amber",
+  "reusableComponents": 27,
+  "namedVariables": 88,
+  "inspectedRoots": [
+    "dPOoE",
+    "M54RCv",
+    "w69xX",
+    "f9G2sU",
+    "EeI0F",
+    "RTExV",
+    "dvedl",
+    "Ebb5z",
+    "CKKZM",
+    "vWVmS"
+  ],
+  "enabledNodeClippingIssues": 0,
+  "designSystemBoardOverlaps": 0,
+  "primaryButtonInstancesChecked": 15,
+  "primaryButtonHeight": 54,
+  "contrast": [
+    {
+      "role": "Primary action",
+      "foreground": "#2C2114",
+      "background": "#E2B77A",
+      "ratio": 8.46
+    },
+    {
+      "role": "Body on background",
+      "foreground": "#F0EFEC",
+      "background": "#141416",
+      "ratio": 16
+    },
+    {
+      "role": "Muted on raised",
+      "foreground": "#B3B0AB",
+      "background": "#29292E",
+      "ratio": 6.7
+    },
+    {
+      "role": "Selected segment",
+      "foreground": "#F3D6AA",
+      "background": "#433526",
+      "ratio": 8.45
+    }
+  ],
+  "exportScale": 2
+}

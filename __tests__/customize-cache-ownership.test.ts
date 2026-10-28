@@ -1,13 +1,13 @@
 import { act, renderHook } from "@testing-library/react-native";
 import { useCustomizeActions } from "@/features/quick-panel/customize/hooks/useCustomizeActions";
-import { pickImageFromLibrary } from "@/features/quick-panel/shared/pick-image-from-library";
+import { pickImageFromLibrary } from "@/features/quick-panel/image-import/pick-image-from-library";
 import { createInitialQuickPanelStateData } from "@/features/quick-panel/store/quick-panel-defaults";
 import { useQuickPanelStore } from "@/features/quick-panel/store/quick-panel-store";
 
 const mockTrack = jest.fn();
 const mockRelease = jest.fn();
 
-jest.mock("@/features/quick-panel/shared/pick-image-from-library", () => ({
+jest.mock("@/features/quick-panel/image-import/pick-image-from-library", () => ({
   pickImageFromLibrary: jest.fn(),
 }));
 

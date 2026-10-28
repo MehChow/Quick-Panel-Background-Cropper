@@ -1,4 +1,5 @@
 import { useState } from "react";
+import type { ButtonCustomizeSettings } from "../../model/button-customize-settings";
 import type { ButtonIdentifierContentMode } from "../../model/button-identifier-content";
 import {
   getButtonIdentifierLayoutKind,
@@ -12,13 +13,12 @@ import {
   normalizeButtonIdentifierColor,
   type ButtonIdentifierAppearance,
   type ButtonIdentifierBackgroundTheme,
-} from "../button-identifier-color";
+} from "../../model/button-identifier-color";
 import {
   loadButtonCustomizeSettings,
   loadCombinedButtonImageIntensity,
   saveButtonCustomizeSettings,
   saveCombinedButtonImageIntensity,
-  type ButtonCustomizeSettings,
 } from "../../store/storage";
 
 export interface ButtonCustomizeControlState {

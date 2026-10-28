@@ -11,7 +11,7 @@ import type {
 } from "../../model/types";
 import type { AnimatedButtonIdentifierAppearance } from "./button-identifier-animated-appearance";
 import { PanelSlice } from "./PanelSlice";
-import type { ButtonIdentifierBackgroundTheme } from "../button-identifier-color";
+import type { ButtonIdentifierBackgroundTheme } from "../../model/button-identifier-color";
 import { getPreviewPanelFrameStyle } from "../preview-geometry";
 
 interface QuickPanelPreviewStageProps {

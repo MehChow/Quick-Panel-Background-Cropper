@@ -2,7 +2,7 @@ import { useRouter } from "expo-router";
 import { useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import type { PanelRect, PickedImage } from "../../../model/types";
-import { useImageImport } from "../../../shared/useImageImport";
+import { useImageImport } from "../../../image-import/useImageImport";
 import { useQuickPanelStore } from "../../../store/quick-panel-store";
 import { quickPanelSelectors } from "../../../store/selectors";
 import { getSuggestedCalibrationRect } from "../../shared/calibration-preset";

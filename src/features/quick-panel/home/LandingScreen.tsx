@@ -12,10 +12,13 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useShallow } from "zustand/react/shallow";
 import { LandingExampleCard } from "./components/LandingExampleCard";
 import { useLandingLayout } from "./hooks/useLandingLayout";
+import { PlayUpdateNotice } from "./play-update/PlayUpdateNotice";
+import { usePlayUpdate } from "./play-update/usePlayUpdate";
 
 export function LandingScreen() {
   const { t } = useTranslation();
   const router = useRouter();
+  const update = usePlayUpdate();
   const shouldShowVersion = !__DEV__ && shouldShowBuildVersion;
   const { goToModeSelection } = useQuickPanelStore(
     useShallow(quickPanelSelectors.landingScreen),
@@ -38,9 +41,11 @@ export function LandingScreen() {
           <LandingExampleCard maxHeight={cardHeight} />
 
           <View className="mt-4" onLayout={handleActionsLayout}>
+            <PlayUpdateNotice busy={update.busy} error={update.error} progress={update.progress} showOffer={update.showOffer} onDecline={update.decline} onStart={update.start} />
             {shouldShowVersion && <BuildVersion />}
             <Button
               className="w-full bg-white"
+              disabled={update.busy}
               onPress={openCustomize}
               textClassName="font-semibold text-black"
             >

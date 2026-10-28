@@ -23,7 +23,7 @@ import type {
   PanelRect,
   PanelRects,
 } from "../../../model/types";
-import { useImageImport } from "../../../shared/useImageImport";
+import { useImageImport } from "../../../image-import/useImageImport";
 import { getPanelLabel } from "../../../model/i18n";
 import { useQuickPanelStore } from "../../../store/quick-panel-store";
 import { quickPanelSelectors } from "../../../store/selectors";
