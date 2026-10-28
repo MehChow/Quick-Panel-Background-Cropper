@@ -40,6 +40,7 @@ coverage/
 # generated native folders
 /ios
 /android
+/modules/*/android/build/
 
 # Identity & Keystores
 *.jks
